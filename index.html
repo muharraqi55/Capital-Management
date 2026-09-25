@@ -73,6 +73,11 @@
     background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.35);border-radius:8px;
     color:var(--gold);font-size:13px;font-weight:600;
   }
+  .notice-int{
+    display:flex;align-items:center;gap:8px;padding:8px 14px;margin-bottom:12px;
+    background:rgba(34,193,164,.08);border:1px solid rgba(34,193,164,.3);border-radius:8px;
+    color:var(--accent);font-size:12px;font-weight:600;
+  }
   .toast{position:fixed;bottom:20px;left:20px;background:var(--accent);color:#0b141c;padding:12px 20px;
     border-radius:10px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;transform:translateY(20px);
     transition:.3s;pointer-events:none;z-index:200}
@@ -93,8 +98,7 @@
     transition:.3s;
   }
   .card.eid-card h2.eid-title{
-    color: #111827;
-    background: var(--gold);
+    color: #111827;background: var(--gold);
     border-bottom-color: rgba(0,0,0,.15);
     padding:8px 12px;border-radius:6px;font-weight:700;font-size:14px;line-height:1.4;
   }
@@ -104,10 +108,6 @@
   .card.eid-card .field input{border-color:var(--gold);background:rgba(20,25,35,.75);color:#fef3c7;}
   .card.eid-card .field select:focus,
   .card.eid-card .field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(234,179,8,.35);}
-  .card.eid-card .eid-reference-note{
-    display:inline-block;margin-right:6px;font-size:10px;color:#fde68a;font-weight:400;
-  }
-
   .card.eid-card.eid-no{
     border-color: var(--ok);
     background: linear-gradient(180deg, rgba(34,197,94,.18), rgba(34,197,94,.06));
@@ -115,22 +115,16 @@
   }
   .card.eid-card.eid-no h2.eid-title{background: var(--ok);color: #052e16;border-bottom-color: rgba(0,0,0,.15);}
   .card.eid-card.eid-no h2.eid-title::before{color:#052e16;}
-  .card.eid-card.eid-no .field label{color:#86efac;text-shadow:0 1px 2px rgba(0,0,0,.4);}
+  .card.eid-card.eid-no .field label{color:#86efac;}
   .card.eid-card.eid-no .field select,
   .card.eid-card.eid-no .field input{border-color:var(--ok);color:#dcfce7;}
   .card.eid-card.eid-no .field select:focus,
   .card.eid-card.eid-no .field input:focus{border-color:var(--ok);box-shadow:0 0 0 3px rgba(34,197,94,.35);}
 
   select.meat-select{font-weight:700;cursor:pointer;transition:.25s;}
-  select.meat-select.meat-no{
-    background: linear-gradient(180deg, #2a1416, rgba(239,68,68,.35));
-    border-color: var(--danger); color: #ffdcdc;
-  }
+  select.meat-select.meat-no{background: linear-gradient(180deg, #2a1416, rgba(239,68,68,.35));border-color: var(--danger); color: #ffdcdc;}
   select.meat-select.meat-no:hover{background:linear-gradient(180deg,#3a181c,rgba(239,68,68,.5));box-shadow:0 0 0 3px rgba(239,68,68,.2);}
-  select.meat-select.meat-yes{
-    background: linear-gradient(180deg, #123322, rgba(34,197,94,.35));
-    border-color: var(--ok); color: #d6ffe2;
-  }
+  select.meat-select.meat-yes{background: linear-gradient(180deg, #123322, rgba(34,197,94,.35));border-color: var(--ok); color: #d6ffe2;}
   select.meat-select.meat-yes:hover{background:linear-gradient(180deg,#16422c,rgba(34,197,94,.5));box-shadow:0 0 0 3px rgba(34,197,94,.2);}
   select.meat-select:focus{outline:none;}
   select.meat-select.meat-no:focus{box-shadow:0 0 0 3px rgba(239,68,68,.3);}
@@ -147,9 +141,7 @@
     width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);
     padding:7px 10px;border-radius:6px;font-size:13px;outline:none;transition:.2s;font-family:inherit;
   }
-  .expense-table input:focus,.expense-table select:focus{
-    border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,193,164,.15);
-  }
+  .expense-table input:focus,.expense-table select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,193,164,.15);}
   .expense-table select{font-weight:600;cursor:pointer}
   .expense-table tr.excluded{background:rgba(239,68,68,.06)}
   .expense-table tr.excluded td:first-child{color:var(--danger);text-decoration:line-through;opacity:.75;}
@@ -160,56 +152,83 @@
   .bank-excluded{background:rgba(239,68,68,.15) !important;border-color:var(--danger) !important;color:#ffdcdc !important;}
 
   .expense-table tr.group-header{background: linear-gradient(90deg, rgba(59,130,246,.15), transparent);}
-  .expense-table tr.group-header td{
-    color:var(--accent2);font-weight:700;font-size:12px;
-    padding:8px 14px;border-bottom:1px dashed var(--line);letter-spacing:.3px;
-  }
+  .expense-table tr.group-header td{color:var(--accent2);font-weight:700;font-size:12px;
+    padding:8px 14px;border-bottom:1px dashed var(--line);letter-spacing:.3px;}
   .birthday-cell{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-  .birthday-cell select{
-    max-width:110px;padding:5px 8px !important;font-size:12px !important;
-    background:rgba(234,179,8,.1) !important;border-color:var(--gold) !important;color:#facc15 !important;
-  }
-  .birthday-cell select:focus{
-    border-color:var(--gold) !important;box-shadow:0 0 0 3px rgba(234,179,8,.25) !important;
-  }
-  .birthday-cell.bday-none select{
-    background:rgba(239,68,68,.1) !important;border-color:var(--danger) !important;color:#ffdcdc !important;
-  }
+  .birthday-cell select{max-width:110px;padding:5px 8px !important;font-size:12px !important;
+    background:rgba(234,179,8,.1) !important;border-color:var(--gold) !important;color:#facc15 !important;}
+  .birthday-cell select:focus{border-color:var(--gold) !important;box-shadow:0 0 0 3px rgba(234,179,8,.25) !important;}
   .expense-table tr.bday-row{background:rgba(234,179,8,.04)}
   .expense-table tr.bday-row:hover{background:rgba(234,179,8,.09)}
 
-  .expense-summary{
-    display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding:14px;
-    background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:13px;
-  }
+  .expense-summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding:14px;
+    background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:13px;}
   .exp-sum-item{display:flex;gap:8px;align-items:center;padding:6px 12px;
     border-radius:8px;background:var(--panel);border:1px solid var(--line)}
   .exp-sum-item span{color:var(--muted)}
   .exp-sum-item b{color:var(--txt);font-family:monospace;font-size:14px}
-  .exp-sum-item.green{border-color:rgba(34,197,94,.35)}
-  .exp-sum-item.green b{color:var(--ok)}
-  .exp-sum-item.red{border-color:rgba(239,68,68,.35)}
-  .exp-sum-item.red b{color:var(--danger)}
-
+  .exp-sum-item.green{border-color:rgba(34,197,94,.35)} .exp-sum-item.green b{color:var(--ok)}
+  .exp-sum-item.red{border-color:rgba(239,68,68,.35)} .exp-sum-item.red b{color:var(--danger)}
   .exp-sum-divider{width:100%;height:1px;background:var(--line);margin:6px 0;}
-  .exp-sum-title{width:100%;font-size:12px;color:var(--muted);font-weight:700;
-    letter-spacing:.5px;margin-bottom:4px;}
+  .exp-sum-title{width:100%;font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:4px;}
   .bank-item{transition:.2s;min-width:150px;}
   .bank-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.25);}
-  .bank-item.bank-card{border-color:rgba(34,193,164,.4)}
-  .bank-item.bank-card b{color:var(--accent)}
-  .bank-item.bank-nbk{border-color:rgba(59,130,246,.4)}
-  .bank-item.bank-nbk b{color:var(--accent2)}
-  .bank-item.bank-ila{border-color:rgba(168,85,247,.4)}
-  .bank-item.bank-ila b{color:#c084fc}
-  .bank-item.bank-bbk{border-color:rgba(249,115,22,.4)}
-  .bank-item.bank-bbk b{color:#fb923c}
-  .bank-item.bank-meem{border-color:rgba(20,184,166,.4)}
-  .bank-item.bank-meem b{color:#2dd4bf}
-  .bank-item.bank-nbb{border-color:rgba(234,179,8,.4)}
-  .bank-item.bank-nbb b{color:var(--gold)}
-  .bank-item.bank-excl{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.08)}
-  .bank-item.bank-excl b{color:var(--danger)}
+  .bank-item.bank-card{border-color:rgba(34,193,164,.4)} .bank-item.bank-card b{color:var(--accent)}
+  .bank-item.bank-nbk{border-color:rgba(59,130,246,.4)} .bank-item.bank-nbk b{color:var(--accent2)}
+  .bank-item.bank-ila{border-color:rgba(168,85,247,.4)} .bank-item.bank-ila b{color:#c084fc}
+  .bank-item.bank-bbk{border-color:rgba(249,115,22,.4)} .bank-item.bank-bbk b{color:#fb923c}
+  .bank-item.bank-meem{border-color:rgba(20,184,166,.4)} .bank-item.bank-meem b{color:#2dd4bf}
+  .bank-item.bank-nbb{border-color:rgba(234,179,8,.4)} .bank-item.bank-nbb b{color:var(--gold)}
+  .bank-item.bank-excl{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.08)} .bank-item.bank-excl b{color:var(--danger)}
+
+  .saving-card{
+    border: 2px solid var(--accent);
+    background: linear-gradient(180deg, rgba(34,193,164,.1), transparent);
+  }
+  .saving-card h2{color:var(--accent)}
+  .saving-field{position:relative}
+  .saving-field input{font-weight:700;color:var(--accent);text-align:center;font-size:16px}
+  .eid-type-inline{display:flex;gap:6px;margin-top:6px;}
+  .eid-type-inline select{
+    flex:1;background:rgba(234,179,8,.1);border:1px solid var(--gold);
+    color:#facc15;font-weight:700;padding:5px 8px;border-radius:6px;font-size:11px;cursor:pointer;
+  }
+  .eid-type-inline select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(234,179,8,.25)}
+
+  .debts-month-card{
+    border: 2px solid var(--accent2);
+    background: linear-gradient(180deg, rgba(59,130,246,.08), transparent);
+  }
+  .debts-month-card h2{color:var(--accent2)}
+  .debts-month-card h2::before{content:"🤝";color:var(--accent2)}
+  .debts-month-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
+  .debts-month-table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
+  .debts-month-table thead{background:var(--panel2)}
+  .debts-month-table th{padding:9px 10px;text-align:right;color:var(--accent2);font-size:11px;
+    font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
+  .debts-month-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .debts-month-table input{
+    width:110px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);
+    padding:7px 10px;border-radius:6px;font-size:14px;font-weight:700;outline:none;
+    transition:.2s;font-family:monospace;text-align:center;
+  }
+  .debts-month-table input:focus{box-shadow:0 0 0 3px rgba(34,193,164,.15)}
+  .debts-month-table input.input-debit{
+    border-color:var(--ok);color:var(--ok);background:rgba(34,197,94,.08);
+  }
+  .debts-month-table input.input-debit:focus{border-color:var(--ok);box-shadow:0 0 0 3px rgba(34,197,94,.25)}
+  .debts-month-table input.input-credit{
+    border-color:var(--danger);color:var(--danger);background:rgba(239,68,68,.08);
+  }
+  .debts-month-table input.input-credit:focus{border-color:var(--danger);box-shadow:0 0 0 3px rgba(239,68,68,.25)}
+  .debts-month-table tr.row-debit{background:rgba(34,197,94,.04)}
+  .debts-month-table tr.row-credit{background:rgba(239,68,68,.04)}
+  .debts-month-table tr.row-installment{background:rgba(59,130,246,.04)}
+  .debts-month-table .debt-name{font-weight:700;white-space:nowrap}
+  .debts-month-table tfoot td{background:rgba(59,130,246,.1);font-weight:700;
+    border-top:2px solid var(--accent2);padding:10px}
+  .debts-month-summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding:14px;
+    background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:13px;}
 
   @media(max-width:768px){
     .expense-table{min-width:520px;font-size:12px}
@@ -217,33 +236,46 @@
     .expense-table td:first-child{font-size:11px;padding-right:8px}
     .expense-table input,.expense-table select{padding:6px 8px;font-size:12px}
     .bank-item{min-width:120px;font-size:11px}
+    .debts-month-table{min-width:600px}
   }
 
   .excluded-cell{color:var(--danger) !important;text-decoration:line-through;opacity:.65;font-size:12px}
 
-  /* 🔺 Pyramid */
-  .pyramid-wrap{
-    display:flex;justify-content:center;align-items:center;
-    padding:20px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;
-    margin-bottom:16px;
-  }
-  .pyramid-svg{max-width:600px;width:100%;height:auto;}
+  .pyramid-wrap{display:flex;justify-content:center;align-items:center;
+    padding:20px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;margin-bottom:16px;}
+  .pyramid-svg{max-width:640px;width:100%;height:auto;}
   .pyramid-svg text{font-family:"Segoe UI","Tahoma",sans-serif;pointer-events:none;user-select:none;}
-  .pyramid-legend{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;
-  }
+  .pyramid-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;}
   @media(max-width:768px){ .pyramid-legend{grid-template-columns:repeat(2,1fr);} }
-  .pyr-legend-item{
-    display:flex;align-items:center;gap:10px;padding:10px 14px;
-    background:var(--panel2);border:1px solid var(--line);border-radius:10px;
-  }
-  .pyr-color{
-    width:16px;height:16px;border-radius:4px;flex-shrink:0;
-  }
+  @media(max-width:500px){ .pyramid-legend{grid-template-columns:1fr;} }
+  .pyr-legend-item{display:flex;align-items:center;gap:10px;padding:10px 14px;
+    background:var(--panel2);border:1px solid var(--line);border-radius:10px;}
+  .pyr-color{width:16px;height:16px;border-radius:4px;flex-shrink:0;}
   .pyr-legend-item .pyr-label{font-size:12px;color:var(--muted);flex:1;}
-  .pyr-legend-item .pyr-val{
-    font-family:monospace;font-weight:700;color:var(--txt);font-size:14px;direction:ltr;
-  }
+  .pyr-legend-item .pyr-val{font-family:monospace;font-weight:700;color:var(--txt);font-size:14px;direction:ltr;}
+
+  .debts-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
+  .debts-table{width:100%;border-collapse:collapse;font-size:12px;min-width:1600px}
+  .debts-table thead{background:var(--panel2);position:sticky;top:0;z-index:2}
+  .debts-table th{padding:8px 6px;text-align:center;color:var(--accent);font-size:10px;
+    font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
+  .debts-table th:first-child,.debts-table td:first-child{text-align:right;padding-right:12px}
+  .debts-table td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}
+  .debts-table input{width:58px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);
+    padding:4px 3px;border-radius:4px;text-align:center;font-size:11px;font-family:monospace;
+    outline:none;transition:.15s}
+  .debts-table input:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(34,193,164,.2);background:#0a1319}
+  .debts-table .row-credit{background:rgba(239,68,68,.04)}
+  .debts-table .row-debit{background:rgba(34,197,94,.04)}
+  .debts-table .row-installment{background:rgba(59,130,246,.04)}
+  .debts-table .debt-name{font-weight:700;white-space:nowrap;color:var(--txt)}
+  .debts-table .paid-cell{font-family:monospace;font-weight:700;color:var(--accent);direction:ltr;font-size:12px}
+  .debts-table .remain-cell{font-family:monospace;font-weight:700;direction:ltr;font-size:12px}
+  .debts-table .remain-cell.pos{color:var(--ok)}
+  .debts-table .remain-cell.neg{color:var(--danger)}
+  .debts-table tfoot td{background:rgba(34,193,164,.08);font-weight:700;padding:8px 6px;
+    border-top:2px solid var(--accent)}
+  .debts-table tfoot td:first-child{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -271,6 +303,7 @@
 <section id="dashboard" class="view active">
   <div class="card"><h2>الملخص السنوي (12 شهر)</h2><div class="grid g4" id="dashKpis"></div></div>
   <div class="card"><h2>توزيع الادخار السنوي</h2><div class="grid g4" id="dashDist"></div></div>
+  <div class="card"><h2>ملخص الديون والأقساط</h2><div class="grid g4" id="dashDebts"></div></div>
   <div class="card"><h2>مقارنة الشهور</h2><div style="overflow-x:auto"><table id="dashTable"></table></div></div>
 </section>
 
@@ -283,15 +316,15 @@
     <h2 style="color:var(--accent)">📅 متى تم تعديل هذا الشهر؟</h2>
     <div class="grid g3">
       <div class="field">
-        <label>التاريخ المحدد</label>
-        <input type="date" id="monthDatePicker" onchange="setMonthDate(this.value)">
+        <label>📌 التاريخ اليدوي (يُحفظ فوراً)</label>
+        <input type="date" id="monthDatePicker" onchange="setMonthDate(this.value)" oninput="setMonthDate(this.value)">
       </div>
       <div class="field">
-        <label>الوقت (اختياري)</label>
-        <input type="time" id="monthTimePicker" onchange="setMonthTime(this.value)">
+        <label>⏰ الوقت (اختياري)</label>
+        <input type="time" id="monthTimePicker" onchange="setMonthTime(this.value)" oninput="setMonthTime(this.value)">
       </div>
       <div class="field">
-        <label>آخر تعديل محفوظ (تلقائي)</label>
+        <label>🔄 آخر تعديل تلقائي (للقراءة فقط)</label>
         <input type="text" id="lastModifiedDisplay" readonly>
       </div>
     </div>
@@ -315,7 +348,7 @@
         </select>
       </div>
       <div class="field" id="eidAmountWrap" style="display:none">
-        <label>القيمة الإجمالية ( لن يتم احتساب ذلك المبلغ مجرد هذا مرجع )</label>
+        <label>القيمة الإجمالية (هذا المبلغ لأغراض المرجعية فقط ولن يتم احتسابه)</label>
         <input type="number" id="eidAmountInput" value="0" oninput="upd('eidAmount', this.value)">
       </div>
     </div>
@@ -339,9 +372,37 @@
     <div class="expense-summary" id="expenseSummary"></div>
   </div>
 
-  <div class="card">
+  <!-- 🤝 حاوية السلف والديون لهذا الشهر -->
+  <div class="card debts-month-card">
+    <h2>دفعات السلف والأقساط — <span id="debtsMonthTitle" style="color:var(--accent2)"></span></h2>
+    <p class="muted" style="margin-bottom:12px">
+      يتم التحديث التلقائي مع تبويب "🤝 السلف والديون". 
+      <span style="color:var(--ok)">🟢 المبالغ المستلمة (مدين)</span> تُضاف للدخل — 
+      <span style="color:var(--danger)">🔴 المبالغ المدفوعة (دائن/قسط)</span> تُخصم من المتبقي.
+    </p>
+    <div class="debts-month-wrap">
+      <table class="debts-month-table">
+        <thead>
+          <tr>
+            <th>الاسم</th>
+            <th>النوع</th>
+            <th>الكلي</th>
+            <th>المتبقي قبل الشهر</th>
+            <th>هذا الشهر</th>
+            <th>المتبقي بعده</th>
+            <th>ملاحظة</th>
+          </tr>
+        </thead>
+        <tbody id="debtsMonthBody"></tbody>
+        <tfoot id="debtsMonthFoot"></tfoot>
+      </table>
+    </div>
+    <div class="debts-month-summary" id="debtsMonthSummary"></div>
+  </div>
+
+  <div class="card saving-card">
     <h2>💰 مبالغ الادخار (د.ب)</h2>
-    <p class="muted" style="margin-bottom:12px">كل حقل يُدخل كمبلغ بالدينار البحريني. هذه المبالغ تُغذّي "هرم الأمان المالي".</p>
+    <div class="notice-int">🔢 الأرقام هنا بالوحدات الصحيحة (1، 2، 3 ...) — لا تُقبل الكسور العشرية</div>
     <div class="grid g3" id="savingFields"></div>
   </div>
 
@@ -363,11 +424,10 @@
       ترتيب الأولويات المالية من القاعدة (الأساس) إلى القمة (النمو). المبالغ مجمّعة من 12 شهر.
     </p>
     <div class="pyramid-wrap">
-      <svg class="pyramid-svg" viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg" id="pyramidSvg"></svg>
+      <svg class="pyramid-svg" viewBox="0 0 500 460" xmlns="http://www.w3.org/2000/svg" id="pyramidSvg"></svg>
     </div>
     <div class="pyramid-legend" id="pyramidLegend"></div>
   </div>
-
   <div class="card">
     <h2>تفصيل الهرم</h2>
     <div style="overflow-x:auto"><table id="pyramidTable"></table></div>
@@ -376,24 +436,45 @@
 
 <section id="debts" class="view">
   <div class="card">
-    <h2>إضافة دين / سلفة</h2>
+    <h2>📊 ملخص الديون والأقساط</h2>
+    <div class="grid g4" id="debtsSummary"></div>
+  </div>
+
+  <div class="card">
+    <h2>➕ إضافة دين / سلفة / قسط</h2>
     <div class="grid g4">
-      <div class="field"><label>الاسم</label><input id="d_name"></div>
+      <div class="field"><label>الاسم</label><input id="d_name" placeholder="اسم الشخص أو الجهة"></div>
       <div class="field"><label>النوع</label>
-        <select id="d_type">
-          <option value="credit">دائن (أنا آخذ سلفة)</option>
-          <option value="debit">مدين (ناس آخذين مني)</option>
-          <option value="installment">قسط</option>
-        </select></div>
-      <div class="field"><label>المبلغ الكلي (د.ب)</label><input id="d_total" type="number" value="0"></div>
-      <div class="field"><label>المدفوع (د.ب)</label><input id="d_paid" type="number" value="0"></div>
+        <select id="d_type" onchange="onDebtTypeChange(this.value)">
+          <option value="credit">🔴 دائن (أنا آخذ سلفة — أدفع)</option>
+          <option value="debit">🟢 مدين (ناس آخذين مني — أستلم)</option>
+          <option value="installment">🏦 قسط (بنك/فيزا — أدفع)</option>
+        </select>
+      </div>
+      <div class="field" id="d_categoryWrap" style="display:none">
+        <label>فئة القسط</label>
+        <select id="d_category">
+          <option value="فيزا">بطاقة فيزا</option>
+          <option value="بنك">بنك</option>
+          <option value="متنوع">متنوع</option>
+        </select>
+      </div>
+      <div class="field"><label>المبلغ الكلي (د.ب)</label><input id="d_total" type="number" value="0" min="0"></div>
+      <div class="field"><label>مدفوع سابقاً (قبل هذه السنة) (د.ب)</label><input id="d_paidBefore" type="number" value="0" min="0"></div>
       <div class="field"><label>تاريخ البداية</label><input id="d_start" type="date"></div>
       <div class="field"><label>تاريخ الانتهاء</label><input id="d_end" type="date"></div>
       <div class="field"><label>ملاحظات</label><input id="d_notes"></div>
       <div class="field"><label>&nbsp;</label><button class="btn primary" onclick="addDebt()">➕ إضافة</button></div>
     </div>
   </div>
-  <div class="card"><h2>قائمة السلف والديون</h2><div style="overflow-x:auto"><table id="debtsTable"></table></div></div>
+
+  <div class="card">
+    <h2>📋 جدول الديون والأقساط — عرض 12 شهر</h2>
+    <p class="muted" style="margin-bottom:12px">
+      نظرة شاملة على كل الدفعات. للتعديل السريع لشهر محدد، استخدم تبويب "📅 إدخال الشهور".
+    </p>
+    <div class="debts-table-wrap"><table class="debts-table" id="debtsTable"></table></div>
+  </div>
 </section>
 
 <section id="annual" class="view">
@@ -423,14 +504,10 @@ const EMPTY_MONTH = () => ({
   birthday:0, birthdayPerson:"none",
   kidsSchool:0, kidsClothes:0, kidsEid:0,
   privateSchool:0, kindergarten:0, university:0, transport:0, tutoring:0,
+  humanitarianAid:0,
   expenseMeta:{},
-  // ✅ مبالغ الادخار بالدينار (بدل النسب)
-  emergencyFund:0,
-  eidClothesSaving:0,
-  carInsuranceSaving:0,
-  obligationsSaving:0,
-  travelSaving:0,
-  investment:0,
+  assembly:0, investment:0, eidMoneySaving:0, eidMoneyType:"fitar",
+  insuranceSaving:0, travelSaving:0, emergencyFund:0, obligationsSaving:0,
   notes:"", customDate:"", customTime:"", lastModified:""
 });
 
@@ -440,7 +517,7 @@ let state = {
   activeMonth: 0
 };
 
-const KEY = "capital_manager_v11";
+const KEY = "capital_manager_v15";
 function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 function load(){
   try{
@@ -450,28 +527,42 @@ function load(){
       state = {...state, ...d};
       state.months.forEach(m => {
         if(m.eidType === "none") m.eidType = "no";
-        // Migration old → new fields
         if(m.visaCard && !m.visaCard1){ m.visaCard1 = m.visaCard; delete m.visaCard; }
         if(m.carRepair && !m.carRepair1){ m.carRepair1 = m.carRepair; delete m.carRepair; }
         if(m.homeRepair && !m.homeRepair1){ m.homeRepair1 = m.homeRepair; delete m.homeRepair; }
         if(m.kidsNeeds && !m.kidsClothes){ m.kidsClothes = m.kidsNeeds; delete m.kidsNeeds; }
         if(!m.birthdayPerson) m.birthdayPerson = "none";
-        // Migration old percentages → amounts (just in case)
-        ["percentInvestment","percentHajj","percentInsurance","percentMisc"].forEach(p => delete m[p]);
+        if(m.eidClothesSaving && !m.eidMoneySaving){ m.eidMoneySaving = m.eidClothesSaving; delete m.eidClothesSaving; }
+        if(m.carInsuranceSaving && !m.insuranceSaving){ m.insuranceSaving = m.carInsuranceSaving; delete m.carInsuranceSaving; }
+        if(!m.eidMoneyType) m.eidMoneyType = "fitar";
+        ["assembly","investment","eidMoneySaving","insuranceSaving","travelSaving","emergencyFund","obligationsSaving"]
+          .forEach(k => { m[k] = Math.round(+m[k]||0); });
+      });
+      state.debts = (state.debts||[]).map(d => {
+        if(!d.monthly) d.monthly = Array(12).fill(0);
+        else if(d.monthly.length < 12) {
+          while(d.monthly.length < 12) d.monthly.push(0);
+        }
+        if(d.paidBefore === undefined) d.paidBefore = 0;
+        if(!d.category) d.category = "متنوع";
+        return d;
       });
     }
   }catch(e){ console.warn(e); }
 }
 
-const fmt = n => (Number(n)||0).toLocaleString("en-US",{maximumFractionDigits:2});
+const fmt = n => (Number(n)||0).toLocaleString("en-US",{maximumFractionDigits:0});
 const money = n => fmt(n) + " د.ب";
+const fmt2 = n => (Number(n)||0).toLocaleString("en-US",{maximumFractionDigits:2});
+const money2 = n => fmt2(n) + " د.ب";
+
 function toast(msg){
   const t = document.getElementById("toast");
   t.textContent = msg; t.classList.add("show");
   clearTimeout(t._t); t._t = setTimeout(()=>t.classList.remove("show"),2000);
 }
 
-/* ============ الحقول ============ */
+/* ============ Field Definitions ============ */
 const INCOME_FIELDS = [
   ["salary","الراتب الشهري (د.ب)"],
   ["costOfLiving","غلاء المعيشة (د.ب)"],
@@ -508,26 +599,27 @@ const EXPENSE_ROWS = [
   {type:"simple", key:"university", label:"جامعة"},
   {type:"simple", key:"transport", label:"مواصلات"},
   {type:"simple", key:"tutoring", label:"دروس تقوية"},
+  {type:"simple", key:"humanitarianAid", label:"🤲 مساعدات انسانية"},
 ];
 
-/* ✅ مبالغ الادخار — بالدينار */
 const SAVING_FIELDS = [
-  ["emergencyFund",     "🛡️ مبلغ الطوارئ (د.ب)"],
-  ["eidClothesSaving",  "👕 ثياب العيد (د.ب)"],
-  ["carInsuranceSaving","🚗 التامين السيارات (د.ب)"],
-  ["obligationsSaving", "📋 التزامات (د.ب)"],
-  ["travelSaving",      "✈️ السفر (د.ب)"],
-  ["investment",        "📈 الاستثمار (د.ب)"],
+  ["assembly",         "👥 جمعية (د.ب)"],
+  ["investment",       "📈 الاستثمار (د.ب)"],
+  ["eidMoneySaving",   "🎉 عيادي العيد (د.ب)", "eidDropdown"],
+  ["insuranceSaving",  "🛡️ ادخار ( تأمين و تسجيل + ثياب العيد + الروضة ) (د.ب)"],
+  ["travelSaving",     "✈️ ادخار للسفر (د.ب)"],
+  ["emergencyFund",    "🚨 مبلغ الطوارئ (د.ب)"],
+  ["obligationsSaving","📋 التزامات (د.ب)"],
 ];
 
-/* ✅ ترتيب الهرم من القاعدة (فهرس 0) إلى القمة (فهرس 5) */
 const PYRAMID_LEVELS = [
-  { key:"emergencyFund",     label:"مبلغ الطوارئ",     color:"#ef4444", subtitle:"🛡️" },
-  { key:"eidClothesSaving",  label:"ثياب العيد",       color:"#f97316", subtitle:"👕" },
-  { key:"carInsuranceSaving",label:"التامين السيارات", color:"#eab308", subtitle:"🚗" },
-  { key:"obligationsSaving", label:"التزامات",         color:"#3b82f6", subtitle:"📋" },
-  { key:"travelSaving",      label:"السفر",            color:"#14b8a6", subtitle:"✈️" },
-  { key:"investment",        label:"الاستثمار",        color:"#22c55e", subtitle:"📈" },
+  { key:"emergencyFund",    label:"مبلغ الطوارئ",    color:"#ef4444", subtitle:"🚨" },
+  { key:"eidMoneySaving",   label:"عيادي العيد",     color:"#f97316", subtitle:"🎉" },
+  { key:"insuranceSaving",  label:"تأمين وتسجيل + العيد + الروضة", color:"#eab308", subtitle:"🛡️" },
+  { key:"assembly",         label:"جمعية",           color:"#a855f7", subtitle:"👥" },
+  { key:"obligationsSaving",label:"التزامات",         color:"#3b82f6", subtitle:"📋" },
+  { key:"travelSaving",     label:"ادخار للسفر",     color:"#14b8a6", subtitle:"✈️" },
+  { key:"investment",       label:"الاستثمار",       color:"#22c55e", subtitle:"📈" },
 ];
 
 /* ============ Helpers ============ */
@@ -544,10 +636,33 @@ function isExcluded(m, key){
   return getMeta(m, key).bank === EXCLUDED_BANK;
 }
 
-/* ============ الحسابات ============ */
-function totalIncome(m){
+/* ============ Debt Helpers ============ */
+function debtPaidThisYear(d){ return (d.monthly||[]).reduce((a,b)=>a+(+b||0),0); }
+function debtPaidTotal(d){ return (+d.paidBefore||0) + debtPaidThisYear(d); }
+function debtRemaining(d){ return Math.max(0, (+d.total||0) - debtPaidTotal(d)); }
+function debtRemainingBeforeMonth(d, monthIdx){
+  let paid = (+d.paidBefore || 0);
+  for(let i=0; i<monthIdx; i++) paid += (+d.monthly[i] || 0);
+  return Math.max(0, (+d.total||0) - paid);
+}
+function totalDebtReceipts(monthIdx){
+  return state.debts.filter(d=>d.type==="debit")
+    .reduce((s,d)=>s+(+d.monthly[monthIdx]||0), 0);
+}
+function totalDebtPayments(monthIdx){
+  return state.debts.filter(d=>d.type==="credit"||d.type==="installment")
+    .reduce((s,d)=>s+(+d.monthly[monthIdx]||0), 0);
+}
+
+/* ============ Income / Expenses ============ */
+function totalIncomeCore(m){
   let sum = INCOME_FIELDS.reduce((s,[k])=>s+(+m[k]||0),0);
   if(m.hasMeatSupport) sum += (+m.meat||0);
+  return sum;
+}
+function totalIncome(m, monthIdx){
+  let sum = totalIncomeCore(m);
+  if(monthIdx !== undefined) sum += totalDebtReceipts(monthIdx);
   return sum;
 }
 function totalExpenses(m){
@@ -556,7 +671,6 @@ function totalExpenses(m){
     if(row.type === "group") return;
     if(!isExcluded(m, row.key)) sum += (+m[row.key]||0);
   });
-  // ⛔ مبلغ العيد لا يُحسب — مجرد مرجع
   return sum;
 }
 function totalExcludedExpenses(m){
@@ -581,31 +695,50 @@ function totalSavings(m){
 
 /* ============ Dashboard ============ */
 function renderDashboard(){
-  const totIncome = state.months.reduce((s,m)=>s+totalIncome(m),0);
-  const totExpense = state.months.reduce((s,m)=>s+totalExpenses(m),0);
-  const totSaving = state.months.reduce((s,m)=>s+totalSavings(m),0);
-  const totRemain = totIncome - totExpense - totSaving;
+  let totIncome = 0, totExpense = 0, totSaving = 0, totDebtPay = 0, totDebtRecv = 0;
+  state.months.forEach((m,i)=>{
+    totIncome += totalIncome(m, i);
+    totExpense += totalExpenses(m);
+    totSaving += totalSavings(m);
+    totDebtPay += totalDebtPayments(i);
+    totDebtRecv += totalDebtReceipts(i);
+  });
+  const totRemain = totIncome - totExpense - totSaving - totDebtPay;
 
   document.getElementById("dashKpis").innerHTML = `
     ${kpi("إجمالي الدخل السنوي", money(totIncome), "acc")}
     ${kpi("إجمالي المصاريف السنوية", money(totExpense), "neg")}
     ${kpi("إجمالي الادخار", money(totSaving), "gold")}
+    ${kpi("إجمالي دفعات الديون (خارج)", money(totDebtPay), "neg")}
+    ${kpi("المستلم من مدينين", money(totDebtRecv), "pos")}
     ${kpi("المتبقي السنوي", money(totRemain), totRemain>=0?"pos":"neg")}
+    ${kpi("صافي الديون (لي − عليّ)", money(totDebtRecv - totDebtPay), (totDebtRecv - totDebtPay)>=0?"pos":"neg")}
   `;
 
   const sum = k => state.months.reduce((s,m)=>s+(+m[k]||0),0);
   document.getElementById("dashDist").innerHTML = `
-    ${kpi("🛡️ طوارئ", money(sum("emergencyFund")), "neg")}
+    ${kpi("🚨 طوارئ", money(sum("emergencyFund")), "neg")}
     ${kpi("📈 استثمار", money(sum("investment")), "pos")}
-    ${kpi("✈️ سفر", money(sum("travelSaving")), "acc")}
-    ${kpi("🚗 تأمين السيارات", money(sum("carInsuranceSaving")), "gold")}
+    ${kpi("👥 جمعية", money(sum("assembly")), "acc")}
+    ${kpi("✈️ سفر", money(sum("travelSaving")), "gold")}
   `;
 
-  let html = `<thead><tr><th>الشهر</th><th>الدخل</th><th>المصاريف</th><th>الادخار</th><th>المتبقي</th><th>آخر تعديل</th><th>الحالة</th></tr></thead><tbody>`;
+  const dt = debtTotals();
+  document.getElementById("dashDebts").innerHTML = `
+    ${kpi("💰 سأستلم هذه السنة", money(dt.receiveThisYear), "pos")}
+    ${kpi("💸 سأدفع هذه السنة", money(dt.payThisYear), "neg")}
+    ${kpi("📊 صافي السنة", money(dt.netThisYear), dt.netThisYear>=0?"pos":"neg")}
+    ${kpi("📌 متبقي الكلي (لي − عليّ)", money(dt.netRemaining), dt.netRemaining>=0?"pos":"neg")}
+  `;
+
+  let html = `<thead><tr><th>الشهر</th><th>الدخل</th><th>دفعات ديون</th><th>المصاريف</th><th>الادخار</th><th>المتبقي</th><th>آخر تعديل</th><th>الحالة</th></tr></thead><tbody>`;
   state.months.forEach((m,i)=>{
-    const inc = totalIncome(m), exp = totalExpenses(m), sav = totalSavings(m);
-    const rem = inc - exp - sav;
-    const filled = inc>0||exp>0||sav>0;
+    const inc = totalIncome(m, i);
+    const exp = totalExpenses(m);
+    const sav = totalSavings(m);
+    const debtPay = totalDebtPayments(i);
+    const rem = inc - exp - sav - debtPay;
+    const filled = inc>0||exp>0||sav>0||debtPay>0;
     let lastMod = "—";
     if(m.lastModified){
       const d = new Date(m.lastModified);
@@ -614,6 +747,7 @@ function renderDashboard(){
     html += `<tr>
       <td>${MONTHS[i]}</td>
       <td class="num">${money(inc)}</td>
+      <td class="num ${debtPay>0?'neg':''}">${debtPay>0?money(debtPay):"—"}</td>
       <td class="num">${money(exp)}</td>
       <td class="num">${money(sav)}</td>
       <td class="num ${rem>=0?'pos':'neg'}">${money(rem)}</td>
@@ -624,6 +758,24 @@ function renderDashboard(){
   document.getElementById("dashTable").innerHTML = html + `</tbody>`;
 }
 
+function debtTotals(){
+  const receiveThisYear = state.debts.filter(d=>d.type==="debit")
+    .reduce((s,d)=>s+debtPaidThisYear(d), 0);
+  const payThisYear = state.debts.filter(d=>d.type==="credit"||d.type==="installment")
+    .reduce((s,d)=>s+debtPaidThisYear(d), 0);
+  const remainingToReceive = state.debts.filter(d=>d.type==="debit")
+    .reduce((s,d)=>s+debtRemaining(d), 0);
+  const remainingToPay = state.debts.filter(d=>d.type==="credit"||d.type==="installment")
+    .reduce((s,d)=>s+debtRemaining(d), 0);
+  return {
+    receiveThisYear, payThisYear,
+    netThisYear: receiveThisYear - payThisYear,
+    remainingToReceive, remainingToPay,
+    netRemaining: remainingToReceive - remainingToPay,
+    totalDebt: state.debts.reduce((s,d)=>s+(+d.total||0), 0),
+  };
+}
+
 function kpi(lbl,val,cls=""){
   return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val ${cls}">${val}</div></div>`;
 }
@@ -631,7 +783,10 @@ function kpi(lbl,val,cls=""){
 /* ============ Month ============ */
 function renderMonthPills(){
   document.getElementById("monthPills").innerHTML = MONTHS.map((m,i)=>{
-    const hasData = totalIncome(state.months[i])>0 || totalExpensesRaw(state.months[i])>0 || totalSavings(state.months[i])>0;
+    const hasData = totalIncome(state.months[i], i) > totalDebtReceipts(i)
+      || totalExpensesRaw(state.months[i])>0 
+      || totalSavings(state.months[i])>0
+      || totalDebtPayments(i)>0;
     return `<button class="${i===state.activeMonth?'active':''} ${hasData?'hasData':''}" onclick="selectMonth(${i})">${m}</button>`;
   }).join("");
 }
@@ -683,9 +838,9 @@ function renderExpenseFields(){
       const person = m.birthdayPerson || "none";
       return `<tr class="${excluded?'excluded':''} bday-row">
         <td>
-          <div class="birthday-cell ${person==='none'?'bday-none':''}">
+          <div class="birthday-cell">
             <span>🎂 عيد ميلاد</span>
-            <select onchange="updBirthdayPerson(this.value)" title="اختر الشخص">
+            <select onchange="updBirthdayPerson(this.value)">
               <option value="none" ${person==='none'?'selected':''}>— لا أحد —</option>
               <option value="زوجة" ${person==='زوجة'?'selected':''}>زوجة</option>
               <option value="الزوج" ${person==='الزوج'?'selected':''}>الزوج</option>
@@ -735,22 +890,11 @@ function renderExpenseSummary(){
   });
 
   const bankIcons = {
-    "بطاقة صراف الالي": "🏧",
-    "NBK": "🏦",
-    "ILA": "🏛️",
-    "BBK": "🏢",
-    "MEEM": "💠",
-    "NBB": "🏛️",
-    "غير محسوب ذي الشهر": "⛔"
+    "بطاقة صراف الالي": "🏧","NBK":"🏦","ILA":"🏛️","BBK":"🏢","MEEM":"💠","NBB":"🏛️","غير محسوب ذي الشهر":"⛔"
   };
   const bankColors = {
-    "بطاقة صراف الالي": "bank-card",
-    "NBK": "bank-nbk",
-    "ILA": "bank-ila",
-    "BBK": "bank-bbk",
-    "MEEM": "bank-meem",
-    "NBB": "bank-nbb",
-    "غير محسوب ذي الشهر": "bank-excl"
+    "بطاقة صراف الالي":"bank-card","NBK":"bank-nbk","ILA":"bank-ila","BBK":"bank-bbk",
+    "MEEM":"bank-meem","NBB":"bank-nbb","غير محسوب ذي الشهر":"bank-excl"
   };
 
   let bankHtml = "";
@@ -773,10 +917,146 @@ function renderExpenseSummary(){
 
 function renderSavingFields(){
   const m = state.months[state.activeMonth];
-  document.getElementById("savingFields").innerHTML = SAVING_FIELDS.map(([k,l])=>
-    `<div class="field"><label>${l}</label>
-      <input type="number" value="${m[k]||0}" oninput="upd('${k}',this.value)" min="0" step="0.001"></div>`
-  ).join("");
+  document.getElementById("savingFields").innerHTML = SAVING_FIELDS.map(f => {
+    const [k, l, extra] = f;
+    let extraHtml = "";
+    if(extra === "eidDropdown"){
+      extraHtml = `<div class="eid-type-inline">
+        <select onchange="updEidMoneyType(this.value)">
+          <option value="fitar" ${m.eidMoneyType==='fitar'?'selected':''}>🎉 عيد الفطر</option>
+          <option value="adha" ${m.eidMoneyType==='adha'?'selected':''}>🐑 عيد الأضحى</option>
+        </select>
+      </div>`;
+    }
+    return `<div class="field saving-field">
+      <label>${l}</label>
+      <input type="number" value="${m[k]||0}" oninput="updSaving('${k}',this.value)" min="0" step="1" inputmode="numeric">
+      ${extraHtml}
+    </div>`;
+  }).join("");
+}
+
+/* 🤝 قسم دفعات السلف في إدخال الشهور */
+function renderDebtsMonthSection(){
+  const monthIdx = state.activeMonth;
+  const tbody = document.getElementById("debtsMonthBody");
+  const tfoot = document.getElementById("debtsMonthFoot");
+  const summary = document.getElementById("debtsMonthSummary");
+  if(!tbody) return;
+
+  const titleEl = document.getElementById("debtsMonthTitle");
+  if(titleEl) titleEl.textContent = MONTHS[monthIdx];
+
+  if(!state.debts.length){
+    tbody.innerHTML = `<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--muted)">
+      لا توجد سلف أو ديون بعد — أضف من تبويب "🤝 السلف والديون"</td></tr>`;
+    tfoot.innerHTML = "";
+    summary.innerHTML = "";
+    return;
+  }
+
+  const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦"};
+  const typeLabel = {credit:"دائن (أدفع)", debit:"مدين (أستلم)", installment:"قسط (أدفع)"};
+  const typeCls = {credit:"row-credit", debit:"row-debit", installment:"row-installment"};
+
+  let receiveThisMonth = 0, payThisMonth = 0;
+
+  tbody.innerHTML = state.debts.map(d => {
+    const remBefore = debtRemainingBeforeMonth(d, monthIdx);
+    const thisMonth = +d.monthly[monthIdx] || 0;
+    const remAfter = Math.max(0, remBefore - thisMonth);
+    if(d.type === "debit") receiveThisMonth += thisMonth;
+    else payThisMonth += thisMonth;
+
+    const inputCls = d.type === "debit" ? "input-debit" : "input-credit";
+
+    return `<tr class="${typeCls[d.type]}" data-debt-row="${d.id}">
+      <td class="debt-name">${typeIcon[d.type]} ${d.name}</td>
+      <td><span class="badge ${d.type==='credit'?'red':d.type==='debit'?'green':'blue'}">${typeLabel[d.type]}</span></td>
+      <td class="num">${money(d.total)}</td>
+      <td class="num muted">${money(remBefore)}</td>
+      <td><input type="number" class="${inputCls}" value="${thisMonth}" min="0" 
+                oninput="updDebtMonthInEntry(${d.id}, this.value)"></td>
+      <td class="num debt-rem-after" style="font-family:monospace;font-weight:700;color:${remAfter===0?'var(--ok)':'var(--txt)'};direction:ltr">${money(remAfter)}</td>
+      <td class="muted">${d.notes || "—"}</td>
+    </tr>`;
+  }).join("");
+
+  tfoot.innerHTML = `<tr>
+    <td colspan="4">الإجمالي</td>
+    <td class="num" style="color:var(--accent2);font-weight:700">${money(receiveThisMonth + payThisMonth)}</td>
+    <td colspan="2"></td>
+  </tr>`;
+
+  summary.innerHTML = `
+    ${kpi("💰 سأستلم هذا الشهر (مدين) → يُضاف للدخل", money(receiveThisMonth), "pos")}
+    ${kpi("💸 سأدفع هذا الشهر (دائن + قسط) → يُخصم", money(payThisMonth), "neg")}
+    ${kpi("📊 صافي الشهر", money(receiveThisMonth - payThisMonth), (receiveThisMonth - payThisMonth) >= 0 ? "pos" : "neg")}
+    ${kpi("📌 متبقي علىّ بعد كل الدفعات", money(state.debts.reduce((s,d)=>s+debtRemaining(d),0)), "gold")}
+  `;
+}
+
+/* ✅ FIXED: لا يعيد بناء الجدول، فقط يحدّث الخلايا */
+function updDebtMonthInEntry(id, val){
+  const d = state.debts.find(x=>x.id===id);
+  if(!d) return;
+  const v = Math.max(0, parseFloat(val)||0);
+  d.monthly[state.activeMonth] = v;
+  save();
+  refreshDebtsMonthCells();
+  renderMonthResults();
+  renderMonthPills();
+  renderDashboard();
+}
+
+/* ✅ تحديث الخلايا المتأثرة فقط — بدون فقدان التركيز */
+function refreshDebtsMonthCells(){
+  const monthIdx = state.activeMonth;
+  let receiveThisMonth = 0, payThisMonth = 0;
+
+  state.debts.forEach(d => {
+    const row = document.querySelector(`tr[data-debt-row="${d.id}"]`);
+    if(!row) return;
+    const thisMonth = +d.monthly[monthIdx] || 0;
+    const remBefore = debtRemainingBeforeMonth(d, monthIdx);
+    const remAfter = Math.max(0, remBefore - thisMonth);
+
+    if(d.type === "debit") receiveThisMonth += thisMonth;
+    else payThisMonth += thisMonth;
+
+    const remCell = row.querySelector('.debt-rem-after');
+    if(remCell){
+      remCell.textContent = money(remAfter);
+      remCell.style.color = remAfter === 0 ? 'var(--ok)' : 'var(--txt)';
+    }
+  });
+
+  const tfoot = document.getElementById("debtsMonthFoot");
+  if(tfoot){
+    tfoot.innerHTML = `<tr>
+      <td colspan="4">الإجمالي</td>
+      <td class="num" style="color:var(--accent2);font-weight:700">${money(receiveThisMonth + payThisMonth)}</td>
+      <td colspan="2"></td>
+    </tr>`;
+  }
+
+  const summary = document.getElementById("debtsMonthSummary");
+  if(summary){
+    summary.innerHTML = `
+      ${kpi("💰 سأستلم هذا الشهر (مدين) → يُضاف للدخل", money(receiveThisMonth), "pos")}
+      ${kpi("💸 سأدفع هذا الشهر (دائن + قسط) → يُخصم", money(payThisMonth), "neg")}
+      ${kpi("📊 صافي الشهر", money(receiveThisMonth - payThisMonth), (receiveThisMonth - payThisMonth) >= 0 ? "pos" : "neg")}
+      ${kpi("📌 متبقي علىّ بعد كل الدفعات", money(state.debts.reduce((s,d)=>s+debtRemaining(d),0)), "gold")}
+    `;
+  }
+}
+
+function updEidMoneyType(val){
+  const m = state.months[state.activeMonth];
+  m.eidMoneyType = val;
+  m.lastModified = new Date().toISOString();
+  save();
+  renderMonthDate();
 }
 
 function updExpenseAmount(key, val){
@@ -812,10 +1092,20 @@ function updExpenseNote(key, val){
 function updBirthdayPerson(val){
   const m = state.months[state.activeMonth];
   m.birthdayPerson = val;
-  // ✅ لا نصفر المبلغ — يُحسب دائماً
   m.lastModified = new Date().toISOString();
   save();
   renderExpenseFields();
+  renderMonthResults();
+  renderMonthDate();
+  renderMonthPills();
+}
+
+function updSaving(key, val){
+  const m = state.months[state.activeMonth];
+  const num = Math.round(parseFloat(val)) || 0;
+  m[key] = Math.max(0, num);
+  m.lastModified = new Date().toISOString();
+  save();
   renderMonthResults();
   renderMonthDate();
   renderMonthPills();
@@ -827,6 +1117,7 @@ function renderMonth(){
 
   renderIncomeFields();
   renderExpenseFields();
+  renderDebtsMonthSection();
   renderSavingFields();
 
   document.getElementById("eidSelect").value = m.eidType || "no";
@@ -880,34 +1171,44 @@ function updateMonthNotes(v){
 
 function renderMonthResults(){
   const m = state.months[state.activeMonth];
-  const inc = totalIncome(m);
+  const idx = state.activeMonth;
+  const incCore = totalIncomeCore(m);
+  const incDebt = totalDebtReceipts(idx);
+  const inc = incCore + incDebt;
   const exp = totalExpenses(m);
   const excl = totalExcludedExpenses(m);
   const sav = totalSavings(m);
-  const rem = inc - exp - sav;
+  const debtPay = totalDebtPayments(idx);
+  const rem = inc - exp - sav - debtPay;
 
   document.getElementById("monthResults").innerHTML = `
-    ${kpi("إجمالي الدخل", money(inc), "acc")}
+    ${kpi("الدخل الأساسي (راتب + إضافي)", money(incCore), "acc")}
+    ${kpi("💰 + مستلم من مدينين", money(incDebt), "pos")}
+    ${kpi("= إجمالي الدخل الشهري", money(inc), "acc")}
     ${kpi("إجمالي المصاريف (المحتسبة)", money(exp), "neg")}
     ${kpi("مصاريف مستثناة (غير محسوبة)", money(excl), "gold")}
     ${kpi("الادخار المباشر", money(sav), "gold")}
+    ${kpi("💸 دفعات الديون (دائن + قسط)", money(debtPay), "neg")}
     ${kpi("المتبقي", money(rem), rem>=0?"pos":"neg")}
     ${kpi("قيمة العيد (مرجعية فقط)", money(m.eidAmount||0), "gold")}
   `;
 }
 
-/* ============ Date ============ */
+/* ============ Date Picker ============ */
 function setMonthDate(value){
   const m = state.months[state.activeMonth];
+  if(!value) return;
   m.customDate = value;
   m.lastModified = new Date().toISOString();
-  save(); renderMonthDate(); toast("✅ تم تحديث التاريخ");
+  save();
+  toast("✅ تم حفظ التاريخ: " + value);
 }
 function setMonthTime(value){
   const m = state.months[state.activeMonth];
-  m.customTime = value;
+  m.customTime = value || "";
   m.lastModified = new Date().toISOString();
-  save(); renderMonthDate(); toast("✅ تم تحديث الوقت");
+  save();
+  toast("✅ تم حفظ الوقت");
 }
 function renderMonthDate(){
   const m = state.months[state.activeMonth];
@@ -931,25 +1232,22 @@ function renderPyramid(){
   });
   const grandTotal = Object.values(totals).reduce((a,b)=>a+b,0);
 
-  // إحداثيات الهرم (شبه منحرف)
-  const apexY = 30, bottomY = 390;
-  const apexLeftX = 180, apexRightX = 320;
-  const baseLeftX = 30, baseRightX = 470;
-  const sliceH = (bottomY - apexY) / 6;
+  const apexY = 25, bottomY = 430;
+  const apexLeftX = 190, apexRightX = 310;
+  const baseLeftX = 20, baseRightX = 480;
+  const levels = PYRAMID_LEVELS.length;
+  const sliceH = (bottomY - apexY) / levels;
 
   const leftAt = (y) => apexLeftX + (baseLeftX - apexLeftX) * (y - apexY) / (bottomY - apexY);
   const rightAt = (y) => apexRightX + (baseRightX - apexRightX) * (y - apexY) / (bottomY - apexY);
 
   let svgContent = "";
   PYRAMID_LEVELS.forEach((lvl, i) => {
-    // i=0 هو القاعدة السفلية
     const yBot = bottomY - i * sliceH;
     const yTop = yBot - sliceH;
 
-    const x1 = leftAt(yTop);
-    const x2 = rightAt(yTop);
-    const x3 = rightAt(yBot);
-    const x4 = leftAt(yBot);
+    const x1 = leftAt(yTop), x2 = rightAt(yTop);
+    const x3 = rightAt(yBot), x4 = leftAt(yBot);
 
     const polygon = `${x1},${yTop} ${x2},${yTop} ${x3},${yBot} ${x4},${yBot}`;
     const centerX = (x1 + x2 + x3 + x4) / 4;
@@ -958,21 +1256,21 @@ function renderPyramid(){
     const amount = totals[lvl.key] || 0;
     const pct = grandTotal > 0 ? (amount / grandTotal * 100) : 0;
 
-    const fontSize = 12 - i * 0.4;
-    const amountFontSize = 11 - i * 0.3;
+    const fontSize = 12 - i * 0.5;
+    const amountFontSize = 11 - i * 0.4;
 
     svgContent += `
       <polygon points="${polygon}" fill="${lvl.color}" fill-opacity="0.88" 
                stroke="${lvl.color}" stroke-width="1.5"/>
-      <text x="${centerX}" y="${centerY - 4}" text-anchor="middle" 
+      <text x="${centerX}" y="${centerY - 6}" text-anchor="middle" 
             fill="#fff" font-size="${fontSize}" font-weight="700">
         ${lvl.subtitle} ${lvl.label}
       </text>
-      <text x="${centerX}" y="${centerY + 10}" text-anchor="middle" 
+      <text x="${centerX}" y="${centerY + 7}" text-anchor="middle" 
             fill="#fff" font-size="${amountFontSize}" font-weight="600" font-family="monospace">
         ${fmt(amount)} د.ب
       </text>
-      <text x="${centerX}" y="${centerY + 22}" text-anchor="middle" 
+      <text x="${centerX}" y="${centerY + 18}" text-anchor="middle" 
             fill="#fff" font-size="${amountFontSize - 1}" font-weight="500" opacity="0.85">
         ${pct.toFixed(1)}%
       </text>
@@ -981,7 +1279,6 @@ function renderPyramid(){
 
   document.getElementById("pyramidSvg").innerHTML = svgContent;
 
-  // Legend
   document.getElementById("pyramidLegend").innerHTML = PYRAMID_LEVELS.slice().reverse().map(lvl => `
     <div class="pyr-legend-item">
       <div class="pyr-color" style="background:${lvl.color}"></div>
@@ -990,7 +1287,6 @@ function renderPyramid(){
     </div>
   `).join("");
 
-  // Table
   let html = `<thead><tr><th>المستوى</th><th>البند</th><th>المجموع السنوي (د.ب)</th><th>النسبة من الهرم</th></tr></thead><tbody>`;
   const reversed = PYRAMID_LEVELS.slice().reverse();
   reversed.forEach((lvl, idx) => {
@@ -1013,57 +1309,170 @@ function renderPyramid(){
   document.getElementById("pyramidTable").innerHTML = html;
 }
 
-/* ============ Debts ============ */
+/* ============ Debts Tab ============ */
+function onDebtTypeChange(val){
+  document.getElementById("d_categoryWrap").style.display = (val === "installment") ? "flex" : "none";
+}
+
 function addDebt(){
   const name = document.getElementById("d_name").value.trim();
   const total = parseFloat(document.getElementById("d_total").value)||0;
-  const paid = parseFloat(document.getElementById("d_paid").value)||0;
+  const paidBefore = parseFloat(document.getElementById("d_paidBefore").value)||0;
+  const type = document.getElementById("d_type").value;
   if(!name || total<=0){ toast("⚠️ أدخل الاسم والمبلغ"); return; }
+  if(paidBefore > total){ toast("⚠️ المدفوع سابقاً أكبر من الكلي!"); return; }
   state.debts.push({
-    id: Date.now(), name,
-    type: document.getElementById("d_type").value,
-    total, paid,
+    id: Date.now(),
+    name,
+    type,
+    category: type === "installment" ? document.getElementById("d_category").value : "",
+    total,
+    paidBefore,
+    monthly: Array(12).fill(0),
     start: document.getElementById("d_start").value,
     end: document.getElementById("d_end").value,
     notes: document.getElementById("d_notes").value.trim()
   });
   ["d_name","d_notes"].forEach(id=>document.getElementById(id).value="");
-  ["d_total","d_paid"].forEach(id=>document.getElementById(id).value=0);
-  save(); renderDebts(); toast("✅ تمت الإضافة");
+  ["d_total","d_paidBefore"].forEach(id=>document.getElementById(id).value=0);
+  save();
+  renderDebts();
+  renderDashboard();
+  toast("✅ تمت الإضافة");
 }
+
 function delDebt(id){
   if(!confirm("تأكيد الحذف؟")) return;
   state.debts = state.debts.filter(d=>d.id!==id);
-  save(); renderDebts();
+  save();
+  renderDebts();
+  renderDashboard();
 }
-function updatePaid(id, val){
+
+function updDebtMonth(id, monthIdx, val){
   const d = state.debts.find(x=>x.id===id);
-  if(d){ d.paid = parseFloat(val)||0; save(); renderDebts(); }
+  if(!d) return;
+  const v = Math.max(0, parseFloat(val)||0);
+  d.monthly[monthIdx] = v;
+  save();
+  refreshDebtTotals();
+  renderDebtsSummary();
+  renderDashboard();
 }
-function renderDebts(){
+
+function refreshDebtTotals(){
+  state.debts.forEach(d => {
+    const row = document.querySelector(`tr[data-debt-id="${d.id}"]`);
+    if(!row) return;
+    const paid = debtPaidThisYear(d);
+    const rem = debtRemaining(d);
+    const paidCell = row.querySelector('.paid-cell');
+    const remCell = row.querySelector('.remain-cell');
+    if(paidCell) paidCell.textContent = fmt(paid);
+    if(remCell){
+      remCell.textContent = fmt(rem);
+      remCell.classList.toggle('pos', rem === 0);
+      remCell.classList.toggle('neg', rem > 0);
+    }
+  });
+  updateDebtsFooter();
+}
+
+function updateDebtsFooter(){
   const t = document.getElementById("debtsTable");
-  if(!state.debts.length){ t.innerHTML = `<thead><tr><th>لا توجد بيانات</th></tr></thead>`; return; }
-  const typeLabel = {credit:"دائن",debit:"مدين",installment:"قسط"};
-  let html = `<thead><tr><th>الاسم</th><th>النوع</th><th>الكلي</th><th>المدفوع</th><th>المتبقي</th><th>البداية</th><th>الانتهاء</th><th>ملاحظات</th><th></th></tr></thead><tbody>`;
+  const foot = t.querySelector("tfoot");
+  if(!foot) return;
+  const monthlyTotals = Array(12).fill(0);
+  let totalPaid = 0, totalRemain = 0;
   state.debts.forEach(d=>{
-    const rem = d.total - d.paid;
-    html += `<tr>
-      <td>${d.name}</td>
+    (d.monthly||[]).forEach((v,i)=>{ monthlyTotals[i] += (+v||0); });
+    totalPaid += debtPaidThisYear(d);
+    totalRemain += debtRemaining(d);
+  });
+  let footHtml = `<tr><td colspan="4">الإجمالي</td>`;
+  for(let i=0;i<12;i++) footHtml += `<td>${monthlyTotals[i] > 0 ? fmt(monthlyTotals[i]) : "—"}</td>`;
+  footHtml += `<td class="paid-cell">${fmt(totalPaid)}</td>`;
+  footHtml += `<td class="remain-cell">${fmt(totalRemain)}</td>`;
+  footHtml += `<td></td></tr>`;
+  foot.innerHTML = footHtml;
+}
+
+function renderDebtsSummary(){
+  const dt = debtTotals();
+  document.getElementById("debtsSummary").innerHTML = `
+    ${kpi("💰 سأستلم هذه السنة (مدينون)", money(dt.receiveThisYear), "pos")}
+    ${kpi("💸 سأدفع هذه السنة (دائن + أقساط)", money(dt.payThisYear), "neg")}
+    ${kpi("📊 صافي السنة", money(dt.netThisYear), dt.netThisYear>=0?"pos":"neg")}
+    ${kpi("📌 متبقي لي (مدينون)", money(dt.remainingToReceive), "pos")}
+    ${kpi("📌 متبقي عليّ (دائن + أقساط)", money(dt.remainingToPay), "neg")}
+    ${kpi("⚖️ صافي المتبقي", money(dt.netRemaining), dt.netRemaining>=0?"pos":"neg")}
+    ${kpi("💵 إجمالي الديون الكلية", money(dt.totalDebt), "gold")}
+    ${kpi("📋 عدد البنود", state.debts.length.toString(), "acc")}
+  `;
+}
+
+function renderDebts(){
+  renderDebtsSummary();
+  const t = document.getElementById("debtsTable");
+  if(!state.debts.length){
+    t.innerHTML = `<thead><tr><th colspan="19" style="padding:20px;color:var(--muted)">لا توجد بيانات — أضف دين أو قسط من الأعلى</th></tr></thead>`;
+    return;
+  }
+
+  const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦"};
+  const typeLabel = {credit:"دائن", debit:"مدين", installment:"قسط"};
+
+  let head = `<thead><tr>
+    <th style="min-width:130px">الاسم</th>
+    <th>النوع</th>
+    <th>الفئة</th>
+    <th>الكلي</th>
+    <th>مدفوع سابقاً</th>`;
+  MONTHS.forEach(m => { head += `<th style="width:60px">${m}</th>`; });
+  head += `<th>مدفوع هذه السنة</th><th>المتبقي</th><th></th></tr></thead>`;
+
+  let body = `<tbody>`;
+  state.debts.forEach(d => {
+    const rowCls = d.type === "credit" ? "row-credit" : d.type === "debit" ? "row-debit" : "row-installment";
+    const paid = debtPaidThisYear(d);
+    const rem = debtRemaining(d);
+    body += `<tr class="${rowCls}" data-debt-id="${d.id}">
+      <td class="debt-name">${typeIcon[d.type]} ${d.name}</td>
       <td><span class="badge ${d.type==='credit'?'red':d.type==='debit'?'green':'blue'}">${typeLabel[d.type]}</span></td>
-      <td class="num">${money(d.total)}</td>
-      <td class="num"><input type="number" value="${d.paid}" style="width:90px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:4px 6px;border-radius:6px" oninput="updatePaid(${d.id},this.value)"></td>
-      <td class="num ${rem>0?'neg':'pos'}">${money(rem)}</td>
-      <td>${d.start||"—"}</td><td>${d.end||"—"}</td><td>${d.notes||"—"}</td>
+      <td>${d.category || "—"}</td>
+      <td class="num">${money2(d.total)}</td>
+      <td class="num muted">${money2(d.paidBefore||0)}</td>`;
+    (d.monthly||[]).forEach((v,i) => {
+      body += `<td><input type="number" value="${v||0}" min="0"
+                 oninput="updDebtMonth(${d.id}, ${i}, this.value)"></td>`;
+    });
+    body += `<td class="paid-cell">${fmt(paid)}</td>
+      <td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td>
       <td><button class="icon-btn" onclick="delDebt(${d.id})">✕</button></td>
     </tr>`;
   });
-  t.innerHTML = html + `</tbody>`;
+  body += `</tbody>`;
+
+  const monthlyTotals = Array(12).fill(0);
+  let totalPaid = 0, totalRemain = 0;
+  state.debts.forEach(d=>{
+    (d.monthly||[]).forEach((v,i)=>{ monthlyTotals[i] += (+v||0); });
+    totalPaid += debtPaidThisYear(d);
+    totalRemain += debtRemaining(d);
+  });
+  let foot = `<tfoot><tr><td colspan="4">الإجمالي</td>`;
+  for(let i=0;i<12;i++) foot += `<td>${monthlyTotals[i] > 0 ? fmt(monthlyTotals[i]) : "—"}</td>`;
+  foot += `<td class="paid-cell">${fmt(totalPaid)}</td>`;
+  foot += `<td class="remain-cell">${fmt(totalRemain)}</td>`;
+  foot += `<td></td></tr></tfoot>`;
+
+  t.innerHTML = head + body + foot;
 }
 
 /* ============ Annual ============ */
 function renderAnnual(){
   const sections = [
-    ["الدخل", INCOME_FIELDS.map(([k,l])=>({key:k, label:l}))],
+    ["الدخل الأساسي", INCOME_FIELDS.map(([k,l])=>({key:k, label:l}))],
     ["المصاريف", EXPENSE_ROWS.filter(r=>r.type!=="group").map(r=>({key:r.key, label:r.label}))],
     ["الادخار", SAVING_FIELDS.map(([k,l])=>({key:k, label:l}))],
   ];
@@ -1087,19 +1496,25 @@ function renderAnnual(){
         `<td class="num" style="color:var(--accent);font-weight:700">${money(sum)}</td></tr>`;
     });
   });
+
+  const debtRecvPerMonth = MONTHS.map((_, i) => totalDebtReceipts(i));
+  const debtPayPerMonth = MONTHS.map((_, i) => totalDebtPayments(i));
+  html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--accent2);font-weight:700">🤝 دفعات السلف والديون</td></tr>`;
+  html += `<tr><td>💰 مستلم من مدينين</td>${debtRecvPerMonth.map(v=>`<td class="num" style="color:var(--ok)">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--ok);font-weight:700">${money(debtRecvPerMonth.reduce((a,b)=>a+b,0))}</td></tr>`;
+  html += `<tr><td>💸 مدفوع (دائن + قسط)</td>${debtPayPerMonth.map(v=>`<td class="num" style="color:var(--danger)">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--danger);font-weight:700">${money(debtPayPerMonth.reduce((a,b)=>a+b,0))}</td></tr>`;
+
   const meatTotals = state.months.map(m => m.hasMeatSupport ? (+m.meat||0) : 0);
   html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--gold);font-weight:700">دعم اللحوم</td></tr>`;
   html += `<tr><td>دعم اللحوم</td>${meatTotals.map(v=>`<td class="num">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--gold);font-weight:700">${money(meatTotals.reduce((a,b)=>a+b,0))}</td></tr>`;
 
-  // Eid (reference only)
   const eidTotals = state.months.map(m => +m.eidAmount||0);
   html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--gold);font-weight:700">🎉 العيد (مرجعي فقط — غير محتسب)</td></tr>`;
   html += `<tr><td>قيمة العيد (مرجع)</td>${eidTotals.map(v=>`<td class="num">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--gold);font-weight:700">${money(eidTotals.reduce((a,b)=>a+b,0))}</td></tr>`;
 
-  const inc = state.months.map(totalIncome);
+  const inc = state.months.map((m,i)=>totalIncome(m,i));
   const exp = state.months.map(totalExpenses);
   const sav = state.months.map(totalSavings);
-  const rem = state.months.map((m,i)=>inc[i]-exp[i]-sav[i]);
+  const rem = state.months.map((m,i)=>inc[i]-exp[i]-sav[i]-debtPayPerMonth[i]);
   const rowSum = arr => arr.reduce((a,b)=>a+b,0);
   html += `<tr style="background:rgba(34,193,164,.1);font-weight:700"><td>إجمالي الدخل</td>${inc.map(v=>`<td class="num">${money(v)}</td>`).join("")}<td class="num">${money(rowSum(inc))}</td></tr>`;
   html += `<tr style="background:rgba(239,68,68,.08);font-weight:700"><td>إجمالي المصاريف</td>${exp.map(v=>`<td class="num">${money(v)}</td>`).join("")}<td class="num">${money(rowSum(exp))}</td></tr>`;
