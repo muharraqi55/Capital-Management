@@ -3,30 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>إدارة رأس المال</title>
+<title>إدارة رأس المال | Capital Manager</title>
 <style>
   :root{
     --bg:#0f1720; --panel:#17212b; --panel2:#1e2b38;
     --line:#2a3a4a; --txt:#e6eef7; --muted:#8fa3b8;
     --accent:#22c1a4; --accent2:#3b82f6; --danger:#ef4444;
     --ok:#22c55e; --gold:#eab308;
+    --shadow:rgba(0,0,0,.35);
+  }
+  html[data-theme="light"]{
+    --bg:#f0f4f8; --panel:#ffffff; --panel2:#e8eef5;
+    --line:#cbd5e1; --txt:#0f172a; --muted:#64748b;
+    --accent:#0891b2; --accent2:#2563eb; --danger:#dc2626;
+    --ok:#16a34a; --gold:#d97706;
+    --shadow:rgba(0,0,0,.12);
   }
   *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI","Tahoma",sans-serif}
-  body{background:var(--bg);color:var(--txt);min-height:100vh;font-size:14px}
-  header{background:linear-gradient(90deg,#0d1a26,#17212b);border-bottom:1px solid var(--line);
-    padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
-  header h1{font-size:18px;color:var(--accent);display:flex;align-items:center;gap:8px}
-  .toolbar{display:flex;gap:8px}
-  .btn{background:var(--panel2);color:var(--txt);border:1px solid var(--line);padding:8px 14px;
-    border-radius:8px;cursor:pointer;font-size:13px;transition:.2s}
-  .btn:hover{background:var(--accent);color:#0b141c;border-color:var(--accent)}
-  .btn.primary{background:var(--accent);color:#0b141c;border-color:var(--accent)}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--txt);min-height:100vh;font-size:14px;transition:background .3s,color .3s}
+  header{background:linear-gradient(90deg,var(--panel),var(--panel2));border-bottom:1px solid var(--line);
+    padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;
+    gap:12px;flex-wrap:wrap}
+  header h1{font-size:17px;color:var(--accent);display:flex;align-items:center;gap:8px;white-space:nowrap}
+  .toolbar{display:flex;gap:6px;flex-wrap:wrap}
+  .btn{background:var(--panel2);color:var(--txt);border:1px solid var(--line);padding:7px 12px;
+    border-radius:8px;cursor:pointer;font-size:13px;transition:.2s;white-space:nowrap}
+  .btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
   .btn.danger{background:transparent;color:var(--danger);border-color:var(--danger)}
   .btn.danger:hover{background:var(--danger);color:#fff}
+  .settings-bar{display:flex;gap:4px;padding:4px;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+  .settings-bar button{background:transparent;border:none;color:var(--muted);padding:6px 10px;
+    border-radius:6px;cursor:pointer;font-size:13px;font-weight:700;transition:.2s}
+  .settings-bar button:hover{background:var(--accent);color:#fff}
   nav.tabs{display:flex;gap:4px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto}
   nav.tabs button{background:transparent;border:none;color:var(--muted);padding:8px 16px;
-    border-radius:8px;cursor:pointer;font-size:14px;white-space:nowrap;font-weight:500}
-  nav.tabs button.active{background:var(--accent);color:#0b141c}
+    border-radius:8px;cursor:pointer;font-size:14px;white-space:nowrap;font-weight:500;transition:.2s}
+  nav.tabs button.active{background:var(--accent);color:#fff}
   nav.tabs button:hover:not(.active){background:var(--panel2);color:var(--txt)}
   main{padding:20px;max-width:1400px;margin:0 auto}
   .view{display:none}
@@ -37,9 +51,7 @@
     padding-bottom:10px;border-bottom:1px solid var(--line)}
   .card h2::before{content:"●";color:var(--accent);font-size:10px}
   .grid{display:grid;gap:12px}
-  .g2{grid-template-columns:repeat(2,1fr)}
-  .g3{grid-template-columns:repeat(3,1fr)}
-  .g4{grid-template-columns:repeat(4,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
   @media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:600px){.g4,.g3,.g2{grid-template-columns:1fr}}
   .field{display:flex;flex-direction:column;gap:6px}
@@ -47,7 +59,7 @@
   .field input,.field select,.field textarea{background:var(--panel2);border:1px solid var(--line);color:var(--txt);
     padding:9px 12px;border-radius:8px;font-size:14px;outline:none;transition:.2s;font-family:inherit}
   .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,193,164,.15)}
-  .field input[readonly]{background:#101822;color:var(--accent);font-weight:600;cursor:not-allowed}
+  .field input[readonly]{background:var(--bg);color:var(--accent);font-weight:600;cursor:not-allowed}
   .kpi{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center}
   .kpi .lbl{font-size:12px;color:var(--muted);margin-bottom:6px}
   .kpi .val{font-size:20px;font-weight:700;color:var(--txt);direction:ltr}
@@ -56,34 +68,31 @@
   table{width:100%;border-collapse:collapse;font-size:13px}
   thead{background:var(--panel2)}
   th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line)}
+  html[dir="ltr"] th, html[dir="ltr"] td{text-align:left}
   th{color:var(--accent);font-weight:600;font-size:12px}
   tbody tr:hover{background:rgba(34,193,164,.05)}
   td.num{direction:ltr;text-align:left;font-family:monospace}
+  html[dir="ltr"] td.num{text-align:right}
   td.neg{color:var(--danger)} td.pos{color:var(--ok)}
   .monthPills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
   .monthPills button{background:var(--panel2);border:1px solid var(--line);color:var(--muted);
-    padding:7px 14px;border-radius:20px;cursor:pointer;font-size:13px;position:relative}
-  .monthPills button.active{background:var(--accent);color:#0b141c;border-color:var(--accent);font-weight:600}
+    padding:7px 14px;border-radius:20px;cursor:pointer;font-size:13px;position:relative;transition:.2s}
+  .monthPills button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
   .monthPills button:hover:not(.active){color:var(--txt)}
-  .monthPills button.hasData::after{content:"●";color:var(--ok);font-size:9px;position:absolute;
-    top:4px;left:6px}
+  .monthPills button.hasData::after{content:"●";color:var(--ok);font-size:9px;position:absolute;top:4px;left:6px}
   .muted{color:var(--muted);font-size:12px}
-  .notice-bhd{
-    display:flex;align-items:center;gap:8px;padding:10px 14px;margin-bottom:14px;
+  .notice-bhd{display:flex;align-items:center;gap:8px;padding:10px 14px;margin-bottom:14px;
     background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.35);border-radius:8px;
-    color:var(--gold);font-size:13px;font-weight:600;
-  }
-  .notice-int{
-    display:flex;align-items:center;gap:8px;padding:8px 14px;margin-bottom:12px;
+    color:var(--gold);font-size:13px;font-weight:600}
+  .notice-int{display:flex;align-items:center;gap:8px;padding:8px 14px;margin-bottom:12px;
     background:rgba(34,193,164,.08);border:1px solid rgba(34,193,164,.3);border-radius:8px;
-    color:var(--accent);font-size:12px;font-weight:600;
-  }
-  .toast{position:fixed;bottom:20px;left:20px;background:var(--accent);color:#0b141c;padding:12px 20px;
-    border-radius:10px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;transform:translateY(20px);
+    color:var(--accent);font-size:12px;font-weight:600}
+  .toast{position:fixed;bottom:20px;left:20px;background:var(--accent);color:#fff;padding:12px 20px;
+    border-radius:10px;font-weight:600;box-shadow:0 8px 24px var(--shadow);opacity:0;transform:translateY(20px);
     transition:.3s;pointer-events:none;z-index:200}
   .toast.show{opacity:1;transform:none}
   .icon-btn{background:transparent;border:1px solid var(--line);color:var(--muted);width:30px;height:30px;
-    border-radius:6px;cursor:pointer;font-size:14px}
+    border-radius:6px;cursor:pointer;font-size:14px;transition:.2s}
   .icon-btn:hover{border-color:var(--danger);color:var(--danger)}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
   .badge.green{background:rgba(34,197,94,.15);color:var(--ok)}
@@ -91,88 +100,59 @@
   .badge.blue{background:rgba(59,130,246,.15);color:var(--accent2)}
   .badge.gold{background:rgba(234,179,8,.15);color:var(--gold)}
 
-  .card.eid-card{
-    border: 2px solid var(--gold);
-    background: linear-gradient(180deg, rgba(234,179,8,.18), rgba(234,179,8,.06));
-    box-shadow: 0 0 0 3px rgba(234,179,8,.15);
-    transition:.3s;
-  }
-  .card.eid-card h2.eid-title{
-    color: #111827;background: var(--gold);
-    border-bottom-color: rgba(0,0,0,.15);
-    padding:8px 12px;border-radius:6px;font-weight:700;font-size:14px;line-height:1.4;
-  }
-  .card.eid-card h2.eid-title::before{content:"⚠";color:#7c2d12;font-size:14px;}
-  .card.eid-card .field label{color:#facc15;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.4);}
-  .card.eid-card .field select,
-  .card.eid-card .field input{border-color:var(--gold);background:rgba(20,25,35,.75);color:#fef3c7;}
-  .card.eid-card .field select:focus,
-  .card.eid-card .field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(234,179,8,.35);}
-  .card.eid-card.eid-no{
-    border-color: var(--ok);
-    background: linear-gradient(180deg, rgba(34,197,94,.18), rgba(34,197,94,.06));
-    box-shadow: 0 0 0 3px rgba(34,197,94,.15);
-  }
-  .card.eid-card.eid-no h2.eid-title{background: var(--ok);color: #052e16;border-bottom-color: rgba(0,0,0,.15);}
-  .card.eid-card.eid-no h2.eid-title::before{color:#052e16;}
-  .card.eid-card.eid-no .field label{color:#86efac;}
-  .card.eid-card.eid-no .field select,
-  .card.eid-card.eid-no .field input{border-color:var(--ok);color:#dcfce7;}
-  .card.eid-card.eid-no .field select:focus,
-  .card.eid-card.eid-no .field input:focus{border-color:var(--ok);box-shadow:0 0 0 3px rgba(34,197,94,.35);}
+  .card.eid-card{border:2px solid var(--gold);
+    background:linear-gradient(180deg,rgba(234,179,8,.18),rgba(234,179,8,.06));
+    box-shadow:0 0 0 3px rgba(234,179,8,.15);transition:.3s}
+  .card.eid-card h2.eid-title{color:#111827;background:var(--gold);border-bottom-color:rgba(0,0,0,.15);
+    padding:8px 12px;border-radius:6px;font-weight:700;font-size:14px;line-height:1.4}
+  .card.eid-card h2.eid-title::before{content:"⚠";color:#7c2d12;font-size:14px}
+  .card.eid-card .field label{color:#facc15;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+  .card.eid-card .field select,.card.eid-card .field input{border-color:var(--gold);background:rgba(20,25,35,.75);color:#fef3c7}
+  .card.eid-card.eid-no{border-color:var(--ok);
+    background:linear-gradient(180deg,rgba(34,197,94,.18),rgba(34,197,94,.06));
+    box-shadow:0 0 0 3px rgba(34,197,94,.15)}
+  .card.eid-card.eid-no h2.eid-title{background:var(--ok);color:#052e16}
+  .card.eid-card.eid-no h2.eid-title::before{color:#052e16}
+  .card.eid-card.eid-no .field label{color:#86efac}
 
-  select.meat-select{font-weight:700;cursor:pointer;transition:.25s;}
-  select.meat-select.meat-no{background: linear-gradient(180deg, #2a1416, rgba(239,68,68,.35));border-color: var(--danger); color: #ffdcdc;}
-  select.meat-select.meat-no:hover{background:linear-gradient(180deg,#3a181c,rgba(239,68,68,.5));box-shadow:0 0 0 3px rgba(239,68,68,.2);}
-  select.meat-select.meat-yes{background: linear-gradient(180deg, #123322, rgba(34,197,94,.35));border-color: var(--ok); color: #d6ffe2;}
-  select.meat-select.meat-yes:hover{background:linear-gradient(180deg,#16422c,rgba(34,197,94,.5));box-shadow:0 0 0 3px rgba(34,197,94,.2);}
-  select.meat-select:focus{outline:none;}
-  select.meat-select.meat-no:focus{box-shadow:0 0 0 3px rgba(239,68,68,.3);}
-  select.meat-select.meat-yes:focus{box-shadow:0 0 0 3px rgba(34,197,94,.3);}
+  select.meat-select{font-weight:700;cursor:pointer;transition:.25s}
+  select.meat-select.meat-no{background:linear-gradient(180deg,#2a1416,rgba(239,68,68,.35));border-color:var(--danger);color:#ffdcdc}
+  select.meat-select.meat-yes{background:linear-gradient(180deg,#123322,rgba(34,197,94,.35));border-color:var(--ok);color:#d6ffe2}
 
   .expense-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
   .expense-table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
   .expense-table thead{background:var(--panel2)}
-  .expense-table th{padding:10px 12px;text-align:right;color:var(--accent);font-size:11px;
-    font-weight:700;letter-spacing:.3px;border-bottom:2px solid var(--line);white-space:nowrap}
+  .expense-table th{padding:10px 12px;text-align:right;color:var(--accent);font-size:11px;font-weight:700;
+    border-bottom:2px solid var(--line);white-space:nowrap}
+  html[dir="ltr"] .expense-table th{text-align:left}
   .expense-table td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
   .expense-table td:first-child{font-weight:600;color:var(--txt);white-space:nowrap;padding-right:14px}
-  .expense-table input,.expense-table select{
-    width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);
-    padding:7px 10px;border-radius:6px;font-size:13px;outline:none;transition:.2s;font-family:inherit;
-  }
-  .expense-table input:focus,.expense-table select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,193,164,.15);}
-  .expense-table select{font-weight:600;cursor:pointer}
+  html[dir="ltr"] .expense-table td:first-child{padding-right:8px;padding-left:14px}
+  .expense-table input,.expense-table select{width:100%;background:var(--panel2);border:1px solid var(--line);
+    color:var(--txt);padding:7px 10px;border-radius:6px;font-size:13px;outline:none;transition:.2s;font-family:inherit}
+  .expense-table input:focus,.expense-table select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,193,164,.15)}
   .expense-table tr.excluded{background:rgba(239,68,68,.06)}
-  .expense-table tr.excluded td:first-child{color:var(--danger);text-decoration:line-through;opacity:.75;}
-  .expense-table tr.excluded input,
-  .expense-table tr.excluded select{opacity:.7}
-  .expense-table tr:hover{background:rgba(34,193,164,.05)}
-  .expense-table tr.excluded:hover{background:rgba(239,68,68,.1)}
-  .bank-excluded{background:rgba(239,68,68,.15) !important;border-color:var(--danger) !important;color:#ffdcdc !important;}
-
-  .expense-table tr.group-header{background: linear-gradient(90deg, rgba(59,130,246,.15), transparent);}
-  .expense-table tr.group-header td{color:var(--accent2);font-weight:700;font-size:12px;
-    padding:8px 14px;border-bottom:1px dashed var(--line);letter-spacing:.3px;}
-  .birthday-cell{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .expense-table tr.excluded td:first-child{color:var(--danger);text-decoration:line-through;opacity:.75}
+  .bank-excluded{background:rgba(239,68,68,.15) !important;border-color:var(--danger) !important;color:#ffdcdc !important}
+  .expense-table tr.group-header{background:linear-gradient(90deg,rgba(59,130,246,.15),transparent)}
+  .expense-table tr.group-header td{color:var(--accent2);font-weight:700;font-size:12px;padding:8px 14px;border-bottom:1px dashed var(--line)}
+  .birthday-cell{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .birthday-cell select{max-width:110px;padding:5px 8px !important;font-size:12px !important;
-    background:rgba(234,179,8,.1) !important;border-color:var(--gold) !important;color:#facc15 !important;}
-  .birthday-cell select:focus{border-color:var(--gold) !important;box-shadow:0 0 0 3px rgba(234,179,8,.25) !important;}
+    background:rgba(234,179,8,.1) !important;border-color:var(--gold) !important;color:#facc15 !important}
   .expense-table tr.bday-row{background:rgba(234,179,8,.04)}
-  .expense-table tr.bday-row:hover{background:rgba(234,179,8,.09)}
 
   .expense-summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding:14px;
-    background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:13px;}
-  .exp-sum-item{display:flex;gap:8px;align-items:center;padding:6px 12px;
-    border-radius:8px;background:var(--panel);border:1px solid var(--line)}
+    background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:13px}
+  .exp-sum-item{display:flex;gap:8px;align-items:center;padding:6px 12px;border-radius:8px;
+    background:var(--panel);border:1px solid var(--line)}
   .exp-sum-item span{color:var(--muted)}
   .exp-sum-item b{color:var(--txt);font-family:monospace;font-size:14px}
   .exp-sum-item.green{border-color:rgba(34,197,94,.35)} .exp-sum-item.green b{color:var(--ok)}
   .exp-sum-item.red{border-color:rgba(239,68,68,.35)} .exp-sum-item.red b{color:var(--danger)}
-  .exp-sum-divider{width:100%;height:1px;background:var(--line);margin:6px 0;}
-  .exp-sum-title{width:100%;font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:4px;}
-  .bank-item{transition:.2s;min-width:150px;}
-  .bank-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.25);}
+  .exp-sum-divider{width:100%;height:1px;background:var(--line);margin:6px 0}
+  .exp-sum-title{width:100%;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:4px}
+  .bank-item{transition:.2s;min-width:150px}
+  .bank-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px var(--shadow)}
   .bank-item.bank-card{border-color:rgba(34,193,164,.4)} .bank-item.bank-card b{color:var(--accent)}
   .bank-item.bank-nbk{border-color:rgba(59,130,246,.4)} .bank-item.bank-nbk b{color:var(--accent2)}
   .bank-item.bank-ila{border-color:rgba(168,85,247,.4)} .bank-item.bank-ila b{color:#c084fc}
@@ -181,331 +161,769 @@
   .bank-item.bank-nbb{border-color:rgba(234,179,8,.4)} .bank-item.bank-nbb b{color:var(--gold)}
   .bank-item.bank-excl{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.08)} .bank-item.bank-excl b{color:var(--danger)}
 
-  .saving-card{
-    border: 2px solid var(--accent);
-    background: linear-gradient(180deg, rgba(34,193,164,.1), transparent);
-  }
+  .saving-card{border:2px solid var(--accent);background:linear-gradient(180deg,rgba(34,193,164,.1),transparent)}
   .saving-card h2{color:var(--accent)}
-  .saving-field{position:relative}
   .saving-field input{font-weight:700;color:var(--accent);text-align:center;font-size:16px}
-  .eid-type-inline{display:flex;gap:6px;margin-top:6px;}
-  .eid-type-inline select{
-    flex:1;background:rgba(234,179,8,.1);border:1px solid var(--gold);
-    color:#facc15;font-weight:700;padding:5px 8px;border-radius:6px;font-size:11px;cursor:pointer;
-  }
-  .eid-type-inline select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(234,179,8,.25)}
+  .eid-type-inline{display:flex;gap:6px;margin-top:6px}
+  .eid-type-inline select{flex:1;background:rgba(234,179,8,.1);border:1px solid var(--gold);
+    color:#facc15;font-weight:700;padding:5px 8px;border-radius:6px;font-size:11px;cursor:pointer}
 
-  .debts-month-card{
-    border: 2px solid var(--accent2);
-    background: linear-gradient(180deg, rgba(59,130,246,.08), transparent);
-  }
+  .debts-month-card{border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.08),transparent)}
   .debts-month-card h2{color:var(--accent2)}
-  .debts-month-card h2::before{content:"🤝";color:var(--accent2)}
   .debts-month-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
   .debts-month-table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
   .debts-month-table thead{background:var(--panel2)}
   .debts-month-table th{padding:9px 10px;text-align:right;color:var(--accent2);font-size:11px;
     font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
+  html[dir="ltr"] .debts-month-table th{text-align:left}
   .debts-month-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
-  .debts-month-table input{
-    width:110px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);
+  .debts-month-table input{width:110px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);
     padding:7px 10px;border-radius:6px;font-size:14px;font-weight:700;outline:none;
-    transition:.2s;font-family:monospace;text-align:center;
-  }
+    transition:.2s;font-family:monospace;text-align:center}
   .debts-month-table input:focus{box-shadow:0 0 0 3px rgba(34,193,164,.15)}
-  .debts-month-table input.input-debit{
-    border-color:var(--ok);color:var(--ok);background:rgba(34,197,94,.08);
-  }
-  .debts-month-table input.input-debit:focus{border-color:var(--ok);box-shadow:0 0 0 3px rgba(34,197,94,.25)}
-  .debts-month-table input.input-credit{
-    border-color:var(--danger);color:var(--danger);background:rgba(239,68,68,.08);
-  }
-  .debts-month-table input.input-credit:focus{border-color:var(--danger);box-shadow:0 0 0 3px rgba(239,68,68,.25)}
+  .debts-month-table input.input-debit{border-color:var(--ok);color:var(--ok);background:rgba(34,197,94,.08)}
+  .debts-month-table input.input-credit{border-color:var(--danger);color:var(--danger);background:rgba(239,68,68,.08)}
   .debts-month-table tr.row-debit{background:rgba(34,197,94,.04)}
   .debts-month-table tr.row-credit{background:rgba(239,68,68,.04)}
   .debts-month-table tr.row-installment{background:rgba(59,130,246,.04)}
   .debts-month-table .debt-name{font-weight:700;white-space:nowrap}
-  .debts-month-table tfoot td{background:rgba(59,130,246,.1);font-weight:700;
-    border-top:2px solid var(--accent2);padding:10px}
-  .debts-month-summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding:14px;
-    background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:13px;}
-
-  @media(max-width:768px){
-    .expense-table{min-width:520px;font-size:12px}
-    .expense-table th, .expense-table td{padding:5px 6px}
-    .expense-table td:first-child{font-size:11px;padding-right:8px}
-    .expense-table input,.expense-table select{padding:6px 8px;font-size:12px}
-    .bank-item{min-width:120px;font-size:11px}
-    .debts-month-table{min-width:600px}
-  }
-
-  .excluded-cell{color:var(--danger) !important;text-decoration:line-through;opacity:.65;font-size:12px}
-
-  .pyramid-wrap{display:flex;justify-content:center;align-items:center;
-    padding:20px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;margin-bottom:16px;}
-  .pyramid-svg{max-width:640px;width:100%;height:auto;}
-  .pyramid-svg text{font-family:"Segoe UI","Tahoma",sans-serif;pointer-events:none;user-select:none;}
-  .pyramid-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;}
-  @media(max-width:768px){ .pyramid-legend{grid-template-columns:repeat(2,1fr);} }
-  @media(max-width:500px){ .pyramid-legend{grid-template-columns:1fr;} }
-  .pyr-legend-item{display:flex;align-items:center;gap:10px;padding:10px 14px;
-    background:var(--panel2);border:1px solid var(--line);border-radius:10px;}
-  .pyr-color{width:16px;height:16px;border-radius:4px;flex-shrink:0;}
-  .pyr-legend-item .pyr-label{font-size:12px;color:var(--muted);flex:1;}
-  .pyr-legend-item .pyr-val{font-family:monospace;font-weight:700;color:var(--txt);font-size:14px;direction:ltr;}
+  .debts-month-table tfoot td{background:rgba(59,130,246,.1);font-weight:700;border-top:2px solid var(--accent2);padding:10px}
 
   .debts-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
   .debts-table{width:100%;border-collapse:collapse;font-size:12px;min-width:1600px}
   .debts-table thead{background:var(--panel2);position:sticky;top:0;z-index:2}
   .debts-table th{padding:8px 6px;text-align:center;color:var(--accent);font-size:10px;
     font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
-  .debts-table th:first-child,.debts-table td:first-child{text-align:right;padding-right:12px}
-  .debts-table td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}
+  .debts-table td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:center}
   .debts-table input{width:58px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);
-    padding:4px 3px;border-radius:4px;text-align:center;font-size:11px;font-family:monospace;
-    outline:none;transition:.15s}
-  .debts-table input:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(34,193,164,.2);background:#0a1319}
-  .debts-table .row-credit{background:rgba(239,68,68,.04)}
-  .debts-table .row-debit{background:rgba(34,197,94,.04)}
-  .debts-table .row-installment{background:rgba(59,130,246,.04)}
-  .debts-table .debt-name{font-weight:700;white-space:nowrap;color:var(--txt)}
-  .debts-table .paid-cell{font-family:monospace;font-weight:700;color:var(--accent);direction:ltr;font-size:12px}
-  .debts-table .remain-cell{font-family:monospace;font-weight:700;direction:ltr;font-size:12px}
+    padding:4px 3px;border-radius:4px;text-align:center;font-size:11px;font-family:monospace;outline:none}
+  .debts-table .debt-name{font-weight:700;white-space:nowrap}
+  .debts-table .paid-cell{font-family:monospace;font-weight:700;color:var(--accent);direction:ltr}
+  .debts-table .remain-cell{font-family:monospace;font-weight:700;direction:ltr}
   .debts-table .remain-cell.pos{color:var(--ok)}
   .debts-table .remain-cell.neg{color:var(--danger)}
-  .debts-table tfoot td{background:rgba(34,193,164,.08);font-weight:700;padding:8px 6px;
-    border-top:2px solid var(--accent)}
-  .debts-table tfoot td:first-child{color:var(--accent)}
+  .debts-table tfoot td{background:rgba(34,193,164,.08);font-weight:700;padding:8px 6px;border-top:2px solid var(--accent)}
+
+  .pyramid-wrap{display:flex;justify-content:center;align-items:center;padding:20px;
+    background:var(--panel2);border:1px solid var(--line);border-radius:12px;margin-bottom:16px}
+  .pyramid-svg{max-width:640px;width:100%;height:auto}
+  .pyramid-svg text{font-family:"Segoe UI","Tahoma",sans-serif;pointer-events:none;user-select:none}
+  .pyramid-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+  @media(max-width:768px){.pyramid-legend{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:500px){.pyramid-legend{grid-template-columns:1fr}}
+  .pyr-legend-item{display:flex;align-items:center;gap:10px;padding:10px 14px;
+    background:var(--panel2);border:1px solid var(--line);border-radius:10px}
+  .pyr-color{width:16px;height:16px;border-radius:4px;flex-shrink:0}
+  .pyr-legend-item .pyr-label{font-size:12px;color:var(--muted);flex:1}
+  .pyr-legend-item .pyr-val{font-family:monospace;font-weight:700;color:var(--txt);font-size:14px;direction:ltr}
+
+  @media(max-width:768px){
+    .expense-table{min-width:520px;font-size:12px}
+    .expense-table th,.expense-table td{padding:5px 6px}
+    .bank-item{min-width:120px;font-size:11px}
+    .debts-month-table{min-width:600px}
+  }
+
+  .excluded-cell{color:var(--danger) !important;text-decoration:line-through;opacity:.65;font-size:12px}
+
+  /* Copyright Footer (screen) */
+  .site-footer{
+    text-align:center;padding:24px 20px;margin-top:30px;
+    border-top:1px solid var(--line);
+    color:var(--muted);font-size:12px;
+  }
+  .site-footer strong{color:var(--accent);font-weight:700}
+  .site-footer .copyright{display:inline-flex;align-items:center;gap:6px}
+  .site-footer .logo-m{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:20px;height:20px;border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#fff;font-weight:900;font-size:11px;
+  }
+
+  /* Print-only header/footer */
+  .print-header, .print-footer { display: none; }
+
+  /* ============ Print Styles ============ */
+  @media print {
+    @page { size: A4; margin: 12mm 10mm; }
+    html, body { background:#fff !important; color:#000 !important; font-size:10pt !important; }
+    header, nav.tabs, .toolbar, .settings-bar, .btn, .icon-btn, .toast,
+    .monthPills, .site-footer, .modal, .eid-type-inline { display:none !important; }
+    main { padding:0 !important; max-width:100% !important; }
+    .view { display:none !important; }
+    .view.active { display:block !important; }
+    .card {
+      break-inside:avoid; page-break-inside:avoid;
+      border:1px solid #999 !important; background:#fff !important;
+      box-shadow:none !important; padding:10pt !important;
+      margin-bottom:8pt !important; border-radius:4pt;
+    }
+    .card h2 {
+      color:#000 !important; border-bottom:1.5px solid #333 !important;
+      padding-bottom:4pt; margin-bottom:8pt; font-size:12pt;
+    }
+    .card h2::before { color:#000 !important; }
+    .kpi {
+      background:#f5f5f5 !important; border:1px solid #999 !important;
+      padding:6pt !important; border-radius:3pt;
+    }
+    .kpi .lbl { color:#333 !important; font-size:8pt; }
+    .kpi .val { color:#000 !important; font-size:12pt; }
+    .kpi .val.pos { color:#166534 !important; }
+    .kpi .val.neg { color:#991b1b !important; }
+    .kpi .val.gold { color:#78350f !important; }
+    .kpi .val.acc { color:#0e7490 !important; }
+    table { font-size:8pt !important; }
+    th { background:#eee !important; color:#000 !important; padding:4pt !important; }
+    td { color:#000 !important; padding:4pt !important; border-color:#ccc !important; }
+    input, select, textarea {
+      border:none !important; background:transparent !important;
+      color:#000 !important; padding:0 !important; font-size:9pt !important;
+      font-weight:600 !important; -webkit-appearance:none; appearance:none;
+    }
+    input[type="number"] { text-align:center; }
+    .expense-table, .debts-month-table, .debts-table { min-width:100% !important; }
+    .debts-table { font-size:6.5pt !important; }
+    .debts-table input { width:auto; font-size:7pt !important; }
+    .pyramid-wrap { background:#fff !important; border:1px solid #ccc !important; }
+    .pyramid-svg text { fill:#000 !important; }
+    .muted, .notice-bhd, .notice-int { color:#444 !important; background:#f8f8f8 !important; border-color:#bbb !important; }
+
+    /* Show print header & footer */
+    .print-header, .print-footer { display:block !important; }
+    .print-header {
+      text-align:center; padding-bottom:8pt; margin-bottom:12pt;
+      border-bottom:3px double #000;
+    }
+    .print-header h1 { color:#000 !important; font-size:18pt; margin-bottom:4pt; }
+    .print-header .subtitle { color:#444; font-size:10pt; margin-bottom:2pt; }
+    .print-header .meta { color:#666; font-size:8pt; }
+    .print-header .logo-m {
+      display:inline-block; width:24pt; height:24pt; line-height:24pt;
+      border-radius:50%; background:#0e7490; color:#fff; font-weight:900;
+      font-size:12pt; text-align:center; margin:0 auto 6pt;
+    }
+    .print-footer {
+      text-align:center; padding-top:6pt; margin-top:12pt;
+      border-top:1px solid #999; color:#444; font-size:8pt;
+    }
+    .print-footer strong { color:#0e7490; }
+    .print-footer .sep { color:#999; margin:0 6pt; }
+  }
 </style>
 </head>
 <body>
 
+<!-- Print Header (hidden on screen) -->
+<div class="print-header">
+  <div class="logo-m">M</div>
+  <h1 id="phTitle">نظام إدارة رأس المال</h1>
+  <div class="subtitle" id="phSubtitle">Capital Manager — تقرير مالي</div>
+  <div class="meta" id="phMeta">—</div>
+</div>
+
 <header>
-  <h1><span>💰</span> نظام إدارة رأس المال</h1>
+  <h1><span>💰</span> <span id="appTitle">نظام إدارة رأس المال</span></h1>
   <div class="toolbar">
-    <button class="btn" onclick="exportData()">📤 تصدير</button>
-    <button class="btn" onclick="document.getElementById('importFile').click()">📥 استيراد</button>
+    <div class="settings-bar">
+      <button onclick="toggleLang()" id="langBtn" title="Language">🌐 EN</button>
+      <button onclick="toggleTheme()" id="themeBtn" title="Theme">🌙</button>
+      <button onclick="changeFontSize(-1)" title="Smaller">A−</button>
+      <button onclick="changeFontSize(1)" title="Larger">A+</button>
+      <button onclick="printPage()" id="printBtn" title="Print">🖨️</button>
+    </div>
+    <button class="btn" onclick="exportData()" id="btnExport">📤 تصدير</button>
+    <button class="btn" onclick="document.getElementById('importFile').click()" id="btnImport">📥 استيراد</button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
-    <button class="btn danger" onclick="resetAll()">🗑 تصفير</button>
+    <button class="btn danger" onclick="resetAll()" id="btnReset">🗑 تصفير</button>
   </div>
 </header>
 
 <nav class="tabs">
-  <button data-view="dashboard" class="active">📊 اللوحة الرئيسية</button>
-  <button data-view="month">📅 إدخال الشهور</button>
-  <button data-view="pyramid">🔺 هرم الأمان المالي</button>
-  <button data-view="debts">🤝 السلف والديون</button>
-  <button data-view="annual">📈 الملخص السنوي</button>
+  <button data-view="dashboard" class="active" data-i18n="t_dash">📊 اللوحة الرئيسية</button>
+  <button data-view="month" data-i18n="t_month">📅 إدخال الشهور</button>
+  <button data-view="pyramid" data-i18n="t_pyr">🔺 هرم الأمان المالي</button>
+  <button data-view="debts" data-i18n="t_debts">🤝 السلف والديون</button>
+  <button data-view="annual" data-i18n="t_annual">📈 الملخص السنوي</button>
 </nav>
 
-<main>
+<main id="mainContent">
 
 <section id="dashboard" class="view active">
-  <div class="card"><h2>الملخص السنوي (12 شهر)</h2><div class="grid g4" id="dashKpis"></div></div>
-  <div class="card"><h2>توزيع الادخار السنوي</h2><div class="grid g4" id="dashDist"></div></div>
-  <div class="card"><h2>ملخص الديون والأقساط</h2><div class="grid g4" id="dashDebts"></div></div>
-  <div class="card"><h2>مقارنة الشهور</h2><div style="overflow-x:auto"><table id="dashTable"></table></div></div>
+  <div class="card"><h2 id="dashTitle1"></h2><div class="grid g4" id="dashKpis"></div></div>
+  <div class="card"><h2 id="dashTitle2"></h2><div class="grid g4" id="dashDist"></div></div>
+  <div class="card"><h2 id="dashTitle3"></h2><div class="grid g4" id="dashDebts"></div></div>
+  <div class="card"><h2 id="dashTitle4"></h2><div style="overflow-x:auto"><table id="dashTable"></table></div></div>
 </section>
 
 <section id="month" class="view">
   <div class="monthPills" id="monthPills"></div>
+  <div class="notice-bhd" id="noticeBhd"></div>
 
-  <div class="notice-bhd">💵 جميع المبالغ في هذه الصفحة بالدينار البحريني (د.ب)</div>
-
-  <div class="card" style="border-color:#22c1a455">
-    <h2 style="color:var(--accent)">📅 متى تم تعديل هذا الشهر؟</h2>
+  <div class="card" style="border-color:var(--accent)">
+    <h2 style="color:var(--accent)" id="dateTitle"></h2>
     <div class="grid g3">
-      <div class="field">
-        <label>📌 التاريخ اليدوي (يُحفظ فوراً)</label>
-        <input type="date" id="monthDatePicker" onchange="setMonthDate(this.value)" oninput="setMonthDate(this.value)">
-      </div>
-      <div class="field">
-        <label>⏰ الوقت (اختياري)</label>
-        <input type="time" id="monthTimePicker" onchange="setMonthTime(this.value)" oninput="setMonthTime(this.value)">
-      </div>
-      <div class="field">
-        <label>🔄 آخر تعديل تلقائي (للقراءة فقط)</label>
-        <input type="text" id="lastModifiedDisplay" readonly>
-      </div>
+      <div class="field"><label id="lblDate"></label><input type="date" id="monthDatePicker" oninput="setMonthDate(this.value)"></div>
+      <div class="field"><label id="lblTime"></label><input type="time" id="monthTimePicker" oninput="setMonthTime(this.value)"></div>
+      <div class="field"><label id="lblLastMod"></label><input type="text" id="lastModifiedDisplay" readonly></div>
     </div>
   </div>
 
   <div class="card">
-    <h2>الدخل — <span id="monthTitle" style="color:var(--gold)"></span> (د.ب)</h2>
+    <h2><span id="lblIncome"></span> — <span id="monthTitle" style="color:var(--gold)"></span></h2>
     <div class="grid g4" id="incomeFields"></div>
   </div>
 
   <div class="card eid-card">
-    <h2 class="eid-title">ركز اهني هل يوجد عيد في ذي الشهر  حق لثياب او العيادي</h2>
+    <h2 class="eid-title" id="eidTitle"></h2>
     <div class="grid g2">
       <div class="field">
-        <label>اختر الحالة</label>
+        <label id="lblEidState"></label>
         <select id="eidSelect" onchange="onEidChange(this.value)">
-          <option value="eid_money">عيادي+ عيادي عيالي</option>
-          <option value="clothes">ثياب العيد</option>
-          <option value="both">عيادي ، عيادي عيالي + ثياب العيد</option>
-          <option value="no">لا</option>
+          <option value="eid_money" data-i18n="eid_opt1">عيادي+ عيادي عيالي</option>
+          <option value="clothes" data-i18n="eid_opt2">ثياب العيد</option>
+          <option value="both" data-i18n="eid_opt3">عيادي ، عيادي عيالي + ثياب العيد</option>
+          <option value="no" data-i18n="eid_opt4">لا</option>
         </select>
       </div>
       <div class="field" id="eidAmountWrap" style="display:none">
-        <label>القيمة الإجمالية (هذا المبلغ لأغراض المرجعية فقط ولن يتم احتسابه)</label>
+        <label id="lblEidAmount"></label>
         <input type="number" id="eidAmountInput" value="0" oninput="upd('eidAmount', this.value)">
       </div>
     </div>
   </div>
 
   <div class="card">
-    <h2>💸 المصاريف (د.ب)</h2>
+    <h2 id="lblExpenses"></h2>
     <div class="expense-table-wrap">
       <table class="expense-table">
-        <thead>
-          <tr>
-            <th>البند</th>
-            <th>المبلغ (د.ب)</th>
-            <th>البنك / الجهة</th>
-            <th>ملاحظة</th>
-          </tr>
-        </thead>
+        <thead><tr>
+          <th id="thItem"></th><th id="thAmount"></th><th id="thBank"></th><th id="thNote"></th>
+        </tr></thead>
         <tbody id="expenseFields"></tbody>
       </table>
     </div>
     <div class="expense-summary" id="expenseSummary"></div>
   </div>
 
-  <!-- 🤝 حاوية السلف والديون لهذا الشهر -->
   <div class="card debts-month-card">
-    <h2>دفعات السلف والأقساط — <span id="debtsMonthTitle" style="color:var(--accent2)"></span></h2>
-    <p class="muted" style="margin-bottom:12px">
-      يتم التحديث التلقائي مع تبويب "🤝 السلف والديون". 
-      <span style="color:var(--ok)">🟢 المبالغ المستلمة (مدين)</span> تُضاف للدخل — 
-      <span style="color:var(--danger)">🔴 المبالغ المدفوعة (دائن/قسط)</span> تُخصم من المتبقي.
-    </p>
+    <h2 id="debtsMonthTitleWrap"><span id="lblDebtsMonth"></span> — <span id="debtsMonthTitle" style="color:var(--accent2)"></span></h2>
+    <p class="muted" style="margin-bottom:12px" id="debtsMonthHelp"></p>
     <div class="debts-month-wrap">
       <table class="debts-month-table">
-        <thead>
-          <tr>
-            <th>الاسم</th>
-            <th>النوع</th>
-            <th>الكلي</th>
-            <th>المتبقي قبل الشهر</th>
-            <th>هذا الشهر</th>
-            <th>المتبقي بعده</th>
-            <th>ملاحظة</th>
-          </tr>
-        </thead>
+        <thead><tr>
+          <th id="thDebtName"></th><th id="thDebtType"></th><th id="thDebtTotal"></th>
+          <th id="thDebtRemBefore"></th><th id="thDebtThisMonth"></th>
+          <th id="thDebtRemAfter"></th><th id="thDebtNote"></th>
+        </tr></thead>
         <tbody id="debtsMonthBody"></tbody>
         <tfoot id="debtsMonthFoot"></tfoot>
       </table>
     </div>
-    <div class="debts-month-summary" id="debtsMonthSummary"></div>
+    <div class="expense-summary" id="debtsMonthSummary"></div>
   </div>
 
   <div class="card saving-card">
-    <h2>💰 مبالغ الادخار (د.ب)</h2>
-    <div class="notice-int">🔢 الأرقام هنا بالوحدات الصحيحة (1، 2، 3 ...) — لا تُقبل الكسور العشرية</div>
+    <h2 id="lblSavings"></h2>
+    <div class="notice-int" id="savingsHint"></div>
     <div class="grid g3" id="savingFields"></div>
   </div>
 
-  <div class="card"><h2>النتيجة الشهرية</h2><div class="grid g4" id="monthResults"></div></div>
+  <div class="card"><h2 id="lblMonthResult"></h2><div class="grid g4" id="monthResults"></div></div>
 
   <div class="card">
-    <h2>ملاحظات على الشهر</h2>
+    <h2 id="lblMonthNotes"></h2>
     <div class="field">
-      <textarea id="monthNotes" rows="4" placeholder="اكتب أي ملاحظات عامة لهذا الشهر..."
-        oninput="updateMonthNotes(this.value)"></textarea>
+      <textarea id="monthNotes" rows="4" oninput="updateMonthNotes(this.value)"></textarea>
     </div>
   </div>
 </section>
 
 <section id="pyramid" class="view">
   <div class="card">
-    <h2>🔺 هرم الأمان المالي</h2>
-    <p class="muted" style="margin-bottom:14px">
-      ترتيب الأولويات المالية من القاعدة (الأساس) إلى القمة (النمو). المبالغ مجمّعة من 12 شهر.
-    </p>
+    <h2 id="lblPyrTitle"></h2>
+    <p class="muted" style="margin-bottom:14px" id="lblPyrDesc"></p>
     <div class="pyramid-wrap">
       <svg class="pyramid-svg" viewBox="0 0 500 460" xmlns="http://www.w3.org/2000/svg" id="pyramidSvg"></svg>
     </div>
     <div class="pyramid-legend" id="pyramidLegend"></div>
   </div>
   <div class="card">
-    <h2>تفصيل الهرم</h2>
+    <h2 id="lblPyrDetail"></h2>
     <div style="overflow-x:auto"><table id="pyramidTable"></table></div>
   </div>
 </section>
 
 <section id="debts" class="view">
-  <div class="card">
-    <h2>📊 ملخص الديون والأقساط</h2>
-    <div class="grid g4" id="debtsSummary"></div>
-  </div>
+  <div class="card"><h2 id="lblDebtsSummary"></h2><div class="grid g4" id="debtsSummary"></div></div>
 
   <div class="card">
-    <h2>➕ إضافة دين / سلفة / قسط</h2>
+    <h2 id="lblAddDebt"></h2>
     <div class="grid g4">
-      <div class="field"><label>الاسم</label><input id="d_name" placeholder="اسم الشخص أو الجهة"></div>
-      <div class="field"><label>النوع</label>
+      <div class="field"><label id="lblDebtName"></label><input id="d_name"></div>
+      <div class="field"><label id="lblDebtType"></label>
         <select id="d_type" onchange="onDebtTypeChange(this.value)">
-          <option value="credit">🔴 دائن (أنا آخذ سلفة — أدفع)</option>
-          <option value="debit">🟢 مدين (ناس آخذين مني — أستلم)</option>
-          <option value="installment">🏦 قسط (بنك/فيزا — أدفع)</option>
+          <option value="credit" data-i18n="dbt_credit">🔴 دائن (أنا آخذ سلفة — أدفع)</option>
+          <option value="debit" data-i18n="dbt_debit">🟢 مدين (ناس آخذين مني — أستلم)</option>
+          <option value="installment" data-i18n="dbt_inst">🏦 قسط (بنك/فيزا — أدفع)</option>
         </select>
       </div>
       <div class="field" id="d_categoryWrap" style="display:none">
-        <label>فئة القسط</label>
+        <label id="lblDebtCat"></label>
         <select id="d_category">
-          <option value="فيزا">بطاقة فيزا</option>
-          <option value="بنك">بنك</option>
-          <option value="متنوع">متنوع</option>
+          <option value="فيزا" data-i18n="dbt_visa">بطاقة فيزا</option>
+          <option value="بنك" data-i18n="dbt_bank">بنك</option>
+          <option value="متنوع" data-i18n="dbt_misc">متنوع</option>
         </select>
       </div>
-      <div class="field"><label>المبلغ الكلي (د.ب)</label><input id="d_total" type="number" value="0" min="0"></div>
-      <div class="field"><label>مدفوع سابقاً (قبل هذه السنة) (د.ب)</label><input id="d_paidBefore" type="number" value="0" min="0"></div>
-      <div class="field"><label>تاريخ البداية</label><input id="d_start" type="date"></div>
-      <div class="field"><label>تاريخ الانتهاء</label><input id="d_end" type="date"></div>
-      <div class="field"><label>ملاحظات</label><input id="d_notes"></div>
-      <div class="field"><label>&nbsp;</label><button class="btn primary" onclick="addDebt()">➕ إضافة</button></div>
+      <div class="field"><label id="lblDebtTotal"></label><input id="d_total" type="number" value="0" min="0"></div>
+      <div class="field"><label id="lblDebtPaidBefore"></label><input id="d_paidBefore" type="number" value="0" min="0"></div>
+      <div class="field"><label id="lblDebtStart"></label><input id="d_start" type="date"></div>
+      <div class="field"><label id="lblDebtEnd"></label><input id="d_end" type="date"></div>
+      <div class="field"><label id="lblDebtNotes"></label><input id="d_notes"></div>
+      <div class="field"><label>&nbsp;</label><button class="btn primary" onclick="addDebt()" id="btnAddDebt"></button></div>
     </div>
   </div>
 
   <div class="card">
-    <h2>📋 جدول الديون والأقساط — عرض 12 شهر</h2>
-    <p class="muted" style="margin-bottom:12px">
-      نظرة شاملة على كل الدفعات. للتعديل السريع لشهر محدد، استخدم تبويب "📅 إدخال الشهور".
-    </p>
+    <h2 id="lblDebtsTable"></h2>
+    <p class="muted" style="margin-bottom:12px" id="lblDebtsTableHint"></p>
     <div class="debts-table-wrap"><table class="debts-table" id="debtsTable"></table></div>
   </div>
 </section>
 
 <section id="annual" class="view">
-  <div class="card"><h2>الملخص السنوي التفصيلي (د.ب)</h2><div style="overflow-x:auto"><table id="annualTable"></table></div></div>
+  <div class="card"><h2 id="lblAnnualTitle"></h2><div style="overflow-x:auto"><table id="annualTable"></table></div></div>
 </section>
 
 </main>
 
+<footer class="site-footer">
+  <div class="copyright">
+    <span class="logo-m">M</span>
+    <span>© 2025 <strong>Muharraqi</strong> — All Rights Reserved</span>
+  </div>
+  <div style="margin-top:4px" id="footerLocalized"></div>
+</footer>
+
+<!-- Print Footer (hidden on screen) -->
+<div class="print-footer">
+  <div><strong>Muharraqi</strong> — نظام إدارة رأس المال / Capital Manager</div>
+  <div style="margin-top:3pt">© 2025 Muharraqi. All Rights Reserved.</div>
+  <div style="margin-top:3pt;font-size:7pt;color:#777" id="printFooterMeta"></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const MONTHS = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+/* ===================================================================
+   i18n Dictionary
+=================================================================== */
+const I18N = {
+  ar: {
+    app_title: "نظام إدارة رأس المال",
+    footer: "جميع الحقوق محفوظة لـ Muharraqi",
+    t_dash: "📊 اللوحة الرئيسية",
+    t_month: "📅 إدخال الشهور",
+    t_pyr: "🔺 هرم الأمان المالي",
+    t_debts: "🤝 السلف والديون",
+    t_annual: "📈 الملخص السنوي",
+    btn_export: "📤 تصدير", btn_import: "📥 استيراد", btn_reset: "🗑 تصفير",
+    // Dashboard
+    dash_title1: "الملخص السنوي (12 شهر)",
+    dash_title2: "توزيع الادخار السنوي",
+    dash_title3: "ملخص الديون والأقساط",
+    dash_title4: "مقارنة الشهور",
+    kpi_tot_inc: "إجمالي الدخل السنوي",
+    kpi_tot_exp: "إجمالي المصاريف السنوية",
+    kpi_tot_sav: "إجمالي الادخار",
+    kpi_tot_debtpay: "إجمالي دفعات الديون",
+    kpi_tot_debtrecv: "المستلم من مدينين",
+    kpi_tot_rem: "المتبقي السنوي",
+    kpi_net_debt: "صافي الديون (لي − عليّ)",
+    kpi_emergency: "🚨 طوارئ", kpi_invest: "📈 استثمار", kpi_assembly: "👥 جمعية", kpi_travel: "✈️ سفر",
+    kpi_recv_year: "💰 سأستلم هذه السنة",
+    kpi_pay_year: "💸 سأدفع هذه السنة",
+    kpi_net_year: "📊 صافي السنة",
+    kpi_net_rem: "📌 متبقي الكلي (لي − عليّ)",
+    th_month: "الشهر", th_income: "الدخل", th_debtpay: "دفعات ديون",
+    th_expenses: "المصاريف", th_saving: "الادخار", th_remain: "المتبقي",
+    th_lastmod: "آخر تعديل", th_status: "الحالة",
+    status_good: "جيد", status_bad: "عجز", status_empty: "فارغ",
+    // Month
+    notice_bhd: "💵 جميع المبالغ في هذه الصفحة بالدينار البحريني (د.ب)",
+    date_title: "📅 متى تم تعديل هذا الشهر؟",
+    lbl_date: "📌 التاريخ اليدوي (يُحفظ فوراً)",
+    lbl_time: "⏰ الوقت (اختياري)",
+    lbl_lastmod: "🔄 آخر تعديل تلقائي (للقراءة فقط)",
+    lbl_income: "الدخل",
+    eid_title: "ركز اهني هل يوجد عيد في ذي الشهر  حق لثياب او العيادي",
+    lbl_eid_state: "اختر الحالة",
+    eid_opt1: "عيادي+ عيادي عيالي",
+    eid_opt2: "ثياب العيد",
+    eid_opt3: "عيادي ، عيادي عيالي + ثياب العيد",
+    eid_opt4: "لا",
+    lbl_eid_amount: "القيمة الإجمالية (هذا المبلغ لأغراض المرجعية فقط ولن يتم احتسابه)",
+    lbl_expenses: "💸 المصاريف (د.ب)",
+    th_item: "البند", th_amount: "المبلغ (د.ب)", th_bank: "البنك / الجهة", th_note: "ملاحظة",
+    lbl_debts_month: "دفعات السلف والأقساط",
+    debts_month_help: "يتم التحديث التلقائي مع تبويب \"🤝 السلف والديون\". 🟢 المبالغ المستلمة (مدين) تُضاف للدخل — 🔴 المبالغ المدفوعة (دائن/قسط) تُخصم من المتبقي.",
+    th_debt_name: "الاسم", th_debt_type: "النوع", th_debt_total: "الكلي",
+    th_debt_rem_before: "المتبقي قبل الشهر", th_debt_this_month: "هذا الشهر",
+    th_debt_rem_after: "المتبقي بعده", th_debt_note: "ملاحظة",
+    lbl_savings: "💰 مبالغ الادخار (د.ب)",
+    savings_hint: "🔢 الأرقام هنا بالوحدات الصحيحة (1، 2، 3 ...) — لا تُقبل الكسور العشرية",
+    lbl_month_result: "النتيجة الشهرية",
+    lbl_month_notes: "ملاحظات على الشهر",
+    // Pyramid
+    pyr_title: "🔺 هرم الأمان المالي",
+    pyr_desc: "ترتيب الأولويات المالية من القاعدة (الأساس) إلى القمة (النمو). المبالغ مجمّعة من 12 شهر.",
+    pyr_detail: "تفصيل الهرم",
+    th_level: "المستوى", th_item_name: "البند", th_year_total: "المجموع السنوي (د.ب)", th_pct: "النسبة من الهرم",
+    th_total: "الإجمالي",
+    // Debts
+    debts_summary: "📊 ملخص الديون والأقساط",
+    add_debt: "➕ إضافة دين / سلفة / قسط",
+    lbl_debt_name: "الاسم", lbl_debt_type: "النوع", lbl_debt_cat: "فئة القسط",
+    lbl_debt_total: "المبلغ الكلي (د.ب)", lbl_debt_paidbefore: "مدفوع سابقاً (قبل هذه السنة) (د.ب)",
+    lbl_debt_start: "تاريخ البداية", lbl_debt_end: "تاريخ الانتهاء", lbl_debt_notes: "ملاحظات",
+    btn_add_debt: "➕ إضافة",
+    dbt_credit: "🔴 دائن (أنا آخذ سلفة — أدفع)",
+    dbt_debit: "🟢 مدين (ناس آخذين مني — أستلم)",
+    dbt_inst: "🏦 قسط (بنك/فيزا — أدفع)",
+    dbt_visa: "بطاقة فيزا", dbt_bank: "بنك", dbt_misc: "متنوع",
+    debts_table: "📋 جدول الديون والأقساط — عرض 12 شهر",
+    debts_table_hint: "نظرة شاملة على كل الدفعات. للتعديل السريع لشهر محدد، استخدم تبويب \"📅 إدخال الشهور\".",
+    lbl_annual: "الملخص السنوي التفصيلي (د.ب)",
+    // Debts KPIs
+    kpi_recv_year_d: "💰 سأستلم هذه السنة (مدينون)",
+    kpi_pay_year_d: "💸 سأدفع هذه السنة (دائن + أقساط)",
+    kpi_net_year_d: "📊 صافي السنة",
+    kpi_rem_to_me: "📌 متبقي لي (مدينون)",
+    kpi_rem_on_me: "📌 متبقي عليّ (دائن + أقساط)",
+    kpi_net_remaining: "⚖️ صافي المتبقي",
+    kpi_total_debt: "💵 إجمالي الديون الكلية",
+    kpi_count: "📋 عدد البنود",
+    // Month Results
+    mr_inc_core: "الدخل الأساسي (راتب + إضافي)",
+    mr_inc_debt: "💰 + مستلم من مدينين",
+    mr_inc_total: "= إجمالي الدخل الشهري",
+    mr_exp: "إجمالي المصاريف (المحتسبة)",
+    mr_exp_excl: "مصاريف مستثناة (غير محسوبة)",
+    mr_saving: "الادخار المباشر",
+    mr_debtpay: "💸 دفعات الديون (دائن + قسط)",
+    mr_remaining: "المتبقي",
+    mr_eid_ref: "قيمة العيد (مرجعية فقط)",
+    // Debts Month Section
+    dms_recv: "💰 سأستلم هذا الشهر (مدين) → يُضاف للدخل",
+    dms_pay: "💸 سأدفع هذا الشهر (دائن + قسط) → يُخصم",
+    dms_net: "📊 صافي الشهر",
+    dms_remaining: "📌 متبقي علىّ بعد كل الدفعات",
+    dms_empty: "لا توجد سلف أو ديون بعد — أضف من تبويب \"🤝 السلف والديون\"",
+    dms_total: "الإجمالي",
+    // Toast
+    saved_date: "✅ تم حفظ التاريخ: ",
+    saved_time: "✅ تم حفظ الوقت",
+    exported: "📤 تم التصدير",
+    added: "✅ تمت الإضافة",
+    need_name_total: "⚠️ أدخل الاسم والمبلغ",
+    paid_gt_total: "⚠️ المدفوع سابقاً أكبر من الكلي!",
+    confirm_delete: "تأكيد الحذف؟",
+    confirm_reset: "⚠️ سيتم حذف كل البيانات. متأكد؟",
+    invalid_file: "ملف غير صالح",
+    // Months
+    months: ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"],
+    // Print
+    print_title: "نظام إدارة رأس المال",
+    print_subtitle: "Capital Manager — تقرير مالي",
+    print_meta: "تم الإنشاء في",
+    // Field labels
+    f_salary: "الراتب الشهري (د.ب)",
+    f_costOfLiving: "غلاء المعيشة (د.ب)",
+    f_housing: "علاوة إسكان (د.ب)",
+    f_charity: "مساعدات خيرية (د.ب)",
+    f_freelance: "مدخول أعمال حرة (د.ب)",
+    f_meat_support: "دعم اللحوم (كل 3 أشهر)",
+    f_meat_no: "لا — لا ما بتنزل ذي الشهر",
+    f_meat_yes: "نعم — بتنزل ذي الشهر",
+    f_meat_amount: "قيمة دعم اللحوم (د.ب)",
+    // Expense labels
+    e_wifeSalary: "راتب الزوجة", e_familyExpenses: "مصروف العائلة",
+    e_rent: "إيجار الشقة/المنزل", e_houseMaintenance: "ماجلة البيت",
+    e_internet: "الإنترنت والهاتف", e_electricity: "الكهرباء والماء",
+    e_misc: "مصروفات أخرى", e_treatment: "العلاج",
+    e_visaCard1: "بطاقة الفيزا ١", e_visaCard2: "بطاقة الفيزا ٢", e_visaCard3: "بطاقة الفيزا ٣",
+    e_fuel: "البترول", e_carCleaning: "عامل التنظيف",
+    e_carRepair1: "تصليح السيارة ١", e_carRepair2: "تصليح السيارة ٢",
+    e_homeRepair1: "تعديل/تصليح المنزل ١", e_homeRepair2: "تعديل/تصليح المنزل ٢",
+    e_birthday: "عيد ميلاد",
+    e_kids_group: "🎒 احتياجات الأطفال",
+    e_kidsSchool: "↳ المدرسة", e_kidsClothes: "↳ الملابس", e_kidsEid: "↳ العيد",
+    e_privateSchool: "مدرسة خاصة", e_kindergarten: "روضة", e_university: "جامعة",
+    e_transport: "مواصلات", e_tutoring: "دروس تقوية", e_humanitarianAid: "🤲 مساعدات انسانية",
+    bd_none: "— لا أحد —", bd_wife: "زوجة", bd_husband: "الزوج", bd_kids: "العيال",
+    // Saving labels
+    s_assembly: "👥 جمعية (د.ب)",
+    s_investment: "📈 الاستثمار (د.ب)",
+    s_eidMoneySaving: "🎉 عيادي العيد (د.ب)",
+    s_insuranceSaving: "🛡️ ادخار ( تأمين و تسجيل + ثياب العيد + الروضة ) (د.ب)",
+    s_travelSaving: "✈️ ادخار للسفر (د.ب)",
+    s_emergencyFund: "🚨 مبلغ الطوارئ (د.ب)",
+    s_obligationsSaving: "📋 التزامات (د.ب)",
+    eid_fitar: "🎉 عيد الفطر", eid_adha: "🐑 عيد الأضحى",
+    // Pyramid levels
+    p_emergencyFund: "مبلغ الطوارئ", p_eidMoneySaving: "عيادي العيد",
+    p_insuranceSaving: "تأمين وتسجيل + العيد + الروضة", p_assembly: "جمعية",
+    p_obligationsSaving: "التزامات", p_travelSaving: "ادخار للسفر", p_investment: "الاستثمار",
+    // Expenses summary
+    es_total: "الإجمالي الكلي", es_counted: "✅ المحتسب", es_excluded: "⛔ المستثنى",
+    es_by_bank: "🏦 الإجمالي حسب البنك",
+    // Debts types
+    dt_credit: "دائن (أدفع)", dt_debit: "مدين (أستلم)", dt_inst: "قسط (أدفع)",
+    dt_credit_label: "دائن", dt_debit_label: "مدين", dt_inst_label: "قسط",
+  },
+  en: {
+    app_title: "Capital Manager",
+    footer: "All rights reserved to Muharraqi",
+    t_dash: "📊 Dashboard",
+    t_month: "📅 Monthly Entry",
+    t_pyr: "🔺 Financial Safety Pyramid",
+    t_debts: "🤝 Debts & Loans",
+    t_annual: "📈 Annual Summary",
+    btn_export: "📤 Export", btn_import: "📥 Import", btn_reset: "🗑 Reset",
+    dash_title1: "Annual Summary (12 Months)",
+    dash_title2: "Annual Savings Distribution",
+    dash_title3: "Debts & Installments Summary",
+    dash_title4: "Months Comparison",
+    kpi_tot_inc: "Total Annual Income",
+    kpi_tot_exp: "Total Annual Expenses",
+    kpi_tot_sav: "Total Savings",
+    kpi_tot_debtpay: "Total Debt Payments",
+    kpi_tot_debtrecv: "Received from Debtors",
+    kpi_tot_rem: "Annual Remaining",
+    kpi_net_debt: "Net Debts (Mine − Owed)",
+    kpi_emergency: "🚨 Emergency", kpi_invest: "📈 Investment", kpi_assembly: "👥 Assembly", kpi_travel: "✈️ Travel",
+    kpi_recv_year: "💰 To Receive This Year",
+    kpi_pay_year: "💸 To Pay This Year",
+    kpi_net_year: "📊 Net Year",
+    kpi_net_rem: "📌 Total Remaining (Mine − Owed)",
+    th_month: "Month", th_income: "Income", th_debtpay: "Debt Payments",
+    th_expenses: "Expenses", th_saving: "Savings", th_remain: "Remaining",
+    th_lastmod: "Last Modified", th_status: "Status",
+    status_good: "Good", status_bad: "Deficit", status_empty: "Empty",
+    notice_bhd: "💵 All amounts in this page are in Bahraini Dinar (BHD)",
+    date_title: "📅 When was this month modified?",
+    lbl_date: "📌 Manual Date (saved instantly)",
+    lbl_time: "⏰ Time (optional)",
+    lbl_lastmod: "🔄 Auto last modified (read-only)",
+    lbl_income: "Income",
+    eid_title: "Focus here — Is there an Eid this month for clothes or gifts?",
+    lbl_eid_state: "Choose state",
+    eid_opt1: "Eidi + Kids Eidi",
+    eid_opt2: "Eid Clothes",
+    eid_opt3: "Eidi, Kids Eidi + Eid Clothes",
+    eid_opt4: "No",
+    lbl_eid_amount: "Total value (this amount is for reference only and will not be calculated)",
+    lbl_expenses: "💸 Expenses (BHD)",
+    th_item: "Item", th_amount: "Amount (BHD)", th_bank: "Bank / Source", th_note: "Note",
+    lbl_debts_month: "Debt & Installment Payments",
+    debts_month_help: "Auto-synced with \"🤝 Debts & Loans\" tab. 🟢 Received (debit) adds to income — 🔴 Paid (credit/installment) deducts from remaining.",
+    th_debt_name: "Name", th_debt_type: "Type", th_debt_total: "Total",
+    th_debt_rem_before: "Remaining Before", th_debt_this_month: "This Month",
+    th_debt_rem_after: "Remaining After", th_debt_note: "Note",
+    lbl_savings: "💰 Savings Amounts (BHD)",
+    savings_hint: "🔢 Numbers here are whole units (1, 2, 3 ...) — decimals not accepted",
+    lbl_month_result: "Monthly Result",
+    lbl_month_notes: "Month Notes",
+    pyr_title: "🔺 Financial Safety Pyramid",
+    pyr_desc: "Financial priorities from base (foundation) to top (growth). Amounts aggregated over 12 months.",
+    pyr_detail: "Pyramid Details",
+    th_level: "Level", th_item_name: "Item", th_year_total: "Annual Total (BHD)", th_pct: "% of Pyramid",
+    th_total: "Total",
+    debts_summary: "📊 Debts & Installments Summary",
+    add_debt: "➕ Add Debt / Loan / Installment",
+    lbl_debt_name: "Name", lbl_debt_type: "Type", lbl_debt_cat: "Installment Category",
+    lbl_debt_total: "Total Amount (BHD)", lbl_debt_paidbefore: "Paid Before (previous years) (BHD)",
+    lbl_debt_start: "Start Date", lbl_debt_end: "End Date", lbl_debt_notes: "Notes",
+    btn_add_debt: "➕ Add",
+    dbt_credit: "🔴 Creditor (I borrowed — I pay)",
+    dbt_debit: "🟢 Debtor (people borrowed from me — I receive)",
+    dbt_inst: "🏦 Installment (bank/visa — I pay)",
+    dbt_visa: "Visa Card", dbt_bank: "Bank", dbt_misc: "Misc",
+    debts_table: "📋 Debts & Installments Table — 12-Month View",
+    debts_table_hint: "Full view of all payments. For quick month editing, use the \"📅 Monthly Entry\" tab.",
+    lbl_annual: "Detailed Annual Summary (BHD)",
+    kpi_recv_year_d: "💰 To receive this year (debtors)",
+    kpi_pay_year_d: "💸 To pay this year (credit + installments)",
+    kpi_net_year_d: "📊 Net year",
+    kpi_rem_to_me: "📌 Remaining to me (debtors)",
+    kpi_rem_on_me: "📌 Remaining on me (credit + installments)",
+    kpi_net_remaining: "⚖️ Net remaining",
+    kpi_total_debt: "💵 Total debts",
+    kpi_count: "📋 Items count",
+    mr_inc_core: "Base income (salary + extra)",
+    mr_inc_debt: "💰 + Received from debtors",
+    mr_inc_total: "= Total monthly income",
+    mr_exp: "Total counted expenses",
+    mr_exp_excl: "Excluded expenses",
+    mr_saving: "Direct savings",
+    mr_debtpay: "💸 Debt payments (credit + installment)",
+    mr_remaining: "Remaining",
+    mr_eid_ref: "Eid amount (reference only)",
+    dms_recv: "💰 To receive this month (debit) → added to income",
+    dms_pay: "💸 To pay this month (credit + installment) → deducted",
+    dms_net: "📊 Month net",
+    dms_remaining: "📌 Remaining on me after all payments",
+    dms_empty: "No debts or loans yet — add from \"🤝 Debts & Loans\" tab",
+    dms_total: "Total",
+    saved_date: "✅ Date saved: ",
+    saved_time: "✅ Time saved",
+    exported: "📤 Exported",
+    added: "✅ Added",
+    need_name_total: "⚠️ Enter name and amount",
+    paid_gt_total: "⚠️ Paid before exceeds total!",
+    confirm_delete: "Confirm delete?",
+    confirm_reset: "⚠️ All data will be deleted. Are you sure?",
+    invalid_file: "Invalid file",
+    months: ["January","February","March","April","May","June","July","August","September","October","November","December"],
+    print_title: "Capital Manager",
+    print_subtitle: "Financial Report",
+    print_meta: "Generated on",
+    f_salary: "Monthly Salary (BHD)",
+    f_costOfLiving: "Cost of Living (BHD)",
+    f_housing: "Housing Allowance (BHD)",
+    f_charity: "Charity (BHD)",
+    f_freelance: "Freelance Income (BHD)",
+    f_meat_support: "Meat Support (every 3 months)",
+    f_meat_no: "No — not received this month",
+    f_meat_yes: "Yes — received this month",
+    f_meat_amount: "Meat Support Amount (BHD)",
+    e_wifeSalary: "Wife Salary", e_familyExpenses: "Family Expenses",
+    e_rent: "Rent", e_houseMaintenance: "House Maintenance",
+    e_internet: "Internet & Phone", e_electricity: "Electricity & Water",
+    e_misc: "Miscellaneous", e_treatment: "Treatment",
+    e_visaCard1: "Visa Card 1", e_visaCard2: "Visa Card 2", e_visaCard3: "Visa Card 3",
+    e_fuel: "Fuel", e_carCleaning: "Car Cleaning",
+    e_carRepair1: "Car Repair 1", e_carRepair2: "Car Repair 2",
+    e_homeRepair1: "Home Repair 1", e_homeRepair2: "Home Repair 2",
+    e_birthday: "Birthday",
+    e_kids_group: "🎒 Kids Needs",
+    e_kidsSchool: "↳ School", e_kidsClothes: "↳ Clothes", e_kidsEid: "↳ Eid",
+    e_privateSchool: "Private School", e_kindergarten: "Kindergarten", e_university: "University",
+    e_transport: "Transportation", e_tutoring: "Tutoring", e_humanitarianAid: "🤲 Humanitarian Aid",
+    bd_none: "— No one —", bd_wife: "Wife", bd_husband: "Husband", bd_kids: "Kids",
+    s_assembly: "👥 Assembly (BHD)",
+    s_investment: "📈 Investment (BHD)",
+    s_eidMoneySaving: "🎉 Eid Money (BHD)",
+    s_insuranceSaving: "🛡️ Savings (Insurance + Registration + Eid Clothes + Kindergarten) (BHD)",
+    s_travelSaving: "✈️ Travel Savings (BHD)",
+    s_emergencyFund: "🚨 Emergency Fund (BHD)",
+    s_obligationsSaving: "📋 Obligations (BHD)",
+    eid_fitar: "🎉 Eid Al-Fitr", eid_adha: "🐑 Eid Al-Adha",
+    p_emergencyFund: "Emergency Fund", p_eidMoneySaving: "Eid Money",
+    p_insuranceSaving: "Insurance + Registration + Eid + KG", p_assembly: "Assembly",
+    p_obligationsSaving: "Obligations", p_travelSaving: "Travel Savings", p_investment: "Investment",
+    es_total: "Grand Total", es_counted: "✅ Counted", es_excluded: "⛔ Excluded",
+    es_by_bank: "🏦 Total by Bank",
+    dt_credit: "Credit (I pay)", dt_debit: "Debit (I receive)", dt_inst: "Installment (I pay)",
+    dt_credit_label: "Credit", dt_debit_label: "Debit", dt_inst_label: "Installment",
+  }
+};
+
+/* ===================================================================
+   Global state
+=================================================================== */
 const BANKS = ["بطاقة صراف الالي","NBK","ILA","BBK","MEEM","NBB","غير محسوب ذي الشهر"];
 const EXCLUDED_BANK = "غير محسوب ذي الشهر";
+const BANKS_EN = ["ATM Card","NBK","ILA","BBK","MEEM","NBB","Not Counted"];
+const EXCLUDED_BANK_EN = "Not Counted";
 
+let LANG = localStorage.getItem('cm_lang') || 'ar';
+let THEME = localStorage.getItem('cm_theme') || 'dark';
+let FONT_SCALE = parseFloat(localStorage.getItem('cm_font') || '1');
+
+const t = key => (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key;
+const getMonths = () => I18N[LANG].months;
+const bankLabel = b => LANG === 'en' ? (BANKS_EN[BANKS.indexOf(b)] || b) : b;
+const isExcludedBank = bank => bank === EXCLUDED_BANK;
+
+/* ===================================================================
+   Income/Expense/Saving Field Definitions (functions so they're dynamic)
+=================================================================== */
+const getIncomeFields = () => [
+  ["salary", t('f_salary')],
+  ["costOfLiving", t('f_costOfLiving')],
+  ["housing", t('f_housing')],
+  ["charity", t('f_charity')],
+  ["freelance", t('f_freelance')],
+];
+
+const getExpenseRows = () => [
+  {type:"simple", key:"wifeSalary", label: t('e_wifeSalary')},
+  {type:"simple", key:"familyExpenses", label: t('e_familyExpenses')},
+  {type:"simple", key:"rent", label: t('e_rent')},
+  {type:"simple", key:"houseMaintenance", label: t('e_houseMaintenance')},
+  {type:"simple", key:"internet", label: t('e_internet')},
+  {type:"simple", key:"electricity", label: t('e_electricity')},
+  {type:"simple", key:"misc", label: t('e_misc')},
+  {type:"simple", key:"treatment", label: t('e_treatment')},
+  {type:"simple", key:"visaCard1", label: t('e_visaCard1')},
+  {type:"simple", key:"visaCard2", label: t('e_visaCard2')},
+  {type:"simple", key:"visaCard3", label: t('e_visaCard3')},
+  {type:"simple", key:"fuel", label: t('e_fuel')},
+  {type:"simple", key:"carCleaning", label: t('e_carCleaning')},
+  {type:"simple", key:"carRepair1", label: t('e_carRepair1')},
+  {type:"simple", key:"carRepair2", label: t('e_carRepair2')},
+  {type:"simple", key:"homeRepair1", label: t('e_homeRepair1')},
+  {type:"simple", key:"homeRepair2", label: t('e_homeRepair2')},
+  {type:"birthday", key:"birthday", label: t('e_birthday')},
+  {type:"group", label: t('e_kids_group')},
+  {type:"simple", key:"kidsSchool", label: t('e_kidsSchool')},
+  {type:"simple", key:"kidsClothes", label: t('e_kidsClothes')},
+  {type:"simple", key:"kidsEid", label: t('e_kidsEid')},
+  {type:"simple", key:"privateSchool", label: t('e_privateSchool')},
+  {type:"simple", key:"kindergarten", label: t('e_kindergarten')},
+  {type:"simple", key:"university", label: t('e_university')},
+  {type:"simple", key:"transport", label: t('e_transport')},
+  {type:"simple", key:"tutoring", label: t('e_tutoring')},
+  {type:"simple", key:"humanitarianAid", label: t('e_humanitarianAid')},
+];
+
+const getSavingFields = () => [
+  ["assembly", t('s_assembly')],
+  ["investment", t('s_investment')],
+  ["eidMoneySaving", t('s_eidMoneySaving'), "eidDropdown"],
+  ["insuranceSaving", t('s_insuranceSaving')],
+  ["travelSaving", t('s_travelSaving')],
+  ["emergencyFund", t('s_emergencyFund')],
+  ["obligationsSaving", t('s_obligationsSaving')],
+];
+
+const getPyramidLevels = () => [
+  { key:"emergencyFund",    label: t('p_emergencyFund'),    color:"#ef4444", subtitle:"🚨" },
+  { key:"eidMoneySaving",   label: t('p_eidMoneySaving'),   color:"#f97316", subtitle:"🎉" },
+  { key:"insuranceSaving",  label: t('p_insuranceSaving'),  color:"#eab308", subtitle:"🛡️" },
+  { key:"assembly",         label: t('p_assembly'),         color:"#a855f7", subtitle:"👥" },
+  { key:"obligationsSaving",label: t('p_obligationsSaving'),color:"#3b82f6", subtitle:"📋" },
+  { key:"travelSaving",     label: t('p_travelSaving'),     color:"#14b8a6", subtitle:"✈️" },
+  { key:"investment",       label: t('p_investment'),       color:"#22c55e", subtitle:"📈" },
+];
+
+/* ===================================================================
+   State & Storage
+=================================================================== */
 const EMPTY_MONTH = () => ({
-  salary:0, costOfLiving:0, housing:0,
-  hasMeatSupport:false, meat:0,
-  charity:0, freelance:0,
-  eidType:"no", eidAmount:0,
-  wifeSalary:0, familyExpenses:0,
-  rent:0, houseMaintenance:0, internet:0, electricity:0, misc:0, treatment:0,
-  visaCard1:0, visaCard2:0, visaCard3:0,
-  fuel:0, carCleaning:0,
-  carRepair1:0, carRepair2:0,
-  homeRepair1:0, homeRepair2:0,
+  salary:0, costOfLiving:0, housing:0, hasMeatSupport:false, meat:0,
+  charity:0, freelance:0, eidType:"no", eidAmount:0,
+  wifeSalary:0, familyExpenses:0, rent:0, houseMaintenance:0,
+  internet:0, electricity:0, misc:0, treatment:0,
+  visaCard1:0, visaCard2:0, visaCard3:0, fuel:0, carCleaning:0,
+  carRepair1:0, carRepair2:0, homeRepair1:0, homeRepair2:0,
   birthday:0, birthdayPerson:"none",
   kidsSchool:0, kidsClothes:0, kidsEid:0,
   privateSchool:0, kindergarten:0, university:0, transport:0, tutoring:0,
-  humanitarianAid:0,
-  expenseMeta:{},
+  humanitarianAid:0, expenseMeta:{},
   assembly:0, investment:0, eidMoneySaving:0, eidMoneyType:"fitar",
   insuranceSaving:0, travelSaving:0, emergencyFund:0, obligationsSaving:0,
   notes:"", customDate:"", customTime:"", lastModified:""
@@ -517,7 +935,7 @@ let state = {
   activeMonth: 0
 };
 
-const KEY = "capital_manager_v15";
+const KEY = "capital_manager_v16";
 function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 function load(){
   try{
@@ -540,9 +958,7 @@ function load(){
       });
       state.debts = (state.debts||[]).map(d => {
         if(!d.monthly) d.monthly = Array(12).fill(0);
-        else if(d.monthly.length < 12) {
-          while(d.monthly.length < 12) d.monthly.push(0);
-        }
+        else while(d.monthly.length < 12) d.monthly.push(0);
         if(d.paidBefore === undefined) d.paidBefore = 0;
         if(!d.category) d.category = "متنوع";
         return d;
@@ -552,91 +968,144 @@ function load(){
 }
 
 const fmt = n => (Number(n)||0).toLocaleString("en-US",{maximumFractionDigits:0});
-const money = n => fmt(n) + " د.ب";
+const money = n => fmt(n) + " " + (LANG==='ar'?'د.ب':'BHD');
 const fmt2 = n => (Number(n)||0).toLocaleString("en-US",{maximumFractionDigits:2});
-const money2 = n => fmt2(n) + " د.ب";
+const money2 = n => fmt2(n) + " " + (LANG==='ar'?'د.ب':'BHD');
 
 function toast(msg){
-  const t = document.getElementById("toast");
-  t.textContent = msg; t.classList.add("show");
-  clearTimeout(t._t); t._t = setTimeout(()=>t.classList.remove("show"),2000);
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.classList.add("show");
+  clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove("show"),2000);
 }
 
-/* ============ Field Definitions ============ */
-const INCOME_FIELDS = [
-  ["salary","الراتب الشهري (د.ب)"],
-  ["costOfLiving","غلاء المعيشة (د.ب)"],
-  ["housing","علاوة إسكان (د.ب)"],
-  ["charity","مساعدات خيرية (د.ب)"],
-  ["freelance","مدخول أعمال حرة (د.ب)"],
-];
-
-const EXPENSE_ROWS = [
-  {type:"simple", key:"wifeSalary", label:"راتب الزوجة"},
-  {type:"simple", key:"familyExpenses", label:"مصروف العائلة"},
-  {type:"simple", key:"rent", label:"إيجار الشقة/المنزل"},
-  {type:"simple", key:"houseMaintenance", label:"ماجلة البيت"},
-  {type:"simple", key:"internet", label:"الإنترنت والهاتف"},
-  {type:"simple", key:"electricity", label:"الكهرباء والماء"},
-  {type:"simple", key:"misc", label:"مصروفات أخرى"},
-  {type:"simple", key:"treatment", label:"العلاج"},
-  {type:"simple", key:"visaCard1", label:"بطاقة الفيزا ١"},
-  {type:"simple", key:"visaCard2", label:"بطاقة الفيزا ٢"},
-  {type:"simple", key:"visaCard3", label:"بطاقة الفيزا ٣"},
-  {type:"simple", key:"fuel", label:"البترول"},
-  {type:"simple", key:"carCleaning", label:"عامل التنظيف"},
-  {type:"simple", key:"carRepair1", label:"تصليح السيارة ١"},
-  {type:"simple", key:"carRepair2", label:"تصليح السيارة ٢"},
-  {type:"simple", key:"homeRepair1", label:"تعديل/تصليح المنزل ١"},
-  {type:"simple", key:"homeRepair2", label:"تعديل/تصليح المنزل ٢"},
-  {type:"birthday", key:"birthday", label:"عيد ميلاد"},
-  {type:"group", label:"🎒 احتياجات الأطفال"},
-  {type:"simple", key:"kidsSchool", label:"↳ المدرسة"},
-  {type:"simple", key:"kidsClothes", label:"↳ الملابس"},
-  {type:"simple", key:"kidsEid", label:"↳ العيد"},
-  {type:"simple", key:"privateSchool", label:"مدرسة خاصة"},
-  {type:"simple", key:"kindergarten", label:"روضة"},
-  {type:"simple", key:"university", label:"جامعة"},
-  {type:"simple", key:"transport", label:"مواصلات"},
-  {type:"simple", key:"tutoring", label:"دروس تقوية"},
-  {type:"simple", key:"humanitarianAid", label:"🤲 مساعدات انسانية"},
-];
-
-const SAVING_FIELDS = [
-  ["assembly",         "👥 جمعية (د.ب)"],
-  ["investment",       "📈 الاستثمار (د.ب)"],
-  ["eidMoneySaving",   "🎉 عيادي العيد (د.ب)", "eidDropdown"],
-  ["insuranceSaving",  "🛡️ ادخار ( تأمين و تسجيل + ثياب العيد + الروضة ) (د.ب)"],
-  ["travelSaving",     "✈️ ادخار للسفر (د.ب)"],
-  ["emergencyFund",    "🚨 مبلغ الطوارئ (د.ب)"],
-  ["obligationsSaving","📋 التزامات (د.ب)"],
-];
-
-const PYRAMID_LEVELS = [
-  { key:"emergencyFund",    label:"مبلغ الطوارئ",    color:"#ef4444", subtitle:"🚨" },
-  { key:"eidMoneySaving",   label:"عيادي العيد",     color:"#f97316", subtitle:"🎉" },
-  { key:"insuranceSaving",  label:"تأمين وتسجيل + العيد + الروضة", color:"#eab308", subtitle:"🛡️" },
-  { key:"assembly",         label:"جمعية",           color:"#a855f7", subtitle:"👥" },
-  { key:"obligationsSaving",label:"التزامات",         color:"#3b82f6", subtitle:"📋" },
-  { key:"travelSaving",     label:"ادخار للسفر",     color:"#14b8a6", subtitle:"✈️" },
-  { key:"investment",       label:"الاستثمار",       color:"#22c55e", subtitle:"📈" },
-];
-
-/* ============ Helpers ============ */
-function ensureMeta(m){
-  if(!m.expenseMeta) m.expenseMeta = {};
-  return m.expenseMeta;
+/* ===================================================================
+   Settings: Language / Theme / Font / Print
+=================================================================== */
+function applyLang(){
+  document.documentElement.lang = LANG;
+  document.documentElement.dir = LANG === 'ar' ? 'rtl' : 'ltr';
+  document.getElementById('langBtn').textContent = LANG === 'ar' ? '🌐 EN' : '🌐 عربي';
+  document.getElementById('appTitle').textContent = t('app_title');
+  document.getElementById('btnExport').textContent = t('btn_export');
+  document.getElementById('btnImport').textContent = t('btn_import');
+  document.getElementById('btnReset').textContent = t('btn_reset');
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if(I18N[LANG][k]) el.textContent = I18N[LANG][k];
+  });
+  document.getElementById('dashTitle1').textContent = t('dash_title1');
+  document.getElementById('dashTitle2').textContent = t('dash_title2');
+  document.getElementById('dashTitle3').textContent = t('dash_title3');
+  document.getElementById('dashTitle4').textContent = t('dash_title4');
+  document.getElementById('noticeBhd').textContent = t('notice_bhd');
+  document.getElementById('dateTitle').textContent = t('date_title');
+  document.getElementById('lblDate').textContent = t('lbl_date');
+  document.getElementById('lblTime').textContent = t('lbl_time');
+  document.getElementById('lblLastMod').textContent = t('lbl_lastmod');
+  document.getElementById('lblIncome').textContent = t('lbl_income');
+  document.getElementById('eidTitle').textContent = t('eid_title');
+  document.getElementById('lblEidState').textContent = t('lbl_eid_state');
+  document.getElementById('lblEidAmount').textContent = t('lbl_eid_amount');
+  document.getElementById('lblExpenses').textContent = t('lbl_expenses');
+  document.getElementById('thItem').textContent = t('th_item');
+  document.getElementById('thAmount').textContent = t('th_amount');
+  document.getElementById('thBank').textContent = t('th_bank');
+  document.getElementById('thNote').textContent = t('th_note');
+  document.getElementById('lblDebtsMonth').textContent = t('lbl_debts_month');
+  document.getElementById('debtsMonthHelp').textContent = t('debts_month_help');
+  document.getElementById('thDebtName').textContent = t('th_debt_name');
+  document.getElementById('thDebtType').textContent = t('th_debt_type');
+  document.getElementById('thDebtTotal').textContent = t('th_debt_total');
+  document.getElementById('thDebtRemBefore').textContent = t('th_debt_rem_before');
+  document.getElementById('thDebtThisMonth').textContent = t('th_debt_this_month');
+  document.getElementById('thDebtRemAfter').textContent = t('th_debt_rem_after');
+  document.getElementById('thDebtNote').textContent = t('th_debt_note');
+  document.getElementById('lblSavings').textContent = t('lbl_savings');
+  document.getElementById('savingsHint').textContent = t('savings_hint');
+  document.getElementById('lblMonthResult').textContent = t('lbl_month_result');
+  document.getElementById('lblMonthNotes').textContent = t('lbl_month_notes');
+  document.getElementById('lblPyrTitle').textContent = t('pyr_title');
+  document.getElementById('lblPyrDesc').textContent = t('pyr_desc');
+  document.getElementById('lblPyrDetail').textContent = t('pyr_detail');
+  document.getElementById('lblDebtsSummary').textContent = t('debts_summary');
+  document.getElementById('lblAddDebt').textContent = t('add_debt');
+  document.getElementById('lblDebtName').textContent = t('lbl_debt_name');
+  document.getElementById('lblDebtType').textContent = t('lbl_debt_type');
+  document.getElementById('lblDebtCat').textContent = t('lbl_debt_cat');
+  document.getElementById('lblDebtTotal').textContent = t('lbl_debt_total');
+  document.getElementById('lblDebtPaidBefore').textContent = t('lbl_debt_paidbefore');
+  document.getElementById('lblDebtStart').textContent = t('lbl_debt_start');
+  document.getElementById('lblDebtEnd').textContent = t('lbl_debt_end');
+  document.getElementById('lblDebtNotes').textContent = t('lbl_debt_notes');
+  document.getElementById('btnAddDebt').textContent = t('btn_add_debt');
+  document.getElementById('lblDebtsTable').textContent = t('debts_table');
+  document.getElementById('lblDebtsTableHint').textContent = t('debts_table_hint');
+  document.getElementById('lblAnnualTitle').textContent = t('lbl_annual');
+  document.getElementById('footerLocalized').textContent = t('footer');
+  document.getElementById('phTitle').textContent = t('print_title');
+  document.getElementById('phSubtitle').textContent = t('print_subtitle');
+  // Re-render dynamic parts
+  renderMonthPills();
+  renderMonth();
+  renderDashboard();
+  renderDebts();
+  renderPyramid();
 }
+
+function toggleLang(){
+  LANG = LANG === 'ar' ? 'en' : 'ar';
+  localStorage.setItem('cm_lang', LANG);
+  applyLang();
+  toast(LANG === 'ar' ? '✅ تم التبديل للعربية' : '✅ Switched to English');
+}
+
+function applyTheme(){
+  document.documentElement.dataset.theme = THEME;
+  document.getElementById('themeBtn').textContent = THEME === 'dark' ? '🌙' : '☀️';
+}
+function toggleTheme(){
+  THEME = THEME === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('cm_theme', THEME);
+  applyTheme();
+  toast(THEME === 'dark' ? (LANG==='ar'?'🌙 الوضع الليلي':'🌙 Dark mode') : (LANG==='ar'?'☀️ الوضع النهاري':'☀️ Light mode'));
+}
+
+function applyFontScale(){
+  document.getElementById('mainContent').style.zoom = FONT_SCALE;
+}
+function changeFontSize(delta){
+  FONT_SCALE = Math.max(0.75, Math.min(1.6, FONT_SCALE + delta * 0.1));
+  localStorage.setItem('cm_font', FONT_SCALE);
+  applyFontScale();
+  toast((LANG==='ar'?'🔠 حجم الخط: ':'🔠 Font size: ') + Math.round(FONT_SCALE*100) + '%');
+}
+
+function printPage(){
+  const now = new Date();
+  const dateStr = now.toLocaleDateString(LANG === 'ar' ? 'ar-BH' : 'en-GB', {
+    year:'numeric', month:'long', day:'numeric'
+  });
+  const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+  const activeTabName = document.querySelector('nav.tabs button.active').textContent.trim();
+  document.getElementById('phMeta').textContent = `${t('print_meta')}: ${dateStr} — ${timeStr}`;
+  document.getElementById('printFooterMeta').textContent = `${activeTabName} | ${dateStr} ${timeStr}`;
+  setTimeout(() => window.print(), 150);
+}
+
+/* ===================================================================
+   Helpers
+=================================================================== */
+function ensureMeta(m){ if(!m.expenseMeta) m.expenseMeta = {}; return m.expenseMeta; }
 function getMeta(m, key){
   const meta = ensureMeta(m);
   if(!meta[key]) meta[key] = { bank:"بطاقة صراف الالي", note:"" };
   return meta[key];
 }
-function isExcluded(m, key){
-  return getMeta(m, key).bank === EXCLUDED_BANK;
-}
+function isExcluded(m, key){ return getMeta(m, key).bank === EXCLUDED_BANK; }
 
-/* ============ Debt Helpers ============ */
+/* ===================================================================
+   Debt Helpers
+=================================================================== */
 function debtPaidThisYear(d){ return (d.monthly||[]).reduce((a,b)=>a+(+b||0),0); }
 function debtPaidTotal(d){ return (+d.paidBefore||0) + debtPaidThisYear(d); }
 function debtRemaining(d){ return Math.max(0, (+d.total||0) - debtPaidTotal(d)); }
@@ -645,29 +1114,25 @@ function debtRemainingBeforeMonth(d, monthIdx){
   for(let i=0; i<monthIdx; i++) paid += (+d.monthly[i] || 0);
   return Math.max(0, (+d.total||0) - paid);
 }
-function totalDebtReceipts(monthIdx){
-  return state.debts.filter(d=>d.type==="debit")
-    .reduce((s,d)=>s+(+d.monthly[monthIdx]||0), 0);
-}
-function totalDebtPayments(monthIdx){
-  return state.debts.filter(d=>d.type==="credit"||d.type==="installment")
-    .reduce((s,d)=>s+(+d.monthly[monthIdx]||0), 0);
-}
+function totalDebtReceipts(mi){ return state.debts.filter(d=>d.type==="debit").reduce((s,d)=>s+(+d.monthly[mi]||0), 0); }
+function totalDebtPayments(mi){ return state.debts.filter(d=>d.type==="credit"||d.type==="installment").reduce((s,d)=>s+(+d.monthly[mi]||0), 0); }
 
-/* ============ Income / Expenses ============ */
+/* ===================================================================
+   Calculations
+=================================================================== */
 function totalIncomeCore(m){
-  let sum = INCOME_FIELDS.reduce((s,[k])=>s+(+m[k]||0),0);
+  let sum = getIncomeFields().reduce((s,[k])=>s+(+m[k]||0),0);
   if(m.hasMeatSupport) sum += (+m.meat||0);
   return sum;
 }
-function totalIncome(m, monthIdx){
+function totalIncome(m, mi){
   let sum = totalIncomeCore(m);
-  if(monthIdx !== undefined) sum += totalDebtReceipts(monthIdx);
+  if(mi !== undefined) sum += totalDebtReceipts(mi);
   return sum;
 }
 function totalExpenses(m){
   let sum = 0;
-  EXPENSE_ROWS.forEach(row => {
+  getExpenseRows().forEach(row => {
     if(row.type === "group") return;
     if(!isExcluded(m, row.key)) sum += (+m[row.key]||0);
   });
@@ -675,7 +1140,7 @@ function totalExpenses(m){
 }
 function totalExcludedExpenses(m){
   let sum = 0;
-  EXPENSE_ROWS.forEach(row => {
+  getExpenseRows().forEach(row => {
     if(row.type === "group") return;
     if(isExcluded(m, row.key)) sum += (+m[row.key]||0);
   });
@@ -683,60 +1148,72 @@ function totalExcludedExpenses(m){
 }
 function totalExpensesRaw(m){
   let sum = 0;
-  EXPENSE_ROWS.forEach(row => {
+  getExpenseRows().forEach(row => {
     if(row.type === "group") return;
     sum += (+m[row.key]||0);
   });
   return sum;
 }
-function totalSavings(m){
-  return SAVING_FIELDS.reduce((s,[k])=>s+(+m[k]||0),0);
+function totalSavings(m){ return getSavingFields().reduce((s,[k])=>s+(+m[k]||0),0); }
+
+function debtTotals(){
+  const recv = state.debts.filter(d=>d.type==="debit").reduce((s,d)=>s+debtPaidThisYear(d), 0);
+  const pay = state.debts.filter(d=>d.type==="credit"||d.type==="installment").reduce((s,d)=>s+debtPaidThisYear(d), 0);
+  const remToMe = state.debts.filter(d=>d.type==="debit").reduce((s,d)=>s+debtRemaining(d), 0);
+  const remOnMe = state.debts.filter(d=>d.type==="credit"||d.type==="installment").reduce((s,d)=>s+debtRemaining(d), 0);
+  return {
+    receiveThisYear:recv, payThisYear:pay, netThisYear:recv-pay,
+    remainingToReceive:remToMe, remainingToPay:remOnMe, netRemaining:remToMe-remOnMe,
+    totalDebt: state.debts.reduce((s,d)=>s+(+d.total||0), 0),
+  };
 }
 
-/* ============ Dashboard ============ */
+function kpi(lbl,val,cls=""){ return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val ${cls}">${val}</div></div>`; }
+
+/* ===================================================================
+   Dashboard
+=================================================================== */
 function renderDashboard(){
-  let totIncome = 0, totExpense = 0, totSaving = 0, totDebtPay = 0, totDebtRecv = 0;
+  let totInc = 0, totExp = 0, totSav = 0, totPay = 0, totRecv = 0;
   state.months.forEach((m,i)=>{
-    totIncome += totalIncome(m, i);
-    totExpense += totalExpenses(m);
-    totSaving += totalSavings(m);
-    totDebtPay += totalDebtPayments(i);
-    totDebtRecv += totalDebtReceipts(i);
+    totInc += totalIncome(m, i);
+    totExp += totalExpenses(m);
+    totSav += totalSavings(m);
+    totPay += totalDebtPayments(i);
+    totRecv += totalDebtReceipts(i);
   });
-  const totRemain = totIncome - totExpense - totSaving - totDebtPay;
+  const totRem = totInc - totExp - totSav - totPay;
 
   document.getElementById("dashKpis").innerHTML = `
-    ${kpi("إجمالي الدخل السنوي", money(totIncome), "acc")}
-    ${kpi("إجمالي المصاريف السنوية", money(totExpense), "neg")}
-    ${kpi("إجمالي الادخار", money(totSaving), "gold")}
-    ${kpi("إجمالي دفعات الديون (خارج)", money(totDebtPay), "neg")}
-    ${kpi("المستلم من مدينين", money(totDebtRecv), "pos")}
-    ${kpi("المتبقي السنوي", money(totRemain), totRemain>=0?"pos":"neg")}
-    ${kpi("صافي الديون (لي − عليّ)", money(totDebtRecv - totDebtPay), (totDebtRecv - totDebtPay)>=0?"pos":"neg")}
+    ${kpi(t('kpi_tot_inc'), money(totInc), "acc")}
+    ${kpi(t('kpi_tot_exp'), money(totExp), "neg")}
+    ${kpi(t('kpi_tot_sav'), money(totSav), "gold")}
+    ${kpi(t('kpi_tot_debtpay'), money(totPay), "neg")}
+    ${kpi(t('kpi_tot_debtrecv'), money(totRecv), "pos")}
+    ${kpi(t('kpi_tot_rem'), money(totRem), totRem>=0?"pos":"neg")}
+    ${kpi(t('kpi_net_debt'), money(totRecv - totPay), (totRecv - totPay)>=0?"pos":"neg")}
   `;
 
   const sum = k => state.months.reduce((s,m)=>s+(+m[k]||0),0);
   document.getElementById("dashDist").innerHTML = `
-    ${kpi("🚨 طوارئ", money(sum("emergencyFund")), "neg")}
-    ${kpi("📈 استثمار", money(sum("investment")), "pos")}
-    ${kpi("👥 جمعية", money(sum("assembly")), "acc")}
-    ${kpi("✈️ سفر", money(sum("travelSaving")), "gold")}
+    ${kpi(t('kpi_emergency'), money(sum("emergencyFund")), "neg")}
+    ${kpi(t('kpi_invest'), money(sum("investment")), "pos")}
+    ${kpi(t('kpi_assembly'), money(sum("assembly")), "acc")}
+    ${kpi(t('kpi_travel'), money(sum("travelSaving")), "gold")}
   `;
 
   const dt = debtTotals();
   document.getElementById("dashDebts").innerHTML = `
-    ${kpi("💰 سأستلم هذه السنة", money(dt.receiveThisYear), "pos")}
-    ${kpi("💸 سأدفع هذه السنة", money(dt.payThisYear), "neg")}
-    ${kpi("📊 صافي السنة", money(dt.netThisYear), dt.netThisYear>=0?"pos":"neg")}
-    ${kpi("📌 متبقي الكلي (لي − عليّ)", money(dt.netRemaining), dt.netRemaining>=0?"pos":"neg")}
+    ${kpi(t('kpi_recv_year'), money(dt.receiveThisYear), "pos")}
+    ${kpi(t('kpi_pay_year'), money(dt.payThisYear), "neg")}
+    ${kpi(t('kpi_net_year'), money(dt.netThisYear), dt.netThisYear>=0?"pos":"neg")}
+    ${kpi(t('kpi_net_rem'), money(dt.netRemaining), dt.netRemaining>=0?"pos":"neg")}
   `;
 
-  let html = `<thead><tr><th>الشهر</th><th>الدخل</th><th>دفعات ديون</th><th>المصاريف</th><th>الادخار</th><th>المتبقي</th><th>آخر تعديل</th><th>الحالة</th></tr></thead><tbody>`;
+  const months = getMonths();
+  let html = `<thead><tr><th>${t('th_month')}</th><th>${t('th_income')}</th><th>${t('th_debtpay')}</th><th>${t('th_expenses')}</th><th>${t('th_saving')}</th><th>${t('th_remain')}</th><th>${t('th_lastmod')}</th><th>${t('th_status')}</th></tr></thead><tbody>`;
   state.months.forEach((m,i)=>{
-    const inc = totalIncome(m, i);
-    const exp = totalExpenses(m);
-    const sav = totalSavings(m);
-    const debtPay = totalDebtPayments(i);
+    const inc = totalIncome(m, i), exp = totalExpenses(m), sav = totalSavings(m), debtPay = totalDebtPayments(i);
     const rem = inc - exp - sav - debtPay;
     const filled = inc>0||exp>0||sav>0||debtPay>0;
     let lastMod = "—";
@@ -745,129 +1222,92 @@ function renderDashboard(){
       lastMod = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
     html += `<tr>
-      <td>${MONTHS[i]}</td>
+      <td>${months[i]}</td>
       <td class="num">${money(inc)}</td>
       <td class="num ${debtPay>0?'neg':''}">${debtPay>0?money(debtPay):"—"}</td>
       <td class="num">${money(exp)}</td>
       <td class="num">${money(sav)}</td>
       <td class="num ${rem>=0?'pos':'neg'}">${money(rem)}</td>
       <td class="muted">${lastMod}</td>
-      <td>${filled ? (rem>=0?'<span class="badge green">جيد</span>':'<span class="badge red">عجز</span>') : '<span class="badge blue">فارغ</span>'}</td>
+      <td>${filled ? (rem>=0?`<span class="badge green">${t('status_good')}</span>`:`<span class="badge red">${t('status_bad')}</span>`) : `<span class="badge blue">${t('status_empty')}</span>`}</td>
     </tr>`;
   });
   document.getElementById("dashTable").innerHTML = html + `</tbody>`;
 }
 
-function debtTotals(){
-  const receiveThisYear = state.debts.filter(d=>d.type==="debit")
-    .reduce((s,d)=>s+debtPaidThisYear(d), 0);
-  const payThisYear = state.debts.filter(d=>d.type==="credit"||d.type==="installment")
-    .reduce((s,d)=>s+debtPaidThisYear(d), 0);
-  const remainingToReceive = state.debts.filter(d=>d.type==="debit")
-    .reduce((s,d)=>s+debtRemaining(d), 0);
-  const remainingToPay = state.debts.filter(d=>d.type==="credit"||d.type==="installment")
-    .reduce((s,d)=>s+debtRemaining(d), 0);
-  return {
-    receiveThisYear, payThisYear,
-    netThisYear: receiveThisYear - payThisYear,
-    remainingToReceive, remainingToPay,
-    netRemaining: remainingToReceive - remainingToPay,
-    totalDebt: state.debts.reduce((s,d)=>s+(+d.total||0), 0),
-  };
-}
-
-function kpi(lbl,val,cls=""){
-  return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val ${cls}">${val}</div></div>`;
-}
-
-/* ============ Month ============ */
+/* ===================================================================
+   Month
+=================================================================== */
 function renderMonthPills(){
-  document.getElementById("monthPills").innerHTML = MONTHS.map((m,i)=>{
+  const months = getMonths();
+  document.getElementById("monthPills").innerHTML = months.map((m,i)=>{
     const hasData = totalIncome(state.months[i], i) > totalDebtReceipts(i)
-      || totalExpensesRaw(state.months[i])>0 
-      || totalSavings(state.months[i])>0
-      || totalDebtPayments(i)>0;
+      || totalExpensesRaw(state.months[i])>0 || totalSavings(state.months[i])>0 || totalDebtPayments(i)>0;
     return `<button class="${i===state.activeMonth?'active':''} ${hasData?'hasData':''}" onclick="selectMonth(${i})">${m}</button>`;
   }).join("");
 }
 
-function selectMonth(i){
-  state.activeMonth=i;
-  renderMonthPills();
-  renderMonth();
-  save();
-}
+function selectMonth(i){ state.activeMonth=i; renderMonthPills(); renderMonth(); save(); }
 
 function renderIncomeFields(){
   const m = state.months[state.activeMonth];
-  document.getElementById("incomeFields").innerHTML = `
-    <div class="field"><label>الراتب الشهري (د.ب)</label>
-      <input type="number" value="${m.salary||0}" oninput="upd('salary',this.value)"></div>
-    <div class="field"><label>غلاء المعيشة (د.ب)</label>
-      <input type="number" value="${m.costOfLiving||0}" oninput="upd('costOfLiving',this.value)"></div>
-    <div class="field"><label>علاوة إسكان (د.ب)</label>
-      <input type="number" value="${m.housing||0}" oninput="upd('housing',this.value)"></div>
+  const fields = getIncomeFields();
+  let html = fields.map(([k,l])=>
+    `<div class="field"><label>${l}</label>
+      <input type="number" value="${m[k]||0}" oninput="upd('${k}',this.value)"></div>`
+  ).join("");
+  // Add meat support dropdown inside income
+  html += `
     <div class="field">
-      <label>دعم اللحوم (كل 3 أشهر)</label>
-      <select class="meat-select ${m.hasMeatSupport?'meat-yes':'meat-no'}"
-              onchange="toggleMeat(this.value)">
-        <option value="no" ${!m.hasMeatSupport?'selected':''}>لا — لا ما بتنزل ذي الشهر</option>
-        <option value="yes" ${m.hasMeatSupport?'selected':''}>نعم — بتنزل ذي الشهر</option>
+      <label>${t('f_meat_support')}</label>
+      <select class="meat-select ${m.hasMeatSupport?'meat-yes':'meat-no'}" onchange="toggleMeat(this.value)">
+        <option value="no" ${!m.hasMeatSupport?'selected':''}>${t('f_meat_no')}</option>
+        <option value="yes" ${m.hasMeatSupport?'selected':''}>${t('f_meat_yes')}</option>
       </select>
     </div>
     <div class="field" id="meatAmountWrap" style="display:${m.hasMeatSupport?'flex':'none'}">
-      <label>قيمة دعم اللحوم (د.ب)</label>
+      <label>${t('f_meat_amount')}</label>
       <input type="number" value="${m.meat||0}" oninput="upd('meat',this.value)">
     </div>
-    <div class="field"><label>مساعدات خيرية (د.ب)</label>
-      <input type="number" value="${m.charity||0}" oninput="upd('charity',this.value)"></div>
-    <div class="field"><label>مدخول أعمال حرة (د.ب)</label>
-      <input type="number" value="${m.freelance||0}" oninput="upd('freelance',this.value)"></div>
   `;
+  document.getElementById("incomeFields").innerHTML = html;
 }
 
 function renderExpenseFields(){
   const m = state.months[state.activeMonth];
-  const html = EXPENSE_ROWS.map(row => {
-    if(row.type === "group"){
-      return `<tr class="group-header"><td colspan="4">${row.label}</td></tr>`;
-    }
+  const rows = getExpenseRows();
+  const html = rows.map(row => {
+    if(row.type === "group") return `<tr class="group-header"><td colspan="4">${row.label}</td></tr>`;
     if(row.type === "birthday"){
       const meta = getMeta(m, row.key);
-      const excluded = meta.bank === EXCLUDED_BANK;
+      const excluded = isExcludedBank(meta.bank);
       const person = m.birthdayPerson || "none";
+      const bankOpts = BANKS.map(b => `<option value="${b}" ${meta.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
       return `<tr class="${excluded?'excluded':''} bday-row">
         <td>
           <div class="birthday-cell">
-            <span>🎂 عيد ميلاد</span>
+            <span>🎂 ${row.label}</span>
             <select onchange="updBirthdayPerson(this.value)">
-              <option value="none" ${person==='none'?'selected':''}>— لا أحد —</option>
-              <option value="زوجة" ${person==='زوجة'?'selected':''}>زوجة</option>
-              <option value="الزوج" ${person==='الزوج'?'selected':''}>الزوج</option>
-              <option value="العيال" ${person==='العيال'?'selected':''}>العيال</option>
+              <option value="none" ${person==='none'?'selected':''}>${t('bd_none')}</option>
+              <option value="زوجة" ${person==='زوجة'?'selected':''}>${t('bd_wife')}</option>
+              <option value="الزوج" ${person==='الزوج'?'selected':''}>${t('bd_husband')}</option>
+              <option value="العيال" ${person==='العيال'?'selected':''}>${t('bd_kids')}</option>
             </select>
           </div>
         </td>
         <td><input type="number" value="${m.birthday||0}" oninput="updExpenseAmount('birthday', this.value)"></td>
-        <td>
-          <select class="${excluded?'bank-excluded':''}" onchange="updExpenseBank('birthday', this.value)">
-            ${BANKS.map(b => `<option value="${b}" ${meta.bank===b?'selected':''}>${b}</option>`).join('')}
-          </select>
-        </td>
-        <td><input type="text" value="${(meta.note||'').replace(/"/g,'&quot;')}" oninput="updExpenseNote('birthday', this.value)" placeholder="اكتب ملاحظة..."></td>
+        <td><select class="${excluded?'bank-excluded':''}" onchange="updExpenseBank('birthday', this.value)">${bankOpts}</select></td>
+        <td><input type="text" value="${(meta.note||'').replace(/"/g,'&quot;')}" oninput="updExpenseNote('birthday', this.value)" placeholder="..."></td>
       </tr>`;
     }
     const meta = getMeta(m, row.key);
-    const excluded = meta.bank === EXCLUDED_BANK;
+    const excluded = isExcludedBank(meta.bank);
+    const bankOpts = BANKS.map(b => `<option value="${b}" ${meta.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
     return `<tr class="${excluded?'excluded':''}">
       <td>${row.label}</td>
       <td><input type="number" value="${m[row.key]||0}" oninput="updExpenseAmount('${row.key}', this.value)"></td>
-      <td>
-        <select class="${excluded?'bank-excluded':''}" onchange="updExpenseBank('${row.key}', this.value)">
-          ${BANKS.map(b => `<option value="${b}" ${meta.bank===b?'selected':''}>${b}</option>`).join('')}
-        </select>
-      </td>
-      <td><input type="text" value="${(meta.note||'').replace(/"/g,'&quot;')}" oninput="updExpenseNote('${row.key}', this.value)" placeholder="اكتب ملاحظة..."></td>
+      <td><select class="${excluded?'bank-excluded':''}" onchange="updExpenseBank('${row.key}', this.value)">${bankOpts}</select></td>
+      <td><input type="text" value="${(meta.note||'').replace(/"/g,'&quot;')}" oninput="updExpenseNote('${row.key}', this.value)" placeholder="..."></td>
     </tr>`;
   }).join("");
   document.getElementById("expenseFields").innerHTML = html;
@@ -882,49 +1322,44 @@ function renderExpenseSummary(){
 
   const bankTotals = {};
   BANKS.forEach(b => bankTotals[b] = 0);
-  EXPENSE_ROWS.forEach(row => {
+  getExpenseRows().forEach(row => {
     if(row.type === "group") return;
     const meta = getMeta(m, row.key);
     const amt = +m[row.key] || 0;
     if(amt > 0) bankTotals[meta.bank] = (bankTotals[meta.bank] || 0) + amt;
   });
 
-  const bankIcons = {
-    "بطاقة صراف الالي": "🏧","NBK":"🏦","ILA":"🏛️","BBK":"🏢","MEEM":"💠","NBB":"🏛️","غير محسوب ذي الشهر":"⛔"
-  };
-  const bankColors = {
-    "بطاقة صراف الالي":"bank-card","NBK":"bank-nbk","ILA":"bank-ila","BBK":"bank-bbk",
-    "MEEM":"bank-meem","NBB":"bank-nbb","غير محسوب ذي الشهر":"bank-excl"
-  };
+  const bankIcons = {"بطاقة صراف الالي":"🏧","NBK":"🏦","ILA":"🏛️","BBK":"🏢","MEEM":"💠","NBB":"🏛️","غير محسوب ذي الشهر":"⛔"};
+  const bankColors = {"بطاقة صراف الالي":"bank-card","NBK":"bank-nbk","ILA":"bank-ila","BBK":"bank-bbk","MEEM":"bank-meem","NBB":"bank-nbb","غير محسوب ذي الشهر":"bank-excl"};
 
-  let bankHtml = "";
-  BANKS.forEach(b => {
+  const bankHtml = BANKS.map(b => {
     const amt = bankTotals[b] || 0;
-    bankHtml += `<div class="exp-sum-item bank-item ${bankColors[b]}">
-      <span>${bankIcons[b]} ${b}:</span><b>${money(amt)}</b>
+    return `<div class="exp-sum-item bank-item ${bankColors[b]}">
+      <span>${bankIcons[b]} ${bankLabel(b)}:</span><b>${money(amt)}</b>
     </div>`;
-  });
+  }).join("");
 
   document.getElementById("expenseSummary").innerHTML = `
-    <div class="exp-sum-item"><span>الإجمالي الكلي:</span><b>${money(total)}</b></div>
-    <div class="exp-sum-item green"><span>✅ المحتسب:</span><b>${money(counted)}</b></div>
-    <div class="exp-sum-item red"><span>⛔ المستثنى:</span><b>${money(excluded)}</b></div>
+    <div class="exp-sum-item"><span>${t('es_total')}:</span><b>${money(total)}</b></div>
+    <div class="exp-sum-item green"><span>${t('es_counted')}:</span><b>${money(counted)}</b></div>
+    <div class="exp-sum-item red"><span>${t('es_excluded')}:</span><b>${money(excluded)}</b></div>
     <div class="exp-sum-divider"></div>
-    <div class="exp-sum-title">🏦 الإجمالي حسب البنك</div>
+    <div class="exp-sum-title">${t('es_by_bank')}</div>
     ${bankHtml}
   `;
 }
 
 function renderSavingFields(){
   const m = state.months[state.activeMonth];
-  document.getElementById("savingFields").innerHTML = SAVING_FIELDS.map(f => {
+  const fields = getSavingFields();
+  document.getElementById("savingFields").innerHTML = fields.map(f => {
     const [k, l, extra] = f;
     let extraHtml = "";
     if(extra === "eidDropdown"){
       extraHtml = `<div class="eid-type-inline">
         <select onchange="updEidMoneyType(this.value)">
-          <option value="fitar" ${m.eidMoneyType==='fitar'?'selected':''}>🎉 عيد الفطر</option>
-          <option value="adha" ${m.eidMoneyType==='adha'?'selected':''}>🐑 عيد الأضحى</option>
+          <option value="fitar" ${m.eidMoneyType==='fitar'?'selected':''}>${t('eid_fitar')}</option>
+          <option value="adha" ${m.eidMoneyType==='adha'?'selected':''}>${t('eid_adha')}</option>
         </select>
       </div>`;
     }
@@ -936,67 +1371,55 @@ function renderSavingFields(){
   }).join("");
 }
 
-/* 🤝 قسم دفعات السلف في إدخال الشهور */
 function renderDebtsMonthSection(){
-  const monthIdx = state.activeMonth;
+  const mi = state.activeMonth;
   const tbody = document.getElementById("debtsMonthBody");
   const tfoot = document.getElementById("debtsMonthFoot");
   const summary = document.getElementById("debtsMonthSummary");
   if(!tbody) return;
 
   const titleEl = document.getElementById("debtsMonthTitle");
-  if(titleEl) titleEl.textContent = MONTHS[monthIdx];
+  if(titleEl) titleEl.textContent = getMonths()[mi];
 
   if(!state.debts.length){
-    tbody.innerHTML = `<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--muted)">
-      لا توجد سلف أو ديون بعد — أضف من تبويب "🤝 السلف والديون"</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--muted)">${t('dms_empty')}</td></tr>`;
     tfoot.innerHTML = "";
     summary.innerHTML = "";
     return;
   }
 
   const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦"};
-  const typeLabel = {credit:"دائن (أدفع)", debit:"مدين (أستلم)", installment:"قسط (أدفع)"};
+  const typeLabel = {credit:t('dt_credit'), debit:t('dt_debit'), installment:t('dt_inst')};
   const typeCls = {credit:"row-credit", debit:"row-debit", installment:"row-installment"};
 
-  let receiveThisMonth = 0, payThisMonth = 0;
-
+  let recv = 0, pay = 0;
   tbody.innerHTML = state.debts.map(d => {
-    const remBefore = debtRemainingBeforeMonth(d, monthIdx);
-    const thisMonth = +d.monthly[monthIdx] || 0;
+    const remBefore = debtRemainingBeforeMonth(d, mi);
+    const thisMonth = +d.monthly[mi] || 0;
     const remAfter = Math.max(0, remBefore - thisMonth);
-    if(d.type === "debit") receiveThisMonth += thisMonth;
-    else payThisMonth += thisMonth;
-
+    if(d.type === "debit") recv += thisMonth; else pay += thisMonth;
     const inputCls = d.type === "debit" ? "input-debit" : "input-credit";
-
     return `<tr class="${typeCls[d.type]}" data-debt-row="${d.id}">
       <td class="debt-name">${typeIcon[d.type]} ${d.name}</td>
       <td><span class="badge ${d.type==='credit'?'red':d.type==='debit'?'green':'blue'}">${typeLabel[d.type]}</span></td>
       <td class="num">${money(d.total)}</td>
       <td class="num muted">${money(remBefore)}</td>
-      <td><input type="number" class="${inputCls}" value="${thisMonth}" min="0" 
-                oninput="updDebtMonthInEntry(${d.id}, this.value)"></td>
+      <td><input type="number" class="${inputCls}" value="${thisMonth}" min="0" oninput="updDebtMonthInEntry(${d.id}, this.value)"></td>
       <td class="num debt-rem-after" style="font-family:monospace;font-weight:700;color:${remAfter===0?'var(--ok)':'var(--txt)'};direction:ltr">${money(remAfter)}</td>
       <td class="muted">${d.notes || "—"}</td>
     </tr>`;
   }).join("");
 
-  tfoot.innerHTML = `<tr>
-    <td colspan="4">الإجمالي</td>
-    <td class="num" style="color:var(--accent2);font-weight:700">${money(receiveThisMonth + payThisMonth)}</td>
-    <td colspan="2"></td>
-  </tr>`;
+  tfoot.innerHTML = `<tr><td colspan="4">${t('dms_total')}</td><td class="num" style="color:var(--accent2);font-weight:700">${money(recv + pay)}</td><td colspan="2"></td></tr>`;
 
   summary.innerHTML = `
-    ${kpi("💰 سأستلم هذا الشهر (مدين) → يُضاف للدخل", money(receiveThisMonth), "pos")}
-    ${kpi("💸 سأدفع هذا الشهر (دائن + قسط) → يُخصم", money(payThisMonth), "neg")}
-    ${kpi("📊 صافي الشهر", money(receiveThisMonth - payThisMonth), (receiveThisMonth - payThisMonth) >= 0 ? "pos" : "neg")}
-    ${kpi("📌 متبقي علىّ بعد كل الدفعات", money(state.debts.reduce((s,d)=>s+debtRemaining(d),0)), "gold")}
+    ${kpi(t('dms_recv'), money(recv), "pos")}
+    ${kpi(t('dms_pay'), money(pay), "neg")}
+    ${kpi(t('dms_net'), money(recv - pay), (recv - pay) >= 0 ? "pos" : "neg")}
+    ${kpi(t('dms_remaining'), money(state.debts.reduce((s,d)=>s+debtRemaining(d),0)), "gold")}
   `;
 }
 
-/* ✅ FIXED: لا يعيد بناء الجدول، فقط يحدّث الخلايا */
 function updDebtMonthInEntry(id, val){
   const d = state.debts.find(x=>x.id===id);
   if(!d) return;
@@ -1009,165 +1432,65 @@ function updDebtMonthInEntry(id, val){
   renderDashboard();
 }
 
-/* ✅ تحديث الخلايا المتأثرة فقط — بدون فقدان التركيز */
 function refreshDebtsMonthCells(){
-  const monthIdx = state.activeMonth;
-  let receiveThisMonth = 0, payThisMonth = 0;
-
+  const mi = state.activeMonth;
+  let recv = 0, pay = 0;
   state.debts.forEach(d => {
     const row = document.querySelector(`tr[data-debt-row="${d.id}"]`);
     if(!row) return;
-    const thisMonth = +d.monthly[monthIdx] || 0;
-    const remBefore = debtRemainingBeforeMonth(d, monthIdx);
+    const thisMonth = +d.monthly[mi] || 0;
+    const remBefore = debtRemainingBeforeMonth(d, mi);
     const remAfter = Math.max(0, remBefore - thisMonth);
-
-    if(d.type === "debit") receiveThisMonth += thisMonth;
-    else payThisMonth += thisMonth;
-
+    if(d.type === "debit") recv += thisMonth; else pay += thisMonth;
     const remCell = row.querySelector('.debt-rem-after');
     if(remCell){
       remCell.textContent = money(remAfter);
       remCell.style.color = remAfter === 0 ? 'var(--ok)' : 'var(--txt)';
     }
   });
-
   const tfoot = document.getElementById("debtsMonthFoot");
-  if(tfoot){
-    tfoot.innerHTML = `<tr>
-      <td colspan="4">الإجمالي</td>
-      <td class="num" style="color:var(--accent2);font-weight:700">${money(receiveThisMonth + payThisMonth)}</td>
-      <td colspan="2"></td>
-    </tr>`;
-  }
-
+  if(tfoot) tfoot.innerHTML = `<tr><td colspan="4">${t('dms_total')}</td><td class="num" style="color:var(--accent2);font-weight:700">${money(recv + pay)}</td><td colspan="2"></td></tr>`;
   const summary = document.getElementById("debtsMonthSummary");
-  if(summary){
-    summary.innerHTML = `
-      ${kpi("💰 سأستلم هذا الشهر (مدين) → يُضاف للدخل", money(receiveThisMonth), "pos")}
-      ${kpi("💸 سأدفع هذا الشهر (دائن + قسط) → يُخصم", money(payThisMonth), "neg")}
-      ${kpi("📊 صافي الشهر", money(receiveThisMonth - payThisMonth), (receiveThisMonth - payThisMonth) >= 0 ? "pos" : "neg")}
-      ${kpi("📌 متبقي علىّ بعد كل الدفعات", money(state.debts.reduce((s,d)=>s+debtRemaining(d),0)), "gold")}
-    `;
-  }
+  if(summary) summary.innerHTML = `
+    ${kpi(t('dms_recv'), money(recv), "pos")}
+    ${kpi(t('dms_pay'), money(pay), "neg")}
+    ${kpi(t('dms_net'), money(recv - pay), (recv - pay) >= 0 ? "pos" : "neg")}
+    ${kpi(t('dms_remaining'), money(state.debts.reduce((s,d)=>s+debtRemaining(d),0)), "gold")}
+  `;
 }
 
-function updEidMoneyType(val){
-  const m = state.months[state.activeMonth];
-  m.eidMoneyType = val;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderMonthDate();
-}
-
-function updExpenseAmount(key, val){
-  const m = state.months[state.activeMonth];
-  m[key] = parseFloat(val)||0;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderExpenseSummary();
-  renderMonthResults();
-  renderMonthDate();
-  renderMonthPills();
-}
-
-function updExpenseBank(key, val){
-  const m = state.months[state.activeMonth];
-  getMeta(m, key).bank = val;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderExpenseFields();
-  renderMonthResults();
-  renderMonthDate();
-  renderMonthPills();
-}
-
-function updExpenseNote(key, val){
-  const m = state.months[state.activeMonth];
-  getMeta(m, key).note = val;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderMonthDate();
-}
-
-function updBirthdayPerson(val){
-  const m = state.months[state.activeMonth];
-  m.birthdayPerson = val;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderExpenseFields();
-  renderMonthResults();
-  renderMonthDate();
-  renderMonthPills();
-}
-
-function updSaving(key, val){
-  const m = state.months[state.activeMonth];
-  const num = Math.round(parseFloat(val)) || 0;
-  m[key] = Math.max(0, num);
-  m.lastModified = new Date().toISOString();
-  save();
-  renderMonthResults();
-  renderMonthDate();
-  renderMonthPills();
-}
+function updEidMoneyType(val){ const m = state.months[state.activeMonth]; m.eidMoneyType = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+function updExpenseAmount(key, val){ const m = state.months[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderExpenseSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
+function updExpenseBank(key, val){ const m = state.months[state.activeMonth]; getMeta(m, key).bank = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
+function updExpenseNote(key, val){ const m = state.months[state.activeMonth]; getMeta(m, key).note = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+function updBirthdayPerson(val){ const m = state.months[state.activeMonth]; m.birthdayPerson = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
+function updSaving(key, val){ const m = state.months[state.activeMonth]; m[key] = Math.max(0, Math.round(parseFloat(val)) || 0); m.lastModified = new Date().toISOString(); save(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
 
 function renderMonth(){
   const m = state.months[state.activeMonth];
-  document.getElementById("monthTitle").textContent = MONTHS[state.activeMonth];
-
+  document.getElementById("monthTitle").textContent = getMonths()[state.activeMonth];
   renderIncomeFields();
   renderExpenseFields();
   renderDebtsMonthSection();
   renderSavingFields();
 
   document.getElementById("eidSelect").value = m.eidType || "no";
-  const showAmount = ["eid_money","clothes","both"].includes(m.eidType);
-  document.getElementById("eidAmountWrap").style.display = showAmount ? "flex" : "none";
+  const showAmt = ["eid_money","clothes","both"].includes(m.eidType);
+  document.getElementById("eidAmountWrap").style.display = showAmt ? "flex" : "none";
   document.getElementById("eidAmountInput").value = m.eidAmount || 0;
 
   const eidCard = document.querySelector('.eid-card');
-  if(eidCard){
-    eidCard.classList.toggle('eid-no', m.eidType === 'no' || m.eidType === 'none');
-  }
+  if(eidCard) eidCard.classList.toggle('eid-no', m.eidType === 'no' || m.eidType === 'none');
 
   document.getElementById("monthNotes").value = m.notes || "";
   renderMonthDate();
   renderMonthResults();
 }
 
-function toggleMeat(val){
-  const m = state.months[state.activeMonth];
-  m.hasMeatSupport = (val === "yes");
-  if(!m.hasMeatSupport) m.meat = 0;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderMonth();
-}
-
-function onEidChange(val){
-  const m = state.months[state.activeMonth];
-  m.eidType = val;
-  m.lastModified = new Date().toISOString();
-  save(); renderMonth();
-}
-
-function upd(key, val){
-  const m = state.months[state.activeMonth];
-  m[key] = parseFloat(val)||0;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderMonthResults();
-  renderMonthDate();
-  renderMonthPills();
-}
-
-function updateMonthNotes(v){
-  const m = state.months[state.activeMonth];
-  m.notes = v;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderMonthDate();
-}
+function toggleMeat(val){ const m = state.months[state.activeMonth]; m.hasMeatSupport = (val === "yes"); if(!m.hasMeatSupport) m.meat = 0; m.lastModified = new Date().toISOString(); save(); renderMonth(); }
+function onEidChange(val){ const m = state.months[state.activeMonth]; m.eidType = val; m.lastModified = new Date().toISOString(); save(); renderMonth(); }
+function upd(key, val){ const m = state.months[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
+function updateMonthNotes(v){ const m = state.months[state.activeMonth]; m.notes = v; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 
 function renderMonthResults(){
   const m = state.months[state.activeMonth];
@@ -1182,33 +1505,28 @@ function renderMonthResults(){
   const rem = inc - exp - sav - debtPay;
 
   document.getElementById("monthResults").innerHTML = `
-    ${kpi("الدخل الأساسي (راتب + إضافي)", money(incCore), "acc")}
-    ${kpi("💰 + مستلم من مدينين", money(incDebt), "pos")}
-    ${kpi("= إجمالي الدخل الشهري", money(inc), "acc")}
-    ${kpi("إجمالي المصاريف (المحتسبة)", money(exp), "neg")}
-    ${kpi("مصاريف مستثناة (غير محسوبة)", money(excl), "gold")}
-    ${kpi("الادخار المباشر", money(sav), "gold")}
-    ${kpi("💸 دفعات الديون (دائن + قسط)", money(debtPay), "neg")}
-    ${kpi("المتبقي", money(rem), rem>=0?"pos":"neg")}
-    ${kpi("قيمة العيد (مرجعية فقط)", money(m.eidAmount||0), "gold")}
+    ${kpi(t('mr_inc_core'), money(incCore), "acc")}
+    ${kpi(t('mr_inc_debt'), money(incDebt), "pos")}
+    ${kpi(t('mr_inc_total'), money(inc), "acc")}
+    ${kpi(t('mr_exp'), money(exp), "neg")}
+    ${kpi(t('mr_exp_excl'), money(excl), "gold")}
+    ${kpi(t('mr_saving'), money(sav), "gold")}
+    ${kpi(t('mr_debtpay'), money(debtPay), "neg")}
+    ${kpi(t('mr_remaining'), money(rem), rem>=0?"pos":"neg")}
+    ${kpi(t('mr_eid_ref'), money(m.eidAmount||0), "gold")}
   `;
 }
 
-/* ============ Date Picker ============ */
 function setMonthDate(value){
   const m = state.months[state.activeMonth];
   if(!value) return;
-  m.customDate = value;
-  m.lastModified = new Date().toISOString();
-  save();
-  toast("✅ تم حفظ التاريخ: " + value);
+  m.customDate = value; m.lastModified = new Date().toISOString();
+  save(); toast(t('saved_date') + value);
 }
 function setMonthTime(value){
   const m = state.months[state.activeMonth];
-  m.customTime = value || "";
-  m.lastModified = new Date().toISOString();
-  save();
-  toast("✅ تم حفظ الوقت");
+  m.customTime = value || ""; m.lastModified = new Date().toISOString();
+  save(); toast(t('saved_time'));
 }
 function renderMonthDate(){
   const m = state.months[state.activeMonth];
@@ -1217,82 +1535,54 @@ function renderMonthDate(){
   const disp = document.getElementById("lastModifiedDisplay");
   if(m.lastModified){
     const d = new Date(m.lastModified);
-    disp.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ` +
-                 `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-  } else {
-    disp.value = "— لم يُعدَّل بعد —";
-  }
+    disp.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  } else disp.value = "—";
 }
 
-/* ============ Pyramid ============ */
+/* ===================================================================
+   Pyramid
+=================================================================== */
 function renderPyramid(){
+  const levels = getPyramidLevels();
   const totals = {};
-  PYRAMID_LEVELS.forEach(lvl => {
-    totals[lvl.key] = state.months.reduce((s,m)=>s+(+m[lvl.key]||0),0);
-  });
+  levels.forEach(lvl => { totals[lvl.key] = state.months.reduce((s,m)=>s+(+m[lvl.key]||0),0); });
   const grandTotal = Object.values(totals).reduce((a,b)=>a+b,0);
 
-  const apexY = 25, bottomY = 430;
-  const apexLeftX = 190, apexRightX = 310;
-  const baseLeftX = 20, baseRightX = 480;
-  const levels = PYRAMID_LEVELS.length;
-  const sliceH = (bottomY - apexY) / levels;
+  const apexY = 25, bottomY = 430, apexLeftX = 190, apexRightX = 310, baseLeftX = 20, baseRightX = 480;
+  const sliceH = (bottomY - apexY) / levels.length;
+  const leftAt = y => apexLeftX + (baseLeftX - apexLeftX) * (y - apexY) / (bottomY - apexY);
+  const rightAt = y => apexRightX + (baseRightX - apexRightX) * (y - apexY) / (bottomY - apexY);
 
-  const leftAt = (y) => apexLeftX + (baseLeftX - apexLeftX) * (y - apexY) / (bottomY - apexY);
-  const rightAt = (y) => apexRightX + (baseRightX - apexRightX) * (y - apexY) / (bottomY - apexY);
-
-  let svgContent = "";
-  PYRAMID_LEVELS.forEach((lvl, i) => {
-    const yBot = bottomY - i * sliceH;
-    const yTop = yBot - sliceH;
-
-    const x1 = leftAt(yTop), x2 = rightAt(yTop);
-    const x3 = rightAt(yBot), x4 = leftAt(yBot);
-
-    const polygon = `${x1},${yTop} ${x2},${yTop} ${x3},${yBot} ${x4},${yBot}`;
-    const centerX = (x1 + x2 + x3 + x4) / 4;
-    const centerY = (yTop + yBot) / 2;
-
-    const amount = totals[lvl.key] || 0;
-    const pct = grandTotal > 0 ? (amount / grandTotal * 100) : 0;
-
-    const fontSize = 12 - i * 0.5;
-    const amountFontSize = 11 - i * 0.4;
-
-    svgContent += `
-      <polygon points="${polygon}" fill="${lvl.color}" fill-opacity="0.88" 
-               stroke="${lvl.color}" stroke-width="1.5"/>
-      <text x="${centerX}" y="${centerY - 6}" text-anchor="middle" 
-            fill="#fff" font-size="${fontSize}" font-weight="700">
-        ${lvl.subtitle} ${lvl.label}
-      </text>
-      <text x="${centerX}" y="${centerY + 7}" text-anchor="middle" 
-            fill="#fff" font-size="${amountFontSize}" font-weight="600" font-family="monospace">
-        ${fmt(amount)} د.ب
-      </text>
-      <text x="${centerX}" y="${centerY + 18}" text-anchor="middle" 
-            fill="#fff" font-size="${amountFontSize - 1}" font-weight="500" opacity="0.85">
-        ${pct.toFixed(1)}%
-      </text>
+  let svg = "";
+  levels.forEach((lvl, i) => {
+    const yBot = bottomY - i * sliceH, yTop = yBot - sliceH;
+    const x1 = leftAt(yTop), x2 = rightAt(yTop), x3 = rightAt(yBot), x4 = leftAt(yBot);
+    const cx = (x1+x2+x3+x4)/4, cy = (yTop+yBot)/2;
+    const amt = totals[lvl.key] || 0;
+    const pct = grandTotal > 0 ? (amt/grandTotal*100) : 0;
+    const fs = 12 - i * 0.5, afs = 11 - i * 0.4;
+    svg += `
+      <polygon points="${x1},${yTop} ${x2},${yTop} ${x3},${yBot} ${x4},${yBot}" fill="${lvl.color}" fill-opacity="0.88" stroke="${lvl.color}" stroke-width="1.5"/>
+      <text x="${cx}" y="${cy - 6}" text-anchor="middle" fill="#fff" font-size="${fs}" font-weight="700">${lvl.subtitle} ${lvl.label}</text>
+      <text x="${cx}" y="${cy + 7}" text-anchor="middle" fill="#fff" font-size="${afs}" font-weight="600" font-family="monospace">${fmt(amt)} ${LANG==='ar'?'د.ب':'BHD'}</text>
+      <text x="${cx}" y="${cy + 18}" text-anchor="middle" fill="#fff" font-size="${afs - 1}" font-weight="500" opacity="0.85">${pct.toFixed(1)}%</text>
     `;
   });
+  document.getElementById("pyramidSvg").innerHTML = svg;
 
-  document.getElementById("pyramidSvg").innerHTML = svgContent;
-
-  document.getElementById("pyramidLegend").innerHTML = PYRAMID_LEVELS.slice().reverse().map(lvl => `
+  document.getElementById("pyramidLegend").innerHTML = levels.slice().reverse().map(lvl => `
     <div class="pyr-legend-item">
       <div class="pyr-color" style="background:${lvl.color}"></div>
       <div class="pyr-label">${lvl.subtitle} ${lvl.label}</div>
-      <div class="pyr-val">${fmt(totals[lvl.key])} د.ب</div>
+      <div class="pyr-val">${fmt(totals[lvl.key])} ${LANG==='ar'?'د.ب':'BHD'}</div>
     </div>
   `).join("");
 
-  let html = `<thead><tr><th>المستوى</th><th>البند</th><th>المجموع السنوي (د.ب)</th><th>النسبة من الهرم</th></tr></thead><tbody>`;
-  const reversed = PYRAMID_LEVELS.slice().reverse();
-  reversed.forEach((lvl, idx) => {
-    const level = PYRAMID_LEVELS.length - idx;
+  let html = `<thead><tr><th>${t('th_level')}</th><th>${t('th_item_name')}</th><th>${t('th_year_total')}</th><th>${t('th_pct')}</th></tr></thead><tbody>`;
+  levels.slice().reverse().forEach((lvl, idx) => {
+    const level = levels.length - idx;
     const amt = totals[lvl.key] || 0;
-    const pct = grandTotal > 0 ? (amt / grandTotal * 100) : 0;
+    const pct = grandTotal > 0 ? (amt/grandTotal*100) : 0;
     html += `<tr>
       <td style="color:${lvl.color};font-weight:700">${level}</td>
       <td>${lvl.subtitle} ${lvl.label}</td>
@@ -1300,196 +1590,158 @@ function renderPyramid(){
       <td class="num">${pct.toFixed(2)}%</td>
     </tr>`;
   });
-  html += `<tr style="background:rgba(34,193,164,.1);font-weight:700">
-    <td colspan="2">الإجمالي</td>
-    <td class="num" style="color:var(--accent);font-weight:700">${money(grandTotal)}</td>
-    <td class="num">100%</td>
-  </tr>`;
-  html += `</tbody>`;
+  html += `<tr style="background:rgba(34,193,164,.1);font-weight:700"><td colspan="2">${t('th_total')}</td><td class="num" style="color:var(--accent);font-weight:700">${money(grandTotal)}</td><td class="num">100%</td></tr></tbody>`;
   document.getElementById("pyramidTable").innerHTML = html;
 }
 
-/* ============ Debts Tab ============ */
-function onDebtTypeChange(val){
-  document.getElementById("d_categoryWrap").style.display = (val === "installment") ? "flex" : "none";
-}
+/* ===================================================================
+   Debts Tab
+=================================================================== */
+function onDebtTypeChange(val){ document.getElementById("d_categoryWrap").style.display = (val === "installment") ? "flex" : "none"; }
 
 function addDebt(){
   const name = document.getElementById("d_name").value.trim();
   const total = parseFloat(document.getElementById("d_total").value)||0;
   const paidBefore = parseFloat(document.getElementById("d_paidBefore").value)||0;
   const type = document.getElementById("d_type").value;
-  if(!name || total<=0){ toast("⚠️ أدخل الاسم والمبلغ"); return; }
-  if(paidBefore > total){ toast("⚠️ المدفوع سابقاً أكبر من الكلي!"); return; }
+  if(!name || total<=0){ toast(t('need_name_total')); return; }
+  if(paidBefore > total){ toast(t('paid_gt_total')); return; }
   state.debts.push({
-    id: Date.now(),
-    name,
-    type,
+    id: Date.now(), name, type,
     category: type === "installment" ? document.getElementById("d_category").value : "",
-    total,
-    paidBefore,
-    monthly: Array(12).fill(0),
+    total, paidBefore, monthly: Array(12).fill(0),
     start: document.getElementById("d_start").value,
     end: document.getElementById("d_end").value,
     notes: document.getElementById("d_notes").value.trim()
   });
   ["d_name","d_notes"].forEach(id=>document.getElementById(id).value="");
   ["d_total","d_paidBefore"].forEach(id=>document.getElementById(id).value=0);
-  save();
-  renderDebts();
-  renderDashboard();
-  toast("✅ تمت الإضافة");
+  save(); renderDebts(); renderDashboard(); toast(t('added'));
 }
 
 function delDebt(id){
-  if(!confirm("تأكيد الحذف؟")) return;
+  if(!confirm(t('confirm_delete'))) return;
   state.debts = state.debts.filter(d=>d.id!==id);
-  save();
-  renderDebts();
-  renderDashboard();
+  save(); renderDebts(); renderDashboard();
 }
 
-function updDebtMonth(id, monthIdx, val){
+function updDebtMonth(id, mi, val){
   const d = state.debts.find(x=>x.id===id);
   if(!d) return;
-  const v = Math.max(0, parseFloat(val)||0);
-  d.monthly[monthIdx] = v;
-  save();
-  refreshDebtTotals();
-  renderDebtsSummary();
-  renderDashboard();
+  d.monthly[mi] = Math.max(0, parseFloat(val)||0);
+  save(); refreshDebtTotals(); renderDebtsSummary(); renderDashboard();
 }
 
 function refreshDebtTotals(){
   state.debts.forEach(d => {
     const row = document.querySelector(`tr[data-debt-id="${d.id}"]`);
     if(!row) return;
-    const paid = debtPaidThisYear(d);
-    const rem = debtRemaining(d);
-    const paidCell = row.querySelector('.paid-cell');
-    const remCell = row.querySelector('.remain-cell');
-    if(paidCell) paidCell.textContent = fmt(paid);
-    if(remCell){
-      remCell.textContent = fmt(rem);
-      remCell.classList.toggle('pos', rem === 0);
-      remCell.classList.toggle('neg', rem > 0);
-    }
+    const paid = debtPaidThisYear(d), rem = debtRemaining(d);
+    const pc = row.querySelector('.paid-cell'), rc = row.querySelector('.remain-cell');
+    if(pc) pc.textContent = fmt(paid);
+    if(rc){ rc.textContent = fmt(rem); rc.classList.toggle('pos', rem === 0); rc.classList.toggle('neg', rem > 0); }
   });
   updateDebtsFooter();
 }
 
 function updateDebtsFooter(){
-  const t = document.getElementById("debtsTable");
-  const foot = t.querySelector("tfoot");
+  const foot = document.querySelector("#debtsTable tfoot");
   if(!foot) return;
-  const monthlyTotals = Array(12).fill(0);
-  let totalPaid = 0, totalRemain = 0;
+  const mTotals = Array(12).fill(0);
+  let tp = 0, tr = 0;
   state.debts.forEach(d=>{
-    (d.monthly||[]).forEach((v,i)=>{ monthlyTotals[i] += (+v||0); });
-    totalPaid += debtPaidThisYear(d);
-    totalRemain += debtRemaining(d);
+    (d.monthly||[]).forEach((v,i)=>{ mTotals[i] += (+v||0); });
+    tp += debtPaidThisYear(d); tr += debtRemaining(d);
   });
-  let footHtml = `<tr><td colspan="4">الإجمالي</td>`;
-  for(let i=0;i<12;i++) footHtml += `<td>${monthlyTotals[i] > 0 ? fmt(monthlyTotals[i]) : "—"}</td>`;
-  footHtml += `<td class="paid-cell">${fmt(totalPaid)}</td>`;
-  footHtml += `<td class="remain-cell">${fmt(totalRemain)}</td>`;
-  footHtml += `<td></td></tr>`;
-  foot.innerHTML = footHtml;
+  let html = `<tr><td colspan="4">${t('dms_total')}</td>`;
+  for(let i=0;i<12;i++) html += `<td>${mTotals[i] > 0 ? fmt(mTotals[i]) : "—"}</td>`;
+  html += `<td class="paid-cell">${fmt(tp)}</td><td class="remain-cell">${fmt(tr)}</td><td></td></tr>`;
+  foot.innerHTML = html;
 }
 
 function renderDebtsSummary(){
   const dt = debtTotals();
   document.getElementById("debtsSummary").innerHTML = `
-    ${kpi("💰 سأستلم هذه السنة (مدينون)", money(dt.receiveThisYear), "pos")}
-    ${kpi("💸 سأدفع هذه السنة (دائن + أقساط)", money(dt.payThisYear), "neg")}
-    ${kpi("📊 صافي السنة", money(dt.netThisYear), dt.netThisYear>=0?"pos":"neg")}
-    ${kpi("📌 متبقي لي (مدينون)", money(dt.remainingToReceive), "pos")}
-    ${kpi("📌 متبقي عليّ (دائن + أقساط)", money(dt.remainingToPay), "neg")}
-    ${kpi("⚖️ صافي المتبقي", money(dt.netRemaining), dt.netRemaining>=0?"pos":"neg")}
-    ${kpi("💵 إجمالي الديون الكلية", money(dt.totalDebt), "gold")}
-    ${kpi("📋 عدد البنود", state.debts.length.toString(), "acc")}
+    ${kpi(t('kpi_recv_year_d'), money(dt.receiveThisYear), "pos")}
+    ${kpi(t('kpi_pay_year_d'), money(dt.payThisYear), "neg")}
+    ${kpi(t('kpi_net_year_d'), money(dt.netThisYear), dt.netThisYear>=0?"pos":"neg")}
+    ${kpi(t('kpi_rem_to_me'), money(dt.remainingToReceive), "pos")}
+    ${kpi(t('kpi_rem_on_me'), money(dt.remainingToPay), "neg")}
+    ${kpi(t('kpi_net_remaining'), money(dt.netRemaining), dt.netRemaining>=0?"pos":"neg")}
+    ${kpi(t('kpi_total_debt'), money(dt.totalDebt), "gold")}
+    ${kpi(t('kpi_count'), state.debts.length.toString(), "acc")}
   `;
 }
 
 function renderDebts(){
   renderDebtsSummary();
-  const t = document.getElementById("debtsTable");
+  const el = document.getElementById("debtsTable");
   if(!state.debts.length){
-    t.innerHTML = `<thead><tr><th colspan="19" style="padding:20px;color:var(--muted)">لا توجد بيانات — أضف دين أو قسط من الأعلى</th></tr></thead>`;
+    el.innerHTML = `<thead><tr><th colspan="19" style="padding:20px;color:var(--muted)">—</th></tr></thead>`;
     return;
   }
-
+  const months = getMonths();
   const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦"};
-  const typeLabel = {credit:"دائن", debit:"مدين", installment:"قسط"};
+  const typeLabel = {credit:t('dt_credit_label'), debit:t('dt_debit_label'), installment:t('dt_inst_label')};
 
-  let head = `<thead><tr>
-    <th style="min-width:130px">الاسم</th>
-    <th>النوع</th>
-    <th>الفئة</th>
-    <th>الكلي</th>
-    <th>مدفوع سابقاً</th>`;
-  MONTHS.forEach(m => { head += `<th style="width:60px">${m}</th>`; });
-  head += `<th>مدفوع هذه السنة</th><th>المتبقي</th><th></th></tr></thead>`;
+  let head = `<thead><tr><th style="min-width:130px">${t('th_debt_name')}</th><th>${t('th_debt_type')}</th><th>${t('lbl_debt_cat')}</th><th>${t('th_debt_total')}</th><th>${t('lbl_debt_paidbefore')}</th>`;
+  months.forEach(m => { head += `<th style="width:60px">${m}</th>`; });
+  head += `<th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th><th></th></tr></thead>`;
 
   let body = `<tbody>`;
   state.debts.forEach(d => {
-    const rowCls = d.type === "credit" ? "row-credit" : d.type === "debit" ? "row-debit" : "row-installment";
-    const paid = debtPaidThisYear(d);
-    const rem = debtRemaining(d);
-    body += `<tr class="${rowCls}" data-debt-id="${d.id}">
+    const rc = d.type === "credit" ? "row-credit" : d.type === "debit" ? "row-debit" : "row-installment";
+    const paid = debtPaidThisYear(d), rem = debtRemaining(d);
+    body += `<tr class="${rc}" data-debt-id="${d.id}">
       <td class="debt-name">${typeIcon[d.type]} ${d.name}</td>
       <td><span class="badge ${d.type==='credit'?'red':d.type==='debit'?'green':'blue'}">${typeLabel[d.type]}</span></td>
       <td>${d.category || "—"}</td>
       <td class="num">${money2(d.total)}</td>
       <td class="num muted">${money2(d.paidBefore||0)}</td>`;
     (d.monthly||[]).forEach((v,i) => {
-      body += `<td><input type="number" value="${v||0}" min="0"
-                 oninput="updDebtMonth(${d.id}, ${i}, this.value)"></td>`;
+      body += `<td><input type="number" value="${v||0}" min="0" oninput="updDebtMonth(${d.id}, ${i}, this.value)"></td>`;
     });
-    body += `<td class="paid-cell">${fmt(paid)}</td>
-      <td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td>
-      <td><button class="icon-btn" onclick="delDebt(${d.id})">✕</button></td>
-    </tr>`;
+    body += `<td class="paid-cell">${fmt(paid)}</td><td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td><td><button class="icon-btn" onclick="delDebt(${d.id})">✕</button></td></tr>`;
   });
   body += `</tbody>`;
 
-  const monthlyTotals = Array(12).fill(0);
-  let totalPaid = 0, totalRemain = 0;
-  state.debts.forEach(d=>{
-    (d.monthly||[]).forEach((v,i)=>{ monthlyTotals[i] += (+v||0); });
-    totalPaid += debtPaidThisYear(d);
-    totalRemain += debtRemaining(d);
-  });
-  let foot = `<tfoot><tr><td colspan="4">الإجمالي</td>`;
-  for(let i=0;i<12;i++) foot += `<td>${monthlyTotals[i] > 0 ? fmt(monthlyTotals[i]) : "—"}</td>`;
-  foot += `<td class="paid-cell">${fmt(totalPaid)}</td>`;
-  foot += `<td class="remain-cell">${fmt(totalRemain)}</td>`;
-  foot += `<td></td></tr></tfoot>`;
+  const mTotals = Array(12).fill(0);
+  let tp = 0, tr = 0;
+  state.debts.forEach(d=>{ (d.monthly||[]).forEach((v,i)=>{ mTotals[i] += (+v||0); }); tp += debtPaidThisYear(d); tr += debtRemaining(d); });
+  let foot = `<tfoot><tr><td colspan="4">${t('dms_total')}</td>`;
+  for(let i=0;i<12;i++) foot += `<td>${mTotals[i] > 0 ? fmt(mTotals[i]) : "—"}</td>`;
+  foot += `<td class="paid-cell">${fmt(tp)}</td><td class="remain-cell">${fmt(tr)}</td><td></td></tr></tfoot>`;
 
-  t.innerHTML = head + body + foot;
+  el.innerHTML = head + body + foot;
 }
 
-/* ============ Annual ============ */
+/* ===================================================================
+   Annual
+=================================================================== */
 function renderAnnual(){
+  const months = getMonths();
   const sections = [
-    ["الدخل الأساسي", INCOME_FIELDS.map(([k,l])=>({key:k, label:l}))],
-    ["المصاريف", EXPENSE_ROWS.filter(r=>r.type!=="group").map(r=>({key:r.key, label:r.label}))],
-    ["الادخار", SAVING_FIELDS.map(([k,l])=>({key:k, label:l}))],
+    [t('lbl_income'), getIncomeFields().map(([k,l])=>({key:k, label:l}))],
+    [t('lbl_expenses').replace('💸 ',''), getExpenseRows().filter(r=>r.type!=="group").map(r=>({key:r.key, label:r.label}))],
+    [t('lbl_savings').replace('💰 ',''), getSavingFields().map(([k,l])=>({key:k, label:l}))],
   ];
-  let html = `<thead><tr><th>البند</th>${MONTHS.map(m=>`<th>${m}</th>`).join("")}<th>المجموع</th></tr></thead><tbody>`;
+  let html = `<thead><tr><th>${t('th_item')}</th>${months.map(m=>`<th>${m}</th>`).join("")}<th>${t('th_total')}</th></tr></thead><tbody>`;
   sections.forEach(([title, items])=>{
     html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--accent);font-weight:700">${title}</td></tr>`;
     items.forEach(({key, label})=>{
       const values = state.months.map(m=>+m[key]||0);
       const counted = state.months.map(m => {
-        if(title === "المصاريف" && isExcluded(m, key)) return 0;
+        if(title.includes('المصاريف')||title.includes('Expenses')){
+          if(isExcluded(m, key)) return 0;
+        }
         return +m[key]||0;
       });
       const sum = counted.reduce((a,b)=>a+b,0);
       html += `<tr><td>${label}</td>` +
         values.map((v, i)=>{
           const mm = state.months[i];
-          const ex = title === "المصاريف" && isExcluded(mm, key);
+          const isExp = title.includes('المصاريف')||title.includes('Expenses');
+          const ex = isExp && isExcluded(mm, key);
           if(!v) return `<td class="num">—</td>`;
           return `<td class="num ${ex?'excluded-cell':''}">${money(v)}${ex?' ⛔':''}</td>`;
         }).join("") +
@@ -1497,33 +1749,35 @@ function renderAnnual(){
     });
   });
 
-  const debtRecvPerMonth = MONTHS.map((_, i) => totalDebtReceipts(i));
-  const debtPayPerMonth = MONTHS.map((_, i) => totalDebtPayments(i));
-  html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--accent2);font-weight:700">🤝 دفعات السلف والديون</td></tr>`;
-  html += `<tr><td>💰 مستلم من مدينين</td>${debtRecvPerMonth.map(v=>`<td class="num" style="color:var(--ok)">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--ok);font-weight:700">${money(debtRecvPerMonth.reduce((a,b)=>a+b,0))}</td></tr>`;
-  html += `<tr><td>💸 مدفوع (دائن + قسط)</td>${debtPayPerMonth.map(v=>`<td class="num" style="color:var(--danger)">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--danger);font-weight:700">${money(debtPayPerMonth.reduce((a,b)=>a+b,0))}</td></tr>`;
+  const drpm = months.map((_,i)=>totalDebtReceipts(i));
+  const dppm = months.map((_,i)=>totalDebtPayments(i));
+  html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--accent2);font-weight:700">🤝 ${t('lbl_debts_month')}</td></tr>`;
+  html += `<tr><td>${t('dms_recv')}</td>${drpm.map(v=>`<td class="num" style="color:var(--ok)">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--ok);font-weight:700">${money(drpm.reduce((a,b)=>a+b,0))}</td></tr>`;
+  html += `<tr><td>${t('dms_pay')}</td>${dppm.map(v=>`<td class="num" style="color:var(--danger)">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--danger);font-weight:700">${money(dppm.reduce((a,b)=>a+b,0))}</td></tr>`;
 
-  const meatTotals = state.months.map(m => m.hasMeatSupport ? (+m.meat||0) : 0);
-  html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--gold);font-weight:700">دعم اللحوم</td></tr>`;
-  html += `<tr><td>دعم اللحوم</td>${meatTotals.map(v=>`<td class="num">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--gold);font-weight:700">${money(meatTotals.reduce((a,b)=>a+b,0))}</td></tr>`;
+  const meatT = state.months.map(m => m.hasMeatSupport ? (+m.meat||0) : 0);
+  html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--gold);font-weight:700">${t('f_meat_support')}</td></tr>`;
+  html += `<tr><td>${t('f_meat_support')}</td>${meatT.map(v=>`<td class="num">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--gold);font-weight:700">${money(meatT.reduce((a,b)=>a+b,0))}</td></tr>`;
 
-  const eidTotals = state.months.map(m => +m.eidAmount||0);
-  html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--gold);font-weight:700">🎉 العيد (مرجعي فقط — غير محتسب)</td></tr>`;
-  html += `<tr><td>قيمة العيد (مرجع)</td>${eidTotals.map(v=>`<td class="num">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--gold);font-weight:700">${money(eidTotals.reduce((a,b)=>a+b,0))}</td></tr>`;
+  const eidT = state.months.map(m => +m.eidAmount||0);
+  html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--gold);font-weight:700">${t('mr_eid_ref')}</td></tr>`;
+  html += `<tr><td>${t('mr_eid_ref')}</td>${eidT.map(v=>`<td class="num">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--gold);font-weight:700">${money(eidT.reduce((a,b)=>a+b,0))}</td></tr>`;
 
   const inc = state.months.map((m,i)=>totalIncome(m,i));
   const exp = state.months.map(totalExpenses);
   const sav = state.months.map(totalSavings);
-  const rem = state.months.map((m,i)=>inc[i]-exp[i]-sav[i]-debtPayPerMonth[i]);
+  const rem = state.months.map((m,i)=>inc[i]-exp[i]-sav[i]-dppm[i]);
   const rowSum = arr => arr.reduce((a,b)=>a+b,0);
-  html += `<tr style="background:rgba(34,193,164,.1);font-weight:700"><td>إجمالي الدخل</td>${inc.map(v=>`<td class="num">${money(v)}</td>`).join("")}<td class="num">${money(rowSum(inc))}</td></tr>`;
-  html += `<tr style="background:rgba(239,68,68,.08);font-weight:700"><td>إجمالي المصاريف</td>${exp.map(v=>`<td class="num">${money(v)}</td>`).join("")}<td class="num">${money(rowSum(exp))}</td></tr>`;
-  html += `<tr style="background:rgba(234,179,8,.08);font-weight:700"><td>إجمالي الادخار</td>${sav.map(v=>`<td class="num">${money(v)}</td>`).join("")}<td class="num">${money(rowSum(sav))}</td></tr>`;
-  html += `<tr style="background:rgba(34,197,94,.08);font-weight:700"><td>المتبقي</td>${rem.map(v=>`<td class="num ${v>=0?'pos':'neg'}">${money(v)}</td>`).join("")}<td class="num ${rowSum(rem)>=0?'pos':'neg'}">${money(rowSum(rem))}</td></tr>`;
+  html += `<tr style="background:rgba(34,193,164,.1);font-weight:700"><td>${t('mr_inc_total')}</td>${inc.map(v=>`<td class="num">${money(v)}</td>`).join("")}<td class="num">${money(rowSum(inc))}</td></tr>`;
+  html += `<tr style="background:rgba(239,68,68,.08);font-weight:700"><td>${t('mr_exp')}</td>${exp.map(v=>`<td class="num">${money(v)}</td>`).join("")}<td class="num">${money(rowSum(exp))}</td></tr>`;
+  html += `<tr style="background:rgba(234,179,8,.08);font-weight:700"><td>${t('mr_saving')}</td>${sav.map(v=>`<td class="num">${money(v)}</td>`).join("")}<td class="num">${money(rowSum(sav))}</td></tr>`;
+  html += `<tr style="background:rgba(34,197,94,.08);font-weight:700"><td>${t('mr_remaining')}</td>${rem.map(v=>`<td class="num ${v>=0?'pos':'neg'}">${money(v)}</td>`).join("")}<td class="num ${rowSum(rem)>=0?'pos':'neg'}">${money(rowSum(rem))}</td></tr>`;
   document.getElementById("annualTable").innerHTML = html + `</tbody>`;
 }
 
-/* ============ Tabs ============ */
+/* ===================================================================
+   Tabs
+=================================================================== */
 document.querySelectorAll("nav.tabs button").forEach(btn=>{
   btn.onclick = ()=>{
     document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
@@ -1539,37 +1793,37 @@ document.querySelectorAll("nav.tabs button").forEach(btn=>{
   };
 });
 
-/* ============ Import/Export ============ */
+/* ===================================================================
+   Import/Export/Reset
+=================================================================== */
 function exportData(){
   const blob = new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = `capital_manager_${new Date().toISOString().slice(0,10)}.json`;
-  a.click(); toast("📤 تم التصدير");
+  a.click(); toast(t('exported'));
 }
 function importData(e){
   const file = e.target.files[0]; if(!file) return;
   const r = new FileReader();
   r.onload = ev => {
-    try{
-      const d = JSON.parse(ev.target.result);
-      if(d.months){ state = {...state, ...d}; save(); location.reload(); }
-    }catch(err){ alert("ملف غير صالح"); }
+    try{ const d = JSON.parse(ev.target.result); if(d.months){ state = {...state, ...d}; save(); location.reload(); } }
+    catch(err){ alert(t('invalid_file')); }
   };
   r.readAsText(file);
 }
 function resetAll(){
-  if(!confirm("⚠️ سيتم حذف كل البيانات. متأكد؟")) return;
+  if(!confirm(t('confirm_reset'))) return;
   localStorage.removeItem(KEY); location.reload();
 }
 
-/* ============ Init ============ */
+/* ===================================================================
+   Init
+=================================================================== */
 load();
-renderMonthPills();
-renderMonth();
-renderDashboard();
-renderDebts();
-renderPyramid();
+applyTheme();
+applyFontScale();
+applyLang();
 </script>
 </body>
 </html>
