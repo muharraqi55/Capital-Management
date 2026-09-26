@@ -13,6 +13,7 @@
   header{background:linear-gradient(90deg,var(--panel),var(--panel2));border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px;flex-wrap:wrap}
   header h1{font-size:17px;color:var(--accent);display:flex;align-items:center;gap:8px;white-space:nowrap}
   .toolbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .save-indicator{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--line);font-size:12px;font-weight:700;color:var(--ok);white-space:nowrap;transition:.3s;font-family:monospace}
   .year-picker{display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:4px 6px}
   .year-picker select{background:transparent;border:none;color:var(--gold);font-weight:700;font-size:15px;padding:4px 6px;outline:none;cursor:pointer;font-family:inherit}
   .year-picker button{background:transparent;border:none;color:var(--muted);padding:4px 8px;border-radius:6px;cursor:pointer;font-size:15px;font-weight:700;transition:.2s}
@@ -47,7 +48,7 @@
   .field input[readonly]{background:var(--bg);color:var(--accent);font-weight:600;cursor:not-allowed}
   .kpi{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center}
   .kpi .lbl{font-size:12px;color:var(--muted);margin-bottom:6px}
-  .kpi .val{font-size:20px;font-weight:700;color:var(--txt);direction:ltr}
+  .kpi .val{font-size:19px;font-weight:700;color:var(--txt);direction:ltr;font-family:monospace;letter-spacing:-.3px}
   .kpi .val.pos{color:var(--ok)}.kpi .val.neg{color:var(--danger)}.kpi .val.gold{color:var(--gold)}.kpi .val.acc{color:var(--accent)}
   table{width:100%;border-collapse:collapse;font-size:13px}
   thead{background:var(--panel2)}
@@ -152,13 +153,12 @@
   .debts-table th{padding:8px 6px;text-align:center;color:var(--accent);font-size:10px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
   .debts-table td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}
   .debts-table input[type="number"]{width:58px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:4px 3px;border-radius:4px;text-align:center;font-size:11px;font-family:monospace;outline:none}
-  .debts-table .paid-cell{font-family:monospace;font-weight:700;color:var(--accent);direction:ltr}
-  .debts-table .remain-cell{font-family:monospace;font-weight:700;direction:ltr}
+  .debts-table .paid-cell{font-family:monospace;font-weight:700;color:var(--accent);direction:ltr;font-size:12px}
+  .debts-table .remain-cell{font-family:monospace;font-weight:700;direction:ltr;font-size:12px}
   .debts-table .remain-cell.pos{color:var(--ok)}
   .debts-table .remain-cell.neg{color:var(--danger)}
   .debts-table tfoot td{background:rgba(34,193,164,.08);font-weight:700;padding:8px 6px;border-top:2px solid var(--accent)}
   .debts-table tr.fully-paid-row{opacity:.72;background:rgba(34,197,94,.05)}
-  /* ✏️ حقول التعديل المباشر في جدول الديون */
   .debts-table .inline-input{width:100%;background:transparent;border:1px solid transparent;color:var(--txt);padding:5px 6px;border-radius:4px;font-size:12px;font-family:inherit;text-align:right;transition:.15s;outline:none}
   html[dir="ltr"] .debts-table .inline-input{text-align:left}
   .debts-table .inline-input:hover{border-color:var(--line);background:var(--panel2)}
@@ -205,7 +205,7 @@
   @media print{
     @page{size:A4;margin:12mm 10mm}
     html,body{background:#fff !important;color:#000 !important;font-size:10pt !important}
-    header,nav.tabs,.toolbar,.settings-bar,.btn,.icon-btn,.toast,.monthPills,.site-footer,.modal,.eid-type-inline,.year-picker{display:none !important}
+    header,nav.tabs,.toolbar,.settings-bar,.btn,.icon-btn,.toast,.monthPills,.site-footer,.modal,.eid-type-inline,.year-picker,.save-indicator{display:none !important}
     main{padding:0 !important;max-width:100% !important}
     .view{display:none !important}.view.active{display:block !important}
     .card{break-inside:avoid;page-break-inside:avoid;border:1px solid #999 !important;background:#fff !important;box-shadow:none !important;padding:10pt !important;margin-bottom:8pt !important;border-radius:4pt}
@@ -250,6 +250,7 @@
 <header>
   <h1><span>💰</span> <span id="appTitle">نظام إدارة رأس المال</span></h1>
   <div class="toolbar">
+    <div class="save-indicator" id="saveIndicator" title="حالة الحفظ">💾 ...</div>
     <div class="year-picker">
       <button onclick="yearPrev()" title="Previous year">◀</button>
       <select id="yearSelect" onchange="selectYear(parseInt(this.value))"></select>
@@ -316,7 +317,7 @@
         </select>
       </div>
       <div class="field" id="eidAmountWrap" style="display:none"><label id="lblEidAmount"></label>
-        <input type="number" id="eidAmountInput" value="0" oninput="upd('eidAmount', this.value)"></div>
+        <input type="number" id="eidAmountInput" oninput="upd('eidAmount', this.value)"></div>
     </div>
   </div>
   <div class="card">
@@ -356,22 +357,6 @@
   </div>
 </section>
 
-<section id="years" class="view">
-  <div class="card"><h2 id="lblYearsKpi"></h2><div class="grid g4" id="yearsKpis"></div></div>
-  <div class="card">
-    <h2 id="lblYearsChart"></h2>
-    <div class="year-chart" id="yearsChart"></div>
-    <div class="year-bar-legend">
-      <div><span class="dot" style="background:linear-gradient(180deg,var(--accent),#0d9488)"></span><span data-i18n="y_inc"></span></div>
-      <div><span class="dot" style="background:linear-gradient(180deg,var(--danger),#991b1b)"></span><span data-i18n="y_exp"></span></div>
-      <div><span class="dot" style="background:linear-gradient(180deg,var(--gold),#92400e)"></span><span data-i18n="y_sav"></span></div>
-      <div><span class="dot" style="background:linear-gradient(180deg,var(--accent2),#1e40af)"></span><span data-i18n="y_rem"></span></div>
-    </div>
-  </div>
-  <div class="card"><h2 id="lblYearsTable"></h2><div style="overflow-x:auto"><table id="yearsTable"></table></div></div>
-  <div class="card"><h2 id="lblYearsDist"></h2><div style="overflow-x:auto"><table id="yearsDistTable"></table></div></div>
-</section>
-
 <section id="pyramid" class="view">
   <div class="card">
     <h2 id="lblPyrTitle"></h2>
@@ -402,8 +387,8 @@
           <option value="متنوع" data-i18n="dbt_misc">متنوع</option>
         </select>
       </div>
-      <div class="field"><label id="lblDebtTotal"></label><input id="d_total" type="number" value="0" min="0"></div>
-      <div class="field"><label id="lblDebtPaidBefore"></label><input id="d_paidBefore" type="number" value="0" min="0"></div>
+      <div class="field"><label id="lblDebtTotal"></label><input id="d_total" type="number" min="0"></div>
+      <div class="field"><label id="lblDebtPaidBefore"></label><input id="d_paidBefore" type="number" min="0"></div>
       <div class="field"><label id="lblDebtStart"></label><input id="d_start" type="date"></div>
       <div class="field"><label id="lblDebtEnd"></label><input id="d_end" type="date"></div>
       <div class="field"><label id="lblDebtNotes"></label><input id="d_notes"></div>
@@ -419,6 +404,22 @@
 
 <section id="annual" class="view">
   <div class="card"><h2 id="lblAnnualTitle"></h2><div style="overflow-x:auto"><table id="annualTable"></table></div></div>
+</section>
+
+<section id="years" class="view">
+  <div class="card"><h2 id="lblYearsKpi"></h2><div class="grid g4" id="yearsKpis"></div></div>
+  <div class="card">
+    <h2 id="lblYearsChart"></h2>
+    <div class="year-chart" id="yearsChart"></div>
+    <div class="year-bar-legend">
+      <div><span class="dot" style="background:linear-gradient(180deg,var(--accent),#0d9488)"></span><span data-i18n="y_inc"></span></div>
+      <div><span class="dot" style="background:linear-gradient(180deg,var(--danger),#991b1b)"></span><span data-i18n="y_exp"></span></div>
+      <div><span class="dot" style="background:linear-gradient(180deg,var(--gold),#92400e)"></span><span data-i18n="y_sav"></span></div>
+      <div><span class="dot" style="background:linear-gradient(180deg,var(--accent2),#1e40af)"></span><span data-i18n="y_rem"></span></div>
+    </div>
+  </div>
+  <div class="card"><h2 id="lblYearsTable"></h2><div style="overflow-x:auto"><table id="yearsTable"></table></div></div>
+  <div class="card"><h2 id="lblYearsDist"></h2><div style="overflow-x:auto"><table id="yearsDistTable"></table></div></div>
 </section>
 
 </main>
@@ -469,7 +470,7 @@ const I18N = {
     th_debt_rem_before:"المتبقي قبل الشهر",th_debt_this_month:"هذا الشهر",
     th_debt_rem_after:"المتبقي بعده",th_debt_note:"ملاحظة",
     lbl_savings:"💰 مبالغ الادخار (د.ب)",
-    savings_hint:"🔢 الأرقام هنا بالوحدات الصحيحة (1، 2، 3 ...)",
+    savings_hint:"🔢 يدعم حتى 3 أرقام عشرية (مثال: 200.11)",
     lbl_month_result:"النتيجة الشهرية",lbl_month_notes:"ملاحظات على الشهر",
     pyr_title:"🔺 هرم الأمان المالي",
     pyr_desc:"ترتيب الأولويات المالية من القاعدة إلى القمة. المبالغ مجمّعة من 12 شهر.",
@@ -553,6 +554,9 @@ const I18N = {
     y_exists:"هذه السنة موجودة بالفعل",y_invalid:"سنة غير صالحة",
     y_deleted:"✅ تم حذف السنة ",y_added:"✅ تمت إضافة السنة ",
     y_years:"سنوات",
+    save_ok:"تم الحفظ ", save_fail:"فشل الحفظ! ",
+    migrate_ok:"✅ تم نقل بياناتك من المفتاح القديم",
+    storage_warning:"⚠️ تنبيه: التخزين المحلي معطّل في متصفحك!\n\nالحل:\n• لا تستخدم وضع التصفح الخاص (Private/Incognito)\n• تأكد من السماح لـ Cookies في الإعدادات\n• جرّب متصفح آخر (Chrome/Edge/Firefox)",
   },
   en: {
     app_title:"Capital Manager",footer:"All rights reserved to Muharraqi",
@@ -585,7 +589,7 @@ const I18N = {
     th_debt_rem_before:"Remaining Before",th_debt_this_month:"This Month",
     th_debt_rem_after:"Remaining After",th_debt_note:"Note",
     lbl_savings:"💰 Savings Amounts (BHD)",
-    savings_hint:"🔢 Whole numbers only (1, 2, 3 ...)",
+    savings_hint:"🔢 Supports up to 3 decimal places (e.g. 200.11)",
     lbl_month_result:"Monthly Result",lbl_month_notes:"Month Notes",
     pyr_title:"🔺 Financial Safety Pyramid",
     pyr_desc:"Priorities from base to top. Amounts aggregated over 12 months.",
@@ -669,6 +673,9 @@ const I18N = {
     y_exists:"Year already exists",y_invalid:"Invalid year",
     y_deleted:"✅ Year deleted: ",y_added:"✅ Year added: ",
     y_years:"years",
+    save_ok:"Saved ", save_fail:"Save failed! ",
+    migrate_ok:"✅ Data migrated from old key",
+    storage_warning:"⚠️ Warning: Local storage is disabled in your browser!\n\nSolution:\n• Don't use Private/Incognito mode\n• Allow Cookies in settings\n• Try another browser",
   }
 };
 
@@ -678,9 +685,22 @@ const BANKS_EN = ["ATM Card","NBK","ILA","BBK","MEEM","NBB","Not Counted"];
 const MEAT_MONTHS = [0, 3, 6, 9];
 function isMeatMonth(mi){ return MEAT_MONTHS.includes(mi); }
 
+const KEY = "cm_stable_data_v1";
+const OLD_KEYS = [
+  "capital_manager_v22","capital_manager_v21","capital_manager_v20",
+  "capital_manager_v19","capital_manager_v18","capital_manager_v17",
+  "capital_manager_v16","capital_manager_v15","capital_manager_v14",
+  "capital_manager_v13","capital_manager_v12","capital_manager_v11",
+  "capital_manager_v10","capital_manager_v9","capital_manager_v8",
+  "capital_manager_v7","capital_manager_v6","capital_manager_v5",
+  "capital_manager_v4","capital_manager_v3","capital_manager_v2","capital_manager_v1"
+];
+
 let LANG = localStorage.getItem('cm_lang') || 'ar';
 let THEME = localStorage.getItem('cm_theme') || 'dark';
 let FONT_SCALE = parseFloat(localStorage.getItem('cm_font') || '1');
+let LAST_SAVE = null;
+let STORAGE_OK = true;
 
 const t = key => (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key;
 const getMonths = () => I18N[LANG].months;
@@ -762,12 +782,61 @@ let state = {
   debts: []
 };
 
-const KEY = "capital_manager_v20";
-
-function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
-function load(){
+function testStorage(){
   try{
-    const raw = localStorage.getItem(KEY);
+    const k = "__test_" + Date.now();
+    localStorage.setItem(k, "1");
+    localStorage.removeItem(k);
+    return true;
+  }catch(e){ return false; }
+}
+
+function save(){
+  if(!STORAGE_OK) return;
+  try{
+    localStorage.setItem(KEY, JSON.stringify(state));
+    LAST_SAVE = new Date();
+    updateSaveIndicator(true);
+  }catch(e){
+    console.error("Save failed:", e);
+    updateSaveIndicator(false, e.message);
+    if(e.name === "QuotaExceededError"){
+      toast(LANG==='ar'?'⚠️ مساحة التخزين ممتلئة':'⚠️ Storage full');
+    }
+  }
+}
+
+function updateSaveIndicator(ok, err){
+  const el = document.getElementById("saveIndicator");
+  if(!el) return;
+  if(ok && LAST_SAVE){
+    const d = LAST_SAVE;
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mm = String(d.getMinutes()).padStart(2,'0');
+    const ss = String(d.getSeconds()).padStart(2,'0');
+    el.textContent = "💾 " + t('save_ok') + `${hh}:${mm}:${ss}`;
+    el.style.color = "var(--ok)";
+  } else if(!ok){
+    el.textContent = "⚠️ " + t('save_fail') + (err||"");
+    el.style.color = "var(--danger)";
+  }
+}
+
+function load(){
+  STORAGE_OK = testStorage();
+  if(!STORAGE_OK){
+    setTimeout(() => alert(t('storage_warning')), 500);
+    return;
+  }
+  try{
+    let raw = localStorage.getItem(KEY);
+    let migratedFrom = null;
+    if(!raw){
+      for(const oldKey of OLD_KEYS){
+        const oldRaw = localStorage.getItem(oldKey);
+        if(oldRaw){ raw = oldRaw; migratedFrom = oldKey; break; }
+      }
+    }
     if(!raw) return;
     const d = JSON.parse(raw);
     if(d.months && !d.years){
@@ -782,6 +851,7 @@ function load(){
         delete newD.monthly;
         return newD;
       });
+      if(migratedFrom) setTimeout(() => save(), 100);
       return;
     }
     state = {...state, ...d};
@@ -798,7 +868,13 @@ function load(){
       }
       return dd;
     });
-  }catch(e){ console.warn(e); }
+    if(migratedFrom){
+      setTimeout(() => {
+        save();
+        toast(t('migrate_ok') + ": " + migratedFrom);
+      }, 400);
+    }
+  }catch(e){ console.error("Load error:", e); }
 }
 
 function initIfEmpty(){
@@ -919,10 +995,19 @@ function debtTotals(){
     totalDebt: state.debts.reduce((s,d)=>s+(+d.total||0),0)};
 }
 
-const fmt = n => (Number(n)||0).toLocaleString("en-US",{maximumFractionDigits:0});
+const fmt = n => (Number(n)||0).toLocaleString("en-US",{minimumFractionDigits:3,maximumFractionDigits:3});
 const money = n => fmt(n) + " " + (LANG==='ar'?'د.ب':'BHD');
-const fmt2 = n => (Number(n)||0).toLocaleString("en-US",{maximumFractionDigits:2});
+const fmt2 = n => (Number(n)||0).toLocaleString("en-US",{minimumFractionDigits:3,maximumFractionDigits:3});
 const money2 = n => fmt2(n) + " " + (LANG==='ar'?'د.ب':'BHD');
+const fmtPct = n => (Number(n)||0).toFixed(2);
+
+function inVal(v){
+  if(v === 0 || v === '0' || v === '' || v === undefined || v === null) return '';
+  const n = Number(v);
+  if(isNaN(n) || n === 0) return '';
+  return v;
+}
+
 function toast(msg){ const el = document.getElementById("toast"); el.textContent = msg; el.classList.add("show"); clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove("show"),2000); }
 function kpi(lbl,val,cls=""){ return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val ${cls}">${val}</div></div>`; }
 
@@ -1152,7 +1237,7 @@ function renderIncomeFields(){
   m.hasMeatSupport = isMeat;
   if(!isMeat) m.meat = 0;
   let html = getIncomeFields().map(([k,l])=>
-    `<div class="field"><label>${l}</label><input type="number" value="${m[k]||0}" oninput="upd('${k}',this.value)"></div>`
+    `<div class="field"><label>${l}</label><input type="number" value="${inVal(m[k])}" oninput="upd('${k}',this.value)"></div>`
   ).join("");
   html += `
     <div class="field"><label>${t('f_meat_support')}</label>
@@ -1160,7 +1245,7 @@ function renderIncomeFields(){
         ${isMeat ? '🟢 ' + t('f_meat_yes') : '🔴 ' + t('f_meat_no')}
       </div>
     </div>
-    ${isMeat ? `<div class="field"><label>${t('f_meat_amount')}</label><input type="number" value="${m.meat||0}" oninput="upd('meat',this.value)"></div>` : ''}
+    ${isMeat ? `<div class="field"><label>${t('f_meat_amount')}</label><input type="number" value="${inVal(m.meat)}" oninput="upd('meat',this.value)"></div>` : ''}
   `;
   document.getElementById("incomeFields").innerHTML = html;
 }
@@ -1183,7 +1268,7 @@ function renderExpenseFields(){
             <option value="الزوج" ${person==='الزوج'?'selected':''}>${t('bd_husband')}</option>
             <option value="العيال" ${person==='العيال'?'selected':''}>${t('bd_kids')}</option>
           </select></div></td>
-        <td><input type="number" value="${m.birthday||0}" oninput="updExpenseAmount('birthday', this.value)"></td>
+        <td><input type="number" value="${inVal(m.birthday)}" oninput="updExpenseAmount('birthday', this.value)"></td>
         <td><select class="${excluded?'bank-excluded':''}" onchange="updExpenseBank('birthday', this.value)">${bankOpts}</select></td>
         <td><input type="text" value="${(meta.note||'').replace(/"/g,'&quot;')}" oninput="updExpenseNote('birthday', this.value)" placeholder="..."></td>
       </tr>`;
@@ -1193,7 +1278,7 @@ function renderExpenseFields(){
     const bankOpts = BANKS.map(b => `<option value="${b}" ${meta.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
     return `<tr class="${excluded?'excluded':''}">
       <td>${row.label}</td>
-      <td><input type="number" value="${m[row.key]||0}" oninput="updExpenseAmount('${row.key}', this.value)"></td>
+      <td><input type="number" value="${inVal(m[row.key])}" oninput="updExpenseAmount('${row.key}', this.value)"></td>
       <td><select class="${excluded?'bank-excluded':''}" onchange="updExpenseBank('${row.key}', this.value)">${bankOpts}</select></td>
       <td><input type="text" value="${(meta.note||'').replace(/"/g,'&quot;')}" oninput="updExpenseNote('${row.key}', this.value)" placeholder="..."></td>
     </tr>`;
@@ -1245,7 +1330,7 @@ function renderSavingFields(){
     }
     return `<div class="field saving-field">
       <label>${l}</label>
-      <input type="number" value="${m[k]||0}" oninput="updSaving('${k}',this.value)" min="0" step="1" inputmode="numeric">
+      <input type="number" value="${inVal(m[k])}" oninput="updSaving('${k}',this.value)" min="0" step="0.001">
       ${extraHtml}
     </div>`;
   }).join("");
@@ -1280,7 +1365,7 @@ function renderDebtsMonthSection(){
       <td><span class="badge ${d.type==='credit'?'red':d.type==='debit'?'green':'blue'}">${typeLabel[d.type]}</span></td>
       <td class="num">${money(d.total)}</td>
       <td class="num muted">${money(remBefore)}</td>
-      <td><input type="number" class="${inputCls}" value="${thisMonth}" min="0" oninput="updDebtMonthInEntry(${d.id}, this.value)"></td>
+      <td><input type="number" class="${inputCls}" value="${inVal(thisMonth)}" min="0" step="0.001" oninput="updDebtMonthInEntry(${d.id}, this.value)"></td>
       <td class="num debt-rem-after" style="font-family:monospace;font-weight:700;color:${remAfter===0?'var(--ok)':'var(--txt)'};direction:ltr">${money(remAfter)}</td>
       <td class="muted">${d.notes || "—"}</td>
     </tr>`;
@@ -1333,7 +1418,17 @@ function updExpenseAmount(key, val){ const m = M()[state.activeMonth]; m[key] = 
 function updExpenseBank(key, val){ const m = M()[state.activeMonth]; getMeta(m, key).bank = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
 function updExpenseNote(key, val){ const m = M()[state.activeMonth]; getMeta(m, key).note = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 function updBirthdayPerson(val){ const m = M()[state.activeMonth]; m.birthdayPerson = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
-function updSaving(key, val){ const m = M()[state.activeMonth]; m[key] = Math.max(0, Math.round(parseFloat(val)) || 0); m.lastModified = new Date().toISOString(); save(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
+
+/* ✅ FIXED: بدون Math.round — يقبل الكسور */
+function updSaving(key, val){
+  const m = M()[state.activeMonth];
+  m[key] = Math.max(0, parseFloat(val) || 0);
+  m.lastModified = new Date().toISOString();
+  save();
+  renderMonthResults();
+  renderMonthDate();
+  renderMonthPills();
+}
 
 function renderMonth(){
   const m = M()[state.activeMonth];
@@ -1345,7 +1440,7 @@ function renderMonth(){
   document.getElementById("eidSelect").value = m.eidType || "no";
   const showAmt = ["eid_money","clothes","both"].includes(m.eidType);
   document.getElementById("eidAmountWrap").style.display = showAmt ? "flex" : "none";
-  document.getElementById("eidAmountInput").value = m.eidAmount || 0;
+  document.getElementById("eidAmountInput").value = inVal(m.eidAmount);
   const ec = document.querySelector('.eid-card');
   if(ec) ec.classList.toggle('eid-no', m.eidType === 'no' || m.eidType === 'none');
   document.getElementById("monthNotes").value = m.notes || "";
@@ -1440,7 +1535,7 @@ function renderPyramid(){
     const level = levels.length - idx;
     const amt = totals[lvl.key] || 0;
     const pct = grandTotal > 0 ? (amt/grandTotal*100) : 0;
-    html += `<tr><td style="color:${lvl.color};font-weight:700">${level}</td><td>${lvl.subtitle} ${lvl.label}</td><td class="num" style="color:${lvl.color};font-weight:700">${money(amt)}</td><td class="num">${pct.toFixed(2)}%</td></tr>`;
+    html += `<tr><td style="color:${lvl.color};font-weight:700">${level}</td><td>${lvl.subtitle} ${lvl.label}</td><td class="num" style="color:${lvl.color};font-weight:700">${money(amt)}</td><td class="num">${fmtPct(pct)}%</td></tr>`;
   });
   html += `<tr style="background:rgba(34,193,164,.1);font-weight:700"><td colspan="2">${t('th_total')}</td><td class="num" style="color:var(--accent);font-weight:700">${money(grandTotal)}</td><td class="num">100%</td></tr></tbody>`;
   document.getElementById("pyramidTable").innerHTML = html;
@@ -1464,7 +1559,7 @@ function addDebt(){
     notes: document.getElementById("d_notes").value.trim()
   });
   ["d_name","d_notes"].forEach(id=>document.getElementById(id).value="");
-  ["d_total","d_paidBefore"].forEach(id=>document.getElementById(id).value=0);
+  ["d_total","d_paidBefore"].forEach(id=>document.getElementById(id).value="");
   save(); renderDebts(); renderDashboard(); renderMonth(); toast(t('added'));
 }
 function delDebt(id){
@@ -1479,7 +1574,6 @@ function updDebtMonth(id, mi, val){
   save(); refreshDebtTotals(); renderDebtsSummary(); renderDashboard();
 }
 
-/* ✏️ دوال التعديل المباشر للديون */
 function updDebtName(id, val){
   const d = state.debts.find(x=>x.id===id);
   if(!d) return;
@@ -1644,11 +1738,11 @@ function renderDebts(){
         </select>
       </td>
       <td>
-        <input type="number" class="inline-input num" value="${d.total||0}" min="0" step="0.01"
+        <input type="number" class="inline-input num" value="${inVal(d.total)}" min="0" step="0.001"
                oninput="updDebtTotal(${d.id}, this.value)">
       </td>
       <td>
-        <input type="number" class="inline-input num paid-before" value="${d.paidBefore||0}" min="0" step="0.01"
+        <input type="number" class="inline-input num paid-before" value="${inVal(d.paidBefore)}" min="0" step="0.001"
                oninput="updDebtPaidBefore(${d.id}, this.value)">
       </td>
       <td>
@@ -1659,7 +1753,7 @@ function renderDebts(){
       </td>`;
 
     for(let i=0;i<12;i++){
-      body += `<td><input type="number" value="${dm(d,y,i)}" min="0" oninput="updDebtMonth(${d.id}, ${i}, this.value)"></td>`;
+      body += `<td><input type="number" value="${inVal(dm(d,y,i))}" min="0" step="0.001" oninput="updDebtMonth(${d.id}, ${i}, this.value)"></td>`;
     }
     body += `<td class="paid-cell">${fmt(paid)}</td>
              <td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td>
@@ -1851,7 +1945,9 @@ function importData(e){
 }
 function resetAll(){
   if(!confirm(t('confirm_reset'))) return;
-  localStorage.removeItem(KEY); location.reload();
+  localStorage.removeItem(KEY);
+  OLD_KEYS.forEach(k => localStorage.removeItem(k));
+  location.reload();
 }
 
 load();
@@ -1859,6 +1955,7 @@ initIfEmpty();
 applyTheme();
 applyFontScale();
 applyLang();
+save();
 </script>
 </body>
 </html>
