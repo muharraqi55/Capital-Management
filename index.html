@@ -5,41 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>إدارة رأس المال | Capital Manager</title>
 <style>
-  :root{
-    --bg:#0f1720; --panel:#17212b; --panel2:#1e2b38;
-    --line:#2a3a4a; --txt:#e6eef7; --muted:#8fa3b8;
-    --accent:#22c1a4; --accent2:#3b82f6; --danger:#ef4444;
-    --ok:#22c55e; --gold:#eab308;
-    --shadow:rgba(0,0,0,.35);
-  }
-  html[data-theme="light"]{
-    --bg:#f0f4f8; --panel:#ffffff; --panel2:#e8eef5;
-    --line:#cbd5e1; --txt:#0f172a; --muted:#64748b;
-    --accent:#0891b2; --accent2:#2563eb; --danger:#dc2626;
-    --ok:#16a34a; --gold:#d97706;
-    --shadow:rgba(0,0,0,.12);
-  }
+  :root{--bg:#0f1720;--panel:#17212b;--panel2:#1e2b38;--line:#2a3a4a;--txt:#e6eef7;--muted:#8fa3b8;--accent:#22c1a4;--accent2:#3b82f6;--danger:#ef4444;--ok:#22c55e;--gold:#eab308;--shadow:rgba(0,0,0,.35);}
+  html[data-theme="light"]{--bg:#f0f4f8;--panel:#ffffff;--panel2:#e8eef5;--line:#cbd5e1;--txt:#0f172a;--muted:#64748b;--accent:#0891b2;--accent2:#2563eb;--danger:#dc2626;--ok:#16a34a;--gold:#d97706;--shadow:rgba(0,0,0,.12);}
   *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI","Tahoma",sans-serif}
   html,body{height:100%}
   body{background:var(--bg);color:var(--txt);min-height:100vh;font-size:14px;transition:background .3s,color .3s}
-  header{background:linear-gradient(90deg,var(--panel),var(--panel2));border-bottom:1px solid var(--line);
-    padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;
-    gap:12px;flex-wrap:wrap}
+  header{background:linear-gradient(90deg,var(--panel),var(--panel2));border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px;flex-wrap:wrap}
   header h1{font-size:17px;color:var(--accent);display:flex;align-items:center;gap:8px;white-space:nowrap}
-  .toolbar{display:flex;gap:6px;flex-wrap:wrap}
-  .btn{background:var(--panel2);color:var(--txt);border:1px solid var(--line);padding:7px 12px;
-    border-radius:8px;cursor:pointer;font-size:13px;transition:.2s;white-space:nowrap}
+  .toolbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .year-picker{display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:4px 6px}
+  .year-picker select{background:transparent;border:none;color:var(--gold);font-weight:700;font-size:15px;padding:4px 6px;outline:none;cursor:pointer;font-family:inherit}
+  .year-picker button{background:transparent;border:none;color:var(--muted);padding:4px 8px;border-radius:6px;cursor:pointer;font-size:15px;font-weight:700;transition:.2s}
+  .year-picker button:hover{background:var(--accent);color:#fff}
+  .btn{background:var(--panel2);color:var(--txt);border:1px solid var(--line);padding:7px 12px;border-radius:8px;cursor:pointer;font-size:13px;transition:.2s;white-space:nowrap}
   .btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
   .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
   .btn.danger{background:transparent;color:var(--danger);border-color:var(--danger)}
   .btn.danger:hover{background:var(--danger);color:#fff}
   .settings-bar{display:flex;gap:4px;padding:4px;background:var(--bg);border:1px solid var(--line);border-radius:10px}
-  .settings-bar button{background:transparent;border:none;color:var(--muted);padding:6px 10px;
-    border-radius:6px;cursor:pointer;font-size:13px;font-weight:700;transition:.2s}
+  .settings-bar button{background:transparent;border:none;color:var(--muted);padding:6px 10px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:700;transition:.2s}
   .settings-bar button:hover{background:var(--accent);color:#fff}
   nav.tabs{display:flex;gap:4px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto}
-  nav.tabs button{background:transparent;border:none;color:var(--muted);padding:8px 16px;
-    border-radius:8px;cursor:pointer;font-size:14px;white-space:nowrap;font-weight:500;transition:.2s}
+  nav.tabs button{background:transparent;border:none;color:var(--muted);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:14px;white-space:nowrap;font-weight:500;transition:.2s}
   nav.tabs button.active{background:var(--accent);color:#fff}
   nav.tabs button:hover:not(.active){background:var(--panel2);color:var(--txt)}
   main{padding:20px;max-width:1400px;margin:0 auto}
@@ -47,89 +34,70 @@
   .view.active{display:block;animation:fade .25s ease}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
-  .card h2{font-size:16px;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px;
-    padding-bottom:10px;border-bottom:1px solid var(--line)}
+  .card h2{font-size:16px;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--line)}
   .card h2::before{content:"●";color:var(--accent);font-size:10px}
   .grid{display:grid;gap:12px}
-  .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
   @media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:600px){.g4,.g3,.g2{grid-template-columns:1fr}}
   .field{display:flex;flex-direction:column;gap:6px}
   .field label{font-size:12px;color:var(--muted)}
-  .field input,.field select,.field textarea{background:var(--panel2);border:1px solid var(--line);color:var(--txt);
-    padding:9px 12px;border-radius:8px;font-size:14px;outline:none;transition:.2s;font-family:inherit}
+  .field input,.field select,.field textarea{background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:9px 12px;border-radius:8px;font-size:14px;outline:none;transition:.2s;font-family:inherit}
   .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,193,164,.15)}
   .field input[readonly]{background:var(--bg);color:var(--accent);font-weight:600;cursor:not-allowed}
   .kpi{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center}
   .kpi .lbl{font-size:12px;color:var(--muted);margin-bottom:6px}
   .kpi .val{font-size:20px;font-weight:700;color:var(--txt);direction:ltr}
-  .kpi .val.pos{color:var(--ok)} .kpi .val.neg{color:var(--danger)}
-  .kpi .val.gold{color:var(--gold)} .kpi .val.acc{color:var(--accent)}
+  .kpi .val.pos{color:var(--ok)}.kpi .val.neg{color:var(--danger)}.kpi .val.gold{color:var(--gold)}.kpi .val.acc{color:var(--accent)}
   table{width:100%;border-collapse:collapse;font-size:13px}
   thead{background:var(--panel2)}
   th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line)}
-  html[dir="ltr"] th, html[dir="ltr"] td{text-align:left}
+  html[dir="ltr"] th,html[dir="ltr"] td{text-align:left}
   th{color:var(--accent);font-weight:600;font-size:12px}
   tbody tr:hover{background:rgba(34,193,164,.05)}
   td.num{direction:ltr;text-align:left;font-family:monospace}
   html[dir="ltr"] td.num{text-align:right}
-  td.neg{color:var(--danger)} td.pos{color:var(--ok)}
+  td.neg{color:var(--danger)}td.pos{color:var(--ok)}
   .monthPills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-  .monthPills button{background:var(--panel2);border:1px solid var(--line);color:var(--muted);
-    padding:7px 14px;border-radius:20px;cursor:pointer;font-size:13px;position:relative;transition:.2s}
+  .monthPills button{background:var(--panel2);border:1px solid var(--line);color:var(--muted);padding:7px 14px;border-radius:20px;cursor:pointer;font-size:13px;position:relative;transition:.2s}
   .monthPills button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
   .monthPills button:hover:not(.active){color:var(--txt)}
   .monthPills button.hasData::after{content:"●";color:var(--ok);font-size:9px;position:absolute;top:4px;left:6px}
   .muted{color:var(--muted);font-size:12px}
-  .notice-bhd{display:flex;align-items:center;gap:8px;padding:10px 14px;margin-bottom:14px;
-    background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.35);border-radius:8px;
-    color:var(--gold);font-size:13px;font-weight:600}
-  .notice-int{display:flex;align-items:center;gap:8px;padding:8px 14px;margin-bottom:12px;
-    background:rgba(34,193,164,.08);border:1px solid rgba(34,193,164,.3);border-radius:8px;
-    color:var(--accent);font-size:12px;font-weight:600}
-  .toast{position:fixed;bottom:20px;left:20px;background:var(--accent);color:#fff;padding:12px 20px;
-    border-radius:10px;font-weight:600;box-shadow:0 8px 24px var(--shadow);opacity:0;transform:translateY(20px);
-    transition:.3s;pointer-events:none;z-index:200}
+  .notice-bhd{display:flex;align-items:center;gap:8px;padding:10px 14px;margin-bottom:14px;background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.35);border-radius:8px;color:var(--gold);font-size:13px;font-weight:600}
+  .notice-int{display:flex;align-items:center;gap:8px;padding:8px 14px;margin-bottom:12px;background:rgba(34,193,164,.08);border:1px solid rgba(34,193,164,.3);border-radius:8px;color:var(--accent);font-size:12px;font-weight:600}
+  .toast{position:fixed;bottom:20px;left:20px;background:var(--accent);color:#fff;padding:12px 20px;border-radius:10px;font-weight:600;box-shadow:0 8px 24px var(--shadow);opacity:0;transform:translateY(20px);transition:.3s;pointer-events:none;z-index:200}
   .toast.show{opacity:1;transform:none}
-  .icon-btn{background:transparent;border:1px solid var(--line);color:var(--muted);width:30px;height:30px;
-    border-radius:6px;cursor:pointer;font-size:14px;transition:.2s}
+  .icon-btn{background:transparent;border:1px solid var(--line);color:var(--muted);width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:14px;transition:.2s}
   .icon-btn:hover{border-color:var(--danger);color:var(--danger)}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
   .badge.green{background:rgba(34,197,94,.15);color:var(--ok)}
   .badge.red{background:rgba(239,68,68,.15);color:var(--danger)}
   .badge.blue{background:rgba(59,130,246,.15);color:var(--accent2)}
   .badge.gold{background:rgba(234,179,8,.15);color:var(--gold)}
-
-  .card.eid-card{border:2px solid var(--gold);
-    background:linear-gradient(180deg,rgba(234,179,8,.18),rgba(234,179,8,.06));
-    box-shadow:0 0 0 3px rgba(234,179,8,.15);transition:.3s}
-  .card.eid-card h2.eid-title{color:#111827;background:var(--gold);border-bottom-color:rgba(0,0,0,.15);
-    padding:8px 12px;border-radius:6px;font-weight:700;font-size:14px;line-height:1.4}
+  .badge.purple{background:rgba(168,85,247,.15);color:#c084fc}
+  .badge.fully-paid{background:rgba(34,197,94,.2);color:var(--ok);border:1px solid var(--ok);font-size:10px;padding:2px 6px;margin-inline-start:6px;font-weight:700}
+  .card.eid-card{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.18),rgba(234,179,8,.06));box-shadow:0 0 0 3px rgba(234,179,8,.15);transition:.3s}
+  .card.eid-card h2.eid-title{color:#111827;background:var(--gold);border-bottom-color:rgba(0,0,0,.15);padding:8px 12px;border-radius:6px;font-weight:700;font-size:14px;line-height:1.4}
   .card.eid-card h2.eid-title::before{content:"⚠";color:#7c2d12;font-size:14px}
   .card.eid-card .field label{color:#facc15;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.4)}
   .card.eid-card .field select,.card.eid-card .field input{border-color:var(--gold);background:rgba(20,25,35,.75);color:#fef3c7}
-  .card.eid-card.eid-no{border-color:var(--ok);
-    background:linear-gradient(180deg,rgba(34,197,94,.18),rgba(34,197,94,.06));
-    box-shadow:0 0 0 3px rgba(34,197,94,.15)}
+  .card.eid-card.eid-no{border-color:var(--ok);background:linear-gradient(180deg,rgba(34,197,94,.18),rgba(34,197,94,.06));box-shadow:0 0 0 3px rgba(34,197,94,.15)}
   .card.eid-card.eid-no h2.eid-title{background:var(--ok);color:#052e16}
   .card.eid-card.eid-no h2.eid-title::before{color:#052e16}
   .card.eid-card.eid-no .field label{color:#86efac}
-
-  select.meat-select{font-weight:700;cursor:pointer;transition:.25s}
-  select.meat-select.meat-no{background:linear-gradient(180deg,#2a1416,rgba(239,68,68,.35));border-color:var(--danger);color:#ffdcdc}
-  select.meat-select.meat-yes{background:linear-gradient(180deg,#123322,rgba(34,197,94,.35));border-color:var(--ok);color:#d6ffe2}
-
+  .meat-status{display:flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:8px;font-size:13px;font-weight:700;border:1.5px solid;transition:.25s;user-select:none;min-height:40px}
+  .meat-status.meat-status-no{background:linear-gradient(180deg,#2a1416,rgba(239,68,68,.35));border-color:var(--danger);color:#ffdcdc}
+  .meat-status.meat-status-yes{background:linear-gradient(180deg,#123322,rgba(34,197,94,.35));border-color:var(--ok);color:#d6ffe2}
   .expense-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
   .expense-table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
   .expense-table thead{background:var(--panel2)}
-  .expense-table th{padding:10px 12px;text-align:right;color:var(--accent);font-size:11px;font-weight:700;
-    border-bottom:2px solid var(--line);white-space:nowrap}
+  .expense-table th{padding:10px 12px;text-align:right;color:var(--accent);font-size:11px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
   html[dir="ltr"] .expense-table th{text-align:left}
   .expense-table td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
   .expense-table td:first-child{font-weight:600;color:var(--txt);white-space:nowrap;padding-right:14px}
   html[dir="ltr"] .expense-table td:first-child{padding-right:8px;padding-left:14px}
-  .expense-table input,.expense-table select{width:100%;background:var(--panel2);border:1px solid var(--line);
-    color:var(--txt);padding:7px 10px;border-radius:6px;font-size:13px;outline:none;transition:.2s;font-family:inherit}
+  .expense-table input,.expense-table select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 10px;border-radius:6px;font-size:13px;outline:none;transition:.2s;font-family:inherit}
   .expense-table input:focus,.expense-table select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,193,164,.15)}
   .expense-table tr.excluded{background:rgba(239,68,68,.06)}
   .expense-table tr.excluded td:first-child{color:var(--danger);text-decoration:line-through;opacity:.75}
@@ -137,49 +105,39 @@
   .expense-table tr.group-header{background:linear-gradient(90deg,rgba(59,130,246,.15),transparent)}
   .expense-table tr.group-header td{color:var(--accent2);font-weight:700;font-size:12px;padding:8px 14px;border-bottom:1px dashed var(--line)}
   .birthday-cell{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .birthday-cell select{max-width:110px;padding:5px 8px !important;font-size:12px !important;
-    background:rgba(234,179,8,.1) !important;border-color:var(--gold) !important;color:#facc15 !important}
+  .birthday-cell select{max-width:110px;padding:5px 8px !important;font-size:12px !important;background:rgba(234,179,8,.1) !important;border-color:var(--gold) !important;color:#facc15 !important}
   .expense-table tr.bday-row{background:rgba(234,179,8,.04)}
-
-  .expense-summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding:14px;
-    background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:13px}
-  .exp-sum-item{display:flex;gap:8px;align-items:center;padding:6px 12px;border-radius:8px;
-    background:var(--panel);border:1px solid var(--line)}
+  .expense-summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding:14px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:13px}
+  .exp-sum-item{display:flex;gap:8px;align-items:center;padding:6px 12px;border-radius:8px;background:var(--panel);border:1px solid var(--line)}
   .exp-sum-item span{color:var(--muted)}
   .exp-sum-item b{color:var(--txt);font-family:monospace;font-size:14px}
-  .exp-sum-item.green{border-color:rgba(34,197,94,.35)} .exp-sum-item.green b{color:var(--ok)}
-  .exp-sum-item.red{border-color:rgba(239,68,68,.35)} .exp-sum-item.red b{color:var(--danger)}
+  .exp-sum-item.green{border-color:rgba(34,197,94,.35)}.exp-sum-item.green b{color:var(--ok)}
+  .exp-sum-item.red{border-color:rgba(239,68,68,.35)}.exp-sum-item.red b{color:var(--danger)}
   .exp-sum-divider{width:100%;height:1px;background:var(--line);margin:6px 0}
   .exp-sum-title{width:100%;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:4px}
   .bank-item{transition:.2s;min-width:150px}
   .bank-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px var(--shadow)}
-  .bank-item.bank-card{border-color:rgba(34,193,164,.4)} .bank-item.bank-card b{color:var(--accent)}
-  .bank-item.bank-nbk{border-color:rgba(59,130,246,.4)} .bank-item.bank-nbk b{color:var(--accent2)}
-  .bank-item.bank-ila{border-color:rgba(168,85,247,.4)} .bank-item.bank-ila b{color:#c084fc}
-  .bank-item.bank-bbk{border-color:rgba(249,115,22,.4)} .bank-item.bank-bbk b{color:#fb923c}
-  .bank-item.bank-meem{border-color:rgba(20,184,166,.4)} .bank-item.bank-meem b{color:#2dd4bf}
-  .bank-item.bank-nbb{border-color:rgba(234,179,8,.4)} .bank-item.bank-nbb b{color:var(--gold)}
-  .bank-item.bank-excl{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.08)} .bank-item.bank-excl b{color:var(--danger)}
-
+  .bank-item.bank-card{border-color:rgba(34,193,164,.4)}.bank-item.bank-card b{color:var(--accent)}
+  .bank-item.bank-nbk{border-color:rgba(59,130,246,.4)}.bank-item.bank-nbk b{color:var(--accent2)}
+  .bank-item.bank-ila{border-color:rgba(168,85,247,.4)}.bank-item.bank-ila b{color:#c084fc}
+  .bank-item.bank-bbk{border-color:rgba(249,115,22,.4)}.bank-item.bank-bbk b{color:#fb923c}
+  .bank-item.bank-meem{border-color:rgba(20,184,166,.4)}.bank-item.bank-meem b{color:#2dd4bf}
+  .bank-item.bank-nbb{border-color:rgba(234,179,8,.4)}.bank-item.bank-nbb b{color:var(--gold)}
+  .bank-item.bank-excl{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.08)}.bank-item.bank-excl b{color:var(--danger)}
   .saving-card{border:2px solid var(--accent);background:linear-gradient(180deg,rgba(34,193,164,.1),transparent)}
   .saving-card h2{color:var(--accent)}
   .saving-field input{font-weight:700;color:var(--accent);text-align:center;font-size:16px}
   .eid-type-inline{display:flex;gap:6px;margin-top:6px}
-  .eid-type-inline select{flex:1;background:rgba(234,179,8,.1);border:1px solid var(--gold);
-    color:#facc15;font-weight:700;padding:5px 8px;border-radius:6px;font-size:11px;cursor:pointer}
-
+  .eid-type-inline select{flex:1;background:rgba(234,179,8,.1);border:1px solid var(--gold);color:#facc15;font-weight:700;padding:5px 8px;border-radius:6px;font-size:11px;cursor:pointer}
   .debts-month-card{border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.08),transparent)}
   .debts-month-card h2{color:var(--accent2)}
   .debts-month-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
   .debts-month-table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
   .debts-month-table thead{background:var(--panel2)}
-  .debts-month-table th{padding:9px 10px;text-align:right;color:var(--accent2);font-size:11px;
-    font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
+  .debts-month-table th{padding:9px 10px;text-align:right;color:var(--accent2);font-size:11px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
   html[dir="ltr"] .debts-month-table th{text-align:left}
   .debts-month-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
-  .debts-month-table input{width:110px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);
-    padding:7px 10px;border-radius:6px;font-size:14px;font-weight:700;outline:none;
-    transition:.2s;font-family:monospace;text-align:center}
+  .debts-month-table input{width:110px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 10px;border-radius:6px;font-size:14px;font-weight:700;outline:none;transition:.2s;font-family:monospace;text-align:center}
   .debts-month-table input:focus{box-shadow:0 0 0 3px rgba(34,193,164,.15)}
   .debts-month-table input.input-debit{border-color:var(--ok);color:var(--ok);background:rgba(34,197,94,.08)}
   .debts-month-table input.input-credit{border-color:var(--danger);color:var(--danger);background:rgba(239,68,68,.08)}
@@ -188,134 +146,100 @@
   .debts-month-table tr.row-installment{background:rgba(59,130,246,.04)}
   .debts-month-table .debt-name{font-weight:700;white-space:nowrap}
   .debts-month-table tfoot td{background:rgba(59,130,246,.1);font-weight:700;border-top:2px solid var(--accent2);padding:10px}
-
   .debts-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
   .debts-table{width:100%;border-collapse:collapse;font-size:12px;min-width:1600px}
   .debts-table thead{background:var(--panel2);position:sticky;top:0;z-index:2}
-  .debts-table th{padding:8px 6px;text-align:center;color:var(--accent);font-size:10px;
-    font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
-  .debts-table td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:center}
-  .debts-table input{width:58px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);
-    padding:4px 3px;border-radius:4px;text-align:center;font-size:11px;font-family:monospace;outline:none}
-  .debts-table .debt-name{font-weight:700;white-space:nowrap}
+  .debts-table th{padding:8px 6px;text-align:center;color:var(--accent);font-size:10px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
+  .debts-table td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}
+  .debts-table input[type="number"]{width:58px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:4px 3px;border-radius:4px;text-align:center;font-size:11px;font-family:monospace;outline:none}
   .debts-table .paid-cell{font-family:monospace;font-weight:700;color:var(--accent);direction:ltr}
   .debts-table .remain-cell{font-family:monospace;font-weight:700;direction:ltr}
   .debts-table .remain-cell.pos{color:var(--ok)}
   .debts-table .remain-cell.neg{color:var(--danger)}
   .debts-table tfoot td{background:rgba(34,193,164,.08);font-weight:700;padding:8px 6px;border-top:2px solid var(--accent)}
-
-  .pyramid-wrap{display:flex;justify-content:center;align-items:center;padding:20px;
-    background:var(--panel2);border:1px solid var(--line);border-radius:12px;margin-bottom:16px}
+  .debts-table tr.fully-paid-row{opacity:.72;background:rgba(34,197,94,.05)}
+  /* ✏️ حقول التعديل المباشر في جدول الديون */
+  .debts-table .inline-input{width:100%;background:transparent;border:1px solid transparent;color:var(--txt);padding:5px 6px;border-radius:4px;font-size:12px;font-family:inherit;text-align:right;transition:.15s;outline:none}
+  html[dir="ltr"] .debts-table .inline-input{text-align:left}
+  .debts-table .inline-input:hover{border-color:var(--line);background:var(--panel2)}
+  .debts-table .inline-input:focus{border-color:var(--accent);background:var(--bg);box-shadow:0 0 0 2px rgba(34,193,164,.2)}
+  .debts-table .inline-input.name{font-weight:700;min-width:120px}
+  .debts-table .inline-input.num{text-align:center;font-family:monospace;direction:ltr;font-weight:700;min-width:70px}
+  .debts-table .inline-input.num.paid-before{color:var(--muted);font-weight:600}
+  .debts-table .inline-input.notes{font-size:11px;color:var(--muted);min-width:100px}
+  .debts-table .inline-select{background:transparent;border:1px solid transparent;color:var(--txt);padding:5px 4px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;outline:none;width:100%}
+  .debts-table .inline-select:hover{border-color:var(--line);background:var(--panel2)}
+  .debts-table .inline-select:focus{border-color:var(--accent);background:var(--bg);box-shadow:0 0 0 2px rgba(34,193,164,.2)}
+  .debts-table .inline-select.type-sel{color:var(--accent);text-align:center}
+  .fully-paid-badge-wrap{text-align:center;margin-top:2px;min-height:14px}
+  .pyramid-wrap{display:flex;justify-content:center;align-items:center;padding:20px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;margin-bottom:16px}
   .pyramid-svg{max-width:640px;width:100%;height:auto}
   .pyramid-svg text{font-family:"Segoe UI","Tahoma",sans-serif;pointer-events:none;user-select:none}
   .pyramid-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
   @media(max-width:768px){.pyramid-legend{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:500px){.pyramid-legend{grid-template-columns:1fr}}
-  .pyr-legend-item{display:flex;align-items:center;gap:10px;padding:10px 14px;
-    background:var(--panel2);border:1px solid var(--line);border-radius:10px}
+  .pyr-legend-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:10px}
   .pyr-color{width:16px;height:16px;border-radius:4px;flex-shrink:0}
   .pyr-legend-item .pyr-label{font-size:12px;color:var(--muted);flex:1}
   .pyr-legend-item .pyr-val{font-family:monospace;font-weight:700;color:var(--txt);font-size:14px;direction:ltr}
-
-  @media(max-width:768px){
-    .expense-table{min-width:520px;font-size:12px}
-    .expense-table th,.expense-table td{padding:5px 6px}
-    .bank-item{min-width:120px;font-size:11px}
-    .debts-month-table{min-width:600px}
-  }
-
+  @media(max-width:768px){.expense-table{min-width:520px;font-size:12px}.expense-table th,.expense-table td{padding:5px 6px}.bank-item{min-width:120px;font-size:11px}.debts-month-table{min-width:600px}}
   .excluded-cell{color:var(--danger) !important;text-decoration:line-through;opacity:.65;font-size:12px}
-
-  /* Copyright Footer (screen) */
-  .site-footer{
-    text-align:center;padding:24px 20px;margin-top:30px;
-    border-top:1px solid var(--line);
-    color:var(--muted);font-size:12px;
-  }
+  .year-chart{display:flex;gap:16px;align-items:flex-end;justify-content:center;padding:20px 10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;min-height:280px;overflow-x:auto}
+  .year-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px}
+  .year-bar-group{display:flex;gap:4px;align-items:flex-end;height:200px}
+  .year-bar{width:20px;border-radius:4px 4px 0 0;transition:.4s;position:relative;min-height:2px}
+  .year-bar.inc{background:linear-gradient(180deg,var(--accent),#0d9488)}
+  .year-bar.exp{background:linear-gradient(180deg,var(--danger),#991b1b)}
+  .year-bar.sav{background:linear-gradient(180deg,var(--gold),#92400e)}
+  .year-bar.rem{background:linear-gradient(180deg,var(--accent2),#1e40af)}
+  .year-bar:hover{opacity:.85;transform:scaleY(1.02)}
+  .year-bar-label{font-size:14px;font-weight:700;color:var(--gold)}
+  .year-bar-legend{display:flex;gap:16px;justify-content:center;margin-top:12px;flex-wrap:wrap;font-size:12px}
+  .year-bar-legend>div{display:flex;align-items:center;gap:6px}
+  .year-bar-legend .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+  .site-footer{text-align:center;padding:24px 20px;margin-top:30px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
   .site-footer strong{color:var(--accent);font-weight:700}
   .site-footer .copyright{display:inline-flex;align-items:center;gap:6px}
-  .site-footer .logo-m{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:20px;height:20px;border-radius:50%;
-    background:linear-gradient(135deg,var(--accent),var(--accent2));
-    color:#fff;font-weight:900;font-size:11px;
-  }
-
-  /* Print-only header/footer */
-  .print-header, .print-footer { display: none; }
-
-  /* ============ Print Styles ============ */
-  @media print {
-    @page { size: A4; margin: 12mm 10mm; }
-    html, body { background:#fff !important; color:#000 !important; font-size:10pt !important; }
-    header, nav.tabs, .toolbar, .settings-bar, .btn, .icon-btn, .toast,
-    .monthPills, .site-footer, .modal, .eid-type-inline { display:none !important; }
-    main { padding:0 !important; max-width:100% !important; }
-    .view { display:none !important; }
-    .view.active { display:block !important; }
-    .card {
-      break-inside:avoid; page-break-inside:avoid;
-      border:1px solid #999 !important; background:#fff !important;
-      box-shadow:none !important; padding:10pt !important;
-      margin-bottom:8pt !important; border-radius:4pt;
-    }
-    .card h2 {
-      color:#000 !important; border-bottom:1.5px solid #333 !important;
-      padding-bottom:4pt; margin-bottom:8pt; font-size:12pt;
-    }
-    .card h2::before { color:#000 !important; }
-    .kpi {
-      background:#f5f5f5 !important; border:1px solid #999 !important;
-      padding:6pt !important; border-radius:3pt;
-    }
-    .kpi .lbl { color:#333 !important; font-size:8pt; }
-    .kpi .val { color:#000 !important; font-size:12pt; }
-    .kpi .val.pos { color:#166534 !important; }
-    .kpi .val.neg { color:#991b1b !important; }
-    .kpi .val.gold { color:#78350f !important; }
-    .kpi .val.acc { color:#0e7490 !important; }
-    table { font-size:8pt !important; }
-    th { background:#eee !important; color:#000 !important; padding:4pt !important; }
-    td { color:#000 !important; padding:4pt !important; border-color:#ccc !important; }
-    input, select, textarea {
-      border:none !important; background:transparent !important;
-      color:#000 !important; padding:0 !important; font-size:9pt !important;
-      font-weight:600 !important; -webkit-appearance:none; appearance:none;
-    }
-    input[type="number"] { text-align:center; }
-    .expense-table, .debts-month-table, .debts-table { min-width:100% !important; }
-    .debts-table { font-size:6.5pt !important; }
-    .debts-table input { width:auto; font-size:7pt !important; }
-    .pyramid-wrap { background:#fff !important; border:1px solid #ccc !important; }
-    .pyramid-svg text { fill:#000 !important; }
-    .muted, .notice-bhd, .notice-int { color:#444 !important; background:#f8f8f8 !important; border-color:#bbb !important; }
-
-    /* Show print header & footer */
-    .print-header, .print-footer { display:block !important; }
-    .print-header {
-      text-align:center; padding-bottom:8pt; margin-bottom:12pt;
-      border-bottom:3px double #000;
-    }
-    .print-header h1 { color:#000 !important; font-size:18pt; margin-bottom:4pt; }
-    .print-header .subtitle { color:#444; font-size:10pt; margin-bottom:2pt; }
-    .print-header .meta { color:#666; font-size:8pt; }
-    .print-header .logo-m {
-      display:inline-block; width:24pt; height:24pt; line-height:24pt;
-      border-radius:50%; background:#0e7490; color:#fff; font-weight:900;
-      font-size:12pt; text-align:center; margin:0 auto 6pt;
-    }
-    .print-footer {
-      text-align:center; padding-top:6pt; margin-top:12pt;
-      border-top:1px solid #999; color:#444; font-size:8pt;
-    }
-    .print-footer strong { color:#0e7490; }
-    .print-footer .sep { color:#999; margin:0 6pt; }
+  .site-footer .logo-m{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:900;font-size:11px}
+  .print-header,.print-footer{display:none}
+  @media print{
+    @page{size:A4;margin:12mm 10mm}
+    html,body{background:#fff !important;color:#000 !important;font-size:10pt !important}
+    header,nav.tabs,.toolbar,.settings-bar,.btn,.icon-btn,.toast,.monthPills,.site-footer,.modal,.eid-type-inline,.year-picker{display:none !important}
+    main{padding:0 !important;max-width:100% !important}
+    .view{display:none !important}.view.active{display:block !important}
+    .card{break-inside:avoid;page-break-inside:avoid;border:1px solid #999 !important;background:#fff !important;box-shadow:none !important;padding:10pt !important;margin-bottom:8pt !important;border-radius:4pt}
+    .card h2{color:#000 !important;border-bottom:1.5px solid #333 !important;padding-bottom:4pt;margin-bottom:8pt;font-size:12pt}
+    .card h2::before{color:#000 !important}
+    .kpi{background:#f5f5f5 !important;border:1px solid #999 !important;padding:6pt !important;border-radius:3pt}
+    .kpi .lbl{color:#333 !important;font-size:8pt}.kpi .val{color:#000 !important;font-size:12pt}
+    .kpi .val.pos{color:#166534 !important}.kpi .val.neg{color:#991b1b !important}
+    .kpi .val.gold{color:#78350f !important}.kpi .val.acc{color:#0e7490 !important}
+    table{font-size:8pt !important}
+    th{background:#eee !important;color:#000 !important;padding:4pt !important}
+    td{color:#000 !important;padding:4pt !important;border-color:#ccc !important}
+    input,select,textarea{border:none !important;background:transparent !important;color:#000 !important;padding:0 !important;font-size:9pt !important;font-weight:600 !important;-webkit-appearance:none;appearance:none}
+    input[type="number"]{text-align:center}
+    .meat-status{border:1px solid #999 !important;background:#f5f5f5 !important;color:#000 !important;padding:3pt !important;font-size:8pt !important}
+    .expense-table,.debts-month-table,.debts-table{min-width:100% !important}
+    .debts-table{font-size:6.5pt !important}.debts-table input{width:auto;font-size:7pt !important}
+    .pyramid-wrap{background:#fff !important;border:1px solid #ccc !important}
+    .pyramid-svg text{fill:#000 !important}
+    .muted,.notice-bhd,.notice-int{color:#444 !important;background:#f8f8f8 !important;border-color:#bbb !important}
+    .year-chart{background:#fff !important;border:1px solid #ccc !important}
+    .print-header,.print-footer{display:block !important}
+    .print-header{text-align:center;padding-bottom:8pt;margin-bottom:12pt;border-bottom:3px double #000}
+    .print-header h1{color:#000 !important;font-size:18pt;margin-bottom:4pt}
+    .print-header .subtitle{color:#444;font-size:10pt;margin-bottom:2pt}
+    .print-header .meta{color:#666;font-size:8pt}
+    .print-header .logo-m{display:inline-block;width:24pt;height:24pt;line-height:24pt;border-radius:50%;background:#0e7490;color:#fff;font-weight:900;font-size:12pt;text-align:center;margin:0 auto 6pt}
+    .print-footer{text-align:center;padding-top:6pt;margin-top:12pt;border-top:1px solid #999;color:#444;font-size:8pt}
+    .print-footer strong{color:#0e7490}
   }
 </style>
 </head>
 <body>
 
-<!-- Print Header (hidden on screen) -->
 <div class="print-header">
   <div class="logo-m">M</div>
   <h1 id="phTitle">نظام إدارة رأس المال</h1>
@@ -326,12 +250,19 @@
 <header>
   <h1><span>💰</span> <span id="appTitle">نظام إدارة رأس المال</span></h1>
   <div class="toolbar">
+    <div class="year-picker">
+      <button onclick="yearPrev()" title="Previous year">◀</button>
+      <select id="yearSelect" onchange="selectYear(parseInt(this.value))"></select>
+      <button onclick="yearNext()" title="Next year">▶</button>
+      <button onclick="addYear()" title="Add year">➕</button>
+      <button onclick="deleteYear()" title="Delete year">🗑</button>
+    </div>
     <div class="settings-bar">
-      <button onclick="toggleLang()" id="langBtn" title="Language">🌐 EN</button>
-      <button onclick="toggleTheme()" id="themeBtn" title="Theme">🌙</button>
-      <button onclick="changeFontSize(-1)" title="Smaller">A−</button>
-      <button onclick="changeFontSize(1)" title="Larger">A+</button>
-      <button onclick="printPage()" id="printBtn" title="Print">🖨️</button>
+      <button onclick="toggleLang()" id="langBtn">🌐 EN</button>
+      <button onclick="toggleTheme()" id="themeBtn">🌙</button>
+      <button onclick="changeFontSize(-1)">A−</button>
+      <button onclick="changeFontSize(1)">A+</button>
+      <button onclick="printPage()" id="printBtn">🖨️</button>
     </div>
     <button class="btn" onclick="exportData()" id="btnExport">📤 تصدير</button>
     <button class="btn" onclick="document.getElementById('importFile').click()" id="btnImport">📥 استيراد</button>
@@ -343,6 +274,7 @@
 <nav class="tabs">
   <button data-view="dashboard" class="active" data-i18n="t_dash">📊 اللوحة الرئيسية</button>
   <button data-view="month" data-i18n="t_month">📅 إدخال الشهور</button>
+  <button data-view="years" data-i18n="t_years">📆 مقارنة السنوات</button>
   <button data-view="pyramid" data-i18n="t_pyr">🔺 هرم الأمان المالي</button>
   <button data-view="debts" data-i18n="t_debts">🤝 السلف والديون</button>
   <button data-view="annual" data-i18n="t_annual">📈 الملخص السنوي</button>
@@ -360,7 +292,6 @@
 <section id="month" class="view">
   <div class="monthPills" id="monthPills"></div>
   <div class="notice-bhd" id="noticeBhd"></div>
-
   <div class="card" style="border-color:var(--accent)">
     <h2 style="color:var(--accent)" id="dateTitle"></h2>
     <div class="grid g3">
@@ -369,17 +300,14 @@
       <div class="field"><label id="lblLastMod"></label><input type="text" id="lastModifiedDisplay" readonly></div>
     </div>
   </div>
-
   <div class="card">
     <h2><span id="lblIncome"></span> — <span id="monthTitle" style="color:var(--gold)"></span></h2>
     <div class="grid g4" id="incomeFields"></div>
   </div>
-
   <div class="card eid-card">
     <h2 class="eid-title" id="eidTitle"></h2>
     <div class="grid g2">
-      <div class="field">
-        <label id="lblEidState"></label>
+      <div class="field"><label id="lblEidState"></label>
         <select id="eidSelect" onchange="onEidChange(this.value)">
           <option value="eid_money" data-i18n="eid_opt1">عيادي+ عيادي عيالي</option>
           <option value="clothes" data-i18n="eid_opt2">ثياب العيد</option>
@@ -387,28 +315,22 @@
           <option value="no" data-i18n="eid_opt4">لا</option>
         </select>
       </div>
-      <div class="field" id="eidAmountWrap" style="display:none">
-        <label id="lblEidAmount"></label>
-        <input type="number" id="eidAmountInput" value="0" oninput="upd('eidAmount', this.value)">
-      </div>
+      <div class="field" id="eidAmountWrap" style="display:none"><label id="lblEidAmount"></label>
+        <input type="number" id="eidAmountInput" value="0" oninput="upd('eidAmount', this.value)"></div>
     </div>
   </div>
-
   <div class="card">
     <h2 id="lblExpenses"></h2>
     <div class="expense-table-wrap">
       <table class="expense-table">
-        <thead><tr>
-          <th id="thItem"></th><th id="thAmount"></th><th id="thBank"></th><th id="thNote"></th>
-        </tr></thead>
+        <thead><tr><th id="thItem"></th><th id="thAmount"></th><th id="thBank"></th><th id="thNote"></th></tr></thead>
         <tbody id="expenseFields"></tbody>
       </table>
     </div>
     <div class="expense-summary" id="expenseSummary"></div>
   </div>
-
   <div class="card debts-month-card">
-    <h2 id="debtsMonthTitleWrap"><span id="lblDebtsMonth"></span> — <span id="debtsMonthTitle" style="color:var(--accent2)"></span></h2>
+    <h2><span id="lblDebtsMonth"></span> — <span id="debtsMonthTitle" style="color:var(--accent2)"></span></h2>
     <p class="muted" style="margin-bottom:12px" id="debtsMonthHelp"></p>
     <div class="debts-month-wrap">
       <table class="debts-month-table">
@@ -423,41 +345,45 @@
     </div>
     <div class="expense-summary" id="debtsMonthSummary"></div>
   </div>
-
   <div class="card saving-card">
     <h2 id="lblSavings"></h2>
     <div class="notice-int" id="savingsHint"></div>
     <div class="grid g3" id="savingFields"></div>
   </div>
-
   <div class="card"><h2 id="lblMonthResult"></h2><div class="grid g4" id="monthResults"></div></div>
+  <div class="card"><h2 id="lblMonthNotes"></h2>
+    <div class="field"><textarea id="monthNotes" rows="4" oninput="updateMonthNotes(this.value)"></textarea></div>
+  </div>
+</section>
 
+<section id="years" class="view">
+  <div class="card"><h2 id="lblYearsKpi"></h2><div class="grid g4" id="yearsKpis"></div></div>
   <div class="card">
-    <h2 id="lblMonthNotes"></h2>
-    <div class="field">
-      <textarea id="monthNotes" rows="4" oninput="updateMonthNotes(this.value)"></textarea>
+    <h2 id="lblYearsChart"></h2>
+    <div class="year-chart" id="yearsChart"></div>
+    <div class="year-bar-legend">
+      <div><span class="dot" style="background:linear-gradient(180deg,var(--accent),#0d9488)"></span><span data-i18n="y_inc"></span></div>
+      <div><span class="dot" style="background:linear-gradient(180deg,var(--danger),#991b1b)"></span><span data-i18n="y_exp"></span></div>
+      <div><span class="dot" style="background:linear-gradient(180deg,var(--gold),#92400e)"></span><span data-i18n="y_sav"></span></div>
+      <div><span class="dot" style="background:linear-gradient(180deg,var(--accent2),#1e40af)"></span><span data-i18n="y_rem"></span></div>
     </div>
   </div>
+  <div class="card"><h2 id="lblYearsTable"></h2><div style="overflow-x:auto"><table id="yearsTable"></table></div></div>
+  <div class="card"><h2 id="lblYearsDist"></h2><div style="overflow-x:auto"><table id="yearsDistTable"></table></div></div>
 </section>
 
 <section id="pyramid" class="view">
   <div class="card">
     <h2 id="lblPyrTitle"></h2>
     <p class="muted" style="margin-bottom:14px" id="lblPyrDesc"></p>
-    <div class="pyramid-wrap">
-      <svg class="pyramid-svg" viewBox="0 0 500 460" xmlns="http://www.w3.org/2000/svg" id="pyramidSvg"></svg>
-    </div>
+    <div class="pyramid-wrap"><svg class="pyramid-svg" viewBox="0 0 500 460" xmlns="http://www.w3.org/2000/svg" id="pyramidSvg"></svg></div>
     <div class="pyramid-legend" id="pyramidLegend"></div>
   </div>
-  <div class="card">
-    <h2 id="lblPyrDetail"></h2>
-    <div style="overflow-x:auto"><table id="pyramidTable"></table></div>
-  </div>
+  <div class="card"><h2 id="lblPyrDetail"></h2><div style="overflow-x:auto"><table id="pyramidTable"></table></div></div>
 </section>
 
 <section id="debts" class="view">
   <div class="card"><h2 id="lblDebtsSummary"></h2><div class="grid g4" id="debtsSummary"></div></div>
-
   <div class="card">
     <h2 id="lblAddDebt"></h2>
     <div class="grid g4">
@@ -469,8 +395,7 @@
           <option value="installment" data-i18n="dbt_inst">🏦 قسط (بنك/فيزا — أدفع)</option>
         </select>
       </div>
-      <div class="field" id="d_categoryWrap" style="display:none">
-        <label id="lblDebtCat"></label>
+      <div class="field" id="d_categoryWrap" style="display:none"><label id="lblDebtCat"></label>
         <select id="d_category">
           <option value="فيزا" data-i18n="dbt_visa">بطاقة فيزا</option>
           <option value="بنك" data-i18n="dbt_bank">بنك</option>
@@ -485,7 +410,6 @@
       <div class="field"><label>&nbsp;</label><button class="btn primary" onclick="addDebt()" id="btnAddDebt"></button></div>
     </div>
   </div>
-
   <div class="card">
     <h2 id="lblDebtsTable"></h2>
     <p class="muted" style="margin-bottom:12px" id="lblDebtsTableHint"></p>
@@ -500,14 +424,10 @@
 </main>
 
 <footer class="site-footer">
-  <div class="copyright">
-    <span class="logo-m">M</span>
-    <span>© 2025 <strong>Muharraqi</strong> — All Rights Reserved</span>
-  </div>
+  <div class="copyright"><span class="logo-m">M</span><span>© 2025 <strong>Muharraqi</strong> — All Rights Reserved</span></div>
   <div style="margin-top:4px" id="footerLocalized"></div>
 </footer>
 
-<!-- Print Footer (hidden on screen) -->
 <div class="print-footer">
   <div><strong>Muharraqi</strong> — نظام إدارة رأس المال / Capital Manager</div>
   <div style="margin-top:3pt">© 2025 Muharraqi. All Rights Reserved.</div>
@@ -517,327 +437,246 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* ===================================================================
-   i18n Dictionary
-=================================================================== */
 const I18N = {
   ar: {
-    app_title: "نظام إدارة رأس المال",
-    footer: "جميع الحقوق محفوظة لـ Muharraqi",
-    t_dash: "📊 اللوحة الرئيسية",
-    t_month: "📅 إدخال الشهور",
-    t_pyr: "🔺 هرم الأمان المالي",
-    t_debts: "🤝 السلف والديون",
-    t_annual: "📈 الملخص السنوي",
-    btn_export: "📤 تصدير", btn_import: "📥 استيراد", btn_reset: "🗑 تصفير",
-    // Dashboard
-    dash_title1: "الملخص السنوي (12 شهر)",
-    dash_title2: "توزيع الادخار السنوي",
-    dash_title3: "ملخص الديون والأقساط",
-    dash_title4: "مقارنة الشهور",
-    kpi_tot_inc: "إجمالي الدخل السنوي",
-    kpi_tot_exp: "إجمالي المصاريف السنوية",
-    kpi_tot_sav: "إجمالي الادخار",
-    kpi_tot_debtpay: "إجمالي دفعات الديون",
-    kpi_tot_debtrecv: "المستلم من مدينين",
-    kpi_tot_rem: "المتبقي السنوي",
-    kpi_net_debt: "صافي الديون (لي − عليّ)",
-    kpi_emergency: "🚨 طوارئ", kpi_invest: "📈 استثمار", kpi_assembly: "👥 جمعية", kpi_travel: "✈️ سفر",
-    kpi_recv_year: "💰 سأستلم هذه السنة",
-    kpi_pay_year: "💸 سأدفع هذه السنة",
-    kpi_net_year: "📊 صافي السنة",
-    kpi_net_rem: "📌 متبقي الكلي (لي − عليّ)",
-    th_month: "الشهر", th_income: "الدخل", th_debtpay: "دفعات ديون",
-    th_expenses: "المصاريف", th_saving: "الادخار", th_remain: "المتبقي",
-    th_lastmod: "آخر تعديل", th_status: "الحالة",
-    status_good: "جيد", status_bad: "عجز", status_empty: "فارغ",
-    // Month
-    notice_bhd: "💵 جميع المبالغ في هذه الصفحة بالدينار البحريني (د.ب)",
-    date_title: "📅 متى تم تعديل هذا الشهر؟",
-    lbl_date: "📌 التاريخ اليدوي (يُحفظ فوراً)",
-    lbl_time: "⏰ الوقت (اختياري)",
-    lbl_lastmod: "🔄 آخر تعديل تلقائي (للقراءة فقط)",
-    lbl_income: "الدخل",
-    eid_title: "ركز اهني هل يوجد عيد في ذي الشهر  حق لثياب او العيادي",
-    lbl_eid_state: "اختر الحالة",
-    eid_opt1: "عيادي+ عيادي عيالي",
-    eid_opt2: "ثياب العيد",
-    eid_opt3: "عيادي ، عيادي عيالي + ثياب العيد",
-    eid_opt4: "لا",
-    lbl_eid_amount: "القيمة الإجمالية (هذا المبلغ لأغراض المرجعية فقط ولن يتم احتسابه)",
-    lbl_expenses: "💸 المصاريف (د.ب)",
-    th_item: "البند", th_amount: "المبلغ (د.ب)", th_bank: "البنك / الجهة", th_note: "ملاحظة",
-    lbl_debts_month: "دفعات السلف والأقساط",
-    debts_month_help: "يتم التحديث التلقائي مع تبويب \"🤝 السلف والديون\". 🟢 المبالغ المستلمة (مدين) تُضاف للدخل — 🔴 المبالغ المدفوعة (دائن/قسط) تُخصم من المتبقي.",
-    th_debt_name: "الاسم", th_debt_type: "النوع", th_debt_total: "الكلي",
-    th_debt_rem_before: "المتبقي قبل الشهر", th_debt_this_month: "هذا الشهر",
-    th_debt_rem_after: "المتبقي بعده", th_debt_note: "ملاحظة",
-    lbl_savings: "💰 مبالغ الادخار (د.ب)",
-    savings_hint: "🔢 الأرقام هنا بالوحدات الصحيحة (1، 2، 3 ...) — لا تُقبل الكسور العشرية",
-    lbl_month_result: "النتيجة الشهرية",
-    lbl_month_notes: "ملاحظات على الشهر",
-    // Pyramid
-    pyr_title: "🔺 هرم الأمان المالي",
-    pyr_desc: "ترتيب الأولويات المالية من القاعدة (الأساس) إلى القمة (النمو). المبالغ مجمّعة من 12 شهر.",
-    pyr_detail: "تفصيل الهرم",
-    th_level: "المستوى", th_item_name: "البند", th_year_total: "المجموع السنوي (د.ب)", th_pct: "النسبة من الهرم",
-    th_total: "الإجمالي",
-    // Debts
-    debts_summary: "📊 ملخص الديون والأقساط",
-    add_debt: "➕ إضافة دين / سلفة / قسط",
-    lbl_debt_name: "الاسم", lbl_debt_type: "النوع", lbl_debt_cat: "فئة القسط",
-    lbl_debt_total: "المبلغ الكلي (د.ب)", lbl_debt_paidbefore: "مدفوع سابقاً (قبل هذه السنة) (د.ب)",
-    lbl_debt_start: "تاريخ البداية", lbl_debt_end: "تاريخ الانتهاء", lbl_debt_notes: "ملاحظات",
-    btn_add_debt: "➕ إضافة",
-    dbt_credit: "🔴 دائن (أنا آخذ سلفة — أدفع)",
-    dbt_debit: "🟢 مدين (ناس آخذين مني — أستلم)",
-    dbt_inst: "🏦 قسط (بنك/فيزا — أدفع)",
-    dbt_visa: "بطاقة فيزا", dbt_bank: "بنك", dbt_misc: "متنوع",
-    debts_table: "📋 جدول الديون والأقساط — عرض 12 شهر",
-    debts_table_hint: "نظرة شاملة على كل الدفعات. للتعديل السريع لشهر محدد، استخدم تبويب \"📅 إدخال الشهور\".",
-    lbl_annual: "الملخص السنوي التفصيلي (د.ب)",
-    // Debts KPIs
-    kpi_recv_year_d: "💰 سأستلم هذه السنة (مدينون)",
-    kpi_pay_year_d: "💸 سأدفع هذه السنة (دائن + أقساط)",
-    kpi_net_year_d: "📊 صافي السنة",
-    kpi_rem_to_me: "📌 متبقي لي (مدينون)",
-    kpi_rem_on_me: "📌 متبقي عليّ (دائن + أقساط)",
-    kpi_net_remaining: "⚖️ صافي المتبقي",
-    kpi_total_debt: "💵 إجمالي الديون الكلية",
-    kpi_count: "📋 عدد البنود",
-    // Month Results
-    mr_inc_core: "الدخل الأساسي (راتب + إضافي)",
-    mr_inc_debt: "💰 + مستلم من مدينين",
-    mr_inc_total: "= إجمالي الدخل الشهري",
-    mr_exp: "إجمالي المصاريف (المحتسبة)",
-    mr_exp_excl: "مصاريف مستثناة (غير محسوبة)",
-    mr_saving: "الادخار المباشر",
-    mr_debtpay: "💸 دفعات الديون (دائن + قسط)",
-    mr_remaining: "المتبقي",
-    mr_eid_ref: "قيمة العيد (مرجعية فقط)",
-    // Debts Month Section
-    dms_recv: "💰 سأستلم هذا الشهر (مدين) → يُضاف للدخل",
-    dms_pay: "💸 سأدفع هذا الشهر (دائن + قسط) → يُخصم",
-    dms_net: "📊 صافي الشهر",
-    dms_remaining: "📌 متبقي علىّ بعد كل الدفعات",
-    dms_empty: "لا توجد سلف أو ديون بعد — أضف من تبويب \"🤝 السلف والديون\"",
-    dms_total: "الإجمالي",
-    // Toast
-    saved_date: "✅ تم حفظ التاريخ: ",
-    saved_time: "✅ تم حفظ الوقت",
-    exported: "📤 تم التصدير",
-    added: "✅ تمت الإضافة",
-    need_name_total: "⚠️ أدخل الاسم والمبلغ",
-    paid_gt_total: "⚠️ المدفوع سابقاً أكبر من الكلي!",
-    confirm_delete: "تأكيد الحذف؟",
-    confirm_reset: "⚠️ سيتم حذف كل البيانات. متأكد؟",
-    invalid_file: "ملف غير صالح",
-    // Months
-    months: ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"],
-    // Print
-    print_title: "نظام إدارة رأس المال",
-    print_subtitle: "Capital Manager — تقرير مالي",
-    print_meta: "تم الإنشاء في",
-    // Field labels
-    f_salary: "الراتب الشهري (د.ب)",
-    f_costOfLiving: "غلاء المعيشة (د.ب)",
-    f_housing: "علاوة إسكان (د.ب)",
-    f_charity: "مساعدات خيرية (د.ب)",
-    f_freelance: "مدخول أعمال حرة (د.ب)",
-    f_meat_support: "دعم اللحوم (كل 3 أشهر)",
-    f_meat_no: "لا — لا ما بتنزل ذي الشهر",
-    f_meat_yes: "نعم — بتنزل ذي الشهر",
-    f_meat_amount: "قيمة دعم اللحوم (د.ب)",
-    // Expense labels
-    e_wifeSalary: "راتب الزوجة", e_familyExpenses: "مصروف العائلة",
-    e_rent: "إيجار الشقة/المنزل", e_houseMaintenance: "ماجلة البيت",
-    e_internet: "الإنترنت والهاتف", e_electricity: "الكهرباء والماء",
-    e_misc: "مصروفات أخرى", e_treatment: "العلاج",
-    e_visaCard1: "بطاقة الفيزا ١", e_visaCard2: "بطاقة الفيزا ٢", e_visaCard3: "بطاقة الفيزا ٣",
-    e_fuel: "البترول", e_carCleaning: "عامل التنظيف",
-    e_carRepair1: "تصليح السيارة ١", e_carRepair2: "تصليح السيارة ٢",
-    e_homeRepair1: "تعديل/تصليح المنزل ١", e_homeRepair2: "تعديل/تصليح المنزل ٢",
-    e_birthday: "عيد ميلاد",
-    e_kids_group: "🎒 احتياجات الأطفال",
-    e_kidsSchool: "↳ المدرسة", e_kidsClothes: "↳ الملابس", e_kidsEid: "↳ العيد",
-    e_privateSchool: "مدرسة خاصة", e_kindergarten: "روضة", e_university: "جامعة",
-    e_transport: "مواصلات", e_tutoring: "دروس تقوية", e_humanitarianAid: "🤲 مساعدات انسانية",
-    bd_none: "— لا أحد —", bd_wife: "زوجة", bd_husband: "الزوج", bd_kids: "العيال",
-    // Saving labels
-    s_assembly: "👥 جمعية (د.ب)",
-    s_investment: "📈 الاستثمار (د.ب)",
-    s_eidMoneySaving: "🎉 عيادي العيد (د.ب)",
-    s_insuranceSaving: "🛡️ ادخار ( تأمين و تسجيل + ثياب العيد + الروضة ) (د.ب)",
-    s_travelSaving: "✈️ ادخار للسفر (د.ب)",
-    s_emergencyFund: "🚨 مبلغ الطوارئ (د.ب)",
-    s_obligationsSaving: "📋 التزامات (د.ب)",
-    eid_fitar: "🎉 عيد الفطر", eid_adha: "🐑 عيد الأضحى",
-    // Pyramid levels
-    p_emergencyFund: "مبلغ الطوارئ", p_eidMoneySaving: "عيادي العيد",
-    p_insuranceSaving: "تأمين وتسجيل + العيد + الروضة", p_assembly: "جمعية",
-    p_obligationsSaving: "التزامات", p_travelSaving: "ادخار للسفر", p_investment: "الاستثمار",
-    // Expenses summary
-    es_total: "الإجمالي الكلي", es_counted: "✅ المحتسب", es_excluded: "⛔ المستثنى",
-    es_by_bank: "🏦 الإجمالي حسب البنك",
-    // Debts types
-    dt_credit: "دائن (أدفع)", dt_debit: "مدين (أستلم)", dt_inst: "قسط (أدفع)",
-    dt_credit_label: "دائن", dt_debit_label: "مدين", dt_inst_label: "قسط",
+    app_title:"نظام إدارة رأس المال",footer:"جميع الحقوق محفوظة لـ Muharraqi",
+    t_dash:"📊 اللوحة الرئيسية",t_month:"📅 إدخال الشهور",t_years:"📆 مقارنة السنوات",
+    t_pyr:"🔺 هرم الأمان المالي",t_debts:"🤝 السلف والديون",t_annual:"📈 الملخص السنوي",
+    btn_export:"📤 تصدير",btn_import:"📥 استيراد",btn_reset:"🗑 تصفير",
+    dash_title1:"الملخص السنوي (12 شهر)",dash_title2:"توزيع الادخار السنوي",
+    dash_title3:"ملخص الديون والأقساط",dash_title4:"مقارنة الشهور",
+    kpi_tot_inc:"إجمالي الدخل السنوي",kpi_tot_exp:"إجمالي المصاريف السنوية",
+    kpi_tot_sav:"إجمالي الادخار",kpi_tot_debtpay:"إجمالي دفعات الديون",
+    kpi_tot_debtrecv:"المستلم من مدينين",kpi_tot_rem:"المتبقي السنوي",kpi_net_debt:"صافي الديون",
+    kpi_emergency:"🚨 طوارئ",kpi_invest:"📈 استثمار",kpi_assembly:"👥 جمعية",kpi_travel:"✈️ سفر",
+    kpi_recv_year:"💰 سأستلم هذه السنة",kpi_pay_year:"💸 سأدفع هذه السنة",
+    kpi_net_year:"📊 صافي السنة",kpi_net_rem:"📌 متبقي الكلي (لي − عليّ)",
+    th_month:"الشهر",th_income:"الدخل",th_debtpay:"دفعات ديون",th_expenses:"المصاريف",
+    th_saving:"الادخار",th_remain:"المتبقي",th_lastmod:"آخر تعديل",th_status:"الحالة",
+    status_good:"جيد",status_bad:"عجز",status_empty:"فارغ",
+    notice_bhd:"💵 جميع المبالغ بالدينار البحريني (د.ب)",
+    date_title:"📅 متى تم تعديل هذا الشهر؟",lbl_date:"📌 التاريخ اليدوي (يُحفظ فوراً)",
+    lbl_time:"⏰ الوقت (اختياري)",lbl_lastmod:"🔄 آخر تعديل تلقائي (للقراءة فقط)",
+    lbl_income:"الدخل",eid_title:"ركز اهني هل يوجد عيد في ذي الشهر حق لثياب او العيادي",
+    lbl_eid_state:"اختر الحالة",
+    eid_opt1:"عيادي+ عيادي عيالي",eid_opt2:"ثياب العيد",
+    eid_opt3:"عيادي ، عيادي عيالي + ثياب العيد",eid_opt4:"لا",
+    lbl_eid_amount:"القيمة الإجمالية (هذا المبلغ لأغراض المرجعية فقط ولن يتم احتسابه)",
+    lbl_expenses:"💸 المصاريف (د.ب)",th_item:"البند",th_amount:"المبلغ (د.ب)",
+    th_bank:"البنك / الجهة",th_note:"ملاحظة",lbl_debts_month:"دفعات السلف والأقساط",
+    debts_month_help:"تظهر فقط الديون النشطة. 🟢 المستلمة (مدين) تُضاف للدخل — 🔴 المدفوعة تُخصم. الديون المسددة تُدار من تبويب \"🤝 السلف والديون\".",
+    th_debt_name:"الاسم",th_debt_type:"النوع",th_debt_total:"الكلي",
+    th_debt_rem_before:"المتبقي قبل الشهر",th_debt_this_month:"هذا الشهر",
+    th_debt_rem_after:"المتبقي بعده",th_debt_note:"ملاحظة",
+    lbl_savings:"💰 مبالغ الادخار (د.ب)",
+    savings_hint:"🔢 الأرقام هنا بالوحدات الصحيحة (1، 2، 3 ...)",
+    lbl_month_result:"النتيجة الشهرية",lbl_month_notes:"ملاحظات على الشهر",
+    pyr_title:"🔺 هرم الأمان المالي",
+    pyr_desc:"ترتيب الأولويات المالية من القاعدة إلى القمة. المبالغ مجمّعة من 12 شهر.",
+    pyr_detail:"تفصيل الهرم",th_level:"المستوى",th_item_name:"البند",
+    th_year_total:"المجموع السنوي (د.ب)",th_pct:"النسبة",th_total:"الإجمالي",
+    debts_summary:"📊 ملخص الديون والأقساط",add_debt:"➕ إضافة دين / سلفة / قسط",
+    lbl_debt_name:"الاسم",lbl_debt_type:"النوع",lbl_debt_cat:"فئة القسط",
+    lbl_debt_total:"المبلغ الكلي (د.ب)",lbl_debt_paidbefore:"مدفوع سابقاً قبل هذه السنة (د.ب)",
+    lbl_debt_start:"تاريخ البداية",lbl_debt_end:"تاريخ الانتهاء",lbl_debt_notes:"ملاحظات",
+    btn_add_debt:"➕ إضافة",
+    dbt_credit:"🔴 دائن (أنا آخذ سلفة — أدفع)",dbt_debit:"🟢 مدين (ناس آخذين مني — أستلم)",
+    dbt_inst:"🏦 قسط (بنك/فيزا — أدفع)",
+    dbt_visa:"بطاقة فيزا",dbt_bank:"بنك",dbt_misc:"متنوع",
+    debts_table:"📋 جدول الديون والأقساط — عرض السنة النشطة",
+    debts_table_hint:"✏️ كل الخلايا قابلة للتعديل مباشرة — الاسم، النوع، الفئة، المبلغ الكلي، المدفوع سابقاً، والملاحظات.",
+    lbl_annual:"الملخص السنوي التفصيلي (د.ب)",
+    kpi_recv_year_d:"💰 سأستلم هذه السنة (مدينون)",kpi_pay_year_d:"💸 سأدفع هذه السنة (دائن + أقساط)",
+    kpi_net_year_d:"📊 صافي السنة",kpi_rem_to_me:"📌 متبقي لي (مدينون)",
+    kpi_rem_on_me:"📌 متبقي عليّ (دائن + أقساط)",kpi_net_remaining:"⚖️ صافي المتبقي",
+    kpi_total_debt:"💵 إجمالي الديون الكلية",kpi_count:"📋 عدد البنود",
+    mr_inc_core:"الدخل الأساسي (راتب + إضافي)",mr_inc_debt:"💰 + مستلم من مدينين",
+    mr_inc_total:"= إجمالي الدخل الشهري",mr_exp:"إجمالي المصاريف (المحتسبة)",
+    mr_exp_excl:"مصاريف مستثناة",mr_saving:"الادخار المباشر",
+    mr_debtpay:"💸 دفعات الديون (دائن + قسط)",mr_remaining:"المتبقي",
+    mr_eid_ref:"قيمة العيد (مرجعية فقط)",
+    dms_recv:"💰 سأستلم هذا الشهر (مدين) → يُضاف للدخل",
+    dms_pay:"💸 سأدفع هذا الشهر (دائن + قسط) → يُخصم",
+    dms_net:"📊 صافي الشهر",dms_remaining:"📌 متبقي علىّ بعد كل الدفعات",
+    dms_empty:"لا توجد ديون نشطة — المسددة تظهر في تبويب \"🤝 السلف والديون\"",
+    dms_no_active:"لا توجد ديون نشطة هذا الشهر",
+    dms_total:"الإجمالي",
+    saved_date:"✅ تم حفظ التاريخ: ",saved_time:"✅ تم حفظ الوقت",
+    exported:"📤 تم التصدير",added:"✅ تمت الإضافة",
+    need_name_total:"⚠️ أدخل الاسم والمبلغ",paid_gt_total:"⚠️ المدفوع سابقاً أكبر من الكلي!",
+    confirm_delete:"تأكيد الحذف؟",confirm_reset:"⚠️ سيتم حذف كل البيانات. متأكد؟",
+    invalid_file:"ملف غير صالح",
+    debt_paid:"مسدد",
+    months:["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"],
+    print_title:"نظام إدارة رأس المال",print_subtitle:"Capital Manager — تقرير مالي",print_meta:"تم الإنشاء في",
+    f_salary:"الراتب الشهري (د.ب)",f_costOfLiving:"غلاء المعيشة (د.ب)",
+    f_housing:"علاوة إسكان (د.ب)",f_charity:"مساعدات خيرية (د.ب)",
+    f_freelance:"مدخول أعمال حرة (د.ب)",
+    f_meat_support:"دعم اللحوم (كل 3 أشهر)",
+    f_meat_no:"لا — ما بتنزل ذي الشهر",f_meat_yes:"نعم — بتنزل ذي الشهر",
+    f_meat_amount:"قيمة دعم اللحوم (د.ب)",
+    e_wifeSalary:"راتب الزوجة",e_familyExpenses:"مصروف العائلة",
+    e_rent:"إيجار الشقة/المنزل",e_houseMaintenance:"ماجلة البيت",
+    e_internet:"الإنترنت والهاتف",e_electricity:"الكهرباء والماء",
+    e_misc:"مصروفات أخرى",e_treatment:"العلاج",
+    e_visaCard1:"بطاقة الفيزا ١",e_visaCard2:"بطاقة الفيزا ٢",e_visaCard3:"بطاقة الفيزا ٣",
+    e_fuel:"البترول",e_carCleaning:"عامل التنظيف",
+    e_carRepair1:"تصليح السيارة ١",e_carRepair2:"تصليح السيارة ٢",
+    e_homeRepair1:"تعديل/تصليح المنزل ١",e_homeRepair2:"تعديل/تصليح المنزل ٢",
+    e_birthday:"عيد ميلاد",e_kids_group:"🎒 احتياجات الأطفال",
+    e_kidsSchool:"↳ المدرسة",e_kidsClothes:"↳ الملابس",e_kidsEid:"↳ العيد",
+    e_privateSchool:"مدرسة خاصة",e_kindergarten:"روضة",e_university:"جامعة",
+    e_transport:"مواصلات",e_tutoring:"دروس تقوية",e_humanitarianAid:"🤲 مساعدات انسانية",
+    bd_none:"— لا أحد —",bd_wife:"زوجة",bd_husband:"الزوج",bd_kids:"العيال",
+    s_assembly:"👥 جمعية (د.ب)",s_investment:"📈 الاستثمار (د.ب)",
+    s_eidMoneySaving:"🎉 عيادي العيد (د.ب)",
+    s_insuranceSaving:"🛡️ ادخار (تأمين + تسجيل + ثياب العيد + الروضة) (د.ب)",
+    s_travelSaving:"✈️ ادخار للسفر (د.ب)",s_emergencyFund:"🚨 مبلغ الطوارئ (د.ب)",
+    s_obligationsSaving:"📋 التزامات (د.ب)",
+    eid_fitar:"🎉 عيد الفطر",eid_adha:"🐑 عيد الأضحى",
+    p_emergencyFund:"مبلغ الطوارئ",p_eidMoneySaving:"عيادي العيد",
+    p_insuranceSaving:"تأمين وتسجيل + العيد + الروضة",p_assembly:"جمعية",
+    p_obligationsSaving:"التزامات",p_travelSaving:"ادخار للسفر",p_investment:"الاستثمار",
+    es_total:"الإجمالي الكلي",es_counted:"✅ المحتسب",es_excluded:"⛔ المستثنى",es_by_bank:"🏦 الإجمالي حسب البنك",
+    dt_credit:"دائن (أدفع)",dt_debit:"مدين (أستلم)",dt_inst:"قسط (أدفع)",
+    dt_credit_label:"دائن",dt_debit_label:"مدين",dt_inst_label:"قسط",
+    y_title_kpi:"📊 ملخص جميع السنوات",
+    y_title_chart:"📈 رسم بياني — مقارنة السنوات",
+    y_title_table:"📋 جدول مقارنة السنوات",
+    y_title_dist:"🏦 توزيع الادخار حسب السنة",
+    y_inc:"الدخل",y_exp:"المصاريف",y_sav:"الادخار",y_rem:"المتبقي",
+    y_year:"السنة",y_debtpay:"دفعات الديون",y_debtrecv:"المستلم من مدينين",
+    y_net:"صافي السنة",y_all:"إجمالي جميع السنوات",y_count:"عدد السنوات",
+    y_best_year:"أفضل سنة (بالمتبقي)",y_avg_income:"متوسط الدخل السنوي",
+    y_confirm_add:"أدخل السنة الجديدة (مثال: 2026):",y_confirm_del:"هل أنت متأكد من حذف السنة",
+    y_cant_del:"لا يمكن حذف آخر سنة موجودة",
+    y_exists:"هذه السنة موجودة بالفعل",y_invalid:"سنة غير صالحة",
+    y_deleted:"✅ تم حذف السنة ",y_added:"✅ تمت إضافة السنة ",
+    y_years:"سنوات",
   },
   en: {
-    app_title: "Capital Manager",
-    footer: "All rights reserved to Muharraqi",
-    t_dash: "📊 Dashboard",
-    t_month: "📅 Monthly Entry",
-    t_pyr: "🔺 Financial Safety Pyramid",
-    t_debts: "🤝 Debts & Loans",
-    t_annual: "📈 Annual Summary",
-    btn_export: "📤 Export", btn_import: "📥 Import", btn_reset: "🗑 Reset",
-    dash_title1: "Annual Summary (12 Months)",
-    dash_title2: "Annual Savings Distribution",
-    dash_title3: "Debts & Installments Summary",
-    dash_title4: "Months Comparison",
-    kpi_tot_inc: "Total Annual Income",
-    kpi_tot_exp: "Total Annual Expenses",
-    kpi_tot_sav: "Total Savings",
-    kpi_tot_debtpay: "Total Debt Payments",
-    kpi_tot_debtrecv: "Received from Debtors",
-    kpi_tot_rem: "Annual Remaining",
-    kpi_net_debt: "Net Debts (Mine − Owed)",
-    kpi_emergency: "🚨 Emergency", kpi_invest: "📈 Investment", kpi_assembly: "👥 Assembly", kpi_travel: "✈️ Travel",
-    kpi_recv_year: "💰 To Receive This Year",
-    kpi_pay_year: "💸 To Pay This Year",
-    kpi_net_year: "📊 Net Year",
-    kpi_net_rem: "📌 Total Remaining (Mine − Owed)",
-    th_month: "Month", th_income: "Income", th_debtpay: "Debt Payments",
-    th_expenses: "Expenses", th_saving: "Savings", th_remain: "Remaining",
-    th_lastmod: "Last Modified", th_status: "Status",
-    status_good: "Good", status_bad: "Deficit", status_empty: "Empty",
-    notice_bhd: "💵 All amounts in this page are in Bahraini Dinar (BHD)",
-    date_title: "📅 When was this month modified?",
-    lbl_date: "📌 Manual Date (saved instantly)",
-    lbl_time: "⏰ Time (optional)",
-    lbl_lastmod: "🔄 Auto last modified (read-only)",
-    lbl_income: "Income",
-    eid_title: "Focus here — Is there an Eid this month for clothes or gifts?",
-    lbl_eid_state: "Choose state",
-    eid_opt1: "Eidi + Kids Eidi",
-    eid_opt2: "Eid Clothes",
-    eid_opt3: "Eidi, Kids Eidi + Eid Clothes",
-    eid_opt4: "No",
-    lbl_eid_amount: "Total value (this amount is for reference only and will not be calculated)",
-    lbl_expenses: "💸 Expenses (BHD)",
-    th_item: "Item", th_amount: "Amount (BHD)", th_bank: "Bank / Source", th_note: "Note",
-    lbl_debts_month: "Debt & Installment Payments",
-    debts_month_help: "Auto-synced with \"🤝 Debts & Loans\" tab. 🟢 Received (debit) adds to income — 🔴 Paid (credit/installment) deducts from remaining.",
-    th_debt_name: "Name", th_debt_type: "Type", th_debt_total: "Total",
-    th_debt_rem_before: "Remaining Before", th_debt_this_month: "This Month",
-    th_debt_rem_after: "Remaining After", th_debt_note: "Note",
-    lbl_savings: "💰 Savings Amounts (BHD)",
-    savings_hint: "🔢 Numbers here are whole units (1, 2, 3 ...) — decimals not accepted",
-    lbl_month_result: "Monthly Result",
-    lbl_month_notes: "Month Notes",
-    pyr_title: "🔺 Financial Safety Pyramid",
-    pyr_desc: "Financial priorities from base (foundation) to top (growth). Amounts aggregated over 12 months.",
-    pyr_detail: "Pyramid Details",
-    th_level: "Level", th_item_name: "Item", th_year_total: "Annual Total (BHD)", th_pct: "% of Pyramid",
-    th_total: "Total",
-    debts_summary: "📊 Debts & Installments Summary",
-    add_debt: "➕ Add Debt / Loan / Installment",
-    lbl_debt_name: "Name", lbl_debt_type: "Type", lbl_debt_cat: "Installment Category",
-    lbl_debt_total: "Total Amount (BHD)", lbl_debt_paidbefore: "Paid Before (previous years) (BHD)",
-    lbl_debt_start: "Start Date", lbl_debt_end: "End Date", lbl_debt_notes: "Notes",
-    btn_add_debt: "➕ Add",
-    dbt_credit: "🔴 Creditor (I borrowed — I pay)",
-    dbt_debit: "🟢 Debtor (people borrowed from me — I receive)",
-    dbt_inst: "🏦 Installment (bank/visa — I pay)",
-    dbt_visa: "Visa Card", dbt_bank: "Bank", dbt_misc: "Misc",
-    debts_table: "📋 Debts & Installments Table — 12-Month View",
-    debts_table_hint: "Full view of all payments. For quick month editing, use the \"📅 Monthly Entry\" tab.",
-    lbl_annual: "Detailed Annual Summary (BHD)",
-    kpi_recv_year_d: "💰 To receive this year (debtors)",
-    kpi_pay_year_d: "💸 To pay this year (credit + installments)",
-    kpi_net_year_d: "📊 Net year",
-    kpi_rem_to_me: "📌 Remaining to me (debtors)",
-    kpi_rem_on_me: "📌 Remaining on me (credit + installments)",
-    kpi_net_remaining: "⚖️ Net remaining",
-    kpi_total_debt: "💵 Total debts",
-    kpi_count: "📋 Items count",
-    mr_inc_core: "Base income (salary + extra)",
-    mr_inc_debt: "💰 + Received from debtors",
-    mr_inc_total: "= Total monthly income",
-    mr_exp: "Total counted expenses",
-    mr_exp_excl: "Excluded expenses",
-    mr_saving: "Direct savings",
-    mr_debtpay: "💸 Debt payments (credit + installment)",
-    mr_remaining: "Remaining",
-    mr_eid_ref: "Eid amount (reference only)",
-    dms_recv: "💰 To receive this month (debit) → added to income",
-    dms_pay: "💸 To pay this month (credit + installment) → deducted",
-    dms_net: "📊 Month net",
-    dms_remaining: "📌 Remaining on me after all payments",
-    dms_empty: "No debts or loans yet — add from \"🤝 Debts & Loans\" tab",
-    dms_total: "Total",
-    saved_date: "✅ Date saved: ",
-    saved_time: "✅ Time saved",
-    exported: "📤 Exported",
-    added: "✅ Added",
-    need_name_total: "⚠️ Enter name and amount",
-    paid_gt_total: "⚠️ Paid before exceeds total!",
-    confirm_delete: "Confirm delete?",
-    confirm_reset: "⚠️ All data will be deleted. Are you sure?",
-    invalid_file: "Invalid file",
-    months: ["January","February","March","April","May","June","July","August","September","October","November","December"],
-    print_title: "Capital Manager",
-    print_subtitle: "Financial Report",
-    print_meta: "Generated on",
-    f_salary: "Monthly Salary (BHD)",
-    f_costOfLiving: "Cost of Living (BHD)",
-    f_housing: "Housing Allowance (BHD)",
-    f_charity: "Charity (BHD)",
-    f_freelance: "Freelance Income (BHD)",
-    f_meat_support: "Meat Support (every 3 months)",
-    f_meat_no: "No — not received this month",
-    f_meat_yes: "Yes — received this month",
-    f_meat_amount: "Meat Support Amount (BHD)",
-    e_wifeSalary: "Wife Salary", e_familyExpenses: "Family Expenses",
-    e_rent: "Rent", e_houseMaintenance: "House Maintenance",
-    e_internet: "Internet & Phone", e_electricity: "Electricity & Water",
-    e_misc: "Miscellaneous", e_treatment: "Treatment",
-    e_visaCard1: "Visa Card 1", e_visaCard2: "Visa Card 2", e_visaCard3: "Visa Card 3",
-    e_fuel: "Fuel", e_carCleaning: "Car Cleaning",
-    e_carRepair1: "Car Repair 1", e_carRepair2: "Car Repair 2",
-    e_homeRepair1: "Home Repair 1", e_homeRepair2: "Home Repair 2",
-    e_birthday: "Birthday",
-    e_kids_group: "🎒 Kids Needs",
-    e_kidsSchool: "↳ School", e_kidsClothes: "↳ Clothes", e_kidsEid: "↳ Eid",
-    e_privateSchool: "Private School", e_kindergarten: "Kindergarten", e_university: "University",
-    e_transport: "Transportation", e_tutoring: "Tutoring", e_humanitarianAid: "🤲 Humanitarian Aid",
-    bd_none: "— No one —", bd_wife: "Wife", bd_husband: "Husband", bd_kids: "Kids",
-    s_assembly: "👥 Assembly (BHD)",
-    s_investment: "📈 Investment (BHD)",
-    s_eidMoneySaving: "🎉 Eid Money (BHD)",
-    s_insuranceSaving: "🛡️ Savings (Insurance + Registration + Eid Clothes + Kindergarten) (BHD)",
-    s_travelSaving: "✈️ Travel Savings (BHD)",
-    s_emergencyFund: "🚨 Emergency Fund (BHD)",
-    s_obligationsSaving: "📋 Obligations (BHD)",
-    eid_fitar: "🎉 Eid Al-Fitr", eid_adha: "🐑 Eid Al-Adha",
-    p_emergencyFund: "Emergency Fund", p_eidMoneySaving: "Eid Money",
-    p_insuranceSaving: "Insurance + Registration + Eid + KG", p_assembly: "Assembly",
-    p_obligationsSaving: "Obligations", p_travelSaving: "Travel Savings", p_investment: "Investment",
-    es_total: "Grand Total", es_counted: "✅ Counted", es_excluded: "⛔ Excluded",
-    es_by_bank: "🏦 Total by Bank",
-    dt_credit: "Credit (I pay)", dt_debit: "Debit (I receive)", dt_inst: "Installment (I pay)",
-    dt_credit_label: "Credit", dt_debit_label: "Debit", dt_inst_label: "Installment",
+    app_title:"Capital Manager",footer:"All rights reserved to Muharraqi",
+    t_dash:"📊 Dashboard",t_month:"📅 Monthly Entry",t_years:"📆 Years Comparison",
+    t_pyr:"🔺 Financial Safety Pyramid",t_debts:"🤝 Debts & Loans",t_annual:"📈 Annual Summary",
+    btn_export:"📤 Export",btn_import:"📥 Import",btn_reset:"🗑 Reset",
+    dash_title1:"Annual Summary (12 Months)",dash_title2:"Annual Savings Distribution",
+    dash_title3:"Debts & Installments Summary",dash_title4:"Months Comparison",
+    kpi_tot_inc:"Total Annual Income",kpi_tot_exp:"Total Annual Expenses",
+    kpi_tot_sav:"Total Savings",kpi_tot_debtpay:"Total Debt Payments",
+    kpi_tot_debtrecv:"Received from Debtors",kpi_tot_rem:"Annual Remaining",kpi_net_debt:"Net Debts",
+    kpi_emergency:"🚨 Emergency",kpi_invest:"📈 Investment",kpi_assembly:"👥 Assembly",kpi_travel:"✈️ Travel",
+    kpi_recv_year:"💰 To Receive This Year",kpi_pay_year:"💸 To Pay This Year",
+    kpi_net_year:"📊 Net Year",kpi_net_rem:"📌 Total Remaining",
+    th_month:"Month",th_income:"Income",th_debtpay:"Debt Payments",th_expenses:"Expenses",
+    th_saving:"Savings",th_remain:"Remaining",th_lastmod:"Last Modified",th_status:"Status",
+    status_good:"Good",status_bad:"Deficit",status_empty:"Empty",
+    notice_bhd:"💵 All amounts in Bahraini Dinar (BHD)",
+    date_title:"📅 When was this month modified?",lbl_date:"📌 Manual Date (saved instantly)",
+    lbl_time:"⏰ Time (optional)",lbl_lastmod:"🔄 Auto last modified (read-only)",
+    lbl_income:"Income",eid_title:"Focus here — Is there an Eid this month for clothes or gifts?",
+    lbl_eid_state:"Choose state",
+    eid_opt1:"Eidi + Kids Eidi",eid_opt2:"Eid Clothes",
+    eid_opt3:"Eidi, Kids Eidi + Eid Clothes",eid_opt4:"No",
+    lbl_eid_amount:"Total value (reference only, not calculated)",
+    lbl_expenses:"💸 Expenses (BHD)",th_item:"Item",th_amount:"Amount (BHD)",
+    th_bank:"Bank / Source",th_note:"Note",lbl_debts_month:"Debt & Installment Payments",
+    debts_month_help:"Only active debts shown. 🟢 Received (debit) adds to income — 🔴 Paid deducts. Paid debts are managed in \"🤝 Debts & Loans\" tab.",
+    th_debt_name:"Name",th_debt_type:"Type",th_debt_total:"Total",
+    th_debt_rem_before:"Remaining Before",th_debt_this_month:"This Month",
+    th_debt_rem_after:"Remaining After",th_debt_note:"Note",
+    lbl_savings:"💰 Savings Amounts (BHD)",
+    savings_hint:"🔢 Whole numbers only (1, 2, 3 ...)",
+    lbl_month_result:"Monthly Result",lbl_month_notes:"Month Notes",
+    pyr_title:"🔺 Financial Safety Pyramid",
+    pyr_desc:"Priorities from base to top. Amounts aggregated over 12 months.",
+    pyr_detail:"Pyramid Details",th_level:"Level",th_item_name:"Item",
+    th_year_total:"Annual Total (BHD)",th_pct:"%",th_total:"Total",
+    debts_summary:"📊 Debts & Installments Summary",add_debt:"➕ Add Debt / Loan / Installment",
+    lbl_debt_name:"Name",lbl_debt_type:"Type",lbl_debt_cat:"Installment Category",
+    lbl_debt_total:"Total Amount (BHD)",lbl_debt_paidbefore:"Paid Before This Year (BHD)",
+    lbl_debt_start:"Start Date",lbl_debt_end:"End Date",lbl_debt_notes:"Notes",
+    btn_add_debt:"➕ Add",
+    dbt_credit:"🔴 Creditor (I borrowed — I pay)",dbt_debit:"🟢 Debtor (they borrowed — I receive)",
+    dbt_inst:"🏦 Installment (bank/visa — I pay)",
+    dbt_visa:"Visa Card",dbt_bank:"Bank",dbt_misc:"Misc",
+    debts_table:"📋 Debts & Installments Table — Active Year View",
+    debts_table_hint:"✏️ Every cell is editable — name, type, category, total, paid-before, and notes.",
+    lbl_annual:"Detailed Annual Summary (BHD)",
+    kpi_recv_year_d:"💰 To receive this year",kpi_pay_year_d:"💸 To pay this year",
+    kpi_net_year_d:"📊 Net year",kpi_rem_to_me:"📌 Remaining to me",
+    kpi_rem_on_me:"📌 Remaining on me",kpi_net_remaining:"⚖️ Net remaining",
+    kpi_total_debt:"💵 Total debts",kpi_count:"📋 Items count",
+    mr_inc_core:"Base income",mr_inc_debt:"💰 + Received from debtors",
+    mr_inc_total:"= Total monthly income",mr_exp:"Counted expenses",
+    mr_exp_excl:"Excluded expenses",mr_saving:"Direct savings",
+    mr_debtpay:"💸 Debt payments",mr_remaining:"Remaining",
+    mr_eid_ref:"Eid amount (reference)",
+    dms_recv:"💰 To receive this month (debit) → added to income",
+    dms_pay:"💸 To pay this month (credit + installment) → deducted",
+    dms_net:"📊 Month net",dms_remaining:"📌 Remaining after all payments",
+    dms_empty:"No active debts — paid ones appear in \"🤝 Debts & Loans\" tab",
+    dms_no_active:"No active debts this month",
+    dms_total:"Total",
+    saved_date:"✅ Date saved: ",saved_time:"✅ Time saved",
+    exported:"📤 Exported",added:"✅ Added",
+    need_name_total:"⚠️ Enter name and amount",paid_gt_total:"⚠️ Paid before exceeds total!",
+    confirm_delete:"Confirm delete?",confirm_reset:"⚠️ All data will be deleted. Are you sure?",
+    invalid_file:"Invalid file",
+    debt_paid:"Paid",
+    months:["January","February","March","April","May","June","July","August","September","October","November","December"],
+    print_title:"Capital Manager",print_subtitle:"Financial Report",print_meta:"Generated on",
+    f_salary:"Monthly Salary (BHD)",f_costOfLiving:"Cost of Living (BHD)",
+    f_housing:"Housing Allowance (BHD)",f_charity:"Charity (BHD)",
+    f_freelance:"Freelance Income (BHD)",
+    f_meat_support:"Meat Support (every 3 months)",
+    f_meat_no:"No — not received this month",f_meat_yes:"Yes — received this month",
+    f_meat_amount:"Meat Support Amount (BHD)",
+    e_wifeSalary:"Wife Salary",e_familyExpenses:"Family Expenses",
+    e_rent:"Rent",e_houseMaintenance:"House Maintenance",
+    e_internet:"Internet & Phone",e_electricity:"Electricity & Water",
+    e_misc:"Miscellaneous",e_treatment:"Treatment",
+    e_visaCard1:"Visa Card 1",e_visaCard2:"Visa Card 2",e_visaCard3:"Visa Card 3",
+    e_fuel:"Fuel",e_carCleaning:"Car Cleaning",
+    e_carRepair1:"Car Repair 1",e_carRepair2:"Car Repair 2",
+    e_homeRepair1:"Home Repair 1",e_homeRepair2:"Home Repair 2",
+    e_birthday:"Birthday",e_kids_group:"🎒 Kids Needs",
+    e_kidsSchool:"↳ School",e_kidsClothes:"↳ Clothes",e_kidsEid:"↳ Eid",
+    e_privateSchool:"Private School",e_kindergarten:"Kindergarten",e_university:"University",
+    e_transport:"Transportation",e_tutoring:"Tutoring",e_humanitarianAid:"🤲 Humanitarian Aid",
+    bd_none:"— No one —",bd_wife:"Wife",bd_husband:"Husband",bd_kids:"Kids",
+    s_assembly:"👥 Assembly (BHD)",s_investment:"📈 Investment (BHD)",
+    s_eidMoneySaving:"🎉 Eid Money (BHD)",
+    s_insuranceSaving:"🛡️ Savings (Insurance + Registration + Eid + KG) (BHD)",
+    s_travelSaving:"✈️ Travel Savings (BHD)",s_emergencyFund:"🚨 Emergency Fund (BHD)",
+    s_obligationsSaving:"📋 Obligations (BHD)",
+    eid_fitar:"🎉 Eid Al-Fitr",eid_adha:"🐑 Eid Al-Adha",
+    p_emergencyFund:"Emergency Fund",p_eidMoneySaving:"Eid Money",
+    p_insuranceSaving:"Insurance + Registration + Eid + KG",p_assembly:"Assembly",
+    p_obligationsSaving:"Obligations",p_travelSaving:"Travel Savings",p_investment:"Investment",
+    es_total:"Grand Total",es_counted:"✅ Counted",es_excluded:"⛔ Excluded",es_by_bank:"🏦 Total by Bank",
+    dt_credit:"Credit (I pay)",dt_debit:"Debit (I receive)",dt_inst:"Installment (I pay)",
+    dt_credit_label:"Credit",dt_debit_label:"Debit",dt_inst_label:"Installment",
+    y_title_kpi:"📊 All Years Summary",
+    y_title_chart:"📈 Years Comparison Chart",
+    y_title_table:"📋 Years Comparison Table",
+    y_title_dist:"🏦 Savings Distribution by Year",
+    y_inc:"Income",y_exp:"Expenses",y_sav:"Savings",y_rem:"Remaining",
+    y_year:"Year",y_debtpay:"Debt Payments",y_debtrecv:"Received",y_net:"Net Year",
+    y_all:"All Years Total",y_count:"Years Count",
+    y_best_year:"Best Year (Remaining)",y_avg_income:"Avg Annual Income",
+    y_confirm_add:"Enter new year (e.g. 2026):",y_confirm_del:"Delete year",
+    y_cant_del:"Cannot delete the last year",
+    y_exists:"Year already exists",y_invalid:"Invalid year",
+    y_deleted:"✅ Year deleted: ",y_added:"✅ Year added: ",
+    y_years:"years",
   }
 };
 
-/* ===================================================================
-   Global state
-=================================================================== */
 const BANKS = ["بطاقة صراف الالي","NBK","ILA","BBK","MEEM","NBB","غير محسوب ذي الشهر"];
 const EXCLUDED_BANK = "غير محسوب ذي الشهر";
 const BANKS_EN = ["ATM Card","NBK","ILA","BBK","MEEM","NBB","Not Counted"];
-const EXCLUDED_BANK_EN = "Not Counted";
+const MEAT_MONTHS = [0, 3, 6, 9];
+function isMeatMonth(mi){ return MEAT_MONTHS.includes(mi); }
 
 let LANG = localStorage.getItem('cm_lang') || 'ar';
 let THEME = localStorage.getItem('cm_theme') || 'dark';
@@ -848,139 +687,290 @@ const getMonths = () => I18N[LANG].months;
 const bankLabel = b => LANG === 'en' ? (BANKS_EN[BANKS.indexOf(b)] || b) : b;
 const isExcludedBank = bank => bank === EXCLUDED_BANK;
 
-/* ===================================================================
-   Income/Expense/Saving Field Definitions (functions so they're dynamic)
-=================================================================== */
 const getIncomeFields = () => [
-  ["salary", t('f_salary')],
-  ["costOfLiving", t('f_costOfLiving')],
-  ["housing", t('f_housing')],
-  ["charity", t('f_charity')],
-  ["freelance", t('f_freelance')],
+  ["salary", t('f_salary')],["costOfLiving", t('f_costOfLiving')],
+  ["housing", t('f_housing')],["charity", t('f_charity')],["freelance", t('f_freelance')],
 ];
-
 const getExpenseRows = () => [
-  {type:"simple", key:"wifeSalary", label: t('e_wifeSalary')},
-  {type:"simple", key:"familyExpenses", label: t('e_familyExpenses')},
-  {type:"simple", key:"rent", label: t('e_rent')},
-  {type:"simple", key:"houseMaintenance", label: t('e_houseMaintenance')},
-  {type:"simple", key:"internet", label: t('e_internet')},
-  {type:"simple", key:"electricity", label: t('e_electricity')},
-  {type:"simple", key:"misc", label: t('e_misc')},
-  {type:"simple", key:"treatment", label: t('e_treatment')},
-  {type:"simple", key:"visaCard1", label: t('e_visaCard1')},
-  {type:"simple", key:"visaCard2", label: t('e_visaCard2')},
-  {type:"simple", key:"visaCard3", label: t('e_visaCard3')},
-  {type:"simple", key:"fuel", label: t('e_fuel')},
-  {type:"simple", key:"carCleaning", label: t('e_carCleaning')},
-  {type:"simple", key:"carRepair1", label: t('e_carRepair1')},
-  {type:"simple", key:"carRepair2", label: t('e_carRepair2')},
-  {type:"simple", key:"homeRepair1", label: t('e_homeRepair1')},
-  {type:"simple", key:"homeRepair2", label: t('e_homeRepair2')},
-  {type:"birthday", key:"birthday", label: t('e_birthday')},
-  {type:"group", label: t('e_kids_group')},
-  {type:"simple", key:"kidsSchool", label: t('e_kidsSchool')},
-  {type:"simple", key:"kidsClothes", label: t('e_kidsClothes')},
-  {type:"simple", key:"kidsEid", label: t('e_kidsEid')},
-  {type:"simple", key:"privateSchool", label: t('e_privateSchool')},
-  {type:"simple", key:"kindergarten", label: t('e_kindergarten')},
-  {type:"simple", key:"university", label: t('e_university')},
-  {type:"simple", key:"transport", label: t('e_transport')},
-  {type:"simple", key:"tutoring", label: t('e_tutoring')},
-  {type:"simple", key:"humanitarianAid", label: t('e_humanitarianAid')},
+  {type:"simple",key:"wifeSalary",label:t('e_wifeSalary')},
+  {type:"simple",key:"familyExpenses",label:t('e_familyExpenses')},
+  {type:"simple",key:"rent",label:t('e_rent')},
+  {type:"simple",key:"houseMaintenance",label:t('e_houseMaintenance')},
+  {type:"simple",key:"internet",label:t('e_internet')},
+  {type:"simple",key:"electricity",label:t('e_electricity')},
+  {type:"simple",key:"misc",label:t('e_misc')},
+  {type:"simple",key:"treatment",label:t('e_treatment')},
+  {type:"simple",key:"visaCard1",label:t('e_visaCard1')},
+  {type:"simple",key:"visaCard2",label:t('e_visaCard2')},
+  {type:"simple",key:"visaCard3",label:t('e_visaCard3')},
+  {type:"simple",key:"fuel",label:t('e_fuel')},
+  {type:"simple",key:"carCleaning",label:t('e_carCleaning')},
+  {type:"simple",key:"carRepair1",label:t('e_carRepair1')},
+  {type:"simple",key:"carRepair2",label:t('e_carRepair2')},
+  {type:"simple",key:"homeRepair1",label:t('e_homeRepair1')},
+  {type:"simple",key:"homeRepair2",label:t('e_homeRepair2')},
+  {type:"birthday",key:"birthday",label:t('e_birthday')},
+  {type:"group",label:t('e_kids_group')},
+  {type:"simple",key:"kidsSchool",label:t('e_kidsSchool')},
+  {type:"simple",key:"kidsClothes",label:t('e_kidsClothes')},
+  {type:"simple",key:"kidsEid",label:t('e_kidsEid')},
+  {type:"simple",key:"privateSchool",label:t('e_privateSchool')},
+  {type:"simple",key:"kindergarten",label:t('e_kindergarten')},
+  {type:"simple",key:"university",label:t('e_university')},
+  {type:"simple",key:"transport",label:t('e_transport')},
+  {type:"simple",key:"tutoring",label:t('e_tutoring')},
+  {type:"simple",key:"humanitarianAid",label:t('e_humanitarianAid')},
 ];
-
 const getSavingFields = () => [
-  ["assembly", t('s_assembly')],
-  ["investment", t('s_investment')],
+  ["assembly", t('s_assembly')],["investment", t('s_investment')],
   ["eidMoneySaving", t('s_eidMoneySaving'), "eidDropdown"],
-  ["insuranceSaving", t('s_insuranceSaving')],
-  ["travelSaving", t('s_travelSaving')],
-  ["emergencyFund", t('s_emergencyFund')],
-  ["obligationsSaving", t('s_obligationsSaving')],
+  ["insuranceSaving", t('s_insuranceSaving')],["travelSaving", t('s_travelSaving')],
+  ["emergencyFund", t('s_emergencyFund')],["obligationsSaving", t('s_obligationsSaving')],
 ];
-
 const getPyramidLevels = () => [
-  { key:"emergencyFund",    label: t('p_emergencyFund'),    color:"#ef4444", subtitle:"🚨" },
-  { key:"eidMoneySaving",   label: t('p_eidMoneySaving'),   color:"#f97316", subtitle:"🎉" },
-  { key:"insuranceSaving",  label: t('p_insuranceSaving'),  color:"#eab308", subtitle:"🛡️" },
-  { key:"assembly",         label: t('p_assembly'),         color:"#a855f7", subtitle:"👥" },
-  { key:"obligationsSaving",label: t('p_obligationsSaving'),color:"#3b82f6", subtitle:"📋" },
-  { key:"travelSaving",     label: t('p_travelSaving'),     color:"#14b8a6", subtitle:"✈️" },
-  { key:"investment",       label: t('p_investment'),       color:"#22c55e", subtitle:"📈" },
+  {key:"emergencyFund",label:t('p_emergencyFund'),color:"#ef4444",subtitle:"🚨"},
+  {key:"eidMoneySaving",label:t('p_eidMoneySaving'),color:"#f97316",subtitle:"🎉"},
+  {key:"insuranceSaving",label:t('p_insuranceSaving'),color:"#eab308",subtitle:"🛡️"},
+  {key:"assembly",label:t('p_assembly'),color:"#a855f7",subtitle:"👥"},
+  {key:"obligationsSaving",label:t('p_obligationsSaving'),color:"#3b82f6",subtitle:"📋"},
+  {key:"travelSaving",label:t('p_travelSaving'),color:"#14b8a6",subtitle:"✈️"},
+  {key:"investment",label:t('p_investment'),color:"#22c55e",subtitle:"📈"},
 ];
 
-/* ===================================================================
-   State & Storage
-=================================================================== */
 const EMPTY_MONTH = () => ({
-  salary:0, costOfLiving:0, housing:0, hasMeatSupport:false, meat:0,
-  charity:0, freelance:0, eidType:"no", eidAmount:0,
-  wifeSalary:0, familyExpenses:0, rent:0, houseMaintenance:0,
-  internet:0, electricity:0, misc:0, treatment:0,
-  visaCard1:0, visaCard2:0, visaCard3:0, fuel:0, carCleaning:0,
-  carRepair1:0, carRepair2:0, homeRepair1:0, homeRepair2:0,
-  birthday:0, birthdayPerson:"none",
-  kidsSchool:0, kidsClothes:0, kidsEid:0,
-  privateSchool:0, kindergarten:0, university:0, transport:0, tutoring:0,
-  humanitarianAid:0, expenseMeta:{},
-  assembly:0, investment:0, eidMoneySaving:0, eidMoneyType:"fitar",
-  insuranceSaving:0, travelSaving:0, emergencyFund:0, obligationsSaving:0,
-  notes:"", customDate:"", customTime:"", lastModified:""
+  salary:0,costOfLiving:0,housing:0,hasMeatSupport:false,meat:0,
+  charity:0,freelance:0,eidType:"no",eidAmount:0,
+  wifeSalary:0,familyExpenses:0,rent:0,houseMaintenance:0,
+  internet:0,electricity:0,misc:0,treatment:0,
+  visaCard1:0,visaCard2:0,visaCard3:0,fuel:0,carCleaning:0,
+  carRepair1:0,carRepair2:0,homeRepair1:0,homeRepair2:0,
+  birthday:0,birthdayPerson:"none",
+  kidsSchool:0,kidsClothes:0,kidsEid:0,
+  privateSchool:0,kindergarten:0,university:0,transport:0,tutoring:0,
+  humanitarianAid:0,expenseMeta:{},
+  assembly:0,investment:0,eidMoneySaving:0,eidMoneyType:"fitar",
+  insuranceSaving:0,travelSaving:0,emergencyFund:0,obligationsSaving:0,
+  notes:"",customDate:"",customTime:"",lastModified:""
 });
+const emptyYear = () => Array.from({length:12}, EMPTY_MONTH);
 
 let state = {
-  months: Array.from({length:12}, EMPTY_MONTH),
-  debts: [],
-  activeMonth: 0
+  years: {},
+  yearList: [],
+  activeYear: new Date().getFullYear(),
+  activeMonth: 0,
+  debts: []
 };
 
-const KEY = "capital_manager_v16";
+const KEY = "capital_manager_v20";
+
 function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 function load(){
   try{
     const raw = localStorage.getItem(KEY);
-    if(raw){
-      const d = JSON.parse(raw);
-      state = {...state, ...d};
-      state.months.forEach(m => {
-        if(m.eidType === "none") m.eidType = "no";
-        if(m.visaCard && !m.visaCard1){ m.visaCard1 = m.visaCard; delete m.visaCard; }
-        if(m.carRepair && !m.carRepair1){ m.carRepair1 = m.carRepair; delete m.carRepair; }
-        if(m.homeRepair && !m.homeRepair1){ m.homeRepair1 = m.homeRepair; delete m.homeRepair; }
-        if(m.kidsNeeds && !m.kidsClothes){ m.kidsClothes = m.kidsNeeds; delete m.kidsNeeds; }
-        if(!m.birthdayPerson) m.birthdayPerson = "none";
-        if(m.eidClothesSaving && !m.eidMoneySaving){ m.eidMoneySaving = m.eidClothesSaving; delete m.eidClothesSaving; }
-        if(m.carInsuranceSaving && !m.insuranceSaving){ m.insuranceSaving = m.carInsuranceSaving; delete m.carInsuranceSaving; }
-        if(!m.eidMoneyType) m.eidMoneyType = "fitar";
-        ["assembly","investment","eidMoneySaving","insuranceSaving","travelSaving","emergencyFund","obligationsSaving"]
-          .forEach(k => { m[k] = Math.round(+m[k]||0); });
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    if(d.months && !d.years){
+      const y = new Date().getFullYear();
+      state.years = { [y]: d.months };
+      state.yearList = [y];
+      state.activeYear = y;
+      state.activeMonth = d.activeMonth || 0;
+      state.debts = (d.debts||[]).map(dd => {
+        const newD = {...dd};
+        newD.monthlyByYear = { [y]: dd.monthly || Array(12).fill(0) };
+        delete newD.monthly;
+        return newD;
       });
-      state.debts = (state.debts||[]).map(d => {
-        if(!d.monthly) d.monthly = Array(12).fill(0);
-        else while(d.monthly.length < 12) d.monthly.push(0);
-        if(d.paidBefore === undefined) d.paidBefore = 0;
-        if(!d.category) d.category = "متنوع";
-        return d;
-      });
+      return;
     }
+    state = {...state, ...d};
+    state.yearList = state.yearList || [];
+    Object.keys(state.years||{}).forEach(y => {
+      state.years[y] = (state.years[y]||[]).map(m => ({...EMPTY_MONTH(), ...m}));
+      while(state.years[y].length < 12) state.years[y].push(EMPTY_MONTH());
+    });
+    state.debts = (state.debts||[]).map(dd => {
+      if(!dd.monthlyByYear){
+        const y = state.activeYear;
+        dd.monthlyByYear = { [y]: dd.monthly || Array(12).fill(0) };
+        delete dd.monthly;
+      }
+      return dd;
+    });
   }catch(e){ console.warn(e); }
+}
+
+function initIfEmpty(){
+  if(!state.yearList || !state.yearList.length){
+    const y = new Date().getFullYear();
+    state.years = { [y]: emptyYear() };
+    state.yearList = [y];
+    state.activeYear = y;
+  }
+  if(!state.years[state.activeYear]) state.years[state.activeYear] = emptyYear();
+}
+
+function M(){ return state.years[state.activeYear] || emptyYear(); }
+function Mof(year){ return state.years[year] || []; }
+
+function ensureMeta(m){ if(!m.expenseMeta) m.expenseMeta = {}; return m.expenseMeta; }
+function getMeta(m, key){
+  const meta = ensureMeta(m);
+  if(!meta[key]) meta[key] = { bank:"بطاقة صراف الالي", note:"" };
+  return meta[key];
+}
+function isExcluded(m, key){ return getMeta(m, key).bank === EXCLUDED_BANK; }
+
+function dm(d, year, mi){ return ((d.monthlyByYear?.[year]) || [])[mi] || 0; }
+function setDm(d, year, mi, val){
+  if(!d.monthlyByYear) d.monthlyByYear = {};
+  if(!d.monthlyByYear[year]) d.monthlyByYear[year] = Array(12).fill(0);
+  d.monthlyByYear[year][mi] = val;
+}
+function debtPaidInYear(d, year){
+  const arr = d.monthlyByYear?.[year] || [];
+  return arr.reduce((a,b)=>a+(+b||0),0);
+}
+function debtPaidAllYears(d){
+  if(!d.monthlyByYear) return 0;
+  return Object.values(d.monthlyByYear).reduce((s,arr)=>s+arr.reduce((a,b)=>a+(+b||0),0),0);
+}
+function debtPaidTotal(d){ return (+d.paidBefore||0) + debtPaidAllYears(d); }
+function debtRemaining(d){ return Math.max(0,(+d.total||0) - debtPaidTotal(d)); }
+function debtRemainingBefore(d, year, mi){
+  let paid = (+d.paidBefore || 0);
+  Object.keys(d.monthlyByYear||{}).forEach(y => {
+    if(parseInt(y) < parseInt(year)) paid += (d.monthlyByYear[y]||[]).reduce((a,b)=>a+(+b||0),0);
+  });
+  const arr = d.monthlyByYear?.[year] || [];
+  for(let i=0;i<mi;i++) paid += (+arr[i]||0);
+  return Math.max(0, (+d.total||0) - paid);
+}
+function isDebtFullyPaid(d){ return debtRemaining(d) === 0; }
+function shouldShowDebtInMonthlyEntry(d, year, mi){
+  if(debtRemaining(d) > 0) return true;
+  return dm(d, year, mi) > 0;
+}
+
+function totalDebtReceipts(year, mi){
+  return state.debts.filter(d=>d.type==="debit").reduce((s,d)=>s+dm(d, year, mi), 0);
+}
+function totalDebtPayments(year, mi){
+  return state.debts.filter(d=>d.type==="credit"||d.type==="installment").reduce((s,d)=>s+dm(d, year, mi), 0);
+}
+function totalDebtReceiptsYear(year){
+  let s=0; for(let i=0;i<12;i++) s+=totalDebtReceipts(year, i); return s;
+}
+function totalDebtPaymentsYear(year){
+  let s=0; for(let i=0;i<12;i++) s+=totalDebtPayments(year, i); return s;
+}
+
+function totalIncomeCore(m, mi){
+  let sum = getIncomeFields().reduce((s,[k])=>s+(+m[k]||0),0);
+  const hasMeat = (mi !== undefined) ? isMeatMonth(mi) : !!m.hasMeatSupport;
+  if(hasMeat) sum += (+m.meat||0);
+  return sum;
+}
+function totalIncome(m, mi, year){
+  let sum = totalIncomeCore(m, mi);
+  if(mi !== undefined && year !== undefined) sum += totalDebtReceipts(year, mi);
+  return sum;
+}
+function totalExpenses(m){
+  let s=0; getExpenseRows().forEach(r=>{ if(r.type==="group") return; if(!isExcluded(m,r.key)) s+=(+m[r.key]||0); }); return s;
+}
+function totalExcludedExpenses(m){
+  let s=0; getExpenseRows().forEach(r=>{ if(r.type==="group") return; if(isExcluded(m,r.key)) s+=(+m[r.key]||0); }); return s;
+}
+function totalExpensesRaw(m){
+  let s=0; getExpenseRows().forEach(r=>{ if(r.type==="group") return; s+=(+m[r.key]||0); }); return s;
+}
+function totalSavings(m){ return getSavingFields().reduce((s,[k])=>s+(+m[k]||0),0); }
+
+function yearTotals(year){
+  const months = Mof(year);
+  let inc=0, exp=0, sav=0;
+  months.forEach((m,i)=>{
+    inc += totalIncome(m, i, year);
+    exp += totalExpenses(m);
+    sav += totalSavings(m);
+  });
+  const debtPay = totalDebtPaymentsYear(year);
+  const debtRecv = totalDebtReceiptsYear(year);
+  return { income:inc, expenses:exp, savings:sav, debtPay, debtRecv, net: inc - exp - sav - debtPay };
+}
+function allYearsTotals(){
+  let inc=0, exp=0, sav=0, debtPay=0, debtRecv=0;
+  state.yearList.forEach(y=>{
+    const tot = yearTotals(y);
+    inc += tot.income; exp += tot.expenses; sav += tot.savings; debtPay += tot.debtPay; debtRecv += tot.debtRecv;
+  });
+  return { income:inc, expenses:exp, savings:sav, debtPay, debtRecv, net: inc - exp - sav - debtPay, years: state.yearList.length };
+}
+
+function debtTotals(){
+  const recv = state.debts.filter(d=>d.type==="debit").reduce((s,d)=>s+debtPaidAllYears(d),0);
+  const pay = state.debts.filter(d=>d.type==="credit"||d.type==="installment").reduce((s,d)=>s+debtPaidAllYears(d),0);
+  const remToMe = state.debts.filter(d=>d.type==="debit").reduce((s,d)=>s+debtRemaining(d),0);
+  const remOnMe = state.debts.filter(d=>d.type==="credit"||d.type==="installment").reduce((s,d)=>s+debtRemaining(d),0);
+  return {receiveThisYear:recv,payThisYear:pay,netThisYear:recv-pay,
+    remainingToReceive:remToMe,remainingToPay:remOnMe,netRemaining:remToMe-remOnMe,
+    totalDebt: state.debts.reduce((s,d)=>s+(+d.total||0),0)};
 }
 
 const fmt = n => (Number(n)||0).toLocaleString("en-US",{maximumFractionDigits:0});
 const money = n => fmt(n) + " " + (LANG==='ar'?'د.ب':'BHD');
 const fmt2 = n => (Number(n)||0).toLocaleString("en-US",{maximumFractionDigits:2});
 const money2 = n => fmt2(n) + " " + (LANG==='ar'?'د.ب':'BHD');
+function toast(msg){ const el = document.getElementById("toast"); el.textContent = msg; el.classList.add("show"); clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove("show"),2000); }
+function kpi(lbl,val,cls=""){ return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val ${cls}">${val}</div></div>`; }
 
-function toast(msg){
-  const el = document.getElementById("toast");
-  el.textContent = msg; el.classList.add("show");
-  clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove("show"),2000);
+function renderYearSelect(){
+  const sel = document.getElementById("yearSelect");
+  sel.innerHTML = state.yearList.map(y =>
+    `<option value="${y}" ${y===state.activeYear?'selected':''}>${y}</option>`
+  ).join("");
+}
+function selectYear(y){
+  state.activeYear = y;
+  if(!state.years[y]) state.years[y] = emptyYear();
+  save(); renderYearSelect(); renderAll();
+}
+function yearPrev(){
+  const idx = state.yearList.indexOf(state.activeYear);
+  if(idx > 0) selectYear(state.yearList[idx-1]);
+  else toast(LANG==='ar'?'لا توجد سنوات أقدم':'No earlier year');
+}
+function yearNext(){
+  const idx = state.yearList.indexOf(state.activeYear);
+  if(idx < state.yearList.length-1) selectYear(state.yearList[idx+1]);
+  else toast(LANG==='ar'?'لا توجد سنوات أحدث':'No newer year');
+}
+function addYear(){
+  const input = prompt(t('y_confirm_add'), (Math.max(...state.yearList)+1));
+  if(!input) return;
+  const y = parseInt(input);
+  if(!y || y < 1900 || y > 2200){ toast(t('y_invalid')); return; }
+  if(state.years[y]){ toast(t('y_exists')); return; }
+  state.years[y] = emptyYear();
+  state.yearList.push(y);
+  state.yearList.sort((a,b)=>a-b);
+  state.activeYear = y;
+  save(); renderYearSelect(); renderAll();
+  toast(t('y_added') + y);
+}
+function deleteYear(){
+  if(state.yearList.length <= 1){ toast(t('y_cant_del')); return; }
+  if(!confirm(`${t('y_confirm_del')} ${state.activeYear}?`)) return;
+  const y = state.activeYear;
+  delete state.years[y];
+  state.yearList = state.yearList.filter(x=>x!==y);
+  state.activeYear = state.yearList[state.yearList.length-1];
+  save(); renderYearSelect(); renderAll();
+  toast(t('y_deleted') + y);
 }
 
-/* ===================================================================
-   Settings: Language / Theme / Font / Print
-=================================================================== */
 function applyLang(){
   document.documentElement.lang = LANG;
   document.documentElement.dir = LANG === 'ar' ? 'rtl' : 'ltr';
@@ -989,10 +979,7 @@ function applyLang(){
   document.getElementById('btnExport').textContent = t('btn_export');
   document.getElementById('btnImport').textContent = t('btn_import');
   document.getElementById('btnReset').textContent = t('btn_reset');
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const k = el.dataset.i18n;
-    if(I18N[LANG][k]) el.textContent = I18N[LANG][k];
-  });
+  document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.dataset.i18n; if(I18N[LANG][k]) el.textContent = I18N[LANG][k]; });
   document.getElementById('dashTitle1').textContent = t('dash_title1');
   document.getElementById('dashTitle2').textContent = t('dash_title2');
   document.getElementById('dashTitle3').textContent = t('dash_title3');
@@ -1041,24 +1028,21 @@ function applyLang(){
   document.getElementById('lblDebtsTable').textContent = t('debts_table');
   document.getElementById('lblDebtsTableHint').textContent = t('debts_table_hint');
   document.getElementById('lblAnnualTitle').textContent = t('lbl_annual');
+  document.getElementById('lblYearsKpi').textContent = t('y_title_kpi');
+  document.getElementById('lblYearsChart').textContent = t('y_title_chart');
+  document.getElementById('lblYearsTable').textContent = t('y_title_table');
+  document.getElementById('lblYearsDist').textContent = t('y_title_dist');
   document.getElementById('footerLocalized').textContent = t('footer');
   document.getElementById('phTitle').textContent = t('print_title');
   document.getElementById('phSubtitle').textContent = t('print_subtitle');
-  // Re-render dynamic parts
-  renderMonthPills();
-  renderMonth();
-  renderDashboard();
-  renderDebts();
-  renderPyramid();
+  renderAll();
 }
-
 function toggleLang(){
   LANG = LANG === 'ar' ? 'en' : 'ar';
   localStorage.setItem('cm_lang', LANG);
   applyLang();
   toast(LANG === 'ar' ? '✅ تم التبديل للعربية' : '✅ Switched to English');
 }
-
 function applyTheme(){
   document.documentElement.dataset.theme = THEME;
   document.getElementById('themeBtn').textContent = THEME === 'dark' ? '🌙' : '☀️';
@@ -1069,121 +1053,41 @@ function toggleTheme(){
   applyTheme();
   toast(THEME === 'dark' ? (LANG==='ar'?'🌙 الوضع الليلي':'🌙 Dark mode') : (LANG==='ar'?'☀️ الوضع النهاري':'☀️ Light mode'));
 }
-
-function applyFontScale(){
-  document.getElementById('mainContent').style.zoom = FONT_SCALE;
-}
+function applyFontScale(){ document.getElementById('mainContent').style.zoom = FONT_SCALE; }
 function changeFontSize(delta){
   FONT_SCALE = Math.max(0.75, Math.min(1.6, FONT_SCALE + delta * 0.1));
   localStorage.setItem('cm_font', FONT_SCALE);
   applyFontScale();
   toast((LANG==='ar'?'🔠 حجم الخط: ':'🔠 Font size: ') + Math.round(FONT_SCALE*100) + '%');
 }
-
 function printPage(){
   const now = new Date();
-  const dateStr = now.toLocaleDateString(LANG === 'ar' ? 'ar-BH' : 'en-GB', {
-    year:'numeric', month:'long', day:'numeric'
-  });
+  const dateStr = now.toLocaleDateString(LANG === 'ar' ? 'ar-BH' : 'en-GB', { year:'numeric', month:'long', day:'numeric' });
   const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
   const activeTabName = document.querySelector('nav.tabs button.active').textContent.trim();
-  document.getElementById('phMeta').textContent = `${t('print_meta')}: ${dateStr} — ${timeStr}`;
-  document.getElementById('printFooterMeta').textContent = `${activeTabName} | ${dateStr} ${timeStr}`;
+  document.getElementById('phMeta').textContent = `${t('print_meta')}: ${dateStr} — ${timeStr} | ${state.activeYear}`;
+  document.getElementById('printFooterMeta').textContent = `${activeTabName} | ${state.activeYear} | ${dateStr} ${timeStr}`;
   setTimeout(() => window.print(), 150);
 }
 
-/* ===================================================================
-   Helpers
-=================================================================== */
-function ensureMeta(m){ if(!m.expenseMeta) m.expenseMeta = {}; return m.expenseMeta; }
-function getMeta(m, key){
-  const meta = ensureMeta(m);
-  if(!meta[key]) meta[key] = { bank:"بطاقة صراف الالي", note:"" };
-  return meta[key];
-}
-function isExcluded(m, key){ return getMeta(m, key).bank === EXCLUDED_BANK; }
-
-/* ===================================================================
-   Debt Helpers
-=================================================================== */
-function debtPaidThisYear(d){ return (d.monthly||[]).reduce((a,b)=>a+(+b||0),0); }
-function debtPaidTotal(d){ return (+d.paidBefore||0) + debtPaidThisYear(d); }
-function debtRemaining(d){ return Math.max(0, (+d.total||0) - debtPaidTotal(d)); }
-function debtRemainingBeforeMonth(d, monthIdx){
-  let paid = (+d.paidBefore || 0);
-  for(let i=0; i<monthIdx; i++) paid += (+d.monthly[i] || 0);
-  return Math.max(0, (+d.total||0) - paid);
-}
-function totalDebtReceipts(mi){ return state.debts.filter(d=>d.type==="debit").reduce((s,d)=>s+(+d.monthly[mi]||0), 0); }
-function totalDebtPayments(mi){ return state.debts.filter(d=>d.type==="credit"||d.type==="installment").reduce((s,d)=>s+(+d.monthly[mi]||0), 0); }
-
-/* ===================================================================
-   Calculations
-=================================================================== */
-function totalIncomeCore(m){
-  let sum = getIncomeFields().reduce((s,[k])=>s+(+m[k]||0),0);
-  if(m.hasMeatSupport) sum += (+m.meat||0);
-  return sum;
-}
-function totalIncome(m, mi){
-  let sum = totalIncomeCore(m);
-  if(mi !== undefined) sum += totalDebtReceipts(mi);
-  return sum;
-}
-function totalExpenses(m){
-  let sum = 0;
-  getExpenseRows().forEach(row => {
-    if(row.type === "group") return;
-    if(!isExcluded(m, row.key)) sum += (+m[row.key]||0);
-  });
-  return sum;
-}
-function totalExcludedExpenses(m){
-  let sum = 0;
-  getExpenseRows().forEach(row => {
-    if(row.type === "group") return;
-    if(isExcluded(m, row.key)) sum += (+m[row.key]||0);
-  });
-  return sum;
-}
-function totalExpensesRaw(m){
-  let sum = 0;
-  getExpenseRows().forEach(row => {
-    if(row.type === "group") return;
-    sum += (+m[row.key]||0);
-  });
-  return sum;
-}
-function totalSavings(m){ return getSavingFields().reduce((s,[k])=>s+(+m[k]||0),0); }
-
-function debtTotals(){
-  const recv = state.debts.filter(d=>d.type==="debit").reduce((s,d)=>s+debtPaidThisYear(d), 0);
-  const pay = state.debts.filter(d=>d.type==="credit"||d.type==="installment").reduce((s,d)=>s+debtPaidThisYear(d), 0);
-  const remToMe = state.debts.filter(d=>d.type==="debit").reduce((s,d)=>s+debtRemaining(d), 0);
-  const remOnMe = state.debts.filter(d=>d.type==="credit"||d.type==="installment").reduce((s,d)=>s+debtRemaining(d), 0);
-  return {
-    receiveThisYear:recv, payThisYear:pay, netThisYear:recv-pay,
-    remainingToReceive:remToMe, remainingToPay:remOnMe, netRemaining:remToMe-remOnMe,
-    totalDebt: state.debts.reduce((s,d)=>s+(+d.total||0), 0),
-  };
+function renderAll(){
+  renderYearSelect();
+  renderMonthPills();
+  renderMonth();
+  renderDashboard();
+  renderDebts();
+  renderPyramid();
+  renderYears();
 }
 
-function kpi(lbl,val,cls=""){ return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val ${cls}">${val}</div></div>`; }
-
-/* ===================================================================
-   Dashboard
-=================================================================== */
 function renderDashboard(){
-  let totInc = 0, totExp = 0, totSav = 0, totPay = 0, totRecv = 0;
-  state.months.forEach((m,i)=>{
-    totInc += totalIncome(m, i);
-    totExp += totalExpenses(m);
-    totSav += totalSavings(m);
-    totPay += totalDebtPayments(i);
-    totRecv += totalDebtReceipts(i);
-  });
+  const months = M();
+  const y = state.activeYear;
+  let totInc=0, totExp=0, totSav=0;
+  months.forEach((m,i)=>{ totInc += totalIncome(m, i, y); totExp += totalExpenses(m); totSav += totalSavings(m); });
+  const totPay = totalDebtPaymentsYear(y);
+  const totRecv = totalDebtReceiptsYear(y);
   const totRem = totInc - totExp - totSav - totPay;
-
   document.getElementById("dashKpis").innerHTML = `
     ${kpi(t('kpi_tot_inc'), money(totInc), "acc")}
     ${kpi(t('kpi_tot_exp'), money(totExp), "neg")}
@@ -1193,15 +1097,13 @@ function renderDashboard(){
     ${kpi(t('kpi_tot_rem'), money(totRem), totRem>=0?"pos":"neg")}
     ${kpi(t('kpi_net_debt'), money(totRecv - totPay), (totRecv - totPay)>=0?"pos":"neg")}
   `;
-
-  const sum = k => state.months.reduce((s,m)=>s+(+m[k]||0),0);
+  const sum = k => months.reduce((s,m)=>s+(+m[k]||0),0);
   document.getElementById("dashDist").innerHTML = `
     ${kpi(t('kpi_emergency'), money(sum("emergencyFund")), "neg")}
     ${kpi(t('kpi_invest'), money(sum("investment")), "pos")}
     ${kpi(t('kpi_assembly'), money(sum("assembly")), "acc")}
     ${kpi(t('kpi_travel'), money(sum("travelSaving")), "gold")}
   `;
-
   const dt = debtTotals();
   document.getElementById("dashDebts").innerHTML = `
     ${kpi(t('kpi_recv_year'), money(dt.receiveThisYear), "pos")}
@@ -1209,20 +1111,16 @@ function renderDashboard(){
     ${kpi(t('kpi_net_year'), money(dt.netThisYear), dt.netThisYear>=0?"pos":"neg")}
     ${kpi(t('kpi_net_rem'), money(dt.netRemaining), dt.netRemaining>=0?"pos":"neg")}
   `;
-
-  const months = getMonths();
+  const monthNames = getMonths();
   let html = `<thead><tr><th>${t('th_month')}</th><th>${t('th_income')}</th><th>${t('th_debtpay')}</th><th>${t('th_expenses')}</th><th>${t('th_saving')}</th><th>${t('th_remain')}</th><th>${t('th_lastmod')}</th><th>${t('th_status')}</th></tr></thead><tbody>`;
-  state.months.forEach((m,i)=>{
-    const inc = totalIncome(m, i), exp = totalExpenses(m), sav = totalSavings(m), debtPay = totalDebtPayments(i);
+  months.forEach((m,i)=>{
+    const inc = totalIncome(m, i, y), exp = totalExpenses(m), sav = totalSavings(m), debtPay = totalDebtPayments(y, i);
     const rem = inc - exp - sav - debtPay;
     const filled = inc>0||exp>0||sav>0||debtPay>0;
     let lastMod = "—";
-    if(m.lastModified){
-      const d = new Date(m.lastModified);
-      lastMod = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    }
+    if(m.lastModified){ const d = new Date(m.lastModified); lastMod = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
     html += `<tr>
-      <td>${months[i]}</td>
+      <td>${monthNames[i]}</td>
       <td class="num">${money(inc)}</td>
       <td class="num ${debtPay>0?'neg':''}">${debtPay>0?money(debtPay):"—"}</td>
       <td class="num">${money(exp)}</td>
@@ -1235,46 +1133,40 @@ function renderDashboard(){
   document.getElementById("dashTable").innerHTML = html + `</tbody>`;
 }
 
-/* ===================================================================
-   Month
-=================================================================== */
 function renderMonthPills(){
   const months = getMonths();
+  const y = state.activeYear;
   document.getElementById("monthPills").innerHTML = months.map((m,i)=>{
-    const hasData = totalIncome(state.months[i], i) > totalDebtReceipts(i)
-      || totalExpensesRaw(state.months[i])>0 || totalSavings(state.months[i])>0 || totalDebtPayments(i)>0;
+    const mm = M()[i];
+    const hasData = mm && (totalIncome(mm, i, y) > totalDebtReceipts(y, i)
+      || totalExpensesRaw(mm)>0 || totalSavings(mm)>0 || totalDebtPayments(y, i)>0);
     return `<button class="${i===state.activeMonth?'active':''} ${hasData?'hasData':''}" onclick="selectMonth(${i})">${m}</button>`;
   }).join("");
 }
-
 function selectMonth(i){ state.activeMonth=i; renderMonthPills(); renderMonth(); save(); }
 
 function renderIncomeFields(){
-  const m = state.months[state.activeMonth];
-  const fields = getIncomeFields();
-  let html = fields.map(([k,l])=>
-    `<div class="field"><label>${l}</label>
-      <input type="number" value="${m[k]||0}" oninput="upd('${k}',this.value)"></div>`
+  const m = M()[state.activeMonth];
+  const mi = state.activeMonth;
+  const isMeat = isMeatMonth(mi);
+  m.hasMeatSupport = isMeat;
+  if(!isMeat) m.meat = 0;
+  let html = getIncomeFields().map(([k,l])=>
+    `<div class="field"><label>${l}</label><input type="number" value="${m[k]||0}" oninput="upd('${k}',this.value)"></div>`
   ).join("");
-  // Add meat support dropdown inside income
   html += `
-    <div class="field">
-      <label>${t('f_meat_support')}</label>
-      <select class="meat-select ${m.hasMeatSupport?'meat-yes':'meat-no'}" onchange="toggleMeat(this.value)">
-        <option value="no" ${!m.hasMeatSupport?'selected':''}>${t('f_meat_no')}</option>
-        <option value="yes" ${m.hasMeatSupport?'selected':''}>${t('f_meat_yes')}</option>
-      </select>
+    <div class="field"><label>${t('f_meat_support')}</label>
+      <div class="meat-status ${isMeat?'meat-status-yes':'meat-status-no'}">
+        ${isMeat ? '🟢 ' + t('f_meat_yes') : '🔴 ' + t('f_meat_no')}
+      </div>
     </div>
-    <div class="field" id="meatAmountWrap" style="display:${m.hasMeatSupport?'flex':'none'}">
-      <label>${t('f_meat_amount')}</label>
-      <input type="number" value="${m.meat||0}" oninput="upd('meat',this.value)">
-    </div>
+    ${isMeat ? `<div class="field"><label>${t('f_meat_amount')}</label><input type="number" value="${m.meat||0}" oninput="upd('meat',this.value)"></div>` : ''}
   `;
   document.getElementById("incomeFields").innerHTML = html;
 }
 
 function renderExpenseFields(){
-  const m = state.months[state.activeMonth];
+  const m = M()[state.activeMonth];
   const rows = getExpenseRows();
   const html = rows.map(row => {
     if(row.type === "group") return `<tr class="group-header"><td colspan="4">${row.label}</td></tr>`;
@@ -1284,17 +1176,13 @@ function renderExpenseFields(){
       const person = m.birthdayPerson || "none";
       const bankOpts = BANKS.map(b => `<option value="${b}" ${meta.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
       return `<tr class="${excluded?'excluded':''} bday-row">
-        <td>
-          <div class="birthday-cell">
-            <span>🎂 ${row.label}</span>
-            <select onchange="updBirthdayPerson(this.value)">
-              <option value="none" ${person==='none'?'selected':''}>${t('bd_none')}</option>
-              <option value="زوجة" ${person==='زوجة'?'selected':''}>${t('bd_wife')}</option>
-              <option value="الزوج" ${person==='الزوج'?'selected':''}>${t('bd_husband')}</option>
-              <option value="العيال" ${person==='العيال'?'selected':''}>${t('bd_kids')}</option>
-            </select>
-          </div>
-        </td>
+        <td><div class="birthday-cell"><span>🎂 ${row.label}</span>
+          <select onchange="updBirthdayPerson(this.value)">
+            <option value="none" ${person==='none'?'selected':''}>${t('bd_none')}</option>
+            <option value="زوجة" ${person==='زوجة'?'selected':''}>${t('bd_wife')}</option>
+            <option value="الزوج" ${person==='الزوج'?'selected':''}>${t('bd_husband')}</option>
+            <option value="العيال" ${person==='العيال'?'selected':''}>${t('bd_kids')}</option>
+          </select></div></td>
         <td><input type="number" value="${m.birthday||0}" oninput="updExpenseAmount('birthday', this.value)"></td>
         <td><select class="${excluded?'bank-excluded':''}" onchange="updExpenseBank('birthday', this.value)">${bankOpts}</select></td>
         <td><input type="text" value="${(meta.note||'').replace(/"/g,'&quot;')}" oninput="updExpenseNote('birthday', this.value)" placeholder="..."></td>
@@ -1315,11 +1203,10 @@ function renderExpenseFields(){
 }
 
 function renderExpenseSummary(){
-  const m = state.months[state.activeMonth];
+  const m = M()[state.activeMonth];
   const total = totalExpensesRaw(m);
   const counted = totalExpenses(m);
   const excluded = totalExcludedExpenses(m);
-
   const bankTotals = {};
   BANKS.forEach(b => bankTotals[b] = 0);
   getExpenseRows().forEach(row => {
@@ -1328,17 +1215,12 @@ function renderExpenseSummary(){
     const amt = +m[row.key] || 0;
     if(amt > 0) bankTotals[meta.bank] = (bankTotals[meta.bank] || 0) + amt;
   });
-
   const bankIcons = {"بطاقة صراف الالي":"🏧","NBK":"🏦","ILA":"🏛️","BBK":"🏢","MEEM":"💠","NBB":"🏛️","غير محسوب ذي الشهر":"⛔"};
   const bankColors = {"بطاقة صراف الالي":"bank-card","NBK":"bank-nbk","ILA":"bank-ila","BBK":"bank-bbk","MEEM":"bank-meem","NBB":"bank-nbb","غير محسوب ذي الشهر":"bank-excl"};
-
   const bankHtml = BANKS.map(b => {
     const amt = bankTotals[b] || 0;
-    return `<div class="exp-sum-item bank-item ${bankColors[b]}">
-      <span>${bankIcons[b]} ${bankLabel(b)}:</span><b>${money(amt)}</b>
-    </div>`;
+    return `<div class="exp-sum-item bank-item ${bankColors[b]}"><span>${bankIcons[b]} ${bankLabel(b)}:</span><b>${money(amt)}</b></div>`;
   }).join("");
-
   document.getElementById("expenseSummary").innerHTML = `
     <div class="exp-sum-item"><span>${t('es_total')}:</span><b>${money(total)}</b></div>
     <div class="exp-sum-item green"><span>${t('es_counted')}:</span><b>${money(counted)}</b></div>
@@ -1350,9 +1232,8 @@ function renderExpenseSummary(){
 }
 
 function renderSavingFields(){
-  const m = state.months[state.activeMonth];
-  const fields = getSavingFields();
-  document.getElementById("savingFields").innerHTML = fields.map(f => {
+  const m = M()[state.activeMonth];
+  document.getElementById("savingFields").innerHTML = getSavingFields().map(f => {
     const [k, l, extra] = f;
     let extraHtml = "";
     if(extra === "eidDropdown"){
@@ -1360,8 +1241,7 @@ function renderSavingFields(){
         <select onchange="updEidMoneyType(this.value)">
           <option value="fitar" ${m.eidMoneyType==='fitar'?'selected':''}>${t('eid_fitar')}</option>
           <option value="adha" ${m.eidMoneyType==='adha'?'selected':''}>${t('eid_adha')}</option>
-        </select>
-      </div>`;
+        </select></div>`;
     }
     return `<div class="field saving-field">
       <label>${l}</label>
@@ -1373,29 +1253,25 @@ function renderSavingFields(){
 
 function renderDebtsMonthSection(){
   const mi = state.activeMonth;
+  const y = state.activeYear;
   const tbody = document.getElementById("debtsMonthBody");
   const tfoot = document.getElementById("debtsMonthFoot");
   const summary = document.getElementById("debtsMonthSummary");
   if(!tbody) return;
-
   const titleEl = document.getElementById("debtsMonthTitle");
-  if(titleEl) titleEl.textContent = getMonths()[mi];
-
-  if(!state.debts.length){
+  if(titleEl) titleEl.textContent = getMonths()[mi] + " " + y;
+  const visibleDebts = state.debts.filter(d => shouldShowDebtInMonthlyEntry(d, y, mi));
+  if(!visibleDebts.length){
     tbody.innerHTML = `<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--muted)">${t('dms_empty')}</td></tr>`;
-    tfoot.innerHTML = "";
-    summary.innerHTML = "";
-    return;
+    tfoot.innerHTML = ""; summary.innerHTML = ""; return;
   }
-
   const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦"};
   const typeLabel = {credit:t('dt_credit'), debit:t('dt_debit'), installment:t('dt_inst')};
   const typeCls = {credit:"row-credit", debit:"row-debit", installment:"row-installment"};
-
   let recv = 0, pay = 0;
-  tbody.innerHTML = state.debts.map(d => {
-    const remBefore = debtRemainingBeforeMonth(d, mi);
-    const thisMonth = +d.monthly[mi] || 0;
+  tbody.innerHTML = visibleDebts.map(d => {
+    const remBefore = debtRemainingBefore(d, y, mi);
+    const thisMonth = dm(d, y, mi);
     const remAfter = Math.max(0, remBefore - thisMonth);
     if(d.type === "debit") recv += thisMonth; else pay += thisMonth;
     const inputCls = d.type === "debit" ? "input-debit" : "input-credit";
@@ -1409,9 +1285,7 @@ function renderDebtsMonthSection(){
       <td class="muted">${d.notes || "—"}</td>
     </tr>`;
   }).join("");
-
   tfoot.innerHTML = `<tr><td colspan="4">${t('dms_total')}</td><td class="num" style="color:var(--accent2);font-weight:700">${money(recv + pay)}</td><td colspan="2"></td></tr>`;
-
   summary.innerHTML = `
     ${kpi(t('dms_recv'), money(recv), "pos")}
     ${kpi(t('dms_pay'), money(pay), "neg")}
@@ -1423,35 +1297,30 @@ function renderDebtsMonthSection(){
 function updDebtMonthInEntry(id, val){
   const d = state.debts.find(x=>x.id===id);
   if(!d) return;
-  const v = Math.max(0, parseFloat(val)||0);
-  d.monthly[state.activeMonth] = v;
+  setDm(d, state.activeYear, state.activeMonth, Math.max(0, parseFloat(val)||0));
   save();
   refreshDebtsMonthCells();
   renderMonthResults();
   renderMonthPills();
   renderDashboard();
 }
-
 function refreshDebtsMonthCells(){
-  const mi = state.activeMonth;
+  const mi = state.activeMonth, y = state.activeYear;
   let recv = 0, pay = 0;
   state.debts.forEach(d => {
     const row = document.querySelector(`tr[data-debt-row="${d.id}"]`);
     if(!row) return;
-    const thisMonth = +d.monthly[mi] || 0;
-    const remBefore = debtRemainingBeforeMonth(d, mi);
+    const thisMonth = dm(d, y, mi);
+    const remBefore = debtRemainingBefore(d, y, mi);
     const remAfter = Math.max(0, remBefore - thisMonth);
     if(d.type === "debit") recv += thisMonth; else pay += thisMonth;
-    const remCell = row.querySelector('.debt-rem-after');
-    if(remCell){
-      remCell.textContent = money(remAfter);
-      remCell.style.color = remAfter === 0 ? 'var(--ok)' : 'var(--txt)';
-    }
+    const rc = row.querySelector('.debt-rem-after');
+    if(rc){ rc.textContent = money(remAfter); rc.style.color = remAfter === 0 ? 'var(--ok)' : 'var(--txt)'; }
   });
-  const tfoot = document.getElementById("debtsMonthFoot");
-  if(tfoot) tfoot.innerHTML = `<tr><td colspan="4">${t('dms_total')}</td><td class="num" style="color:var(--accent2);font-weight:700">${money(recv + pay)}</td><td colspan="2"></td></tr>`;
-  const summary = document.getElementById("debtsMonthSummary");
-  if(summary) summary.innerHTML = `
+  const tf = document.getElementById("debtsMonthFoot");
+  if(tf) tf.innerHTML = `<tr><td colspan="4">${t('dms_total')}</td><td class="num" style="color:var(--accent2);font-weight:700">${money(recv + pay)}</td><td colspan="2"></td></tr>`;
+  const sm = document.getElementById("debtsMonthSummary");
+  if(sm) sm.innerHTML = `
     ${kpi(t('dms_recv'), money(recv), "pos")}
     ${kpi(t('dms_pay'), money(pay), "neg")}
     ${kpi(t('dms_net'), money(recv - pay), (recv - pay) >= 0 ? "pos" : "neg")}
@@ -1459,51 +1328,45 @@ function refreshDebtsMonthCells(){
   `;
 }
 
-function updEidMoneyType(val){ const m = state.months[state.activeMonth]; m.eidMoneyType = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
-function updExpenseAmount(key, val){ const m = state.months[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderExpenseSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
-function updExpenseBank(key, val){ const m = state.months[state.activeMonth]; getMeta(m, key).bank = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
-function updExpenseNote(key, val){ const m = state.months[state.activeMonth]; getMeta(m, key).note = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
-function updBirthdayPerson(val){ const m = state.months[state.activeMonth]; m.birthdayPerson = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
-function updSaving(key, val){ const m = state.months[state.activeMonth]; m[key] = Math.max(0, Math.round(parseFloat(val)) || 0); m.lastModified = new Date().toISOString(); save(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
+function updEidMoneyType(val){ const m = M()[state.activeMonth]; m.eidMoneyType = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+function updExpenseAmount(key, val){ const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderExpenseSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
+function updExpenseBank(key, val){ const m = M()[state.activeMonth]; getMeta(m, key).bank = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
+function updExpenseNote(key, val){ const m = M()[state.activeMonth]; getMeta(m, key).note = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+function updBirthdayPerson(val){ const m = M()[state.activeMonth]; m.birthdayPerson = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
+function updSaving(key, val){ const m = M()[state.activeMonth]; m[key] = Math.max(0, Math.round(parseFloat(val)) || 0); m.lastModified = new Date().toISOString(); save(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
 
 function renderMonth(){
-  const m = state.months[state.activeMonth];
-  document.getElementById("monthTitle").textContent = getMonths()[state.activeMonth];
+  const m = M()[state.activeMonth];
+  document.getElementById("monthTitle").textContent = getMonths()[state.activeMonth] + " " + state.activeYear;
   renderIncomeFields();
   renderExpenseFields();
   renderDebtsMonthSection();
   renderSavingFields();
-
   document.getElementById("eidSelect").value = m.eidType || "no";
   const showAmt = ["eid_money","clothes","both"].includes(m.eidType);
   document.getElementById("eidAmountWrap").style.display = showAmt ? "flex" : "none";
   document.getElementById("eidAmountInput").value = m.eidAmount || 0;
-
-  const eidCard = document.querySelector('.eid-card');
-  if(eidCard) eidCard.classList.toggle('eid-no', m.eidType === 'no' || m.eidType === 'none');
-
+  const ec = document.querySelector('.eid-card');
+  if(ec) ec.classList.toggle('eid-no', m.eidType === 'no' || m.eidType === 'none');
   document.getElementById("monthNotes").value = m.notes || "";
   renderMonthDate();
   renderMonthResults();
 }
-
-function toggleMeat(val){ const m = state.months[state.activeMonth]; m.hasMeatSupport = (val === "yes"); if(!m.hasMeatSupport) m.meat = 0; m.lastModified = new Date().toISOString(); save(); renderMonth(); }
-function onEidChange(val){ const m = state.months[state.activeMonth]; m.eidType = val; m.lastModified = new Date().toISOString(); save(); renderMonth(); }
-function upd(key, val){ const m = state.months[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
-function updateMonthNotes(v){ const m = state.months[state.activeMonth]; m.notes = v; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+function onEidChange(val){ const m = M()[state.activeMonth]; m.eidType = val; m.lastModified = new Date().toISOString(); save(); renderMonth(); }
+function upd(key, val){ const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
+function updateMonthNotes(v){ const m = M()[state.activeMonth]; m.notes = v; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 
 function renderMonthResults(){
-  const m = state.months[state.activeMonth];
-  const idx = state.activeMonth;
-  const incCore = totalIncomeCore(m);
-  const incDebt = totalDebtReceipts(idx);
+  const m = M()[state.activeMonth];
+  const mi = state.activeMonth, y = state.activeYear;
+  const incCore = totalIncomeCore(m, mi);
+  const incDebt = totalDebtReceipts(y, mi);
   const inc = incCore + incDebt;
   const exp = totalExpenses(m);
   const excl = totalExcludedExpenses(m);
   const sav = totalSavings(m);
-  const debtPay = totalDebtPayments(idx);
+  const debtPay = totalDebtPayments(y, mi);
   const rem = inc - exp - sav - debtPay;
-
   document.getElementById("monthResults").innerHTML = `
     ${kpi(t('mr_inc_core'), money(incCore), "acc")}
     ${kpi(t('mr_inc_debt'), money(incDebt), "pos")}
@@ -1518,18 +1381,18 @@ function renderMonthResults(){
 }
 
 function setMonthDate(value){
-  const m = state.months[state.activeMonth];
+  const m = M()[state.activeMonth];
   if(!value) return;
   m.customDate = value; m.lastModified = new Date().toISOString();
   save(); toast(t('saved_date') + value);
 }
 function setMonthTime(value){
-  const m = state.months[state.activeMonth];
+  const m = M()[state.activeMonth];
   m.customTime = value || ""; m.lastModified = new Date().toISOString();
   save(); toast(t('saved_time'));
 }
 function renderMonthDate(){
-  const m = state.months[state.activeMonth];
+  const m = M()[state.activeMonth];
   document.getElementById("monthDatePicker").value = m.customDate || "";
   document.getElementById("monthTimePicker").value = m.customTime || "";
   const disp = document.getElementById("lastModifiedDisplay");
@@ -1539,20 +1402,16 @@ function renderMonthDate(){
   } else disp.value = "—";
 }
 
-/* ===================================================================
-   Pyramid
-=================================================================== */
 function renderPyramid(){
   const levels = getPyramidLevels();
+  const months = M();
   const totals = {};
-  levels.forEach(lvl => { totals[lvl.key] = state.months.reduce((s,m)=>s+(+m[lvl.key]||0),0); });
+  levels.forEach(lvl => { totals[lvl.key] = months.reduce((s,m)=>s+(+m[lvl.key]||0),0); });
   const grandTotal = Object.values(totals).reduce((a,b)=>a+b,0);
-
   const apexY = 25, bottomY = 430, apexLeftX = 190, apexRightX = 310, baseLeftX = 20, baseRightX = 480;
   const sliceH = (bottomY - apexY) / levels.length;
   const leftAt = y => apexLeftX + (baseLeftX - apexLeftX) * (y - apexY) / (bottomY - apexY);
   const rightAt = y => apexRightX + (baseRightX - apexRightX) * (y - apexY) / (bottomY - apexY);
-
   let svg = "";
   levels.forEach((lvl, i) => {
     const yBot = bottomY - i * sliceH, yTop = yBot - sliceH;
@@ -1569,7 +1428,6 @@ function renderPyramid(){
     `;
   });
   document.getElementById("pyramidSvg").innerHTML = svg;
-
   document.getElementById("pyramidLegend").innerHTML = levels.slice().reverse().map(lvl => `
     <div class="pyr-legend-item">
       <div class="pyr-color" style="background:${lvl.color}"></div>
@@ -1577,28 +1435,18 @@ function renderPyramid(){
       <div class="pyr-val">${fmt(totals[lvl.key])} ${LANG==='ar'?'د.ب':'BHD'}</div>
     </div>
   `).join("");
-
   let html = `<thead><tr><th>${t('th_level')}</th><th>${t('th_item_name')}</th><th>${t('th_year_total')}</th><th>${t('th_pct')}</th></tr></thead><tbody>`;
   levels.slice().reverse().forEach((lvl, idx) => {
     const level = levels.length - idx;
     const amt = totals[lvl.key] || 0;
     const pct = grandTotal > 0 ? (amt/grandTotal*100) : 0;
-    html += `<tr>
-      <td style="color:${lvl.color};font-weight:700">${level}</td>
-      <td>${lvl.subtitle} ${lvl.label}</td>
-      <td class="num" style="color:${lvl.color};font-weight:700">${money(amt)}</td>
-      <td class="num">${pct.toFixed(2)}%</td>
-    </tr>`;
+    html += `<tr><td style="color:${lvl.color};font-weight:700">${level}</td><td>${lvl.subtitle} ${lvl.label}</td><td class="num" style="color:${lvl.color};font-weight:700">${money(amt)}</td><td class="num">${pct.toFixed(2)}%</td></tr>`;
   });
   html += `<tr style="background:rgba(34,193,164,.1);font-weight:700"><td colspan="2">${t('th_total')}</td><td class="num" style="color:var(--accent);font-weight:700">${money(grandTotal)}</td><td class="num">100%</td></tr></tbody>`;
   document.getElementById("pyramidTable").innerHTML = html;
 }
 
-/* ===================================================================
-   Debts Tab
-=================================================================== */
 function onDebtTypeChange(val){ document.getElementById("d_categoryWrap").style.display = (val === "installment") ? "flex" : "none"; }
-
 function addDebt(){
   const name = document.getElementById("d_name").value.trim();
   const total = parseFloat(document.getElementById("d_total").value)||0;
@@ -1609,56 +1457,128 @@ function addDebt(){
   state.debts.push({
     id: Date.now(), name, type,
     category: type === "installment" ? document.getElementById("d_category").value : "",
-    total, paidBefore, monthly: Array(12).fill(0),
+    total, paidBefore,
+    monthlyByYear: { [state.activeYear]: Array(12).fill(0) },
     start: document.getElementById("d_start").value,
     end: document.getElementById("d_end").value,
     notes: document.getElementById("d_notes").value.trim()
   });
   ["d_name","d_notes"].forEach(id=>document.getElementById(id).value="");
   ["d_total","d_paidBefore"].forEach(id=>document.getElementById(id).value=0);
-  save(); renderDebts(); renderDashboard(); toast(t('added'));
+  save(); renderDebts(); renderDashboard(); renderMonth(); toast(t('added'));
 }
-
 function delDebt(id){
   if(!confirm(t('confirm_delete'))) return;
   state.debts = state.debts.filter(d=>d.id!==id);
-  save(); renderDebts(); renderDashboard();
+  save(); renderDebts(); renderDashboard(); renderMonth();
 }
-
 function updDebtMonth(id, mi, val){
   const d = state.debts.find(x=>x.id===id);
   if(!d) return;
-  d.monthly[mi] = Math.max(0, parseFloat(val)||0);
+  setDm(d, state.activeYear, mi, Math.max(0, parseFloat(val)||0));
   save(); refreshDebtTotals(); renderDebtsSummary(); renderDashboard();
+}
+
+/* ✏️ دوال التعديل المباشر للديون */
+function updDebtName(id, val){
+  const d = state.debts.find(x=>x.id===id);
+  if(!d) return;
+  d.name = val;
+  save();
+  renderDashboard();
+  renderMonth();
+  renderDebtsSummary();
+}
+function updDebtTotal(id, val){
+  const d = state.debts.find(x=>x.id===id);
+  if(!d) return;
+  d.total = Math.max(0, parseFloat(val)||0);
+  save();
+  refreshDebtRowCells(d);
+  renderDebtsSummary();
+  renderDashboard();
+  renderMonthPills();
+}
+function updDebtPaidBefore(id, val){
+  const d = state.debts.find(x=>x.id===id);
+  if(!d) return;
+  d.paidBefore = Math.max(0, parseFloat(val)||0);
+  save();
+  refreshDebtRowCells(d);
+  renderDebtsSummary();
+  renderDashboard();
+  renderMonthPills();
+}
+function updDebtType(id, val){
+  const d = state.debts.find(x=>x.id===id);
+  if(!d) return;
+  d.type = val;
+  if(val !== "installment") d.category = "";
+  save();
+  renderDebts();
+  renderDashboard();
+  renderMonth();
+}
+function updDebtCategory(id, val){
+  const d = state.debts.find(x=>x.id===id);
+  if(!d) return;
+  d.category = val;
+  save();
+}
+function updDebtNotes(id, val){
+  const d = state.debts.find(x=>x.id===id);
+  if(!d) return;
+  d.notes = val;
+  save();
+  renderMonth();
+}
+function refreshDebtRowCells(d){
+  const row = document.querySelector(`tr[data-debt-id="${d.id}"]`);
+  if(!row) return;
+  const paid = debtPaidInYear(d, state.activeYear);
+  const rem = debtRemaining(d);
+  const pc = row.querySelector('.paid-cell');
+  const rc = row.querySelector('.remain-cell');
+  if(pc) pc.textContent = fmt(paid);
+  if(rc){
+    rc.textContent = fmt(rem);
+    rc.classList.toggle('pos', rem === 0);
+    rc.classList.toggle('neg', rem > 0);
+  }
+  const badgeWrap = row.querySelector('.fully-paid-badge-wrap');
+  if(badgeWrap){
+    badgeWrap.innerHTML = isDebtFullyPaid(d)
+      ? `<span class="badge fully-paid">✅ ${t('debt_paid')}</span>` : '';
+  }
+  updateDebtsFooter();
 }
 
 function refreshDebtTotals(){
   state.debts.forEach(d => {
     const row = document.querySelector(`tr[data-debt-id="${d.id}"]`);
     if(!row) return;
-    const paid = debtPaidThisYear(d), rem = debtRemaining(d);
+    const paid = debtPaidInYear(d, state.activeYear), rem = debtRemaining(d);
     const pc = row.querySelector('.paid-cell'), rc = row.querySelector('.remain-cell');
     if(pc) pc.textContent = fmt(paid);
     if(rc){ rc.textContent = fmt(rem); rc.classList.toggle('pos', rem === 0); rc.classList.toggle('neg', rem > 0); }
   });
   updateDebtsFooter();
 }
-
 function updateDebtsFooter(){
   const foot = document.querySelector("#debtsTable tfoot");
   if(!foot) return;
   const mTotals = Array(12).fill(0);
   let tp = 0, tr = 0;
   state.debts.forEach(d=>{
-    (d.monthly||[]).forEach((v,i)=>{ mTotals[i] += (+v||0); });
-    tp += debtPaidThisYear(d); tr += debtRemaining(d);
+    for(let i=0;i<12;i++) mTotals[i] += dm(d, state.activeYear, i);
+    tp += debtPaidInYear(d, state.activeYear);
+    tr += debtRemaining(d);
   });
-  let html = `<tr><td colspan="4">${t('dms_total')}</td>`;
+  let html = `<tr><td colspan="6">${t('dms_total')}</td>`;
   for(let i=0;i<12;i++) html += `<td>${mTotals[i] > 0 ? fmt(mTotals[i]) : "—"}</td>`;
   html += `<td class="paid-cell">${fmt(tp)}</td><td class="remain-cell">${fmt(tr)}</td><td></td></tr>`;
   foot.innerHTML = html;
 }
-
 function renderDebtsSummary(){
   const dt = debtTotals();
   document.getElementById("debtsSummary").innerHTML = `
@@ -1672,54 +1592,182 @@ function renderDebtsSummary(){
     ${kpi(t('kpi_count'), state.debts.length.toString(), "acc")}
   `;
 }
-
 function renderDebts(){
   renderDebtsSummary();
   const el = document.getElementById("debtsTable");
   if(!state.debts.length){
-    el.innerHTML = `<thead><tr><th colspan="19" style="padding:20px;color:var(--muted)">—</th></tr></thead>`;
+    el.innerHTML = `<thead><tr><th colspan="21" style="padding:20px;color:var(--muted)">—</th></tr></thead>`;
     return;
   }
   const months = getMonths();
+  const y = state.activeYear;
   const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦"};
-  const typeLabel = {credit:t('dt_credit_label'), debit:t('dt_debit_label'), installment:t('dt_inst_label')};
 
-  let head = `<thead><tr><th style="min-width:130px">${t('th_debt_name')}</th><th>${t('th_debt_type')}</th><th>${t('lbl_debt_cat')}</th><th>${t('th_debt_total')}</th><th>${t('lbl_debt_paidbefore')}</th>`;
+  let head = `<thead><tr>
+    <th style="min-width:140px">${t('th_debt_name')}</th>
+    <th style="min-width:80px">${t('th_debt_type')}</th>
+    <th style="min-width:80px">${t('lbl_debt_cat')}</th>
+    <th style="min-width:85px">${t('th_debt_total')}</th>
+    <th style="min-width:85px">${t('lbl_debt_paidbefore')}</th>
+    <th style="min-width:120px">${t('lbl_debt_notes')}</th>`;
   months.forEach(m => { head += `<th style="width:60px">${m}</th>`; });
   head += `<th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th><th></th></tr></thead>`;
 
   let body = `<tbody>`;
   state.debts.forEach(d => {
     const rc = d.type === "credit" ? "row-credit" : d.type === "debit" ? "row-debit" : "row-installment";
-    const paid = debtPaidThisYear(d), rem = debtRemaining(d);
-    body += `<tr class="${rc}" data-debt-id="${d.id}">
-      <td class="debt-name">${typeIcon[d.type]} ${d.name}</td>
-      <td><span class="badge ${d.type==='credit'?'red':d.type==='debit'?'green':'blue'}">${typeLabel[d.type]}</span></td>
-      <td>${d.category || "—"}</td>
-      <td class="num">${money2(d.total)}</td>
-      <td class="num muted">${money2(d.paidBefore||0)}</td>`;
-    (d.monthly||[]).forEach((v,i) => {
-      body += `<td><input type="number" value="${v||0}" min="0" oninput="updDebtMonth(${d.id}, ${i}, this.value)"></td>`;
-    });
-    body += `<td class="paid-cell">${fmt(paid)}</td><td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td><td><button class="icon-btn" onclick="delDebt(${d.id})">✕</button></td></tr>`;
+    const paid = debtPaidInYear(d, y), rem = debtRemaining(d);
+    const fullyPaid = isDebtFullyPaid(d);
+    const rowCls = fullyPaid ? rc + ' fully-paid-row' : rc;
+    const paidBadge = fullyPaid ? `<span class="badge fully-paid">✅ ${t('debt_paid')}</span>` : '';
+
+    body += `<tr class="${rowCls}" data-debt-id="${d.id}">
+      <td>
+        <input type="text" class="inline-input name"
+               value="${(d.name||'').replace(/"/g,'&quot;')}"
+               onchange="updDebtName(${d.id}, this.value)">
+        <div class="fully-paid-badge-wrap">${paidBadge}</div>
+      </td>
+      <td>
+        <select class="inline-select type-sel" onchange="updDebtType(${d.id}, this.value)">
+          <option value="credit" ${d.type==='credit'?'selected':''}>🔴 ${t('dt_credit_label')}</option>
+          <option value="debit" ${d.type==='debit'?'selected':''}>🟢 ${t('dt_debit_label')}</option>
+          <option value="installment" ${d.type==='installment'?'selected':''}>🏦 ${t('dt_inst_label')}</option>
+        </select>
+      </td>
+      <td>
+        <select class="inline-select" onchange="updDebtCategory(${d.id}, this.value)">
+          <option value="" ${!d.category?'selected':''}>—</option>
+          <option value="فيزا" ${d.category==='فيزا'?'selected':''}>${t('dbt_visa')}</option>
+          <option value="بنك" ${d.category==='بنك'?'selected':''}>${t('dbt_bank')}</option>
+          <option value="متنوع" ${d.category==='متنوع'?'selected':''}>${t('dbt_misc')}</option>
+        </select>
+      </td>
+      <td>
+        <input type="number" class="inline-input num" value="${d.total||0}" min="0" step="0.01"
+               oninput="updDebtTotal(${d.id}, this.value)">
+      </td>
+      <td>
+        <input type="number" class="inline-input num paid-before" value="${d.paidBefore||0}" min="0" step="0.01"
+               oninput="updDebtPaidBefore(${d.id}, this.value)">
+      </td>
+      <td>
+        <input type="text" class="inline-input notes"
+               value="${(d.notes||'').replace(/"/g,'&quot;')}"
+               placeholder="..."
+               onchange="updDebtNotes(${d.id}, this.value)">
+      </td>`;
+
+    for(let i=0;i<12;i++){
+      body += `<td><input type="number" value="${dm(d,y,i)}" min="0" oninput="updDebtMonth(${d.id}, ${i}, this.value)"></td>`;
+    }
+    body += `<td class="paid-cell">${fmt(paid)}</td>
+             <td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td>
+             <td><button class="icon-btn" onclick="delDebt(${d.id})">✕</button></td>
+    </tr>`;
   });
   body += `</tbody>`;
 
   const mTotals = Array(12).fill(0);
   let tp = 0, tr = 0;
-  state.debts.forEach(d=>{ (d.monthly||[]).forEach((v,i)=>{ mTotals[i] += (+v||0); }); tp += debtPaidThisYear(d); tr += debtRemaining(d); });
-  let foot = `<tfoot><tr><td colspan="4">${t('dms_total')}</td>`;
+  state.debts.forEach(d=>{ for(let i=0;i<12;i++) mTotals[i] += dm(d,y,i); tp += debtPaidInYear(d,y); tr += debtRemaining(d); });
+  let foot = `<tfoot><tr><td colspan="6">${t('dms_total')}</td>`;
   for(let i=0;i<12;i++) foot += `<td>${mTotals[i] > 0 ? fmt(mTotals[i]) : "—"}</td>`;
   foot += `<td class="paid-cell">${fmt(tp)}</td><td class="remain-cell">${fmt(tr)}</td><td></td></tr></tfoot>`;
-
   el.innerHTML = head + body + foot;
 }
 
-/* ===================================================================
-   Annual
-=================================================================== */
+function renderYears(){
+  const all = allYearsTotals();
+  const totalY = state.yearList.length;
+  let bestYear = null, bestRem = -Infinity;
+  state.yearList.forEach(y => {
+    const tot = yearTotals(y);
+    if(tot.net > bestRem){ bestRem = tot.net; bestYear = y; }
+  });
+  const avgInc = totalY ? all.income / totalY : 0;
+
+  document.getElementById("yearsKpis").innerHTML = `
+    ${kpi(t('y_all') + " (" + t('y_inc') + ")", money(all.income), "acc")}
+    ${kpi(t('y_all') + " (" + t('y_exp') + ")", money(all.expenses), "neg")}
+    ${kpi(t('y_all') + " (" + t('y_sav') + ")", money(all.savings), "gold")}
+    ${kpi(t('y_all') + " (" + t('y_rem') + ")", money(all.net), all.net>=0?"pos":"neg")}
+    ${kpi(t('y_count'), totalY + " " + t('y_years'), "acc")}
+    ${kpi(t('y_best_year'), bestYear ? (bestYear + " (" + money(bestRem) + ")") : "—", "gold")}
+    ${kpi(t('y_avg_income'), money(avgInc), "acc")}
+  `;
+
+  const chart = document.getElementById("yearsChart");
+  if(!state.yearList.length){ chart.innerHTML = ""; }
+  else {
+    const maxVal = Math.max(...state.yearList.map(y => {
+      const tot = yearTotals(y);
+      return Math.max(tot.income, tot.expenses, tot.savings, Math.abs(tot.net));
+    }), 1);
+    chart.innerHTML = state.yearList.map(y => {
+      const tot = yearTotals(y);
+      const h = v => Math.max(2, (v / maxVal) * 200);
+      const isActive = y === state.activeYear;
+      return `<div class="year-bar-wrap">
+        <div class="year-bar-group">
+          <div class="year-bar inc" style="height:${h(tot.income)}px" title="${t('y_inc')}: ${money(tot.income)}"></div>
+          <div class="year-bar exp" style="height:${h(tot.expenses)}px" title="${t('y_exp')}: ${money(tot.expenses)}"></div>
+          <div class="year-bar sav" style="height:${h(tot.savings)}px" title="${t('y_sav')}: ${money(tot.savings)}"></div>
+          <div class="year-bar rem" style="height:${h(Math.abs(tot.net))}px" title="${t('y_rem')}: ${money(tot.net)}"></div>
+        </div>
+        <div class="year-bar-label" style="${isActive?'color:var(--accent);':''}cursor:pointer" onclick="selectYear(${y})">${y}</div>
+      </div>`;
+    }).join("");
+  }
+
+  let thtml = `<thead><tr>
+    <th>${t('y_year')}</th><th>${t('y_inc')}</th><th>${t('y_exp')}</th>
+    <th>${t('y_sav')}</th><th>${t('y_debtpay')}</th><th>${t('y_debtrecv')}</th>
+    <th>${t('y_rem')}</th><th>${t('th_status')}</th>
+  </tr></thead><tbody>`;
+  state.yearList.forEach(y => {
+    const tot = yearTotals(y);
+    const isActive = y === state.activeYear;
+    const status = tot.net >= 0 ? `<span class="badge green">${t('status_good')}</span>` : `<span class="badge red">${t('status_bad')}</span>`;
+    thtml += `<tr style="${isActive?'background:rgba(34,193,164,.1);font-weight:700;':''}cursor:pointer" onclick="selectYear(${y})">
+      <td style="font-weight:700;color:${isActive?'var(--accent)':'var(--gold)'}">${y} ${isActive?'●':''}</td>
+      <td class="num">${money(tot.income)}</td>
+      <td class="num">${money(tot.expenses)}</td>
+      <td class="num">${money(tot.savings)}</td>
+      <td class="num" style="color:var(--danger)">${money(tot.debtPay)}</td>
+      <td class="num" style="color:var(--ok)">${money(tot.debtRecv)}</td>
+      <td class="num ${tot.net>=0?'pos':'neg'}" style="font-weight:700">${money(tot.net)}</td>
+      <td>${status}</td>
+    </tr>`;
+  });
+  thtml += `<tr style="background:rgba(34,193,164,.15);font-weight:700;color:var(--accent)">
+    <td>${t('y_all')}</td>
+    <td class="num">${money(all.income)}</td>
+    <td class="num">${money(all.expenses)}</td>
+    <td class="num">${money(all.savings)}</td>
+    <td class="num" style="color:var(--danger)">${money(all.debtPay)}</td>
+    <td class="num" style="color:var(--ok)">${money(all.debtRecv)}</td>
+    <td class="num ${all.net>=0?'pos':'neg'}" style="font-weight:700">${money(all.net)}</td>
+    <td>—</td>
+  </tr></tbody>`;
+  document.getElementById("yearsTable").innerHTML = thtml;
+
+  const sFields = getSavingFields();
+  let dhtml = `<thead><tr><th>${t('th_item_name')}</th>${state.yearList.map(y=>`<th>${y}</th>`).join('')}<th>${t('th_total')}</th></tr></thead><tbody>`;
+  sFields.forEach(f => {
+    const [k, l] = f;
+    const vals = state.yearList.map(y => Mof(y).reduce((s,m)=>s+(+m[k]||0),0));
+    const sum = vals.reduce((a,b)=>a+b,0);
+    dhtml += `<tr><td>${l}</td>${vals.map(v=>`<td class="num">${v?money(v):"—"}</td>`).join('')}<td class="num" style="color:var(--accent);font-weight:700">${money(sum)}</td></tr>`;
+  });
+  dhtml += `</tbody>`;
+  document.getElementById("yearsDistTable").innerHTML = dhtml;
+}
+
 function renderAnnual(){
   const months = getMonths();
+  const y = state.activeYear;
+  const monthsData = M();
   const sections = [
     [t('lbl_income'), getIncomeFields().map(([k,l])=>({key:k, label:l}))],
     [t('lbl_expenses').replace('💸 ',''), getExpenseRows().filter(r=>r.type!=="group").map(r=>({key:r.key, label:r.label}))],
@@ -1729,17 +1777,15 @@ function renderAnnual(){
   sections.forEach(([title, items])=>{
     html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--accent);font-weight:700">${title}</td></tr>`;
     items.forEach(({key, label})=>{
-      const values = state.months.map(m=>+m[key]||0);
-      const counted = state.months.map(m => {
-        if(title.includes('المصاريف')||title.includes('Expenses')){
-          if(isExcluded(m, key)) return 0;
-        }
+      const values = monthsData.map(m=>+m[key]||0);
+      const counted = monthsData.map(m => {
+        if(title.includes('المصاريف')||title.includes('Expenses')){ if(isExcluded(m, key)) return 0; }
         return +m[key]||0;
       });
       const sum = counted.reduce((a,b)=>a+b,0);
       html += `<tr><td>${label}</td>` +
         values.map((v, i)=>{
-          const mm = state.months[i];
+          const mm = monthsData[i];
           const isExp = title.includes('المصاريف')||title.includes('Expenses');
           const ex = isExp && isExcluded(mm, key);
           if(!v) return `<td class="num">—</td>`;
@@ -1748,25 +1794,21 @@ function renderAnnual(){
         `<td class="num" style="color:var(--accent);font-weight:700">${money(sum)}</td></tr>`;
     });
   });
-
-  const drpm = months.map((_,i)=>totalDebtReceipts(i));
-  const dppm = months.map((_,i)=>totalDebtPayments(i));
+  const drpm = months.map((_,i)=>totalDebtReceipts(y, i));
+  const dppm = months.map((_,i)=>totalDebtPayments(y, i));
   html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--accent2);font-weight:700">🤝 ${t('lbl_debts_month')}</td></tr>`;
   html += `<tr><td>${t('dms_recv')}</td>${drpm.map(v=>`<td class="num" style="color:var(--ok)">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--ok);font-weight:700">${money(drpm.reduce((a,b)=>a+b,0))}</td></tr>`;
   html += `<tr><td>${t('dms_pay')}</td>${dppm.map(v=>`<td class="num" style="color:var(--danger)">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--danger);font-weight:700">${money(dppm.reduce((a,b)=>a+b,0))}</td></tr>`;
-
-  const meatT = state.months.map(m => m.hasMeatSupport ? (+m.meat||0) : 0);
+  const meatT = monthsData.map((m,i) => isMeatMonth(i) ? (+m.meat||0) : 0);
   html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--gold);font-weight:700">${t('f_meat_support')}</td></tr>`;
   html += `<tr><td>${t('f_meat_support')}</td>${meatT.map(v=>`<td class="num">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--gold);font-weight:700">${money(meatT.reduce((a,b)=>a+b,0))}</td></tr>`;
-
-  const eidT = state.months.map(m => +m.eidAmount||0);
+  const eidT = monthsData.map(m => +m.eidAmount||0);
   html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--gold);font-weight:700">${t('mr_eid_ref')}</td></tr>`;
   html += `<tr><td>${t('mr_eid_ref')}</td>${eidT.map(v=>`<td class="num">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--gold);font-weight:700">${money(eidT.reduce((a,b)=>a+b,0))}</td></tr>`;
-
-  const inc = state.months.map((m,i)=>totalIncome(m,i));
-  const exp = state.months.map(totalExpenses);
-  const sav = state.months.map(totalSavings);
-  const rem = state.months.map((m,i)=>inc[i]-exp[i]-sav[i]-dppm[i]);
+  const inc = monthsData.map((m,i)=>totalIncome(m,i,y));
+  const exp = monthsData.map(totalExpenses);
+  const sav = monthsData.map(totalSavings);
+  const rem = monthsData.map((m,i)=>inc[i]-exp[i]-sav[i]-dppm[i]);
   const rowSum = arr => arr.reduce((a,b)=>a+b,0);
   html += `<tr style="background:rgba(34,193,164,.1);font-weight:700"><td>${t('mr_inc_total')}</td>${inc.map(v=>`<td class="num">${money(v)}</td>`).join("")}<td class="num">${money(rowSum(inc))}</td></tr>`;
   html += `<tr style="background:rgba(239,68,68,.08);font-weight:700"><td>${t('mr_exp')}</td>${exp.map(v=>`<td class="num">${money(v)}</td>`).join("")}<td class="num">${money(rowSum(exp))}</td></tr>`;
@@ -1775,9 +1817,6 @@ function renderAnnual(){
   document.getElementById("annualTable").innerHTML = html + `</tbody>`;
 }
 
-/* ===================================================================
-   Tabs
-=================================================================== */
 document.querySelectorAll("nav.tabs button").forEach(btn=>{
   btn.onclick = ()=>{
     document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
@@ -1787,15 +1826,13 @@ document.querySelectorAll("nav.tabs button").forEach(btn=>{
     const v = btn.dataset.view;
     if(v==="dashboard") renderDashboard();
     if(v==="month") renderMonth();
+    if(v==="years") renderYears();
     if(v==="pyramid") renderPyramid();
     if(v==="debts") renderDebts();
     if(v==="annual") renderAnnual();
   };
 });
 
-/* ===================================================================
-   Import/Export/Reset
-=================================================================== */
 function exportData(){
   const blob = new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
   const a = document.createElement("a");
@@ -1807,7 +1844,7 @@ function importData(e){
   const file = e.target.files[0]; if(!file) return;
   const r = new FileReader();
   r.onload = ev => {
-    try{ const d = JSON.parse(ev.target.result); if(d.months){ state = {...state, ...d}; save(); location.reload(); } }
+    try{ const d = JSON.parse(ev.target.result); if(d.years || d.months){ state = {...state, ...d}; save(); location.reload(); } }
     catch(err){ alert(t('invalid_file')); }
   };
   r.readAsText(file);
@@ -1817,10 +1854,8 @@ function resetAll(){
   localStorage.removeItem(KEY); location.reload();
 }
 
-/* ===================================================================
-   Init
-=================================================================== */
 load();
+initIfEmpty();
 applyTheme();
 applyFontScale();
 applyLang();
