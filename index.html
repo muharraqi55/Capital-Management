@@ -103,7 +103,7 @@
   .expense-table input,.expense-table select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 10px;border-radius:6px;font-size:13px;outline:none;transition:.2s;font-family:inherit}
   .expense-table input:focus,.expense-table select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,193,164,.15)}
   .expense-table tr.excluded{background:rgba(239,68,68,.06)}
-  .expense-table tr.excluded td:first-child{color:var(--danger);text-decoration:line-through;opacity:.75}
+  .expense-table tr.excluded td:first-child{color:var(--danger);text-decoration:underline;opacity:.75}
   .bank-excluded{background:rgba(239,68,68,.15) !important;border-color:var(--danger) !important;color:#ffdcdc !important}
   .expense-table tr.group-header{background:linear-gradient(90deg,rgba(59,130,246,.15),transparent)}
   .expense-table tr.group-header td{color:var(--accent2);font-weight:700;font-size:12px;padding:8px 14px;border-bottom:1px dashed var(--line)}
@@ -189,7 +189,7 @@
   .pyr-legend-item .pyr-label{font-size:12px;color:var(--muted);flex:1}
   .pyr-legend-item .pyr-val{font-family:monospace;font-weight:700;color:var(--txt);font-size:14px;direction:ltr}
   @media(max-width:768px){.expense-table{min-width:520px;font-size:12px}.expense-table th,.expense-table td{padding:5px 6px}.bank-item{min-width:120px;font-size:11px}.debts-month-table{min-width:700px}}
-  .excluded-cell{color:var(--danger) !important;text-decoration:line-through;opacity:.65;font-size:12px}
+  .excluded-cell{color:var(--danger) !important;text-decoration:underline;opacity:.65;font-size:12px}
   .year-chart{display:flex;gap:16px;align-items:flex-end;justify-content:center;padding:20px 10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;min-height:280px;overflow-x:auto}
   .year-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px}
   .year-bar-group{display:flex;gap:4px;align-items:flex-end;height:200px}
@@ -361,7 +361,7 @@
     <h2 id="lblExpenses"></h2>
     <div class="expense-table-wrap">
       <table class="expense-table">
-        <thead><tr><th id="thItem"></th><th id="thAmount"></th><th id="thBank"></th><th id="thNote"></th></tr></thead>
+        <thead><tr><th id="thItem"></th><th id="thAmount"></th><th id="thBank"></th><th id="thNote"></th><th id="thRef"></th></tr></thead>
         <tbody id="expenseFields"></tbody>
       </table>
     </div>
@@ -398,6 +398,7 @@
           <th id="thSavAmount"></th>
           <th id="thSavBank"></th>
           <th id="thSavNote"></th>
+          <th id="thSavRef"></th>
         </tr></thead>
         <tbody id="savingFields"></tbody>
       </table>
@@ -409,7 +410,7 @@
     <h2 id="lblCarInsuranceOT"></h2>
     <div class="expense-table-wrap">
       <table class="expense-table">
-        <thead><tr><th id="thCIItem"></th><th id="thCIAmount"></th><th id="thCIBank"></th><th id="thCINote"></th></tr></thead>
+        <thead><tr><th id="thCIItem"></th><th id="thCIAmount"></th><th id="thCIBank"></th><th id="thCINote"></th><th id="thCIRef"></th></tr></thead>
         <tbody id="carInsuranceBody"></tbody>
       </table>
     </div>
@@ -420,7 +421,7 @@
     <h2 id="lblZakatOT"></h2>
     <div class="expense-table-wrap">
       <table class="expense-table">
-        <thead><tr><th id="thZKItem"></th><th id="thZKAmount"></th><th id="thZKBank"></th><th id="thZKNote"></th></tr></thead>
+        <thead><tr><th id="thZKItem"></th><th id="thZKAmount"></th><th id="thZKBank"></th><th id="thZKNote"></th><th id="thZKRef"></th></tr></thead>
         <tbody id="zakatBody"></tbody>
       </table>
     </div>
@@ -539,7 +540,8 @@ const I18N = {
     eid_opt3:"عيادي ، عيادي عيالي + ثياب العيد",eid_opt4:"لا",
     lbl_eid_amount:"القيمة الإجمالية (هذا المبلغ لأغراض المرجعية فقط ولن يتم احتسابه)",
     lbl_expenses:"💸 المصاريف (د.ب)",th_item:"البند",th_amount:"المبلغ (د.ب)",
-    th_bank:"البنك / الجهة",th_note:"ملاحظة",lbl_debts_month:"دفعات السلف والأقساط",
+    th_bank:"البنك / الجهة",th_note:"ملاحظة",th_ref:"مرجع",
+    lbl_debts_month:"دفعات السلف والأقساط",
     debts_month_help:"تظهر فقط الديون النشطة. 🟢 المستلمة (مدين) تُضاف للدخل — 🔴 المدفوعة تُخصم.",
     th_debt_name:"الاسم",th_debt_type:"النوع",th_debt_total:"الكلي",
     th_debt_rem_before:"المتبقي قبل الشهر",th_debt_this_month:"هذا الشهر",
@@ -547,7 +549,7 @@ const I18N = {
     lbl_savings:"💰 مبالغ الادخار (د.ب)",
     savings_hint:"🔢 يدعم حتى 3 أرقام عشرية",
     lbl_month_result:"النتيجة الشهرية",lbl_month_notes:"ملاحظات على الشهر",
-    th_sav_item:"بند الادخار",th_sav_amount:"المبلغ (د.ب)",th_sav_bank:"البنك / الجهة",th_sav_note:"ملاحظة",
+    th_sav_item:"بند الادخار",th_sav_amount:"المبلغ (د.ب)",th_sav_bank:"البنك / الجهة",th_sav_note:"ملاحظة",th_sav_ref:"مرجع",
     pyr_title:"🔺 هرم الأمان المالي",
     pyr_desc:"ترتيب الأولويات المالية من القاعدة إلى القمة. المبالغ مجمّعة من 12 شهر.",
     pyr_detail:"تفصيل الهرم",th_level:"المستوى",th_item_name:"البند",
@@ -663,14 +665,15 @@ const I18N = {
     eid_opt3:"Eidi, Kids Eidi + Eid Clothes",eid_opt4:"No",
     lbl_eid_amount:"Total value (reference only)",
     lbl_expenses:"💸 Expenses (BHD)",th_item:"Item",th_amount:"Amount (BHD)",
-    th_bank:"Bank / Source",th_note:"Note",lbl_debts_month:"Debt & Installment Payments",
+    th_bank:"Bank / Source",th_note:"Note",th_ref:"Reference",
+    lbl_debts_month:"Debt & Installment Payments",
     debts_month_help:"Only active debts shown.",
     th_debt_name:"Name",th_debt_type:"Type",th_debt_total:"Total",
     th_debt_rem_before:"Remaining Before",th_debt_this_month:"This Month",
     th_debt_rem_after:"Remaining After",th_debt_note:"Note",th_debt_bank:"Bank",
     lbl_savings:"💰 Savings Amounts (BHD)",savings_hint:"🔢 Supports 3 decimals",
     lbl_month_result:"Monthly Result",lbl_month_notes:"Month Notes",
-    th_sav_item:"Savings Item",th_sav_amount:"Amount (BHD)",th_sav_bank:"Bank",th_sav_note:"Note",
+    th_sav_item:"Savings Item",th_sav_amount:"Amount (BHD)",th_sav_bank:"Bank",th_sav_note:"Note",th_sav_ref:"Reference",
     pyr_title:"🔺 Financial Safety Pyramid",pyr_desc:"Priorities from base to top.",
     pyr_detail:"Pyramid Details",th_level:"Level",th_item_name:"Item",
     th_year_total:"Annual Total (BHD)",th_pct:"%",th_total:"Total",
@@ -761,6 +764,14 @@ const I18N = {
 const BANKS = ["بطاقة صراف الالي","NBK","ILA","BBK","MEEM","NBB","غير محسوب ذي الشهر"];
 const EXCLUDED_BANK = "غير محسوب ذي الشهر";
 const BANKS_EN = ["ATM Card","NBK","ILA","BBK","MEEM","NBB","Not Counted"];
+const REF_OPTIONS = [
+  {v:"", l:"-"},
+  {v:"NBK", l:"NBK"},
+  {v:"ILA", l:"ILA"},
+  {v:"BBK", l:"BBK"},
+  {v:"MEEM", l:"MEEM"},
+  {v:"NBB", l:"NBB"},
+];
 const MEAT_MONTHS = [0, 3, 6, 9];
 function isMeatMonth(mi){ return MEAT_MONTHS.includes(mi); }
 
@@ -838,7 +849,7 @@ const EMPTY_MONTH = () => ({
   birthday:0,birthdayPerson:"none",
   kidsSchool:0,kidsClothes:0,kidsEid:0,
   privateSchool:0,kindergarten:0,university:0,transport:0,tutoring:0,
-  humanitarianAid:0,expenseMeta:{},
+  humanitarianAid:0,expenseMeta:{},refMeta:{},savingRefMeta:{},
   incomeNotes:{salary:"",costOfLiving:"",housing:"",charity:"",freelance:"",meat:""},
   assembly:0,investment:0,eidMoneySaving:0,eidMoneyType:"fitar",
   insuranceSaving:0,travelSaving:0,emergencyFund:0,obligationsSaving:0,
@@ -859,12 +870,14 @@ let state = {
 function getYearExtras(year){
   if(!state.yearExtras) state.yearExtras = {};
   if(!state.yearExtras[year]) state.yearExtras[year] = {
-    carInsurance: { amount:0, bank:"بطاقة صراف الالي", note:"" },
-    zakat:        { amount:0, bank:"بطاقة صراف الالي", note:"" }
+    carInsurance: { amount:0, bank:"بطاقة صراف الالي", note:"", ref:"" },
+    zakat:        { amount:0, bank:"بطاقة صراف الالي", note:"", ref:"" }
   };
   const ex = state.yearExtras[year];
-  if(!ex.carInsurance) ex.carInsurance = { amount:0, bank:"بطاقة صراف الالي", note:"" };
-  if(!ex.zakat) ex.zakat = { amount:0, bank:"بطاقة صراف الالي", note:"" };
+  if(!ex.carInsurance) ex.carInsurance = { amount:0, bank:"بطاقة صراف الالي", note:"", ref:"" };
+  if(!ex.zakat) ex.zakat = { amount:0, bank:"بطاقة صراف الالي", note:"", ref:"" };
+  if(ex.carInsurance.ref === undefined) ex.carInsurance.ref = "";
+  if(ex.zakat.ref === undefined) ex.zakat.ref = "";
   return ex;
 }
 
@@ -919,6 +932,8 @@ function load(){
         const merged = {...EMPTY_MONTH(), ...m};
         if(!merged.incomeNotes) merged.incomeNotes = {salary:"",costOfLiving:"",housing:"",charity:"",freelance:"",meat:""};
         if(!merged.savingMeta) merged.savingMeta = {};
+        if(!merged.refMeta) merged.refMeta = {};
+        if(!merged.savingRefMeta) merged.savingRefMeta = {};
         return merged;
       });
       while(state.years[y].length < 12) state.years[y].push(EMPTY_MONTH());
@@ -947,6 +962,12 @@ function isExcluded(m, key){ return getMeta(m, key).bank === EXCLUDED_BANK; }
 function ensureIncomeNotes(m){ if(!m.incomeNotes) m.incomeNotes = {salary:"",costOfLiving:"",housing:"",charity:"",freelance:"",meat:""}; return m.incomeNotes; }
 function ensureSavingMeta(m){ if(!m.savingMeta) m.savingMeta = {}; return m.savingMeta; }
 function getSavingMeta(m, key){ const meta = ensureSavingMeta(m); if(!meta[key]) meta[key] = { bank:"بطاقة صراف الالي", note:"" }; return meta[key]; }
+/* ✅ مرجع للمصاريف - لا يعمل أي حساب فقط حفظ */
+function ensureRefMeta(m){ if(!m.refMeta) m.refMeta = {}; return m.refMeta; }
+function getRefMeta(m, key){ const rm = ensureRefMeta(m); if(!(key in rm)) rm[key] = ""; return rm[key]; }
+/* ✅ مرجع للادخار - منفصل عن المصاريف */
+function ensureSavingRefMeta(m){ if(!m.savingRefMeta) m.savingRefMeta = {}; return m.savingRefMeta; }
+function getSavingRefMeta(m, key){ const rm = ensureSavingRefMeta(m); if(!(key in rm)) rm[key] = ""; return rm[key]; }
 
 function dm(d, year, mi){ return ((d.monthlyByYear?.[year]) || [])[mi] || 0; }
 function setDm(d, year, mi, val){ if(!d.monthlyByYear) d.monthlyByYear = {}; if(!d.monthlyByYear[year]) d.monthlyByYear[year] = Array(12).fill(0); d.monthlyByYear[year][mi] = val; }
@@ -1076,6 +1097,7 @@ function applyLang(){
   document.getElementById('thAmount').textContent = t('th_amount');
   document.getElementById('thBank').textContent = t('th_bank');
   document.getElementById('thNote').textContent = t('th_note');
+  document.getElementById('thRef').textContent = t('th_ref');
   document.getElementById('lblDebtsMonth').textContent = t('lbl_debts_month');
   document.getElementById('debtsMonthHelp').textContent = t('debts_month_help');
   document.getElementById('thDebtName').textContent = t('th_debt_name');
@@ -1092,6 +1114,7 @@ function applyLang(){
   document.getElementById('thSavAmount').textContent = t('th_sav_amount');
   document.getElementById('thSavBank').textContent = t('th_sav_bank');
   document.getElementById('thSavNote').textContent = t('th_sav_note');
+  document.getElementById('thSavRef').textContent = t('th_sav_ref');
   document.getElementById('lblMonthResult').textContent = t('lbl_month_result');
   document.getElementById('lblMonthNotes').textContent = t('lbl_month_notes');
   document.getElementById('lblPyrTitle').textContent = t('pyr_title');
@@ -1124,10 +1147,12 @@ function applyLang(){
   document.getElementById('thCIAmount').textContent = t('th_amount');
   document.getElementById('thCIBank').textContent = t('th_bank');
   document.getElementById('thCINote').textContent = t('th_note');
+  document.getElementById('thCIRef').textContent = t('th_ref');
   document.getElementById('thZKItem').textContent = t('th_item');
   document.getElementById('thZKAmount').textContent = t('th_amount');
   document.getElementById('thZKBank').textContent = t('th_bank');
   document.getElementById('thZKNote').textContent = t('th_note');
+  document.getElementById('thZKRef').textContent = t('th_ref');
   document.getElementById('thIncItem').textContent = t('th_income_item');
   document.getElementById('thIncAmount').textContent = t('th_income_amount');
   document.getElementById('thIncNote').textContent = t('th_income_note');
@@ -1248,13 +1273,15 @@ function updIncomeNote(key, val){
 function renderExpenseFields(){
   const m = M()[state.activeMonth];
   const rows = getExpenseRows();
+  const refOptsFor = val => REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${val===o.v?'selected':''}>${o.l}</option>`).join('');
   const html = rows.map(row => {
-    if(row.type === "group") return `<tr class="group-header"><td colspan="4">${row.label}</td></tr>`;
+    if(row.type === "group") return `<tr class="group-header"><td colspan="5">${row.label}</td></tr>`;
     if(row.type === "birthday"){
       const meta = getMeta(m, row.key);
       const excluded = isExcludedBank(meta.bank);
       const person = m.birthdayPerson || "none";
       const bankOpts = BANKS.map(b => `<option value="${b}" ${meta.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
+      const refVal = getRefMeta(m, row.key);
       return `<tr class="${excluded?'excluded':''} bday-row">
         <td><div class="birthday-cell"><span>🎂 ${row.label}</span>
           <select onchange="updBirthdayPerson(this.value)">
@@ -1266,16 +1293,19 @@ function renderExpenseFields(){
         <td><input type="number" value="${inVal(m.birthday)}" oninput="updExpenseAmount('birthday', this.value)" step="0.001"></td>
         <td><select class="${excluded?'bank-excluded':''}" onchange="updExpenseBank('birthday', this.value)">${bankOpts}</select></td>
         <td><input type="text" value="${esc(meta.note)}" oninput="updExpenseNote('birthday', this.value)" placeholder="..."></td>
+        <td><select onchange="updRef('birthday', this.value)">${refOptsFor(refVal)}</select></td>
       </tr>`;
     }
     const meta = getMeta(m, row.key);
     const excluded = isExcludedBank(meta.bank);
     const bankOpts = BANKS.map(b => `<option value="${b}" ${meta.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
+    const refVal = getRefMeta(m, row.key);
     return `<tr class="${excluded?'excluded':''}">
       <td>${row.label}</td>
       <td><input type="number" value="${inVal(m[row.key])}" oninput="updExpenseAmount('${row.key}', this.value)" step="0.001"></td>
       <td><select class="${excluded?'bank-excluded':''}" onchange="updExpenseBank('${row.key}', this.value)">${bankOpts}</select></td>
       <td><input type="text" value="${esc(meta.note)}" oninput="updExpenseNote('${row.key}', this.value)" placeholder="..."></td>
+      <td><select onchange="updRef('${row.key}', this.value)">${refOptsFor(refVal)}</select></td>
     </tr>`;
   }).join("");
   document.getElementById("expenseFields").innerHTML = html;
@@ -1311,9 +1341,10 @@ function renderExpenseSummary(){
   `;
 }
 
-/* ✅ الادخار - جدول مع بنك و ملاحظة */
+/* ✅ الادخار - جدول مع بنك و ملاحظة و مرجع */
 function renderSavingFields(){
   const m = M()[state.activeMonth];
+  const refOptsFor = val => REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${val===o.v?'selected':''}>${o.l}</option>`).join('');
   document.getElementById("savingFields").innerHTML = getSavingFields().map(f => {
     const [k, l, extra] = f;
     const meta = getSavingMeta(m, k);
@@ -1326,6 +1357,7 @@ function renderSavingFields(){
           <option value="adha" ${m.eidMoneyType==='adha'?'selected':''}>${t('eid_adha')}</option>
         </select></div>`;
     }
+    const refVal = getSavingRefMeta(m, k);
     return `<tr>
       <td class="saving-field">
         <label style="display:block;font-weight:600;color:var(--accent);font-size:12px;margin-bottom:2px">${l}</label>
@@ -1334,6 +1366,7 @@ function renderSavingFields(){
       <td><input type="number" value="${inVal(m[k])}" oninput="updSaving('${k}',this.value)" min="0" step="0.001" style="font-weight:700;color:var(--accent);text-align:center;font-size:16px"></td>
       <td><select onchange="updSavingBank('${k}', this.value)">${bankOpts}</select></td>
       <td><input type="text" value="${esc(meta.note||'')}" oninput="updSavingNote('${k}', this.value)" placeholder="..."></td>
+      <td><select onchange="updSavingRef('${k}', this.value)">${refOptsFor(refVal)}</select></td>
     </tr>`;
   }).join("");
 }
@@ -1350,6 +1383,23 @@ function updSavingBank(key, val){
   getSavingMeta(m, key).bank = val;
   m.lastModified = new Date().toISOString();
   save();
+}
+/* ✅ مرجع الادخار - لا يعمل أي حساب فقط حفظ */
+function updSavingRef(key, val){
+  const m = M()[state.activeMonth];
+  ensureSavingRefMeta(m)[key] = val;
+  m.lastModified = new Date().toISOString();
+  save();
+  renderMonthDate();
+}
+
+/* ✅ المرجع للمصاريف - لا يعمل أي حساب فقط حفظ */
+function updRef(key, val){
+  const m = M()[state.activeMonth];
+  ensureRefMeta(m)[key] = val;
+  m.lastModified = new Date().toISOString();
+  save();
+  renderMonthDate();
 }
 
 /* ✅ دفعات السلف - جدول مع بنك */
@@ -1449,12 +1499,14 @@ function refreshDebtsMonthCells(){
 function renderCarInsuranceOT(){
   const ex = getYearExtras(state.activeYear);
   const bankOpts = BANKS.map(b => `<option value="${b}" ${ex.carInsurance.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
+  const refOpts = REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${ex.carInsurance.ref===o.v?'selected':''}>${o.l}</option>`).join('');
   document.getElementById("carInsuranceBody").innerHTML = `
     <tr>
       <td>${t('ot_car_insurance')}</td>
       <td><input type="number" value="${inVal(ex.carInsurance.amount)}" oninput="updCarInsuranceAmount(this.value)" min="0" step="0.001"></td>
       <td><select onchange="updCarInsuranceBank(this.value)">${bankOpts}</select></td>
       <td><input type="text" value="${esc(ex.carInsurance.note)}" oninput="updCarInsuranceNote(this.value)" placeholder="..."></td>
+      <td><select onchange="updCarInsuranceRef(this.value)">${refOpts}</select></td>
     </tr>
   `;
 }
@@ -1467,17 +1519,20 @@ function updCarInsuranceAmount(v){
 }
 function updCarInsuranceBank(v){ getYearExtras(state.activeYear).carInsurance.bank = v; save(); renderCarInsuranceOT(); }
 function updCarInsuranceNote(v){ getYearExtras(state.activeYear).carInsurance.note = v; save(); }
+function updCarInsuranceRef(v){ getYearExtras(state.activeYear).carInsurance.ref = v; save(); }
 
 /* ⭐ حاوية زكاة - مرة واحدة في السنة */
 function renderZakatOT(){
   const ex = getYearExtras(state.activeYear);
   const bankOpts = BANKS.map(b => `<option value="${b}" ${ex.zakat.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
+  const refOpts = REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${ex.zakat.ref===o.v?'selected':''}>${o.l}</option>`).join('');
   document.getElementById("zakatBody").innerHTML = `
     <tr>
       <td>${t('ot_zakat')}</td>
       <td><input type="number" value="${inVal(ex.zakat.amount)}" oninput="updZakatAmount(this.value)" min="0" step="0.001"></td>
       <td><select onchange="updZakatBank(this.value)">${bankOpts}</select></td>
       <td><input type="text" value="${esc(ex.zakat.note)}" oninput="updZakatNote(this.value)" placeholder="..."></td>
+      <td><select onchange="updZakatRef(this.value)">${refOpts}</select></td>
     </tr>
   `;
 }
@@ -1490,6 +1545,7 @@ function updZakatAmount(v){
 }
 function updZakatBank(v){ getYearExtras(state.activeYear).zakat.bank = v; save(); renderZakatOT(); }
 function updZakatNote(v){ getYearExtras(state.activeYear).zakat.note = v; save(); }
+function updZakatRef(v){ getYearExtras(state.activeYear).zakat.ref = v; save(); }
 
 function updEidMoneyType(val){ const m = M()[state.activeMonth]; m.eidMoneyType = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 function updExpenseAmount(key, val){ const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderExpenseSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
