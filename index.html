@@ -135,7 +135,7 @@
   .debts-month-card{border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.08),transparent)}
   .debts-month-card h2{color:var(--accent2)}
   .debts-month-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
-  .debts-month-table{width:100%;border-collapse:collapse;font-size:13px;min-width:820px}
+  .debts-month-table{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}
   .debts-month-table thead{background:var(--panel2)}
   .debts-month-table th{padding:9px 10px;text-align:right;color:var(--accent2);font-size:11px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
   html[dir="ltr"] .debts-month-table th{text-align:left}
@@ -188,7 +188,7 @@
   .pyr-color{width:16px;height:16px;border-radius:4px;flex-shrink:0}
   .pyr-legend-item .pyr-label{font-size:12px;color:var(--muted);flex:1}
   .pyr-legend-item .pyr-val{font-family:monospace;font-weight:700;color:var(--txt);font-size:14px;direction:ltr}
-  @media(max-width:768px){.expense-table{min-width:520px;font-size:12px}.expense-table th,.expense-table td{padding:5px 6px}.bank-item{min-width:120px;font-size:11px}.debts-month-table{min-width:700px}}
+  @media(max-width:768px){.expense-table{min-width:520px;font-size:12px}.expense-table th,.expense-table td{padding:5px 6px}.bank-item{min-width:120px;font-size:11px}.debts-month-table{min-width:780px}}
   .excluded-cell{color:var(--danger) !important;text-decoration:underline;opacity:.65;font-size:12px}
   .year-chart{display:flex;gap:16px;align-items:flex-end;justify-content:center;padding:20px 10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;min-height:280px;overflow-x:auto}
   .year-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px}
@@ -368,7 +368,7 @@
     <div class="expense-summary" id="expenseSummary"></div>
   </div>
 
-  <!-- دفعات السلف والأقساط الشهرية - مع بنك -->
+  <!-- دفعات السلف والأقساط الشهرية - مع بنك + مرجع -->
   <div class="card debts-month-card">
     <h2><span id="lblDebtsMonth"></span> — <span id="debtsMonthTitle" style="color:var(--accent2)"></span></h2>
     <p class="muted" style="margin-bottom:12px" id="debtsMonthHelp"></p>
@@ -378,7 +378,7 @@
           <th id="thDebtName"></th><th id="thDebtType"></th><th id="thDebtTotal"></th>
           <th id="thDebtRemBefore"></th><th id="thDebtThisMonth"></th>
           <th id="thDebtBank"></th>
-          <th id="thDebtRemAfter"></th><th id="thDebtNote"></th>
+          <th id="thDebtRemAfter"></th><th id="thDebtNote"></th><th id="thDebtRef"></th>
         </tr></thead>
         <tbody id="debtsMonthBody"></tbody>
         <tfoot id="debtsMonthFoot"></tfoot>
@@ -546,6 +546,7 @@ const I18N = {
     th_debt_name:"الاسم",th_debt_type:"النوع",th_debt_total:"الكلي",
     th_debt_rem_before:"المتبقي قبل الشهر",th_debt_this_month:"هذا الشهر",
     th_debt_rem_after:"المتبقي بعده",th_debt_note:"ملاحظة",th_debt_bank:"البنك / الجهة",
+    th_debt_ref:"مرجع",
     lbl_savings:"💰 مبالغ الادخار (د.ب)",
     savings_hint:"🔢 يدعم حتى 3 أرقام عشرية",
     lbl_month_result:"النتيجة الشهرية",lbl_month_notes:"ملاحظات على الشهر",
@@ -671,6 +672,7 @@ const I18N = {
     th_debt_name:"Name",th_debt_type:"Type",th_debt_total:"Total",
     th_debt_rem_before:"Remaining Before",th_debt_this_month:"This Month",
     th_debt_rem_after:"Remaining After",th_debt_note:"Note",th_debt_bank:"Bank",
+    th_debt_ref:"Reference",
     lbl_savings:"💰 Savings Amounts (BHD)",savings_hint:"🔢 Supports 3 decimals",
     lbl_month_result:"Monthly Result",lbl_month_notes:"Month Notes",
     th_sav_item:"Savings Item",th_sav_amount:"Amount (BHD)",th_sav_bank:"Bank",th_sav_note:"Note",th_sav_ref:"Reference",
@@ -941,6 +943,7 @@ function load(){
     state.debts = (state.debts||[]).map(dd => {
       if(!dd.monthlyByYear){ const y = state.activeYear; dd.monthlyByYear = { [y]: dd.monthly || Array(12).fill(0) }; delete dd.monthly; }
       if(!dd.bank) dd.bank = "بطاقة صراف الالي";
+      if(!dd.refByYear) dd.refByYear = {};
       return dd;
     });
     if(!state.yearExtras) state.yearExtras = {};
@@ -962,12 +965,23 @@ function isExcluded(m, key){ return getMeta(m, key).bank === EXCLUDED_BANK; }
 function ensureIncomeNotes(m){ if(!m.incomeNotes) m.incomeNotes = {salary:"",costOfLiving:"",housing:"",charity:"",freelance:"",meat:""}; return m.incomeNotes; }
 function ensureSavingMeta(m){ if(!m.savingMeta) m.savingMeta = {}; return m.savingMeta; }
 function getSavingMeta(m, key){ const meta = ensureSavingMeta(m); if(!meta[key]) meta[key] = { bank:"بطاقة صراف الالي", note:"" }; return meta[key]; }
-/* ✅ مرجع للمصاريف - لا يعمل أي حساب فقط حفظ */
 function ensureRefMeta(m){ if(!m.refMeta) m.refMeta = {}; return m.refMeta; }
 function getRefMeta(m, key){ const rm = ensureRefMeta(m); if(!(key in rm)) rm[key] = ""; return rm[key]; }
-/* ✅ مرجع للادخار - منفصل عن المصاريف */
 function ensureSavingRefMeta(m){ if(!m.savingRefMeta) m.savingRefMeta = {}; return m.savingRefMeta; }
 function getSavingRefMeta(m, key){ const rm = ensureSavingRefMeta(m); if(!(key in rm)) rm[key] = ""; return rm[key]; }
+
+/* ✅ مرجع الديون - لكل شهر في كل سنة */
+function ensureDebtRefByYear(d){ if(!d.refByYear) d.refByYear = {}; return d.refByYear; }
+function getDebtRef(d, year, mi){
+  const rby = ensureDebtRefByYear(d);
+  if(!rby[year]) rby[year] = Array(12).fill("");
+  return rby[year][mi] || "";
+}
+function setDebtRef(d, year, mi, val){
+  const rby = ensureDebtRefByYear(d);
+  if(!rby[year]) rby[year] = Array(12).fill("");
+  rby[year][mi] = val;
+}
 
 function dm(d, year, mi){ return ((d.monthlyByYear?.[year]) || [])[mi] || 0; }
 function setDm(d, year, mi, val){ if(!d.monthlyByYear) d.monthlyByYear = {}; if(!d.monthlyByYear[year]) d.monthlyByYear[year] = Array(12).fill(0); d.monthlyByYear[year][mi] = val; }
@@ -1108,6 +1122,7 @@ function applyLang(){
   document.getElementById('thDebtRemAfter').textContent = t('th_debt_rem_after');
   document.getElementById('thDebtNote').textContent = t('th_debt_note');
   document.getElementById('thDebtBank').textContent = t('th_debt_bank');
+  document.getElementById('thDebtRef').textContent = t('th_debt_ref');
   document.getElementById('lblSavings').textContent = t('lbl_savings');
   document.getElementById('savingsHint').textContent = t('savings_hint');
   document.getElementById('thSavItem').textContent = t('th_sav_item');
@@ -1384,7 +1399,6 @@ function updSavingBank(key, val){
   m.lastModified = new Date().toISOString();
   save();
 }
-/* ✅ مرجع الادخار - لا يعمل أي حساب فقط حفظ */
 function updSavingRef(key, val){
   const m = M()[state.activeMonth];
   ensureSavingRefMeta(m)[key] = val;
@@ -1393,7 +1407,6 @@ function updSavingRef(key, val){
   renderMonthDate();
 }
 
-/* ✅ المرجع للمصاريف - لا يعمل أي حساب فقط حفظ */
 function updRef(key, val){
   const m = M()[state.activeMonth];
   ensureRefMeta(m)[key] = val;
@@ -1402,7 +1415,7 @@ function updRef(key, val){
   renderMonthDate();
 }
 
-/* ✅ دفعات السلف - جدول مع بنك */
+/* ✅ دفعات السلف - جدول مع بنك و مرجع */
 function renderDebtsMonthSection(){
   const mi = state.activeMonth; const y = state.activeYear;
   const tbody = document.getElementById("debtsMonthBody");
@@ -1413,12 +1426,13 @@ function renderDebtsMonthSection(){
   if(titleEl) titleEl.textContent = getMonths()[mi] + " " + y;
   const visibleDebts = state.debts.filter(d => shouldShowDebtInMonthlyEntry(d, y, mi));
   if(!visibleDebts.length){
-    tbody.innerHTML = `<tr><td colspan="8" style="padding:20px;text-align:center;color:var(--muted)">${t('dms_empty')}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" style="padding:20px;text-align:center;color:var(--muted)">${t('dms_empty')}</td></tr>`;
     tfoot.innerHTML = ""; summary.innerHTML = ""; return;
   }
   const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦"};
   const typeLabel = {credit:t('dt_credit'), debit:t('dt_debit'), installment:t('dt_inst')};
   const typeCls = {credit:"row-credit", debit:"row-debit", installment:"row-installment"};
+  const refOptsFor = val => REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${val===o.v?'selected':''}>${o.l}</option>`).join('');
   let recv = 0, pay = 0;
   tbody.innerHTML = visibleDebts.map(d => {
     const remBefore = debtRemainingBefore(d, y, mi);
@@ -1428,6 +1442,7 @@ function renderDebtsMonthSection(){
     const inputCls = d.type === "debit" ? "input-debit" : "input-credit";
     const bankVal = d.bank || "بطاقة صراف الالي";
     const bankOpts = BANKS.map(b => `<option value="${b}" ${bankVal===b?'selected':''}>${bankLabel(b)}</option>`).join('');
+    const refVal = getDebtRef(d, y, mi);
     return `<tr class="${typeCls[d.type]}" data-debt-row="${d.id}">
       <td class="debt-name">${typeIcon[d.type]} ${d.name}</td>
       <td><span class="badge ${d.type==='credit'?'red':d.type==='debit'?'green':'blue'}">${typeLabel[d.type]}</span></td>
@@ -1437,9 +1452,10 @@ function renderDebtsMonthSection(){
       <td><select onchange="updDebtBank(${d.id}, this.value)">${bankOpts}</select></td>
       <td class="num debt-rem-after" style="font-family:monospace;font-weight:700;color:${remAfter===0?'var(--ok)':'var(--txt)'};direction:ltr">${money(remAfter)}</td>
       <td><input type="text" value="${esc(d.notes)}" oninput="updDebtNoteInline(${d.id}, this.value)" placeholder="ملاحظة..."></td>
+      <td><select onchange="updDebtRef(${d.id}, this.value)">${refOptsFor(refVal)}</select></td>
     </tr>`;
   }).join("");
-  tfoot.innerHTML = `<tr><td colspan="5">${t('dms_total')}</td><td class="num" style="color:var(--accent2);font-weight:700">${money(recv + pay)}</td><td colspan="2"></td></tr>`;
+  tfoot.innerHTML = `<tr><td colspan="5">${t('dms_total')}</td><td class="num" style="color:var(--accent2);font-weight:700">${money(recv + pay)}</td><td colspan="3"></td></tr>`;
   summary.innerHTML = `
     ${kpi(t('dms_recv'), money(recv), "pos")}
     ${kpi(t('dms_pay'), money(pay), "neg")}
@@ -1458,6 +1474,13 @@ function updDebtNoteInline(id, val){
   const d = state.debts.find(x=>x.id===id);
   if(!d) return;
   d.notes = val;
+  save();
+}
+/* ✅ مرجع الديون - لا يعمل أي حساب فقط حفظ */
+function updDebtRef(id, val){
+  const d = state.debts.find(x=>x.id===id);
+  if(!d) return;
+  setDebtRef(d, state.activeYear, state.activeMonth, val);
   save();
 }
 
@@ -1485,7 +1508,7 @@ function refreshDebtsMonthCells(){
     if(rc){ rc.textContent = money(remAfter); rc.style.color = remAfter === 0 ? 'var(--ok)' : 'var(--txt)'; }
   });
   const tf = document.getElementById("debtsMonthFoot");
-  if(tf) tf.innerHTML = `<tr><td colspan="5">${t('dms_total')}</td><td class="num" style="color:var(--accent2);font-weight:700">${money(recv + pay)}</td><td colspan="2"></td></tr>`;
+  if(tf) tf.innerHTML = `<tr><td colspan="5">${t('dms_total')}</td><td class="num" style="color:var(--accent2);font-weight:700">${money(recv + pay)}</td><td colspan="3"></td></tr>`;
   const sm = document.getElementById("debtsMonthSummary");
   if(sm) sm.innerHTML = `
     ${kpi(t('dms_recv'), money(recv), "pos")}
@@ -1514,7 +1537,7 @@ function updCarInsuranceAmount(v){
   getYearExtras(state.activeYear).carInsurance.amount = Math.max(0, parseFloat(v)||0);
   save();
   renderDashboard();
-  renderMonthResults();  /* ⭐ تحديث النتيجة الشهرية */
+  renderMonthResults();
   renderYears();
 }
 function updCarInsuranceBank(v){ getYearExtras(state.activeYear).carInsurance.bank = v; save(); renderCarInsuranceOT(); }
@@ -1540,7 +1563,7 @@ function updZakatAmount(v){
   getYearExtras(state.activeYear).zakat.amount = Math.max(0, parseFloat(v)||0);
   save();
   renderDashboard();
-  renderMonthResults();  /* ⭐ تحديث النتيجة الشهرية */
+  renderMonthResults();
   renderYears();
 }
 function updZakatBank(v){ getYearExtras(state.activeYear).zakat.bank = v; save(); renderZakatOT(); }
@@ -1585,7 +1608,6 @@ function onEidChange(val){ const m = M()[state.activeMonth]; m.eidType = val; m.
 function upd(key, val){ const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
 function updateMonthNotes(v){ const m = M()[state.activeMonth]; m.notes = v; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 
-/* ✅ النتيجة الشهرية - مع احتساب المصاريف "مرة واحدة في السنة" */
 function renderMonthResults(){
   const m = M()[state.activeMonth];
   const mi = state.activeMonth, y = state.activeYear;
@@ -1597,7 +1619,7 @@ function renderMonthResults(){
   const excl = totalExcludedExpenses(m);
   const sav = totalSavings(m);
   const debtPay = totalDebtPayments(y, mi);
-  const oneTime = totalOneTimeYearly(y);  /* ⭐ مرة واحدة في السنة */
+  const oneTime = totalOneTimeYearly(y);
   const remBase = salaryOnly - exp - sav - debtPay - oneTime;
   const remWithExtra = inc - exp - sav - debtPay - oneTime;
 
@@ -1697,6 +1719,7 @@ function addDebt(){
     total, paidBefore,
     bank: "بطاقة صراف الالي",
     monthlyByYear: { [state.activeYear]: Array(12).fill(0) },
+    refByYear: { [state.activeYear]: Array(12).fill("") },
     start: document.getElementById("d_start").value,
     end: document.getElementById("d_end").value,
     notes: document.getElementById("d_notes").value.trim()
