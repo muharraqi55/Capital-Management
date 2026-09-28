@@ -189,10 +189,15 @@
   .fully-paid-badge-wrap{text-align:center;margin-top:2px;min-height:14px}
   .fully-paid-info{display:flex;flex-direction:column;gap:3px;align-items:center;margin-top:4px}
   /* ⭐ شارة "آخر دفعة" — تعمل على الهاتف والكمبيوتر */
-  .last-pay-date{font-size:10px;color:var(--ok);font-family:inherit;font-weight:700;background:rgba(34,197,94,.12);padding:3px 8px;border-radius:8px;border:1px solid rgba(34,197,94,.4);white-space:nowrap;direction:rtl;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.2s;-webkit-tap-highlight-color:transparent;user-select:none;outline:none}
-  .last-pay-date:hover{background:rgba(34,197,94,.25);transform:translateY(-1px)}
+  .last-pay-date{font-size:10px;color:var(--ok);font-family:inherit;font-weight:700;background:rgba(34,197,94,.12);padding:3px 8px;border-radius:8px;border:1px solid rgba(34,197,94,.4);white-space:nowrap;direction:rtl;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.2s;-webkit-tap-highlight-color:transparent;user-select:none;outline:none}
+  .last-pay-date:hover{background:rgba(34,197,94,.28);transform:translateY(-1px);box-shadow:0 2px 8px rgba(34,197,94,.25)}
   .last-pay-date:active{transform:scale(.96)}
   .last-pay-amount{font-family:monospace;font-size:10px;background:rgba(34,197,94,.25);padding:1px 6px;border-radius:6px;color:var(--ok);font-weight:800;direction:ltr}
+  .last-pay-go{font-size:11px;color:var(--ok);font-weight:900;margin-inline-start:1px;opacity:.85}
+  .last-pay-prior{font-size:10px;color:var(--muted);font-family:inherit;font-weight:700;background:rgba(143,163,184,.15);padding:3px 8px;border-radius:8px;border:1px solid var(--muted);white-space:nowrap;direction:rtl;display:inline-flex;align-items:center;gap:5px}
+  /* ⭐ تأثير التظليل عند الانتقال للدين */
+  tr.highlight-jump{animation:highlightJump 2s ease-out}
+  @keyframes highlightJump{0%{background:rgba(34,193,164,.5)!important}30%{background:rgba(34,193,164,.4)!important}100%{background:transparent}}
   .pyramid-wrap{display:flex;justify-content:center;align-items:center;padding:20px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;margin-bottom:16px}
   .pyramid-svg{max-width:640px;width:100%;height:auto}
   .pyramid-svg text{font-family:"Segoe UI","Tahoma",sans-serif;pointer-events:none;user-select:none}
@@ -306,7 +311,6 @@
   </div>
 </header>
 
-<!-- ✅ الترتيب الجديد: هرم الأمان المالي في الآخر -->
 <nav class="tabs">
   <button data-view="dashboard" class="active" data-i18n="t_dash">📊 اللوحة الرئيسية</button>
   <button data-view="month" data-i18n="t_month">📅 إدخال الشهور</button>
@@ -504,7 +508,6 @@
   <div class="card"><h2 id="lblYearsDist"></h2><div style="overflow-x:auto"><table id="yearsDistTable"></table></div></div>
 </section>
 
-<!-- ✅ الهرم تم نقله للأخير -->
 <section id="pyramid" class="view">
   <div class="card">
     <h2 id="lblPyrTitle"></h2>
@@ -588,7 +591,7 @@ const I18N = {
     dbt_inst:"🏦 قسط (بنك/فيزا — أدفع)",
     dbt_visa:"بطاقة فيزا",dbt_bank:"بنك",dbt_misc:"متنوع",
     debts_table:"📋 جدول الديون والأقساط — عرض السنة النشطة",
-    debts_table_hint:"✏️ كل الخلايا قابلة للتعديل مباشرة.",
+    debts_table_hint:"✏️ كل الخلايا قابلة للتعديل مباشرة. اضغط على 📅 آخر دفعة للانتقال إلى الشهر والسنة.",
     lbl_annual:"الملخص السنوي التفصيلي (د.ب)",
     kpi_recv_year_d:"💰 سأستلم هذه السنة (مدينون)",kpi_pay_year_d:"💸 سأدفع هذه السنة (دائن + أقساط)",
     kpi_net_year_d:"📊 صافي السنة",kpi_rem_to_me:"📌 متبقي لي (مدينون)",
@@ -613,9 +616,12 @@ const I18N = {
     exported:"📤 تم التصدير",added:"✅ تمت الإضافة",
     need_name_total:"⚠️ أدخل الاسم والمبلغ",paid_gt_total:"⚠️ المدفوع سابقاً أكبر من الكلي!",
     confirm_delete:"تأكيد الحذف؟",confirm_reset:"⚠️ سيتم حذف كل البيانات. متأكد؟",
-    invalid_file:"ملف غير صالح",debt_paid:"مسدد",
+    invalid_file:"ملف صالح",debt_paid:"مسدد",
     last_pay:"آخر دفعة",last_pay_none:"لا دفعات مسجّلة",
     last_pay_prior:"قبل التسجيل",
+    last_pay_go_hint:"اضغط للانتقال إلى هذه الدفعة",
+    jumped_to:"✅ تم الانتقال إلى: ",
+    no_last_pay:"لا توجد دفعات مسجّلة",
     months:["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"],
     print_title:"نظام إدارة رأس المال",print_subtitle:"Capital Manager — تقرير مالي",print_meta:"تم الإنشاء في",
     f_salary:"الراتب الشهري (د.ب)",f_costOfLiving:"غلاء المعيشة (د.ب)",
@@ -721,7 +727,7 @@ const I18N = {
     btn_add_debt:"➕ Add",
     dbt_credit:"🔴 Creditor",dbt_debit:"🟢 Debtor",dbt_inst:"🏦 Installment",
     dbt_visa:"Visa",dbt_bank:"Bank",dbt_misc:"Misc",
-    debts_table:"📋 Debts Table",debts_table_hint:"✏️ Every cell is editable.",
+    debts_table:"📋 Debts Table",debts_table_hint:"✏️ Every cell is editable. Click 📅 Last payment to jump to that month/year.",
     lbl_annual:"Detailed Annual Summary (BHD)",
     kpi_recv_year_d:"💰 To receive this year",kpi_pay_year_d:"💸 To pay this year",
     kpi_net_year_d:"📊 Net year",kpi_rem_to_me:"📌 Remaining to me",
@@ -749,6 +755,9 @@ const I18N = {
     invalid_file:"Invalid file",debt_paid:"Paid",
     last_pay:"Last payment",last_pay_none:"No payments recorded",
     last_pay_prior:"Before logging",
+    last_pay_go_hint:"Click to jump to this payment",
+    jumped_to:"✅ Jumped to: ",
+    no_last_pay:"No payments recorded",
     months:["January","February","March","April","May","June","July","August","September","October","November","December"],
     print_title:"Capital Manager",print_subtitle:"Financial Report",print_meta:"Generated on",
     f_salary:"Salary (BHD)",f_costOfLiving:"Cost of Living (BHD)",
@@ -2028,40 +2037,83 @@ function updDebtType(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) 
 function updDebtCategory(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.category = val; save(); }
 function updDebtNotes(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.notes = val; save(); renderMonth(); }
 
-/* ⭐ بناء معلومات "مسدد + تاريخ آخر دفعة" — يعمل على الهاتف والكمبيوتر */
+/* ⭐ بناء معلومات "مسدد + تاريخ آخر دفعة" — يظهر دائماً عند وجود أي دفعة (كاملة أو جزئية) */
 function buildPaidInfoHtml(d){
-  if(!isDebtFullyPaid(d)) return '';
+  const fullyPaid = isDebtFullyPaid(d);
   const lp = lastPaymentInfo(d);
-  let dateHtml = '';
+  const hasPaidBefore = +d.paidBefore > 0;
+  /* لا شيء لعرضه إن لم يكن مسدداً ولا توجد دفعات ولا مدفوع سابق */
+  if(!fullyPaid && !lp && !hasPaidBefore) return '';
+
+  let html = '<div class="fully-paid-info">';
+  if(fullyPaid){
+    html += `<span class="badge fully-paid">✅ ${t('debt_paid')}</span>`;
+  }
   if(lp){
-    /* ✅ عرض التاريخ + المبلغ مباشرة (يظهر على الهاتف بدون hover) */
-    dateHtml = `<button type="button" class="last-pay-date" onclick="showLastPayDetails(${d.id}, event)">
+    /* زر قابل للنقر — ينقل إلى الشهر والسنة */
+    html += `<button type="button" class="last-pay-date" onclick="goToLastPayment(${d.id}, event)" title="${t('last_pay_go_hint')}">
       📅 ${t('last_pay')}: ${lp.shortLabel}
       <span class="last-pay-amount">${fmt(lp.amount)}</span>
+      <span class="last-pay-go">↗</span>
     </button>`;
-  } else if(+d.paidBefore > 0){
-    dateHtml = `<span class="last-pay-date" style="background:rgba(143,163,184,.15);color:var(--muted);border-color:var(--muted)">
+  } else if(hasPaidBefore){
+    html += `<span class="last-pay-prior">
       ${t('last_pay_none')} (${t('last_pay_prior')})
     </span>`;
   }
-  return `<div class="fully-paid-info">
-    <span class="badge fully-paid">✅ ${t('debt_paid')}</span>
-    ${dateHtml}
-  </div>`;
+  html += '</div>';
+  return html;
 }
 
-/* ⭐ إظهار تفاصيل آخر دفعة عند النقر (يعمل على الهاتف والكمبيوتر) */
-function showLastPayDetails(id, ev){
-  if(ev) ev.stopPropagation();
+/* ⭐ الانتقال إلى آخر دفعة: يغير السنة + الشهر + يفتح تبويب إدخال الشهور + يظلل الدين */
+function goToLastPayment(id, ev){
+  if(ev){ ev.stopPropagation(); ev.preventDefault(); }
   const d = state.debts.find(x=>x.id===id);
   if(!d) return;
   const lp = lastPaymentInfo(d);
   if(!lp){
-    toast(LANG==='ar'?'لا توجد دفعات مسجّلة (المسدد سابقاً فقط)':'No payments recorded (only prior payments)', 'warn');
+    toast(t('no_last_pay'), 'warn');
     return;
   }
-  const msg = (LANG==='ar' ? '📅 آخر دفعة: ' : '📅 Last payment: ') + lp.fullLabel;
-  toast(msg, 'success');
+  /* التأكد من وجود السنة في القائمة */
+  if(!state.years[lp.year]) state.years[lp.year] = emptyYear();
+  if(state.yearList.indexOf(lp.year) === -1){
+    state.yearList.push(lp.year);
+    state.yearList.sort((a,b)=>a-b);
+  }
+  /* تغيير السنة والشهر */
+  state.activeYear = lp.year;
+  state.activeMonth = lp.month;
+  save();
+  renderYearSelect();
+  renderMonthPills();
+
+  /* التبديل إلى تبويب "إدخال الشهور" */
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  const monthBtn = document.querySelector('nav.tabs button[data-view="month"]');
+  if(monthBtn) monthBtn.classList.add("active");
+  const monthView = document.getElementById("month");
+  if(monthView) monthView.classList.add("active");
+
+  /* إعادة رسم قسم الشهور */
+  renderMonth();
+
+  /* التمرير إلى الدين وتظليله */
+  setTimeout(() => {
+    const row = document.querySelector(`tr[data-debt-row="${id}"]`);
+    if(row){
+      row.scrollIntoView({behavior:'smooth', block:'center'});
+      row.classList.remove('highlight-jump');
+      /* إعادة تشغيل الأنيميشن */
+      void row.offsetWidth;
+      row.classList.add('highlight-jump');
+      setTimeout(() => row.classList.remove('highlight-jump'), 2200);
+    }
+  }, 220);
+
+  /* إشعار */
+  toast(t('jumped_to') + `${lp.monthName} ${lp.year} — ${fmt(lp.amount)} ${LANG==='ar'?'د.ب':'BHD'}`, 'success');
 }
 
 function refreshDebtRowCells(d){
@@ -2118,7 +2170,7 @@ function renderDebts(){
   const months = getMonths(); const y = state.activeYear;
   const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦"};
   let head = `<thead><tr>
-    <th style="min-width:180px">${t('th_debt_name')}</th>
+    <th style="min-width:200px">${t('th_debt_name')}</th>
     <th style="min-width:80px">${t('th_debt_type')}</th>
     <th style="min-width:80px">${t('lbl_debt_cat')}</th>
     <th style="min-width:85px">${t('th_debt_total')}</th>
@@ -2132,7 +2184,7 @@ function renderDebts(){
     const paid = debtPaidInYear(d, y), rem = debtRemaining(d);
     const fullyPaid = isDebtFullyPaid(d);
     const rowCls = fullyPaid ? rc + ' fully-paid-row' : rc;
-    /* ⭐ بناء شارة "مسدد + تاريخ آخر دفعة" */
+    /* ⭐ معلومات الدفع (مسدد + تاريخ آخر دفعة) */
     const paidBadge = buildPaidInfoHtml(d);
     body += `<tr class="${rowCls}" data-debt-id="${d.id}">
       <td><input type="text" class="inline-input name" value="${esc(d.name)}" onchange="updDebtName(${d.id}, this.value)"><div class="fully-paid-badge-wrap">${paidBadge}</div></td>
