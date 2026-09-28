@@ -21,6 +21,9 @@
   .btn{background:var(--panel2);color:var(--txt);border:1px solid var(--line);padding:7px 12px;border-radius:8px;cursor:pointer;font-size:13px;transition:.2s;white-space:nowrap}
   .btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
   .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.primary:hover{background:var(--accent2);border-color:var(--accent2)}
+  .btn.success{background:linear-gradient(180deg,var(--ok),#15803d);color:#fff;border-color:var(--ok);font-weight:700;box-shadow:0 0 0 3px rgba(34,197,94,.15);animation:pulseGlow 2s infinite}
+  @keyframes pulseGlow{0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.15)}50%{box-shadow:0 0 0 6px rgba(34,197,94,.25)}}
   .btn.danger{background:transparent;color:var(--danger);border-color:var(--danger)}
   .btn.danger:hover{background:var(--danger);color:#fff}
   .settings-bar{display:flex;gap:4px;padding:4px;background:var(--bg);border:1px solid var(--line);border-radius:10px}
@@ -71,6 +74,9 @@
   .notice-int{display:flex;align-items:center;gap:8px;padding:8px 14px;margin-bottom:12px;background:rgba(34,193,164,.08);border:1px solid rgba(34,193,164,.3);border-radius:8px;color:var(--accent);font-size:12px;font-weight:600}
   .toast{position:fixed;bottom:20px;left:20px;background:var(--accent);color:#fff;padding:12px 20px;border-radius:10px;font-weight:600;box-shadow:0 8px 24px var(--shadow);opacity:0;transform:translateY(20px);transition:.3s;pointer-events:none;z-index:200}
   .toast.show{opacity:1;transform:none}
+  .toast.success{background:linear-gradient(180deg,var(--ok),#15803d)}
+  .toast.error{background:linear-gradient(180deg,var(--danger),#991b1b)}
+  .toast.warn{background:linear-gradient(180deg,var(--gold),#92400e);color:#fff}
   .icon-btn{background:transparent;border:1px solid var(--line);color:var(--muted);width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:14px;transition:.2s}
   .icon-btn:hover{border-color:var(--danger);color:var(--danger)}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
@@ -277,6 +283,7 @@
       <button onclick="addYear()">➕</button>
       <button onclick="deleteYear()">🗑</button>
     </div>
+    <button class="btn success" onclick="manualSave()" id="btnSaveManual" title="حفظ فوري (Ctrl+S)">💾 حفظ</button>
     <div class="settings-bar">
       <button onclick="toggleLang()" id="langBtn">🌐 EN</button>
       <button onclick="toggleTheme()" id="themeBtn">🌙</button>
@@ -520,6 +527,13 @@ const I18N = {
     t_dash:"📊 اللوحة الرئيسية",t_month:"📅 إدخال الشهور",t_years:"📆 مقارنة السنوات",
     t_pyr:"🔺 هرم الأمان المالي",t_debts:"🤝 السلف والديون",t_annual:"📈 الملخص السنوي",
     btn_export:"📤 تصدير",btn_import:"📥 استيراد",btn_reset:"🗑 تصفير",
+    btn_save:"💾 حفظ",
+    save_manual_ok:"💾 تم حفظ البيانات بنجاح",
+    save_pending:"📝 جاري الحفظ...",
+    save_saved:"✓ محفوظ ",
+    save_error:"⚠️ فشل الحفظ",
+    save_restored:"✅ تم استرجاع بياناتك السابقة",
+    save_no_data:"لا توجد بيانات محفوظة بعد — ابدأ بالإدخال وسيُحفظ تلقائياً",
     dash_title1:"الملخص السنوي (12 شهر)",dash_title2:"توزيع الادخار السنوي",
     dash_title3:"ملخص الديون والأقساط",dash_title4:"مقارنة الشهور",
     kpi_tot_inc:"إجمالي الدخل السنوي",kpi_tot_exp:"إجمالي المصاريف السنوية",
@@ -634,7 +648,7 @@ const I18N = {
     y_deleted:"✅ تم حذف السنة ",y_added:"✅ تمت إضافة السنة ",y_years:"سنوات",
     save_ok:"تم الحفظ ",save_fail:"فشل الحفظ! ",
     migrate_ok:"✅ تم نقل بياناتك من المفتاح القديم",
-    storage_warning:"⚠️ التخزين المحلي معطّل!",
+    storage_warning:"⚠️ التخزين المحلي معطّل! لن يتم حفظ البيانات تلقائياً. استخدم زر التصدير لحفظ نسخة يدوياً.",
     lbl_mr_base:"📊 النتيجة على أساس الراتب فقط",
     lbl_mr_with_extra:"📊 النتيجة مع جميع الإيرادات (راتب + إضافي + مدينين)",
     lbl_car_insurance_ot:"⭐  تأمين + التسجيل السنوي لجميع السيارات",
@@ -648,6 +662,13 @@ const I18N = {
     t_dash:"📊 Dashboard",t_month:"📅 Monthly Entry",t_years:"📆 Years Comparison",
     t_pyr:"🔺 Financial Safety Pyramid",t_debts:"🤝 Debts & Loans",t_annual:"📈 Annual Summary",
     btn_export:"📤 Export",btn_import:"📥 Import",btn_reset:"🗑 Reset",
+    btn_save:"💾 Save",
+    save_manual_ok:"💾 Data saved successfully",
+    save_pending:"📝 Saving...",
+    save_saved:"✓ Saved ",
+    save_error:"⚠️ Save failed",
+    save_restored:"✅ Previous data restored",
+    save_no_data:"No saved data yet — start entering and it will save automatically",
     dash_title1:"Annual Summary (12 Months)",dash_title2:"Annual Savings Distribution",
     dash_title3:"Debts & Installments Summary",dash_title4:"Months Comparison",
     kpi_tot_inc:"Total Annual Income",kpi_tot_exp:"Total Annual Expenses",
@@ -756,7 +777,7 @@ const I18N = {
     y_cant_del:"Cannot delete last year",y_exists:"Year exists",y_invalid:"Invalid",
     y_deleted:"✅ Deleted: ",y_added:"✅ Added: ",y_years:"years",
     save_ok:"Saved ",save_fail:"Save failed! ",
-    migrate_ok:"✅ Data migrated",storage_warning:"⚠️ Storage disabled!",
+    migrate_ok:"✅ Data migrated",storage_warning:"⚠️ Storage disabled! Data won't save automatically.",
     lbl_mr_base:"📊 Result based on Salary Only",
     lbl_mr_with_extra:"📊 Result with All Income (salary + extra + debtors)",
     lbl_car_insurance_ot:"⭐  Car Insurance + Annual Registration",
@@ -783,6 +804,7 @@ const MEAT_MONTHS = [0, 3, 6, 9];
 function isMeatMonth(mi){ return MEAT_MONTHS.includes(mi); }
 
 const KEY = "cm_stable_data_v1";
+const BACKUP_KEY = "cm_stable_data_v1_backup";
 const OLD_KEYS = ["capital_manager_v22","capital_manager_v21","capital_manager_v20","capital_manager_v19","capital_manager_v18","capital_manager_v17","capital_manager_v16","capital_manager_v15","capital_manager_v14","capital_manager_v13","capital_manager_v12","capital_manager_v11","capital_manager_v10","capital_manager_v9","capital_manager_v8","capital_manager_v7","capital_manager_v6","capital_manager_v5","capital_manager_v4","capital_manager_v3","capital_manager_v2","capital_manager_v1"];
 
 let LANG = localStorage.getItem('cm_lang') || 'ar';
@@ -790,6 +812,10 @@ let THEME = localStorage.getItem('cm_theme') || 'dark';
 let FONT_SCALE = parseFloat(localStorage.getItem('cm_font') || '1');
 let LAST_SAVE = null;
 let STORAGE_OK = true;
+let LOADED_FROM_DATA = false;
+/* ═══ AUTO-SAVE STATE ═══ */
+let SAVE_TIMER = null;
+let SAVE_PENDING = false;
 
 const t = key => (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key;
 const getMonths = () => I18N[LANG].months;
@@ -876,7 +902,6 @@ let state = {
   yearExtras: {}
 };
 
-/* ✅ الوصول للتأمين والزكاة من الشهر النشط */
 function getCarInsurance(m){
   if(!m.carInsurance) m.carInsurance = DEFAULT_EXTRA();
   return m.carInsurance;
@@ -889,7 +914,6 @@ function isExtraExcludedM(m, key){
   const data = key === "carInsurance" ? getCarInsurance(m) : getZakat(m);
   return data.bank === EXCLUDED_BANK;
 }
-/* دالة توافق قديمة - تُرجع بيانات الشهر النشط (لا تُستخدم للحسابات السنوية) */
 function getYearExtras(year){
   if(!state.yearExtras) state.yearExtras = {};
   if(!state.yearExtras[year]) state.yearExtras[year] = { carInsurance: DEFAULT_EXTRA(), zakat: DEFAULT_EXTRA() };
@@ -898,38 +922,89 @@ function getYearExtras(year){
 
 function testStorage(){ try{ const k = "__test_"+Date.now(); localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }catch(e){ return false; } }
 
-function save(){
-  if(!STORAGE_OK) return;
+/* ═══════════════════════════════════════════════════════
+   AUTO-SAVE SYSTEM (محسّن)
+   - حفظ فوري عند كل تغيير (debounced 400ms)
+   - حفظ فوري عند إغلاق الصفحة (beforeunload)
+   - حفظ فوري عند تبديل التبويب (visibilitychange)
+   - حفظ تلقائي كل 15 ثانية كشبكة أمان
+   - حفظ يدوي بزر + Ctrl+S
+   - نسخة احتياطية في مفتاح منفصل
+   ═══════════════════════════════════════════════════════ */
+function saveNow(){
+  if(!STORAGE_OK) return false;
   try{
-    localStorage.setItem(KEY, JSON.stringify(state));
+    const data = JSON.stringify(state);
+    localStorage.setItem(KEY, data);
+    // نسخة احتياطية (نتجاهل فشلها إن كانت المساحة ممتلئة)
+    try { localStorage.setItem(BACKUP_KEY, data); } catch(e){}
     LAST_SAVE = new Date();
-    updateSaveIndicator(true);
+    SAVE_PENDING = false;
+    SAVE_TIMER = null;
+    updateSaveIndicator("saved");
+    return true;
   }catch(e){
     console.error("Save failed:", e);
-    updateSaveIndicator(false, e.message);
-    if(e.name === "QuotaExceededError"){ toast(LANG==='ar'?'⚠️ مساحة التخزين ممتلئة':'⚠️ Storage full'); }
+    SAVE_PENDING = false;
+    SAVE_TIMER = null;
+    updateSaveIndicator("error", e.message);
+    if(e.name === "QuotaExceededError"){
+      toast(LANG==='ar'?'⚠️ مساحة التخزين ممتلئة! صدّر نسخة احتياطية':'⚠️ Storage full! Export a backup', 'error');
+    } else {
+      toast((LANG==='ar'?'⚠️ فشل الحفظ: ':'⚠️ Save failed: ') + (e.message||''), 'error');
+    }
+    return false;
   }
 }
 
-function updateSaveIndicator(ok, err){
+/* الحفظ التلقائي (debounced) - يُستدعى من كل حقل عند التغيير */
+function save(){
+  if(!STORAGE_OK) return;
+  SAVE_PENDING = true;
+  updateSaveIndicator("pending");
+  if(SAVE_TIMER) clearTimeout(SAVE_TIMER);
+  SAVE_TIMER = setTimeout(saveNow, 400);
+}
+
+/* الحفظ اليدوي الفوري */
+function manualSave(){
+  if(SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; }
+  if(saveNow()){
+    toast(t('save_manual_ok'), 'success');
+  }
+}
+
+function updateSaveIndicator(mode, err){
   const el = document.getElementById("saveIndicator");
   if(!el) return;
-  if(ok && LAST_SAVE){
+  if(mode === "pending"){
+    el.textContent = "📝 " + t('save_pending');
+    el.style.color = "var(--gold)";
+  } else if(mode === "saved" && LAST_SAVE){
     const d = LAST_SAVE;
-    el.textContent = "💾 " + t('save_ok') + `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+    el.textContent = t('save_saved') + `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
     el.style.color = "var(--ok)";
-  } else if(!ok){
-    el.textContent = "⚠️ " + t('save_fail') + (err||"");
+  } else if(mode === "error"){
+    el.textContent = t('save_error');
     el.style.color = "var(--danger)";
   }
 }
 
+/* ═══ نظام التحميل مع النسخة الاحتياطية ═══ */
 function load(){
   STORAGE_OK = testStorage();
   if(!STORAGE_OK){ setTimeout(() => alert(t('storage_warning')), 500); return; }
   try{
     let raw = localStorage.getItem(KEY);
     let migratedFrom = null;
+    // جرب النسخة الاحتياطية إذا المفتاح الأساسي مفقود
+    if(!raw){
+      const backup = localStorage.getItem(BACKUP_KEY);
+      if(backup){
+        raw = backup;
+        console.warn("Primary key missing, loaded from backup");
+      }
+    }
     if(!raw){ for(const oldKey of OLD_KEYS){ const oldRaw = localStorage.getItem(oldKey); if(oldRaw){ raw = oldRaw; migratedFrom = oldKey; break; } } }
     if(!raw) return;
     const d = JSON.parse(raw);
@@ -938,9 +1013,9 @@ function load(){
       state.years = { [y]: d.months }; state.yearList = [y]; state.activeYear = y; state.activeMonth = d.activeMonth || 0;
       state.debts = (d.debts||[]).map(dd => { const n = {...dd}; n.monthlyByYear = { [y]: dd.monthly || Array(12).fill(0) }; delete n.monthly; return n; });
       if(migratedFrom) setTimeout(() => save(), 100);
+      LOADED_FROM_DATA = true;
       return;
     }
-    // حفظ yearExtras القديم قبل الدمج للنقل
     const oldYearExtras = d.yearExtras || {};
     state = {...state, ...d};
     state.yearList = state.yearList || [];
@@ -957,7 +1032,6 @@ function load(){
       });
       while(state.years[y].length < 12) state.years[y].push(EMPTY_MONTH());
     });
-    // ⭐ ترحيل بيانات yearExtras القديمة إلى أول شهر من كل سنة (شهر يناير)
     if(oldYearExtras && Object.keys(oldYearExtras).length){
       Object.keys(oldYearExtras).forEach(y => {
         const ex = oldYearExtras[y];
@@ -988,8 +1062,21 @@ function load(){
       return dd;
     });
     if(!state.yearExtras) state.yearExtras = {};
+    LOADED_FROM_DATA = true;
     if(migratedFrom){ setTimeout(() => { save(); toast(t('migrate_ok') + ": " + migratedFrom); }, 400); }
-  }catch(e){ console.error("Load error:", e); }
+  }catch(e){
+    console.error("Load error:", e);
+    // محاولة استرجاع النسخة الاحتياطية
+    try{
+      const backup = localStorage.getItem(BACKUP_KEY);
+      if(backup){
+        const d = JSON.parse(backup);
+        state = {...state, ...d};
+        LOADED_FROM_DATA = true;
+        toast(LANG==='ar'?'⚠️ تم استرجاع نسخة احتياطية':'⚠️ Restored from backup', 'warn');
+      }
+    }catch(e2){ console.error("Backup load failed:", e2); }
+  }
 }
 
 function initIfEmpty(){
@@ -1089,7 +1176,6 @@ function totalSavingsRaw(m){
   return getSavingFields().reduce((s,[k])=>s+(+m[k]||0),0);
 }
 
-/* ⭐ الآن التأمين والزكاة شهرية */
 function totalOneTimeMonthly(m){
   let s = 0;
   if(!isExtraExcludedM(m, "carInsurance")) s += (+getCarInsurance(m).amount||0);
@@ -1139,7 +1225,15 @@ const fmt = n => (Number(n)||0).toLocaleString("en-US",{minimumFractionDigits:3,
 const money = n => fmt(n) + " " + (LANG==='ar'?'د.ب':'BHD');
 const fmtPct = n => (Number(n)||0).toFixed(2);
 function inVal(v){ if(v === 0 || v === '0' || v === '' || v === undefined || v === null) return ''; const n = Number(v); if(isNaN(n) || n === 0) return ''; return v; }
-function toast(msg){ const el = document.getElementById("toast"); el.textContent = msg; el.classList.add("show"); clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove("show"),2000); }
+function toast(msg, type){
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.remove('success','error','warn');
+  if(type) el.classList.add(type);
+  el.classList.add("show");
+  clearTimeout(el._t);
+  el._t = setTimeout(()=>el.classList.remove("show"), type === 'success' ? 2500 : 3500);
+}
 function kpi(lbl,val,cls=""){ return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val ${cls}">${val}</div></div>`; }
 function esc(s){ return String(s||"").replace(/"/g,'&quot;'); }
 
@@ -1155,7 +1249,7 @@ function addYear(){
   const y = parseInt(input); if(!y || y < 1900 || y > 2200){ toast(t('y_invalid')); return; }
   if(state.years[y]){ toast(t('y_exists')); return; }
   state.years[y] = emptyYear(); state.yearList.push(y); state.yearList.sort((a,b)=>a-b); state.activeYear = y;
-  save(); renderYearSelect(); renderAll(); toast(t('y_added') + y);
+  save(); renderYearSelect(); renderAll(); toast(t('y_added') + y, 'success');
 }
 function deleteYear(){
   if(state.yearList.length <= 1){ toast(t('y_cant_del')); return; }
@@ -1174,6 +1268,7 @@ function applyLang(){
   document.getElementById('btnExport').textContent = t('btn_export');
   document.getElementById('btnImport').textContent = t('btn_import');
   document.getElementById('btnReset').textContent = t('btn_reset');
+  document.getElementById('btnSaveManual').textContent = t('btn_save');
   document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.dataset.i18n; if(I18N[LANG][k]) el.textContent = I18N[LANG][k]; });
   document.getElementById('dashTitle1').textContent = t('dash_title1');
   document.getElementById('dashTitle2').textContent = t('dash_title2');
@@ -1637,7 +1732,6 @@ function refreshDebtsMonthCells(){
   `;
 }
 
-/* ⭐ حاوية تأمين السيارات - شهرية */
 function renderCarInsuranceOT(){
   const m = M()[state.activeMonth];
   const ci = getCarInsurance(m);
@@ -1688,7 +1782,6 @@ function updCarInsuranceRef(v){
   save();
 }
 
-/* ⭐ حاوية زكاة - شهرية */
 function renderZakatOT(){
   const m = M()[state.activeMonth];
   const zk = getZakat(m);
@@ -1903,7 +1996,7 @@ function addDebt(){
   });
   ["d_name","d_notes"].forEach(id=>document.getElementById(id).value="");
   ["d_total","d_paidBefore"].forEach(id=>document.getElementById(id).value="");
-  save(); renderDebts(); renderDashboard(); renderMonth(); toast(t('added'));
+  save(); renderDebts(); renderDashboard(); renderMonth(); toast(t('added'), 'success');
 }
 function delDebt(id){ if(!confirm(t('confirm_delete'))) return; state.debts = state.debts.filter(d=>d.id!==id); save(); renderDebts(); renderDashboard(); renderMonth(); }
 function updDebtMonth(id, mi, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDm(d, state.activeYear, mi, Math.max(0, parseFloat(val)||0)); save(); refreshDebtTotals(); renderDebtsSummary(); renderDashboard(); }
@@ -2130,7 +2223,6 @@ function renderAnnual(){
   const eidT = monthsData.map(m => +m.eidAmount||0);
   html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--gold);font-weight:700">${t('mr_eid_ref')}</td></tr>`;
   html += `<tr><td>${t('mr_eid_ref')}</td>${eidT.map(v=>`<td class="num">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--gold);font-weight:700">${money(eidT.reduce((a,b)=>a+b,0))}</td></tr>`;
-  // ⭐ صفوف التأمين والزكاة شهرية
   const ciT = monthsData.map(m => (+getCarInsurance(m).amount||0));
   const ciExclArr = monthsData.map(m => isExtraExcludedM(m, "carInsurance"));
   const zkT = monthsData.map(m => (+getZakat(m).amount||0));
@@ -2180,27 +2272,74 @@ function exportData(){
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = `capital_manager_${new Date().toISOString().slice(0,10)}.json`;
-  a.click(); toast(t('exported'));
+  a.click(); toast(t('exported'), 'success');
 }
 function importData(e){
   const file = e.target.files[0]; if(!file) return;
   const r = new FileReader();
-  r.onload = ev => { try{ const d = JSON.parse(ev.target.result); if(d.years || d.months){ state = {...state, ...d}; save(); location.reload(); } } catch(err){ alert(t('invalid_file')); } };
+  r.onload = ev => { try{ const d = JSON.parse(ev.target.result); if(d.years || d.months){ state = {...state, ...d}; saveNow(); location.reload(); } } catch(err){ alert(t('invalid_file')); } };
   r.readAsText(file);
 }
 function resetAll(){
   if(!confirm(t('confirm_reset'))) return;
   localStorage.removeItem(KEY);
+  localStorage.removeItem(BACKUP_KEY);
   OLD_KEYS.forEach(k => localStorage.removeItem(k));
   location.reload();
 }
 
+/* ═══════════════════════════════════════════════════════
+   AUTO-SAVE EVENT LISTENERS
+   ═══════════════════════════════════════════════════════ */
+// حفظ فوري عند إغلاق الصفحة أو إعادة تحميلها
+window.addEventListener('beforeunload', function(){
+  if(SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; }
+  if(SAVE_PENDING || LAST_SAVE === null){ saveNow(); }
+});
+// حفظ عند إخفاء التبويب (المستخدم بدل التبويب)
+document.addEventListener('visibilitychange', function(){
+  if(document.hidden && SAVE_PENDING){
+    if(SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; }
+    saveNow();
+  }
+});
+// اختصار Ctrl+S أو Cmd+S للحفظ اليدوي
+document.addEventListener('keydown', function(e){
+  if((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')){
+    e.preventDefault();
+    manualSave();
+  }
+});
+// شبكة أمان: حفظ تلقائي كل 15 ثانية إن كان هناك تغييرات معلّقة
+setInterval(function(){
+  if(SAVE_PENDING && SAVE_TIMER){
+    clearTimeout(SAVE_TIMER); SAVE_TIMER = null;
+    saveNow();
+  }
+}, 15000);
+// حفظ عند مغادرة الصفحة (fallback)
+window.addEventListener('pagehide', function(){
+  if(SAVE_PENDING){ saveNow(); }
+});
+
+/* ═══ بدء التشغيل ═══ */
 load();
 initIfEmpty();
 applyTheme();
 applyFontScale();
 applyLang();
-save();
+// حفظ أولي
+saveNow();
+// إشعار استرجاع البيانات
+if(LOADED_FROM_DATA){
+  setTimeout(function(){
+    toast(t('save_restored'), 'success');
+  }, 600);
+} else {
+  setTimeout(function(){
+    if(!state.yearList.length) toast(t('save_no_data'), 'warn');
+  }, 1000);
+}
 </script>
 </body>
 </html>
