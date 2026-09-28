@@ -371,7 +371,6 @@
     <div class="expense-summary" id="expenseSummary"></div>
   </div>
 
-  <!-- دفعات السلف والأقساط الشهرية -->
   <div class="card debts-month-card">
     <h2><span id="lblDebtsMonth"></span> — <span id="debtsMonthTitle" style="color:var(--accent2)"></span></h2>
     <p class="muted" style="margin-bottom:12px" id="debtsMonthHelp"></p>
@@ -390,7 +389,6 @@
     <div class="expense-summary" id="debtsMonthSummary"></div>
   </div>
 
-  <!-- مبالغ الادخار -->
   <div class="card saving-card">
     <h2 id="lblSavings"></h2>
     <div class="notice-int" id="savingsHint"></div>
@@ -409,7 +407,6 @@
     <div class="expense-summary" id="savingSummary"></div>
   </div>
 
-  <!-- ⭐ تأمين السيارات -->
   <div class="card one-time-card">
     <h2 id="lblCarInsuranceOT"></h2>
     <div class="expense-table-wrap">
@@ -420,7 +417,6 @@
     </div>
   </div>
 
-  <!-- ⭐ زكاة -->
   <div class="card one-time-card">
     <h2 id="lblZakatOT"></h2>
     <div class="expense-table-wrap">
@@ -583,8 +579,8 @@ const I18N = {
     mr_base_remaining:"المتبقي (من الراتب فقط)",
     mr_extra_income:"💰 + مستلم من مدينين",mr_total_income:"= الإجمالي الشهري",
     mr_with_extra_remaining:"المتبقي (مع جميع الإيرادات)",
-    mr_once_yearly:"⭐ مصاريف مرة واحدة في السنة",
-    mr_once_excl:"مصاريف سنوية مستثناة",
+    mr_once_yearly:"⭐ مصاريف هذا الشهر (تأمين + زكاة)",
+    mr_once_excl:"مصاريف شهرية مستثناة",
     dms_recv:"💰 سأستلم هذا الشهر (مدين)",dms_pay:"💸 سأدفع هذا الشهر (دائن + قسط)",
     dms_net:"📊 صافي الشهر",dms_remaining:"📌 متبقي علىّ بعد كل الدفعات",
     dms_empty:"لا توجد ديون نشطة — المسددة تظهر في تبويب \"🤝 السلف والديون\"",
@@ -641,8 +637,8 @@ const I18N = {
     storage_warning:"⚠️ التخزين المحلي معطّل!",
     lbl_mr_base:"📊 النتيجة على أساس الراتب فقط",
     lbl_mr_with_extra:"📊 النتيجة مع جميع الإيرادات (راتب + إضافي + مدينين)",
-    lbl_car_insurance_ot:"⭐ فقط مرة واحدة في السنة — تأمين + التسجيل السنوي لجميع السيارات",
-    lbl_zakat_ot:"⭐ فقط مرة واحدة في السنة — زكاة (المال أو الذهب أو الاستثمارات)",
+    lbl_car_insurance_ot:"⭐  تأمين + التسجيل السنوي لجميع السيارات",
+    lbl_zakat_ot:"⭐  زكاة (المال أو الذهب أو الاستثمارات)",
     ot_car_insurance:"🚗 تأمين + التسجيل السنوي لجميع السيارات",
     ot_zakat:"🕌 زكاة (المال أو الذهب أو الاستثمارات)",
     th_income_item:"البند",th_income_amount:"المبلغ (د.ب)",th_income_note:"ملاحظة",
@@ -707,8 +703,8 @@ const I18N = {
     mr_base_remaining:"Remaining (salary only)",
     mr_extra_income:"💰 + Received from debtors",mr_total_income:"= Total monthly",
     mr_with_extra_remaining:"Remaining (all income)",
-    mr_once_yearly:"⭐ Once per year expenses",
-    mr_once_excl:"Excluded yearly expenses",
+    mr_once_yearly:"⭐ This month's expenses (insurance + zakat)",
+    mr_once_excl:"Excluded monthly expenses",
     dms_recv:"💰 To receive (debit)",dms_pay:"💸 To pay (credit + installment)",
     dms_net:"📊 Month net",dms_remaining:"📌 Remaining after payments",
     dms_empty:"No active debts",
@@ -763,8 +759,8 @@ const I18N = {
     migrate_ok:"✅ Data migrated",storage_warning:"⚠️ Storage disabled!",
     lbl_mr_base:"📊 Result based on Salary Only",
     lbl_mr_with_extra:"📊 Result with All Income (salary + extra + debtors)",
-    lbl_car_insurance_ot:"⭐ Only Once Per Year — Car Insurance + Annual Registration",
-    lbl_zakat_ot:"⭐ Only Once Per Year — Zakat (Wealth/Gold/Investments)",
+    lbl_car_insurance_ot:"⭐  Car Insurance + Annual Registration",
+    lbl_zakat_ot:"⭐  Zakat (Wealth/Gold/Investments)",
     ot_car_insurance:"🚗 Car Insurance + Annual Registration",
     ot_zakat:"🕌 Zakat (Wealth/Gold/Investments)",
     th_income_item:"Item",th_income_amount:"Amount (BHD)",th_income_note:"Note",
@@ -782,6 +778,7 @@ const REF_OPTIONS = [
   {v:"MEEM", l:"MEEM"},
   {v:"NBB", l:"NBB"},
 ];
+const DEFAULT_EXTRA = () => ({ amount:0, bank:"بطاقة صراف الالي", note:"", ref:"" });
 const MEAT_MONTHS = [0, 3, 6, 9];
 function isMeatMonth(mi){ return MEAT_MONTHS.includes(mi); }
 
@@ -864,6 +861,8 @@ const EMPTY_MONTH = () => ({
   assembly:0,investment:0,eidMoneySaving:0,eidMoneyType:"fitar",
   insuranceSaving:0,travelSaving:0,emergencyFund:0,obligationsSaving:0,
   savingMeta:{},
+  carInsurance: DEFAULT_EXTRA(),
+  zakat: DEFAULT_EXTRA(),
   notes:"",customDate:"",customTime:"",lastModified:""
 });
 const emptyYear = () => Array.from({length:12}, EMPTY_MONTH);
@@ -877,18 +876,24 @@ let state = {
   yearExtras: {}
 };
 
+/* ✅ الوصول للتأمين والزكاة من الشهر النشط */
+function getCarInsurance(m){
+  if(!m.carInsurance) m.carInsurance = DEFAULT_EXTRA();
+  return m.carInsurance;
+}
+function getZakat(m){
+  if(!m.zakat) m.zakat = DEFAULT_EXTRA();
+  return m.zakat;
+}
+function isExtraExcludedM(m, key){
+  const data = key === "carInsurance" ? getCarInsurance(m) : getZakat(m);
+  return data.bank === EXCLUDED_BANK;
+}
+/* دالة توافق قديمة - تُرجع بيانات الشهر النشط (لا تُستخدم للحسابات السنوية) */
 function getYearExtras(year){
   if(!state.yearExtras) state.yearExtras = {};
-  if(!state.yearExtras[year]) state.yearExtras[year] = {
-    carInsurance: { amount:0, bank:"بطاقة صراف الالي", note:"", ref:"" },
-    zakat:        { amount:0, bank:"بطاقة صراف الالي", note:"", ref:"" }
-  };
-  const ex = state.yearExtras[year];
-  if(!ex.carInsurance) ex.carInsurance = { amount:0, bank:"بطاقة صراف الالي", note:"", ref:"" };
-  if(!ex.zakat) ex.zakat = { amount:0, bank:"بطاقة صراف الالي", note:"", ref:"" };
-  if(ex.carInsurance.ref === undefined) ex.carInsurance.ref = "";
-  if(ex.zakat.ref === undefined) ex.zakat.ref = "";
-  return ex;
+  if(!state.yearExtras[year]) state.yearExtras[year] = { carInsurance: DEFAULT_EXTRA(), zakat: DEFAULT_EXTRA() };
+  return state.yearExtras[year];
 }
 
 function testStorage(){ try{ const k = "__test_"+Date.now(); localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }catch(e){ return false; } }
@@ -935,6 +940,8 @@ function load(){
       if(migratedFrom) setTimeout(() => save(), 100);
       return;
     }
+    // حفظ yearExtras القديم قبل الدمج للنقل
+    const oldYearExtras = d.yearExtras || {};
     state = {...state, ...d};
     state.yearList = state.yearList || [];
     Object.keys(state.years||{}).forEach(y => {
@@ -944,10 +951,36 @@ function load(){
         if(!merged.savingMeta) merged.savingMeta = {};
         if(!merged.refMeta) merged.refMeta = {};
         if(!merged.savingRefMeta) merged.savingRefMeta = {};
+        if(!merged.carInsurance) merged.carInsurance = DEFAULT_EXTRA();
+        if(!merged.zakat) merged.zakat = DEFAULT_EXTRA();
         return merged;
       });
       while(state.years[y].length < 12) state.years[y].push(EMPTY_MONTH());
     });
+    // ⭐ ترحيل بيانات yearExtras القديمة إلى أول شهر من كل سنة (شهر يناير)
+    if(oldYearExtras && Object.keys(oldYearExtras).length){
+      Object.keys(oldYearExtras).forEach(y => {
+        const ex = oldYearExtras[y];
+        if(!ex || !state.years[y] || !state.years[y][0]) return;
+        const firstMonth = state.years[y][0];
+        if(ex.carInsurance && (!firstMonth.carInsurance || !firstMonth.carInsurance.amount)){
+          firstMonth.carInsurance = {
+            amount: +ex.carInsurance.amount || 0,
+            bank: ex.carInsurance.bank || "بطاقة صراف الالي",
+            note: ex.carInsurance.note || "",
+            ref: ex.carInsurance.ref || ""
+          };
+        }
+        if(ex.zakat && (!firstMonth.zakat || !firstMonth.zakat.amount)){
+          firstMonth.zakat = {
+            amount: +ex.zakat.amount || 0,
+            bank: ex.zakat.bank || "بطاقة صراف الالي",
+            note: ex.zakat.note || "",
+            ref: ex.zakat.ref || ""
+          };
+        }
+      });
+    }
     state.debts = (state.debts||[]).map(dd => {
       if(!dd.monthlyByYear){ const y = state.activeYear; dd.monthlyByYear = { [y]: dd.monthly || Array(12).fill(0) }; delete dd.monthly; }
       if(!dd.bank) dd.bank = "بطاقة صراف الالي";
@@ -973,19 +1006,14 @@ function isExcluded(m, key){ return getMeta(m, key).bank === EXCLUDED_BANK; }
 function ensureIncomeNotes(m){ if(!m.incomeNotes) m.incomeNotes = {salary:"",costOfLiving:"",housing:"",charity:"",freelance:"",meat:""}; return m.incomeNotes; }
 function ensureSavingMeta(m){ if(!m.savingMeta) m.savingMeta = {}; return m.savingMeta; }
 function getSavingMeta(m, key){ const meta = ensureSavingMeta(m); if(!meta[key]) meta[key] = { bank:"بطاقة صراف الالي", note:"" }; return meta[key]; }
-/* ✅ هل بند الادخار مستثنى؟ */
 function isSavingExcluded(m, key){ return getSavingMeta(m, key).bank === EXCLUDED_BANK; }
 function ensureRefMeta(m){ if(!m.refMeta) m.refMeta = {}; return m.refMeta; }
 function getRefMeta(m, key){ const rm = ensureRefMeta(m); if(!(key in rm)) rm[key] = ""; return rm[key]; }
 function ensureSavingRefMeta(m){ if(!m.savingRefMeta) m.savingRefMeta = {}; return m.savingRefMeta; }
 function getSavingRefMeta(m, key){ const rm = ensureSavingRefMeta(m); if(!(key in rm)) rm[key] = ""; return rm[key]; }
 
-/* ✅ هل الدين مستثنى؟ */
 function isDebtExcluded(d){ return d.bank === EXCLUDED_BANK; }
-/* ✅ هل مصروف "مرة واحدة في السنة" مستثنى؟ */
-function isExtraExcluded(year, key){ return getYearExtras(year)[key].bank === EXCLUDED_BANK; }
 
-/* ✅ مرجع الديون - لكل شهر في كل سنة */
 function ensureDebtRefByYear(d){ if(!d.refByYear) d.refByYear = {}; return d.refByYear; }
 function getDebtRef(d, year, mi){
   const rby = ensureDebtRefByYear(d);
@@ -1014,7 +1042,6 @@ function debtRemainingBefore(d, year, mi){
 function isDebtFullyPaid(d){ return debtRemaining(d) === 0; }
 function shouldShowDebtInMonthlyEntry(d, year, mi){ if(debtRemaining(d) > 0) return true; return dm(d, year, mi) > 0; }
 
-/* ⭐ استثناء الديون التي بنكها "غير محسوب ذي الشهر" من مجاميع الشهر */
 function totalDebtReceipts(year, mi){
   return state.debts.filter(d=>d.type==="debit" && !isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0);
 }
@@ -1024,7 +1051,6 @@ function totalDebtPayments(year, mi){
 function totalDebtReceiptsYear(year){ let s=0; for(let i=0;i<12;i++) s+=totalDebtReceipts(year, i); return s; }
 function totalDebtPaymentsYear(year){ let s=0; for(let i=0;i<12;i++) s+=totalDebtPayments(year, i); return s; }
 
-/* ⭐ مجاميع الديون المستثناة للعرض فقط */
 function totalDebtReceiptsExcluded(year, mi){
   return state.debts.filter(d=>d.type==="debit" && isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0);
 }
@@ -1053,7 +1079,6 @@ function totalExpensesRaw(m){
   let s=0; getExpenseRows().forEach(r=>{ if(r.type==="group") return; s+=(+m[r.key]||0); }); return s;
 }
 
-/* ⭐ الادخار: استثناء البنود التي بنكها "غير محسوب ذي الشهر" */
 function totalSavings(m){
   return getSavingFields().reduce((s,[k])=>s+(isSavingExcluded(m,k)?0:(+m[k]||0)),0);
 }
@@ -1064,29 +1089,36 @@ function totalSavingsRaw(m){
   return getSavingFields().reduce((s,[k])=>s+(+m[k]||0),0);
 }
 
-/* ⭐ مصاريف مرة واحدة في السنة: استثناء البنود المستثناة */
-function totalOneTimeYearly(year){
-  const ex = getYearExtras(year);
+/* ⭐ الآن التأمين والزكاة شهرية */
+function totalOneTimeMonthly(m){
   let s = 0;
-  if(!isExtraExcluded(year, "carInsurance")) s += (+ex.carInsurance.amount||0);
-  if(!isExtraExcluded(year, "zakat")) s += (+ex.zakat.amount||0);
+  if(!isExtraExcludedM(m, "carInsurance")) s += (+getCarInsurance(m).amount||0);
+  if(!isExtraExcludedM(m, "zakat")) s += (+getZakat(m).amount||0);
+  return s;
+}
+function totalOneTimeMonthlyExcluded(m){
+  let s = 0;
+  if(isExtraExcludedM(m, "carInsurance")) s += (+getCarInsurance(m).amount||0);
+  if(isExtraExcludedM(m, "zakat")) s += (+getZakat(m).amount||0);
+  return s;
+}
+function totalOneTimeYearly(year){
+  let s = 0;
+  Mof(year).forEach(m => s += totalOneTimeMonthly(m));
   return s;
 }
 function totalOneTimeYearlyExcluded(year){
-  const ex = getYearExtras(year);
   let s = 0;
-  if(isExtraExcluded(year, "carInsurance")) s += (+ex.carInsurance.amount||0);
-  if(isExtraExcluded(year, "zakat")) s += (+ex.zakat.amount||0);
+  Mof(year).forEach(m => s += totalOneTimeMonthlyExcluded(m));
   return s;
 }
 
 function yearTotals(year){
   const months = Mof(year);
-  let inc=0, exp=0, sav=0;
-  months.forEach((m,i)=>{ inc += totalIncome(m, i, year); exp += totalExpenses(m); sav += totalSavings(m); });
+  let inc=0, exp=0, sav=0, oneTime=0;
+  months.forEach((m,i)=>{ inc += totalIncome(m, i, year); exp += totalExpenses(m); sav += totalSavings(m); oneTime += totalOneTimeMonthly(m); });
   const debtPay = totalDebtPaymentsYear(year);
   const debtRecv = totalDebtReceiptsYear(year);
-  const oneTime = totalOneTimeYearly(year);
   return { income:inc, expenses:exp + oneTime, savings:sav, debtPay, debtRecv, oneTime, net: inc - exp - oneTime - sav - debtPay };
 }
 function allYearsTotals(){
@@ -1244,9 +1276,8 @@ function renderAll(){ renderYearSelect(); renderMonthPills(); renderMonth(); ren
 
 function renderDashboard(){
   const months = M(); const y = state.activeYear;
-  let totInc=0, totExp=0, totSav=0;
-  months.forEach((m,i)=>{ totInc += totalIncome(m, i, y); totExp += totalExpenses(m); totSav += totalSavings(m); });
-  const totOneTime = totalOneTimeYearly(y);
+  let totInc=0, totExp=0, totSav=0, totOneTime=0;
+  months.forEach((m,i)=>{ totInc += totalIncome(m, i, y); totExp += totalExpenses(m); totSav += totalSavings(m); totOneTime += totalOneTimeMonthly(m); });
   const totPay = totalDebtPaymentsYear(y);
   const totRecv = totalDebtReceiptsYear(y);
   const totRem = totInc - totExp - totOneTime - totSav - totPay;
@@ -1276,7 +1307,7 @@ function renderDashboard(){
   const monthNames = getMonths();
   let html = `<thead><tr><th>${t('th_month')}</th><th>${t('th_income')}</th><th>${t('th_debtpay')}</th><th>${t('th_expenses')}</th><th>${t('th_saving')}</th><th>${t('th_remain')}</th><th>${t('th_lastmod')}</th><th>${t('th_status')}</th></tr></thead><tbody>`;
   months.forEach((m,i)=>{
-    const inc = totalIncome(m, i, y), exp = totalExpenses(m), sav = totalSavings(m), debtPay = totalDebtPayments(y, i);
+    const inc = totalIncome(m, i, y), exp = totalExpenses(m) + totalOneTimeMonthly(m), sav = totalSavings(m), debtPay = totalDebtPayments(y, i);
     const rem = inc - exp - sav - debtPay;
     const filled = inc>0||exp>0||sav>0||debtPay>0;
     let lastMod = "—";
@@ -1299,7 +1330,7 @@ function renderMonthPills(){
   const months = getMonths(); const y = state.activeYear;
   document.getElementById("monthPills").innerHTML = months.map((m,i)=>{
     const mm = M()[i];
-    const hasData = mm && (totalIncome(mm, i, y) > totalDebtReceipts(y, i) || totalExpensesRaw(mm)>0 || totalSavingsRaw(mm)>0 || totalDebtPayments(y, i)>0);
+    const hasData = mm && (totalIncome(mm, i, y) > totalDebtReceipts(y, i) || totalExpensesRaw(mm)>0 || totalSavingsRaw(mm)>0 || totalDebtPayments(y, i)>0 || totalOneTimeMonthly(mm)>0);
     return `<button class="${i===state.activeMonth?'active':''} ${hasData?'hasData':''}" onclick="selectMonth(${i})">${m}</button>`;
   }).join("");
 }
@@ -1406,7 +1437,6 @@ function renderExpenseSummary(){
   `;
 }
 
-/* ✅ الادخار - جدول مع بنك و ملاحظة و مرجع - مع تفعيل الاستثناء */
 function renderSavingFields(){
   const m = M()[state.activeMonth];
   const refOptsFor = val => REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${val===o.v?'selected':''}>${o.l}</option>`).join('');
@@ -1438,7 +1468,6 @@ function renderSavingFields(){
   renderSavingSummary();
 }
 
-/* ✅ ملخص الادخار مع المستثنى */
 function renderSavingSummary(){
   const m = M()[state.activeMonth];
   const raw = totalSavingsRaw(m);
@@ -1460,7 +1489,6 @@ function updSavingNote(key, val){
   save();
   renderMonthDate();
 }
-/* ✅ عند تغيير بنك الادخار - إعادة رسم + إعادة حساب النتائج */
 function updSavingBank(key, val){
   const m = M()[state.activeMonth];
   getSavingMeta(m, key).bank = val;
@@ -1487,7 +1515,6 @@ function updRef(key, val){
   renderMonthDate();
 }
 
-/* ✅ دفعات السلف - جدول مع بنك و مرجع - مع تفعيل الاستثناء */
 function renderDebtsMonthSection(){
   const mi = state.activeMonth; const y = state.activeYear;
   const tbody = document.getElementById("debtsMonthBody");
@@ -1545,7 +1572,6 @@ function renderDebtsMonthSection(){
   `;
 }
 
-/* ✅ عند تغيير بنك الدين - إعادة رسم + إعادة حساب النتائج */
 function updDebtBank(id, val){
   const d = state.debts.find(x=>x.id===id);
   if(!d) return;
@@ -1611,75 +1637,107 @@ function refreshDebtsMonthCells(){
   `;
 }
 
-/* ⭐ حاوية تأمين السيارات - مع تفعيل الاستثناء */
+/* ⭐ حاوية تأمين السيارات - شهرية */
 function renderCarInsuranceOT(){
-  const ex = getYearExtras(state.activeYear);
-  const excluded = ex.carInsurance.bank === EXCLUDED_BANK;
-  const bankOpts = BANKS.map(b => `<option value="${b}" ${ex.carInsurance.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
-  const refOpts = REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${ex.carInsurance.ref===o.v?'selected':''}>${o.l}</option>`).join('');
+  const m = M()[state.activeMonth];
+  const ci = getCarInsurance(m);
+  const excluded = ci.bank === EXCLUDED_BANK;
+  const bankOpts = BANKS.map(b => `<option value="${b}" ${ci.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
+  const refOpts = REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${ci.ref===o.v?'selected':''}>${o.l}</option>`).join('');
   document.getElementById("carInsuranceBody").innerHTML = `
     <tr class="${excluded?'excluded':''}">
       <td>${t('ot_car_insurance')}</td>
-      <td><input type="number" value="${inVal(ex.carInsurance.amount)}" oninput="updCarInsuranceAmount(this.value)" min="0" step="0.001"></td>
+      <td><input type="number" value="${inVal(ci.amount)}" oninput="updCarInsuranceAmount(this.value)" min="0" step="0.001"></td>
       <td><select class="${excluded?'bank-excluded':''}" onchange="updCarInsuranceBank(this.value)">${bankOpts}</select></td>
-      <td><input type="text" value="${esc(ex.carInsurance.note)}" oninput="updCarInsuranceNote(this.value)" placeholder="..."></td>
+      <td><input type="text" value="${esc(ci.note)}" oninput="updCarInsuranceNote(this.value)" placeholder="..."></td>
       <td><select onchange="updCarInsuranceRef(this.value)">${refOpts}</select></td>
     </tr>
   `;
 }
 function updCarInsuranceAmount(v){
-  getYearExtras(state.activeYear).carInsurance.amount = Math.max(0, parseFloat(v)||0);
+  const m = M()[state.activeMonth];
+  getCarInsurance(m).amount = Math.max(0, parseFloat(v)||0);
+  m.lastModified = new Date().toISOString();
   save();
   renderDashboard();
   renderMonthResults();
   renderYears();
+  renderMonthPills();
 }
-/* ✅ عند تغيير بنك التأمين - إعادة رسم + إعادة حساب */
 function updCarInsuranceBank(v){
-  getYearExtras(state.activeYear).carInsurance.bank = v;
+  const m = M()[state.activeMonth];
+  getCarInsurance(m).bank = v;
+  m.lastModified = new Date().toISOString();
   save();
   renderCarInsuranceOT();
   renderMonthResults();
   renderDashboard();
   renderYears();
+  renderMonthPills();
 }
-function updCarInsuranceNote(v){ getYearExtras(state.activeYear).carInsurance.note = v; save(); }
-function updCarInsuranceRef(v){ getYearExtras(state.activeYear).carInsurance.ref = v; save(); }
+function updCarInsuranceNote(v){
+  const m = M()[state.activeMonth];
+  getCarInsurance(m).note = v;
+  m.lastModified = new Date().toISOString();
+  save();
+}
+function updCarInsuranceRef(v){
+  const m = M()[state.activeMonth];
+  getCarInsurance(m).ref = v;
+  m.lastModified = new Date().toISOString();
+  save();
+}
 
-/* ⭐ حاوية زكاة - مع تفعيل الاستثناء */
+/* ⭐ حاوية زكاة - شهرية */
 function renderZakatOT(){
-  const ex = getYearExtras(state.activeYear);
-  const excluded = ex.zakat.bank === EXCLUDED_BANK;
-  const bankOpts = BANKS.map(b => `<option value="${b}" ${ex.zakat.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
-  const refOpts = REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${ex.zakat.ref===o.v?'selected':''}>${o.l}</option>`).join('');
+  const m = M()[state.activeMonth];
+  const zk = getZakat(m);
+  const excluded = zk.bank === EXCLUDED_BANK;
+  const bankOpts = BANKS.map(b => `<option value="${b}" ${zk.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
+  const refOpts = REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${zk.ref===o.v?'selected':''}>${o.l}</option>`).join('');
   document.getElementById("zakatBody").innerHTML = `
     <tr class="${excluded?'excluded':''}">
       <td>${t('ot_zakat')}</td>
-      <td><input type="number" value="${inVal(ex.zakat.amount)}" oninput="updZakatAmount(this.value)" min="0" step="0.001"></td>
+      <td><input type="number" value="${inVal(zk.amount)}" oninput="updZakatAmount(this.value)" min="0" step="0.001"></td>
       <td><select class="${excluded?'bank-excluded':''}" onchange="updZakatBank(this.value)">${bankOpts}</select></td>
-      <td><input type="text" value="${esc(ex.zakat.note)}" oninput="updZakatNote(this.value)" placeholder="..."></td>
+      <td><input type="text" value="${esc(zk.note)}" oninput="updZakatNote(this.value)" placeholder="..."></td>
       <td><select onchange="updZakatRef(this.value)">${refOpts}</select></td>
     </tr>
   `;
 }
 function updZakatAmount(v){
-  getYearExtras(state.activeYear).zakat.amount = Math.max(0, parseFloat(v)||0);
+  const m = M()[state.activeMonth];
+  getZakat(m).amount = Math.max(0, parseFloat(v)||0);
+  m.lastModified = new Date().toISOString();
   save();
   renderDashboard();
   renderMonthResults();
   renderYears();
+  renderMonthPills();
 }
-/* ✅ عند تغيير بنك الزكاة - إعادة رسم + إعادة حساب */
 function updZakatBank(v){
-  getYearExtras(state.activeYear).zakat.bank = v;
+  const m = M()[state.activeMonth];
+  getZakat(m).bank = v;
+  m.lastModified = new Date().toISOString();
   save();
   renderZakatOT();
   renderMonthResults();
   renderDashboard();
   renderYears();
+  renderMonthPills();
 }
-function updZakatNote(v){ getYearExtras(state.activeYear).zakat.note = v; save(); }
-function updZakatRef(v){ getYearExtras(state.activeYear).zakat.ref = v; save(); }
+function updZakatNote(v){
+  const m = M()[state.activeMonth];
+  getZakat(m).note = v;
+  m.lastModified = new Date().toISOString();
+  save();
+}
+function updZakatRef(v){
+  const m = M()[state.activeMonth];
+  getZakat(m).ref = v;
+  m.lastModified = new Date().toISOString();
+  save();
+}
 
 function updEidMoneyType(val){ const m = M()[state.activeMonth]; m.eidMoneyType = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 function updExpenseAmount(key, val){ const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderExpenseSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
@@ -1720,7 +1778,6 @@ function onEidChange(val){ const m = M()[state.activeMonth]; m.eidType = val; m.
 function upd(key, val){ const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
 function updateMonthNotes(v){ const m = M()[state.activeMonth]; m.notes = v; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 
-/* ✅ النتيجة الشهرية - مع تفعيل استثناء جميع الأقسام */
 function renderMonthResults(){
   const m = M()[state.activeMonth];
   const mi = state.activeMonth, y = state.activeYear;
@@ -1734,9 +1791,8 @@ function renderMonthResults(){
   const savExcl = totalExcludedSavings(m);
   const debtPay = totalDebtPayments(y, mi);
   const debtPayExcl = totalDebtPaymentsExcluded(y, mi);
-  const debtRecvExcl = totalDebtReceiptsExcluded(y, mi);
-  const oneTime = totalOneTimeYearly(y);
-  const oneTimeExcl = totalOneTimeYearlyExcluded(y);
+  const oneTime = totalOneTimeMonthly(m);
+  const oneTimeExcl = totalOneTimeMonthlyExcluded(m);
   const remBase = salaryOnly - exp - sav - debtPay - oneTime;
   const remWithExtra = inc - exp - sav - debtPay - oneTime;
 
@@ -2074,16 +2130,27 @@ function renderAnnual(){
   const eidT = monthsData.map(m => +m.eidAmount||0);
   html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--gold);font-weight:700">${t('mr_eid_ref')}</td></tr>`;
   html += `<tr><td>${t('mr_eid_ref')}</td>${eidT.map(v=>`<td class="num">${v?money(v):"—"}</td>`).join("")}<td class="num" style="color:var(--gold);font-weight:700">${money(eidT.reduce((a,b)=>a+b,0))}</td></tr>`;
-  const ex = getYearExtras(y);
-  const ciExcl = isExtraExcluded(y, "carInsurance");
-  const zkExcl = isExtraExcluded(y, "zakat");
+  // ⭐ صفوف التأمين والزكاة شهرية
+  const ciT = monthsData.map(m => (+getCarInsurance(m).amount||0));
+  const ciExclArr = monthsData.map(m => isExtraExcludedM(m, "carInsurance"));
+  const zkT = monthsData.map(m => (+getZakat(m).amount||0));
+  const zkExclArr = monthsData.map(m => isExtraExcludedM(m, "zakat"));
   html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--gold);font-weight:700">⭐ ${t('lbl_car_insurance_ot')} / ${t('lbl_zakat_ot')}</td></tr>`;
-  html += `<tr class="${ciExcl?'excluded':''}"><td>${t('ot_car_insurance')} ${ciExcl?'⛔':''}</td><td class="num" colspan="12">${money(ex.carInsurance.amount)}</td><td class="num" style="color:var(--gold);font-weight:700">${money(ex.carInsurance.amount)}</td></tr>`;
-  html += `<tr class="${zkExcl?'excluded':''}"><td>${t('ot_zakat')} ${zkExcl?'⛔':''}</td><td class="num" colspan="12">${money(ex.zakat.amount)}</td><td class="num" style="color:var(--gold);font-weight:700">${money(ex.zakat.amount)}</td></tr>`;
+  html += `<tr><td>${t('ot_car_insurance')}</td>${ciT.map((v,i)=>{
+    const ex = ciExclArr[i];
+    if(!v) return `<td class="num">—</td>`;
+    return `<td class="num ${ex?'excluded-cell':''}">${money(v)}${ex?' ⛔':''}</td>`;
+  }).join('')}<td class="num" style="color:var(--gold);font-weight:700">${money(ciT.reduce((a,b)=>a+b,0))}</td></tr>`;
+  html += `<tr><td>${t('ot_zakat')}</td>${zkT.map((v,i)=>{
+    const ex = zkExclArr[i];
+    if(!v) return `<td class="num">—</td>`;
+    return `<td class="num ${ex?'excluded-cell':''}">${money(v)}${ex?' ⛔':''}</td>`;
+  }).join('')}<td class="num" style="color:var(--gold);font-weight:700">${money(zkT.reduce((a,b)=>a+b,0))}</td></tr>`;
   const inc = monthsData.map((m,i)=>totalIncome(m,i,y));
   const exp = monthsData.map(totalExpenses);
   const sav = monthsData.map(totalSavings);
-  const rem = monthsData.map((m,i)=>inc[i]-exp[i]-sav[i]-dppm[i]);
+  const oneTimePerMonth = monthsData.map(m => totalOneTimeMonthly(m));
+  const rem = monthsData.map((m,i)=>inc[i]-exp[i]-sav[i]-dppm[i]-oneTimePerMonth[i]);
   const rowSum = arr => arr.reduce((a,b)=>a+b,0);
   html += `<tr style="background:rgba(34,193,164,.1);font-weight:700"><td>${t('mr_inc_total')}</td>${inc.map(v=>`<td class="num">${money(v)}</td>`).join("")}<td class="num">${money(rowSum(inc))}</td></tr>`;
   html += `<tr style="background:rgba(239,68,68,.08);font-weight:700"><td>${t('mr_exp')}</td>${exp.map(v=>`<td class="num">${money(v)}</td>`).join("")}<td class="num">${money(rowSum(exp))}</td></tr>`;
