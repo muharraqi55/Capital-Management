@@ -72,13 +72,15 @@
   .muted{color:var(--muted);font-size:12px}
   .notice-bhd{display:flex;align-items:center;gap:8px;padding:10px 14px;margin-bottom:14px;background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.35);border-radius:8px;color:var(--gold);font-size:13px;font-weight:600}
   .notice-int{display:flex;align-items:center;gap:8px;padding:8px 14px;margin-bottom:12px;background:rgba(34,193,164,.08);border:1px solid rgba(34,193,164,.3);border-radius:8px;color:var(--accent);font-size:12px;font-weight:600}
-  .toast{position:fixed;bottom:20px;left:20px;background:var(--accent);color:#fff;padding:12px 20px;border-radius:10px;font-weight:600;box-shadow:0 8px 24px var(--shadow);opacity:0;transform:translateY(20px);transition:.3s;pointer-events:none;z-index:200}
+  .toast{position:fixed;bottom:20px;left:20px;background:var(--accent);color:#fff;padding:12px 20px;border-radius:10px;font-weight:600;box-shadow:0 8px 24px var(--shadow);opacity:0;transform:translateY(20px);transition:.3s;pointer-events:none;z-index:400}
   .toast.show{opacity:1;transform:none}
   .toast.success{background:linear-gradient(180deg,var(--ok),#15803d)}
   .toast.error{background:linear-gradient(180deg,var(--danger),#991b1b)}
   .toast.warn{background:linear-gradient(180deg,var(--gold),#92400e);color:#fff}
-  .icon-btn{background:transparent;border:1px solid var(--line);color:var(--muted);width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:14px;transition:.2s}
+  .icon-btn{background:transparent;border:1px solid var(--line);color:var(--muted);width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:14px;transition:.2s;display:inline-flex;align-items:center;justify-content:center}
   .icon-btn:hover{border-color:var(--danger);color:var(--danger)}
+  .icon-btn.withdraw:hover{border-color:var(--gold);color:var(--gold);background:rgba(234,179,8,.1)}
+  .icon-btn.history:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(59,130,246,.1)}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
   .badge.green{background:rgba(34,197,94,.15);color:var(--ok)}
   .badge.red{background:rgba(239,68,68,.15);color:var(--danger)}
@@ -87,6 +89,7 @@
   .badge.purple{background:rgba(168,85,247,.15);color:#c084fc}
   .badge.fully-paid{background:rgba(34,197,94,.2);color:var(--ok);border:1px solid var(--ok);font-size:10px;padding:2px 6px;margin-inline-start:6px;font-weight:700}
   .badge.excluded-badge{background:rgba(239,68,68,.2);color:var(--danger);border:1px solid var(--danger);font-size:10px;padding:2px 6px;margin-inline-start:6px;font-weight:700}
+  .badge.muted{background:rgba(143,163,184,.15);color:var(--muted)}
   .card.eid-card{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.18),rgba(234,179,8,.06));box-shadow:0 0 0 3px rgba(234,179,8,.15);transition:.3s}
   .card.eid-card h2.eid-title{color:#111827;background:var(--gold);border-bottom-color:rgba(0,0,0,.15);padding:8px 12px;border-radius:6px;font-weight:700;font-size:14px;line-height:1.4}
   .card.eid-card h2.eid-title::before{content:"⚠";color:#7c2d12;font-size:14px}
@@ -137,6 +140,9 @@
   .saving-card{border:2px solid var(--accent);background:linear-gradient(180deg,rgba(34,193,164,.1),transparent)}
   .saving-card h2{color:var(--accent)}
   .saving-field input[type="number"]{font-weight:700;color:var(--accent);text-align:center;font-size:16px}
+  .saving-field input[type="number"]:disabled{background:rgba(34,197,94,.1);border-color:var(--ok);color:var(--ok);cursor:not-allowed;opacity:.85}
+  .saving-field input[type="number"]:disabled::placeholder{color:var(--ok);font-weight:700;font-size:11px}
+  .saving-target-hint{display:inline-block;margin-top:3px;font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(34,197,94,.15);color:var(--ok);border:1px solid rgba(34,197,94,.4);font-weight:700;white-space:nowrap}
   .eid-type-inline{display:flex;gap:6px;margin-top:6px}
   .eid-type-inline select{flex:1;background:rgba(234,179,8,.1);border:1px solid var(--gold);color:#facc15;font-weight:700;padding:5px 8px;border-radius:6px;font-size:11px;cursor:pointer}
   .debts-month-card{border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.08),transparent)}
@@ -188,14 +194,12 @@
   .debts-table .inline-select.type-sel{color:var(--accent);text-align:center}
   .fully-paid-badge-wrap{text-align:center;margin-top:2px;min-height:14px}
   .fully-paid-info{display:flex;flex-direction:column;gap:3px;align-items:center;margin-top:4px}
-  /* ⭐ شارة "آخر دفعة" — تعمل على الهاتف والكمبيوتر */
   .last-pay-date{font-size:10px;color:var(--ok);font-family:inherit;font-weight:700;background:rgba(34,197,94,.12);padding:3px 8px;border-radius:8px;border:1px solid rgba(34,197,94,.4);white-space:nowrap;direction:rtl;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.2s;-webkit-tap-highlight-color:transparent;user-select:none;outline:none}
   .last-pay-date:hover{background:rgba(34,197,94,.28);transform:translateY(-1px);box-shadow:0 2px 8px rgba(34,197,94,.25)}
   .last-pay-date:active{transform:scale(.96)}
   .last-pay-amount{font-family:monospace;font-size:10px;background:rgba(34,197,94,.25);padding:1px 6px;border-radius:6px;color:var(--ok);font-weight:800;direction:ltr}
   .last-pay-go{font-size:11px;color:var(--ok);font-weight:900;margin-inline-start:1px;opacity:.85}
   .last-pay-prior{font-size:10px;color:var(--muted);font-family:inherit;font-weight:700;background:rgba(143,163,184,.15);padding:3px 8px;border-radius:8px;border:1px solid var(--muted);white-space:nowrap;direction:rtl;display:inline-flex;align-items:center;gap:5px}
-  /* ⭐ تأثير التظليل عند الانتقال للدين */
   tr.highlight-jump{animation:highlightJump 2s ease-out}
   @keyframes highlightJump{0%{background:rgba(34,193,164,.5)!important}30%{background:rgba(34,193,164,.4)!important}100%{background:transparent}}
   .pyramid-wrap{display:flex;justify-content:center;align-items:center;padding:20px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;margin-bottom:16px}
@@ -236,6 +240,61 @@
   .one-time-card{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.08),transparent)}
   .one-time-card h2{color:var(--gold)}
   .one-time-card h2::before{content:"⭐";color:var(--gold);font-size:12px}
+
+  .target-card{border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.08),transparent)}
+  .target-card h2{color:var(--accent2)}
+  .target-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
+  .target-table{width:100%;border-collapse:collapse;font-size:12px;min-width:1000px}
+  .target-table thead{background:var(--panel2)}
+  .target-table th{padding:8px 10px;text-align:right;color:var(--accent2);font-size:11px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
+  html[dir="ltr"] .target-table th{text-align:left}
+  .target-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .target-table .target-input{width:100px;background:var(--panel2);border:1px solid var(--line);color:var(--gold);padding:6px 8px;border-radius:6px;font-size:13px;font-weight:700;outline:none;font-family:monospace;text-align:center;transition:.2s}
+  .target-table .target-input:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(59,130,246,.2)}
+  .target-table .num{direction:ltr;text-align:left;font-family:monospace;font-weight:700;font-size:12px}
+  html[dir="ltr"] .target-table .num{text-align:right}
+  .target-name{display:flex;align-items:center;gap:8px;font-weight:700;white-space:nowrap}
+  .target-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+  .progress-bar{width:100%;min-width:120px;height:16px;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative}
+  .progress-fill{height:100%;transition:width .4s;border-radius:7px 0 0 7px}
+  .progress-text{font-size:10px;color:var(--muted);font-family:monospace;margin-top:3px;font-weight:600;direction:rtl}
+  .target-actions{display:flex;gap:4px;justify-content:center}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:300;padding:16px;backdrop-filter:blur(4px)}
+  .modal-overlay.show{display:flex;animation:fadeIn .25s}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal-content{background:var(--panel);border:1px solid var(--line);border-radius:14px;max-width:920px;width:100%;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:slideUp .3s}
+  @keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .modal-header{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,var(--panel),var(--panel2));border-radius:14px 14px 0 0}
+  .modal-header h2{color:var(--accent);font-size:16px;display:flex;align-items:center;gap:8px}
+  .modal-header h2::before{content:"📖"}
+  .modal-close{background:transparent;border:1px solid var(--line);color:var(--muted);width:36px;height:36px;border-radius:9px;cursor:pointer;font-size:16px;transition:.2s;display:flex;align-items:center;justify-content:center}
+  .modal-close:hover{background:var(--danger);color:#fff;border-color:var(--danger);transform:rotate(90deg)}
+  .modal-body{padding:22px 24px;overflow-y:auto;line-height:1.8;font-size:14px;color:var(--txt)}
+  .modal-body h3{color:var(--accent);font-size:15px;margin:22px 0 10px;padding-bottom:8px;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:8px}
+  .modal-body h3:first-child{margin-top:0}
+  .modal-body p{margin:10px 0;color:var(--txt)}
+  .modal-body ul,.modal-body ol{margin:10px 22px;color:var(--txt)}
+  .modal-body li{margin:6px 0}
+  .modal-body table{font-size:12px;margin:14px 0;background:var(--panel2);border-radius:8px;overflow:hidden}
+  .modal-body table th{background:rgba(34,193,164,.15);color:var(--accent);padding:10px;font-size:11px}
+  .modal-body table td{padding:9px 10px;border-color:var(--line)}
+  .modal-body .hl{color:var(--gold);font-weight:700}
+  .modal-body .note{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.35);border-radius:10px;padding:12px 16px;margin:14px 0;color:var(--gold);font-size:13px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
+  .modal-body .note::before{content:"💡";font-size:16px;flex-shrink:0}
+  .modal-body .warn{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:10px;padding:12px 16px;margin:14px 0;color:#fecaca;font-size:13px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
+  .modal-body .warn::before{content:"⚠️";font-size:16px;flex-shrink:0}
+  .modal-body .success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.35);border-radius:10px;padding:12px 16px;margin:14px 0;color:#bbf7d0;font-size:13px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
+  .modal-body .success::before{content:"🎯";font-size:16px;flex-shrink:0}
+  .modal-body strong{color:var(--accent)}
+  .modal-footer{padding:14px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px;border-radius:0 0 14px 14px}
+  @media(max-width:600px){
+    .modal-body{padding:16px;font-size:13px}
+    .modal-header h2{font-size:14px}
+    .modal-body h3{font-size:13px}
+    .target-table{min-width:900px;font-size:11px}
+  }
+
   @media print{
     @page{size:A4;margin:12mm 10mm}
     html,body{background:#fff !important;color:#000 !important;font-size:10pt !important}
@@ -255,7 +314,7 @@
     input,select,textarea{border:none !important;background:transparent !important;color:#000 !important;padding:0 !important;font-size:9pt !important;font-weight:600 !important;-webkit-appearance:none;appearance:none}
     input[type="number"]{text-align:center}
     .meat-status{border:1px solid #999 !important;background:#f5f5f5 !important;color:#000 !important;padding:3pt !important;font-size:8pt !important}
-    .expense-table,.debts-month-table,.debts-table{min-width:100% !important}
+    .expense-table,.debts-month-table,.debts-table,.target-table{min-width:100% !important}
     .debts-table{font-size:6.5pt !important}.debts-table input{width:auto;font-size:7pt !important}
     .pyramid-wrap{background:#fff !important;border:1px solid #ccc !important}
     .pyramid-svg text{fill:#000 !important}
@@ -273,6 +332,8 @@
     .mr-divider{background:#999 !important}
     .last-pay-date{color:#166534 !important;background:#e0f2e9 !important;border-color:#166534 !important}
     .last-pay-amount{background:#166534 !important;color:#fff !important}
+    .progress-bar{background:#eee !important;border:1px solid #999 !important}
+    .progress-fill{background:#0891b2 !important}
   }
 </style>
 </head>
@@ -509,12 +570,37 @@
 </section>
 
 <section id="pyramid" class="view">
+
   <div class="card">
-    <h2 id="lblPyrTitle"></h2>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
+      <h2 id="lblPyrTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none"></h2>
+      <button class="btn primary" onclick="openInstructions()" id="btnInstructions">📖 تعليمات</button>
+    </div>
     <p class="muted" style="margin-bottom:14px" id="lblPyrDesc"></p>
     <div class="pyramid-wrap"><svg class="pyramid-svg" viewBox="0 0 500 460" xmlns="http://www.w3.org/2000/svg" id="pyramidSvg"></svg></div>
     <div class="pyramid-legend" id="pyramidLegend"></div>
   </div>
+
+  <div class="card target-card">
+    <h2 id="lblPyramidTargets">🎯 أهداف هرم الأمان المالي</h2>
+    <p class="muted" style="margin-bottom:14px" id="lblPyramidTargetsHint">أدخل المبلغ المستهدف لكل بند. عند وصول المجموع المُدَّخر للهدف، يتم تعطيل خانة الإدخال تلقائياً في تبويب «إدخال الشهور». استخدم زر ⬇ للسحب (سيُعيد فتح الخانة).</p>
+    <div class="target-table-wrap">
+      <table class="target-table">
+        <thead><tr>
+          <th id="thTgtItem">البند</th>
+          <th id="thTgtTarget">الهدف (د.ب)</th>
+          <th id="thTgtSaved">المُدَّخر (تراكمي)</th>
+          <th id="thTgtWithdrawn">المسحوب</th>
+          <th id="thTgtNet">الصافي</th>
+          <th id="thTgtProgress">التقدم</th>
+          <th id="thTgtStatus">الحالة</th>
+          <th id="thTgtActions">إجراء</th>
+        </tr></thead>
+        <tbody id="pyramidTargetsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
   <div class="card"><h2 id="lblPyrDetail"></h2><div style="overflow-x:auto"><table id="pyramidTable"></table></div></div>
 </section>
 
@@ -529,6 +615,110 @@
   <div><strong>Muharraqi</strong> — نظام إدارة رأس المال / Capital Manager</div>
   <div style="margin-top:3pt">© 2025 Muharraqi. All Rights Reserved.</div>
   <div style="margin-top:3pt;font-size:7pt;color:#777" id="printFooterMeta"></div>
+</div>
+
+<div class="modal-overlay" id="instructionsModal" onclick="if(event.target===this)closeInstructions()">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="instTitle">📖 تعليمات هرم الأمان المالي</h2>
+      <button class="modal-close" onclick="closeInstructions()" title="إغلاق">✕</button>
+    </div>
+    <div class="modal-body">
+      <h3>🏛️ قاعدة 50/30/20: الأساس الذي يُبنى عليه</h3>
+      <p>أشهر قاعدة لتوزيع الدخل الشهري هي <strong>50/30/20</strong>:</p>
+      <ul>
+        <li><strong>50%</strong> للاحتياجات الأساسية (إيجار، طعام، فواتير، مواصلات).</li>
+        <li><strong>30%</strong> للرغبات والكماليات (ترفيه، سفر، مطاعم).</li>
+        <li><strong>20%</strong> للمدخرات وسداد الديون.</li>
+      </ul>
+      <div class="note">هرم الأمان المالي يقع بالكامل داخل الـ <strong>20%</strong> المخصصة للمدخرات. أي أن توزيع الهرم هو في الحقيقة <strong>توزيع داخلي لنسبة الـ 20%</strong>.</div>
+
+      <h3>📊 توزيع نسبي مقترح داخل الـ 20% (للمدخرات)</h3>
+      <p>هذا توزيع إرشادي يمكنك تعديله. الأولوية دائمًا <strong>لصندوق الطوارئ</strong> حتى يصل للحد المطلوب، ثم بقية البنود.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>بند الهرم</th>
+            <th>النسبة المقترحة من المدخرات (الـ20%)</th>
+            <th>ملاحظات</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>🚨 مبلغ الطوارئ</strong></td>
+            <td><strong class="hl">30% - 50%</strong> من المدخرات</td>
+            <td>أولوية قصوى. يُبنى حتى يغطي <strong>3-6 أشهر</strong> من المصاريف الأساسية. يُفضل وضعه في حساب سهل الوصول (High-Yield).</td>
+          </tr>
+          <tr>
+            <td><strong>📋 التزامات</strong></td>
+            <td><strong class="hl">15% - 25%</strong></td>
+            <td>للأقساط والديون قصيرة الأجل. إن كانت التزاماتك كبيرة، ارفع النسبة مؤقتًا.</td>
+          </tr>
+          <tr>
+            <td><strong>🛡️ تأمين + تسجيل</strong></td>
+            <td><strong class="hl">5% - 10%</strong></td>
+            <td>مبلغ سنوي ثابت (يُقسم على 12). يُمكن ادخاره شهريًا حتى يحين موعد الدفع.</td>
+          </tr>
+          <tr>
+            <td><strong>👥 جمعية</strong></td>
+            <td><strong class="hl">0% - 20%</strong></td>
+            <td>يعتمد على التزامك. إن كنت ملتزمًا بجمعية، خصص لها النسبة المطلوبة.</td>
+          </tr>
+          <tr>
+            <td><strong>✈️ ادخار للسفر</strong></td>
+            <td><strong class="hl">5% - 15%</strong></td>
+            <td>بعد تأمين القاعدة. يُفضل فصله في حساب فرعي لتجنب الصرف.</td>
+          </tr>
+          <tr>
+            <td><strong>📈 الاستثمار</strong></td>
+            <td><strong class="hl">10% - 20%</strong></td>
+            <td>يُبدأ به <strong>بعد</strong> الوصول لـ 3 أشهر طوارئ على الأقل. للأهداف طويلة المدى (تقاعد، نمو ثروة).</td>
+          </tr>
+          <tr>
+            <td><strong>🎉 عيادي العيد</strong></td>
+            <td><strong class="hl">0% - 10%</strong></td>
+            <td>مبلغ موسمي (عيدين في السنة). إن لم يكن لديك عجز، يمكن تجاهله أو دمجه في السفر/الاستثمار.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>💡 مبادئ عملية لضبط النسب</h3>
+      <ol>
+        <li><strong>صندوق الطوارئ أولاً:</strong> لا تبدأ الاستثمار أو السفر حتى تمتلك على الأقل <strong>3 أشهر</strong> من مصاريفك الأساسية في صندوق الطوارئ. هذا هو خط الدفاع الأول.</li>
+        <li><strong>عدّل النسب حسب المرحلة:</strong>
+          <ul>
+            <li><strong>مرحلة البناء (أول 6-12 شهرًا):</strong> وجّه معظم المدخرات (<strong>60-70%</strong>) لصندوق الطوارئ والتزامات الديون. تجاهل السفر والاستثمار مؤقتًا.</li>
+            <li><strong>مرحلة الاستقرار (بعد تكوين الطوارئ):</strong> أعد التوازن: <strong>30%</strong> طوارئ (لتعزيزه)، <strong>20%</strong> التزامات، <strong>20%</strong> استثمار، <strong>15%</strong> سفر، <strong>15%</strong> بنود أخرى.</li>
+          </ul>
+        </li>
+        <li><strong>الالتزامات ليست ادخارًا:</strong> سداد الديون (خاصة ذات الفائدة العالية) هو <strong>أفضل استثمار</strong> من الناحية العملية. لا توجه أموالاً للاستثمار قبل سداد الديون الاستهلاكية.</li>
+        <li><strong>المرونة هي المفتاح:</strong> هذه النسب ليست مقدسة. إذا كان لديك التزامات كبيرة، ارفع نسبتهم. إذا كان دخلك مرتفعًا واستقرارك الوظيفي عاليًا، يمكنك تقليل نسبة الطوارئ (إلى 3 أشهر) وزيادة الاستثمار.</li>
+      </ol>
+
+      <h3>⚠️ نقطة مهمة: الفرق بين "الادخار" و "الاستثمار"</h3>
+      <ul>
+        <li><strong>الادخار (Savings):</strong> أموال قصيرة الأجل (طوارئ، سفر، التزامات). يجب أن تكون <strong>سائلة</strong> (يمكن سحبها فورًا) ومنخفضة المخاطر.</li>
+        <li><strong>الاستثمار (Investment):</strong> أموال طويلة الأجل (تقاعد، نمو ثروة). تقبل تقلبات السوق مقابل عوائد أعلى محتملة.</li>
+      </ul>
+      <p>هرم الأمان المالي يجمع بين الاثنين، لكن <strong>القاعدة</strong> (الطوارئ + الالتزامات) هي ادخار، و<strong>القمة</strong> (الاستثمار) هي استثمار.</p>
+
+      <h3>🎯 خلاصة للبدء</h3>
+      <p>ابدأ بهذا التوزيع المبسط كمرحلة أولى:</p>
+      <div class="success">
+        <div>
+          <strong>70%</strong> من مدخراتك → صندوق الطوارئ (حتى يصل 3-6 أشهر).<br>
+          <strong>30%</strong> → الالتزامات والتأمين (الأمور الإلزامية).<br>
+          <strong>0%</strong> → سفر، استثمار، عيادي (مؤقتًا).
+        </div>
+      </div>
+      <p>بعد تكوين صندوق الطوارئ (3-6 أشهر)، أعد التوزيع إلى النسب المذكورة في الجدول أعلاه.</p>
+
+      <div class="warn">ملاحظة أخيرة: أفضل نسبة هي التي <strong>تستطيع الالتزام بها باستمرار</strong>. لا تحاول تطبيق نسب مثالية ثم تتوقف. الاستمرارية أهم من الكمال.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn primary" onclick="closeInstructions()">✓ فهمت، إغلاق</button>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -579,9 +769,9 @@ const I18N = {
     lbl_month_result:"النتيجة الشهرية",lbl_month_notes:"ملاحظات على الشهر",
     th_sav_item:"بند الادخار",th_sav_amount:"المبلغ (د.ب)",th_sav_bank:"البنك / الجهة",th_sav_note:"ملاحظة",th_sav_ref:"مرجع",
     pyr_title:"🔺 هرم الأمان المالي",
-    pyr_desc:"ترتيب الأولويات المالية من القاعدة إلى القمة. المبالغ مجمّعة من 12 شهر.",
+    pyr_desc:"ترتيب الأولويات المالية من القاعدة إلى القمة. الأرقام تتراكم من جميع السنوات.",
     pyr_detail:"تفصيل الهرم",th_level:"المستوى",th_item_name:"البند",
-    th_year_total:"المجموع السنوي (د.ب)",th_pct:"النسبة",th_total:"الإجمالي",
+    th_year_total:"المجموع التراكمي (د.ب)",th_pct:"النسبة",th_total:"الإجمالي",
     debts_summary:"📊 ملخص الديون والأقساط",add_debt:"➕ إضافة دين / سلفة / قسط",
     lbl_debt_name:"الاسم",lbl_debt_type:"النوع",lbl_debt_cat:"فئة القسط",
     lbl_debt_total:"المبلغ الكلي (د.ب)",lbl_debt_paidbefore:"مدفوع سابقاً قبل هذه السنة (د.ب)",
@@ -616,12 +806,33 @@ const I18N = {
     exported:"📤 تم التصدير",added:"✅ تمت الإضافة",
     need_name_total:"⚠️ أدخل الاسم والمبلغ",paid_gt_total:"⚠️ المدفوع سابقاً أكبر من الكلي!",
     confirm_delete:"تأكيد الحذف؟",confirm_reset:"⚠️ سيتم حذف كل البيانات. متأكد؟",
-    invalid_file:"ملف صالح",debt_paid:"مسدد",
+    invalid_file:"ملف غير صالح",debt_paid:"مسدد",
     last_pay:"آخر دفعة",last_pay_none:"لا دفعات مسجّلة",
     last_pay_prior:"قبل التسجيل",
     last_pay_go_hint:"اضغط للانتقال إلى هذه الدفعة",
     jumped_to:"✅ تم الانتقال إلى: ",
     no_last_pay:"لا توجد دفعات مسجّلة",
+    btn_instructions:"📖 تعليمات",
+    lbl_pyramid_targets:"🎯 أهداف هرم الأمان المالي",
+    lbl_pyramid_targets_hint:"أدخل المبلغ المستهدف لكل بند. عند وصول المجموع المُدَّخر للهدف، يتم تعطيل خانة الإدخال تلقائياً في تبويب «إدخال الشهور». استخدم زر ⬇ للسحب (سيُعيد فتح الخانة).",
+    th_tgt_item:"البند", th_tgt_target:"الهدف (د.ب)", th_tgt_saved:"المُدَّخر (تراكمي)",
+    th_tgt_withdrawn:"المسحوب", th_tgt_net:"الصافي", th_tgt_progress:"التقدم",
+    th_tgt_status:"الحالة", th_tgt_actions:"إجراء",
+    tgt_status_none:"— بدون هدف", tgt_status_progress:"🔄 جاري", tgt_status_reached:"✅ تم الوصول",
+    tgt_withdraw_btn:"سحب", tgt_history_btn:"السجل",
+    tgt_withdraw_prompt:"كم تريد أن تسحب من",
+    tgt_withdraw_reason:"سبب السحب (اختياري):",
+    tgt_withdraw_success:"✅ تم السحب بنجاح: ",
+    tgt_withdraw_exceeds:"⚠️ المبلغ أكبر من الرصيد المتاح",
+    tgt_withdraw_no_balance:"لا يوجد مبلغ للسحب",
+    tgt_withdraw_invalid:"⚠️ مبلغ غير صحيح",
+    tgt_saving_disabled:"✅ تم الوصول للهدف — لا حاجة للمزيد",
+    tgt_saving_target_hint:"🎯 الهدف: ",
+    tgt_history_title:"📜 سجل سحوبات: ",
+    tgt_history_empty:"لا يوجد سجل سحوبات لهذا البند",
+    tgt_history_total:"الإجمالي المسحوب: ",
+    inst_title:"📖 تعليمات هرم الأمان المالي",
+    close_btn:"إغلاق",
     months:["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"],
     print_title:"نظام إدارة رأس المال",print_subtitle:"Capital Manager — تقرير مالي",print_meta:"تم الإنشاء في",
     f_salary:"الراتب الشهري (د.ب)",f_costOfLiving:"غلاء المعيشة (د.ب)",
@@ -717,9 +928,9 @@ const I18N = {
     lbl_savings:"💰 Savings Amounts (BHD)",savings_hint:"🔢 Supports 3 decimals — \"Not counted this month\" excludes amount",
     lbl_month_result:"Monthly Result",lbl_month_notes:"Month Notes",
     th_sav_item:"Savings Item",th_sav_amount:"Amount (BHD)",th_sav_bank:"Bank",th_sav_note:"Note",th_sav_ref:"Reference",
-    pyr_title:"🔺 Financial Safety Pyramid",pyr_desc:"Priorities from base to top.",
+    pyr_title:"🔺 Financial Safety Pyramid",pyr_desc:"Priorities from base to top. Cumulative across all years.",
     pyr_detail:"Pyramid Details",th_level:"Level",th_item_name:"Item",
-    th_year_total:"Annual Total (BHD)",th_pct:"%",th_total:"Total",
+    th_year_total:"Cumulative Total (BHD)",th_pct:"%",th_total:"Total",
     debts_summary:"📊 Debts & Installments Summary",add_debt:"➕ Add Debt / Loan / Installment",
     lbl_debt_name:"Name",lbl_debt_type:"Type",lbl_debt_cat:"Category",
     lbl_debt_total:"Total (BHD)",lbl_debt_paidbefore:"Paid Before (BHD)",
@@ -758,6 +969,27 @@ const I18N = {
     last_pay_go_hint:"Click to jump to this payment",
     jumped_to:"✅ Jumped to: ",
     no_last_pay:"No payments recorded",
+    btn_instructions:"📖 Instructions",
+    lbl_pyramid_targets:"🎯 Financial Pyramid Targets",
+    lbl_pyramid_targets_hint:"Enter target amount per level. When savings reach target, the input field in Monthly Entry tab will be disabled. Use ⬇ to withdraw (re-enables the field).",
+    th_tgt_item:"Item", th_tgt_target:"Target (BHD)", th_tgt_saved:"Saved (cumulative)",
+    th_tgt_withdrawn:"Withdrawn", th_tgt_net:"Net", th_tgt_progress:"Progress",
+    th_tgt_status:"Status", th_tgt_actions:"Actions",
+    tgt_status_none:"— No target", tgt_status_progress:"🔄 In progress", tgt_status_reached:"✅ Reached",
+    tgt_withdraw_btn:"Withdraw", tgt_history_btn:"History",
+    tgt_withdraw_prompt:"How much to withdraw from",
+    tgt_withdraw_reason:"Reason (optional):",
+    tgt_withdraw_success:"✅ Withdrawn successfully: ",
+    tgt_withdraw_exceeds:"⚠️ Amount exceeds available balance",
+    tgt_withdraw_no_balance:"No balance to withdraw",
+    tgt_withdraw_invalid:"⚠️ Invalid amount",
+    tgt_saving_disabled:"✅ Target reached — no need to add more",
+    tgt_saving_target_hint:"🎯 Target: ",
+    tgt_history_title:"📜 Withdrawal history: ",
+    tgt_history_empty:"No withdrawal history for this level",
+    tgt_history_total:"Total withdrawn: ",
+    inst_title:"📖 Financial Safety Pyramid Instructions",
+    close_btn:"Close",
     months:["January","February","March","April","May","June","July","August","September","October","November","December"],
     print_title:"Capital Manager",print_subtitle:"Financial Report",print_meta:"Generated on",
     f_salary:"Salary (BHD)",f_costOfLiving:"Cost of Living (BHD)",
@@ -884,14 +1116,15 @@ const getSavingFields = () => [
   ["insuranceSaving", t('s_insuranceSaving')],["travelSaving", t('s_travelSaving')],
   ["emergencyFund", t('s_emergencyFund')],["obligationsSaving", t('s_obligationsSaving')],
 ];
+
 const getPyramidLevels = () => [
   {key:"emergencyFund",label:t('p_emergencyFund'),color:"#ef4444",subtitle:"🚨"},
-  {key:"eidMoneySaving",label:t('p_eidMoneySaving'),color:"#f97316",subtitle:"🎉"},
+  {key:"obligationsSaving",label:t('p_obligationsSaving'),color:"#3b82f6",subtitle:"📋"},
   {key:"insuranceSaving",label:t('p_insuranceSaving'),color:"#eab308",subtitle:"🛡️"},
   {key:"assembly",label:t('p_assembly'),color:"#a855f7",subtitle:"👥"},
-  {key:"obligationsSaving",label:t('p_obligationsSaving'),color:"#3b82f6",subtitle:"📋"},
   {key:"travelSaving",label:t('p_travelSaving'),color:"#14b8a6",subtitle:"✈️"},
   {key:"investment",label:t('p_investment'),color:"#22c55e",subtitle:"📈"},
+  {key:"eidMoneySaving",label:t('p_eidMoneySaving'),color:"#f97316",subtitle:"🎉"},
 ];
 
 const EMPTY_MONTH = () => ({
@@ -921,7 +1154,9 @@ let state = {
   activeYear: new Date().getFullYear(),
   activeMonth: 0,
   debts: [],
-  yearExtras: {}
+  yearExtras: {},
+  pyramidTargets: {},
+  pyramidWithdrawals: {}
 };
 
 function getCarInsurance(m){
@@ -940,6 +1175,68 @@ function getYearExtras(year){
   if(!state.yearExtras) state.yearExtras = {};
   if(!state.yearExtras[year]) state.yearExtras[year] = { carInsurance: DEFAULT_EXTRA(), zakat: DEFAULT_EXTRA() };
   return state.yearExtras[year];
+}
+
+function ensurePyramidTargets(){
+  if(!state.pyramidTargets) state.pyramidTargets = {};
+  return state.pyramidTargets;
+}
+function getPyramidTarget(key){
+  return +(ensurePyramidTargets()[key]) || 0;
+}
+function setPyramidTarget(key, val){
+  ensurePyramidTargets()[key] = Math.max(0, parseFloat(val) || 0);
+}
+function ensurePyramidWithdrawals(){
+  if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {};
+  return state.pyramidWithdrawals;
+}
+function getWithdrawals(key){
+  const w = ensurePyramidWithdrawals();
+  if(!w[key]) w[key] = [];
+  return w[key];
+}
+function getWithdrawnTotal(key){
+  return getWithdrawals(key).reduce((s,x)=>s+(+x.amount||0),0);
+}
+function getCumulativeSaved(key){
+  let total = 0;
+  Object.keys(state.years || {}).forEach(y => {
+    (state.years[y] || []).forEach(m => {
+      total += (+m[key] || 0);
+    });
+  });
+  return total;
+}
+function getCumulativeSavedExcluding(key, excludeYear, excludeMonth){
+  let total = 0;
+  Object.keys(state.years || {}).forEach(y => {
+    (state.years[y] || []).forEach((m, i) => {
+      if(parseInt(y) === excludeYear && i === excludeMonth) return;
+      total += (+m[key] || 0);
+    });
+  });
+  return total;
+}
+function getNetSaved(key){
+  return getCumulativeSaved(key) - getWithdrawnTotal(key);
+}
+function isTargetSet(key){
+  return getPyramidTarget(key) > 0;
+}
+function isTargetReached(key){
+  return isTargetSet(key) && getNetSaved(key) >= getPyramidTarget(key);
+}
+function getRemainingToTarget(key){
+  if(!isTargetSet(key)) return 0;
+  return Math.max(0, getPyramidTarget(key) - getNetSaved(key));
+}
+function isSavingDisabledForMonth(key){
+  const target = getPyramidTarget(key);
+  if(target <= 0) return false;
+  const totalExcl = getCumulativeSavedExcluding(key, state.activeYear, state.activeMonth);
+  const withdrawn = getWithdrawnTotal(key);
+  return (totalExcl - withdrawn) >= target;
 }
 
 function testStorage(){ try{ const k = "__test_"+Date.now(); localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }catch(e){ return false; } }
@@ -1023,6 +1320,8 @@ function load(){
     }
     const oldYearExtras = d.yearExtras || {};
     state = {...state, ...d};
+    if(!state.pyramidTargets) state.pyramidTargets = {};
+    if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {};
     state.yearList = state.yearList || [];
     Object.keys(state.years||{}).forEach(y => {
       state.years[y] = (state.years[y]||[]).map(m => {
@@ -1076,6 +1375,8 @@ function load(){
       if(backup){
         const d = JSON.parse(backup);
         state = {...state, ...d};
+        if(!state.pyramidTargets) state.pyramidTargets = {};
+        if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {};
         LOADED_FROM_DATA = true;
         toast(LANG==='ar'?'⚠️ تم استرجاع نسخة احتياطية':'⚠️ Restored from backup', 'warn');
       }
@@ -1086,6 +1387,8 @@ function load(){
 function initIfEmpty(){
   if(!state.yearList || !state.yearList.length){ const y = new Date().getFullYear(); state.years = { [y]: emptyYear() }; state.yearList = [y]; state.activeYear = y; }
   if(!state.years[state.activeYear]) state.years[state.activeYear] = emptyYear();
+  ensurePyramidTargets();
+  ensurePyramidWithdrawals();
 }
 
 function M(){ return state.years[state.activeYear] || emptyYear(); }
@@ -1132,7 +1435,6 @@ function debtRemainingBefore(d, year, mi){
 }
 function isDebtFullyPaid(d){ return debtRemaining(d) === 0; }
 
-/* ⭐ إيجاد تاريخ آخر دفعة لدين معيّن (يعبر جميع السنوات والشهور) */
 function lastPaymentInfo(d){
   if(!d.monthlyByYear) return null;
   const years = Object.keys(d.monthlyByYear).map(Number).sort((a,b)=>b-a);
@@ -1142,10 +1444,7 @@ function lastPaymentInfo(d){
       if(+arr[i] > 0){
         const monthName = getMonths()[i];
         return {
-          year:y,
-          month:i,
-          amount:+arr[i],
-          monthName: monthName,
+          year:y, month:i, amount:+arr[i], monthName: monthName,
           shortLabel: `${monthName} ${y}`,
           fullLabel: `${monthName} ${y} — ${fmt(+arr[i])} ${LANG==='ar'?'د.ب':'BHD'}`
         };
@@ -1165,7 +1464,6 @@ function totalDebtPayments(year, mi){
 }
 function totalDebtReceiptsYear(year){ let s=0; for(let i=0;i<12;i++) s+=totalDebtReceipts(year, i); return s; }
 function totalDebtPaymentsYear(year){ let s=0; for(let i=0;i<12;i++) s+=totalDebtPayments(year, i); return s; }
-
 function totalDebtReceiptsExcluded(year, mi){
   return state.debts.filter(d=>d.type==="debit" && isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0);
 }
@@ -1193,7 +1491,6 @@ function totalExcludedExpenses(m){
 function totalExpensesRaw(m){
   let s=0; getExpenseRows().forEach(r=>{ if(r.type==="group") return; s+=(+m[r.key]||0); }); return s;
 }
-
 function totalSavings(m){
   return getSavingFields().reduce((s,[k])=>s+(isSavingExcluded(m,k)?0:(+m[k]||0)),0);
 }
@@ -1203,7 +1500,6 @@ function totalExcludedSavings(m){
 function totalSavingsRaw(m){
   return getSavingFields().reduce((s,[k])=>s+(+m[k]||0),0);
 }
-
 function totalOneTimeMonthly(m){
   let s = 0;
   if(!isExtraExcludedM(m, "carInsurance")) s += (+getCarInsurance(m).amount||0);
@@ -1216,16 +1512,8 @@ function totalOneTimeMonthlyExcluded(m){
   if(isExtraExcludedM(m, "zakat")) s += (+getZakat(m).amount||0);
   return s;
 }
-function totalOneTimeYearly(year){
-  let s = 0;
-  Mof(year).forEach(m => s += totalOneTimeMonthly(m));
-  return s;
-}
-function totalOneTimeYearlyExcluded(year){
-  let s = 0;
-  Mof(year).forEach(m => s += totalOneTimeMonthlyExcluded(m));
-  return s;
-}
+function totalOneTimeYearly(year){ let s=0; Mof(year).forEach(m => s += totalOneTimeMonthly(m)); return s; }
+function totalOneTimeYearlyExcluded(year){ let s=0; Mof(year).forEach(m => s += totalOneTimeMonthlyExcluded(m)); return s; }
 
 function yearTotals(year){
   const months = Mof(year);
@@ -1297,6 +1585,7 @@ function applyLang(){
   document.getElementById('btnImport').textContent = t('btn_import');
   document.getElementById('btnReset').textContent = t('btn_reset');
   document.getElementById('btnSaveManual').textContent = t('btn_save');
+  document.getElementById('btnInstructions').textContent = t('btn_instructions');
   document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.dataset.i18n; if(I18N[LANG][k]) el.textContent = I18N[LANG][k]; });
   document.getElementById('dashTitle1').textContent = t('dash_title1');
   document.getElementById('dashTitle2').textContent = t('dash_title2');
@@ -1340,6 +1629,17 @@ function applyLang(){
   document.getElementById('lblPyrTitle').textContent = t('pyr_title');
   document.getElementById('lblPyrDesc').textContent = t('pyr_desc');
   document.getElementById('lblPyrDetail').textContent = t('pyr_detail');
+  document.getElementById('lblPyramidTargets').textContent = t('lbl_pyramid_targets');
+  document.getElementById('lblPyramidTargetsHint').textContent = t('lbl_pyramid_targets_hint');
+  document.getElementById('thTgtItem').textContent = t('th_tgt_item');
+  document.getElementById('thTgtTarget').textContent = t('th_tgt_target');
+  document.getElementById('thTgtSaved').textContent = t('th_tgt_saved');
+  document.getElementById('thTgtWithdrawn').textContent = t('th_tgt_withdrawn');
+  document.getElementById('thTgtNet').textContent = t('th_tgt_net');
+  document.getElementById('thTgtProgress').textContent = t('th_tgt_progress');
+  document.getElementById('thTgtStatus').textContent = t('th_tgt_status');
+  document.getElementById('thTgtActions').textContent = t('th_tgt_actions');
+  document.getElementById('instTitle').textContent = t('inst_title');
   document.getElementById('lblDebtsSummary').textContent = t('debts_summary');
   document.getElementById('lblAddDebt').textContent = t('add_debt');
   document.getElementById('lblDebtName').textContent = t('lbl_debt_name');
@@ -1577,12 +1877,27 @@ function renderSavingFields(){
         </select></div>`;
     }
     const refVal = getSavingRefMeta(m, k);
-    return `<tr class="${excluded?'excluded':''}">
+    const disabled = isSavingDisabledForMonth(k);
+    const target = getPyramidTarget(k);
+    const net = getNetSaved(k);
+    let targetHint = "";
+    if(target > 0){
+      if(disabled){
+        targetHint = `<span class="saving-target-hint">✅ ${LANG==='ar'?'الهدف مكتمل':'Target reached'} (${fmt(target)})</span>`;
+      } else {
+        targetHint = `<span class="saving-target-hint" style="background:rgba(234,179,8,.15);color:var(--gold);border-color:rgba(234,179,8,.4)">🎯 ${t('tgt_saving_target_hint')}${fmt(target)} • ${LANG==='ar'?'متبقي':'left'}: ${fmt(Math.max(0,target-net))}</span>`;
+      }
+    }
+    return `<tr class="${excluded?'excluded':''} ${disabled?'target-reached-row':''}">
       <td class="saving-field">
         <label style="display:block;font-weight:600;color:var(--accent);font-size:12px;margin-bottom:2px">${l}</label>
         ${extraHtml}
+        ${targetHint}
       </td>
-      <td><input type="number" value="${inVal(m[k])}" oninput="updSaving('${k}',this.value)" min="0" step="0.001" style="font-weight:700;color:var(--accent);text-align:center;font-size:16px"></td>
+      <td><input type="number" value="${inVal(m[k])}" oninput="updSaving('${k}',this.value)" min="0" step="0.001"
+        ${disabled ? 'disabled' : ''}
+        placeholder="${disabled ? t('tgt_saving_disabled') : ''}"
+        style="font-weight:700;color:${disabled ? 'var(--ok)' : 'var(--accent)'};text-align:center;font-size:16px"></td>
       <td><select class="${excluded?'bank-excluded':''}" onchange="updSavingBank('${k}', this.value)">${bankOpts}</select></td>
       <td><input type="text" value="${esc(meta.note||'')}" oninput="updSavingNote('${k}', this.value)" placeholder="..."></td>
       <td><select onchange="updSavingRef('${k}', this.value)">${refOptsFor(refVal)}</select></td>
@@ -1727,7 +2042,6 @@ function updDebtMonthInEntry(id, val){
   renderMonthResults();
   renderMonthPills();
   renderDashboard();
-  /* تحديث جدول الديون أيضاً حتى يظهر تاريخ آخر دفعة فور التسديد */
   renderDebts();
 }
 function refreshDebtsMonthCells(){
@@ -1799,18 +2113,8 @@ function updCarInsuranceBank(v){
   renderYears();
   renderMonthPills();
 }
-function updCarInsuranceNote(v){
-  const m = M()[state.activeMonth];
-  getCarInsurance(m).note = v;
-  m.lastModified = new Date().toISOString();
-  save();
-}
-function updCarInsuranceRef(v){
-  const m = M()[state.activeMonth];
-  getCarInsurance(m).ref = v;
-  m.lastModified = new Date().toISOString();
-  save();
-}
+function updCarInsuranceNote(v){ getCarInsurance(M()[state.activeMonth]).note = v; save(); }
+function updCarInsuranceRef(v){ getCarInsurance(M()[state.activeMonth]).ref = v; save(); }
 
 function renderZakatOT(){
   const m = M()[state.activeMonth];
@@ -1849,18 +2153,8 @@ function updZakatBank(v){
   renderYears();
   renderMonthPills();
 }
-function updZakatNote(v){
-  const m = M()[state.activeMonth];
-  getZakat(m).note = v;
-  m.lastModified = new Date().toISOString();
-  save();
-}
-function updZakatRef(v){
-  const m = M()[state.activeMonth];
-  getZakat(m).ref = v;
-  m.lastModified = new Date().toISOString();
-  save();
-}
+function updZakatNote(v){ getZakat(M()[state.activeMonth]).note = v; save(); }
+function updZakatRef(v){ getZakat(M()[state.activeMonth]).ref = v; save(); }
 
 function updEidMoneyType(val){ const m = M()[state.activeMonth]; m.eidMoneyType = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 function updExpenseAmount(key, val){ const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderExpenseSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
@@ -1876,6 +2170,13 @@ function updSaving(key, val){
   renderMonthResults();
   renderMonthDate();
   renderMonthPills();
+  if(document.getElementById("pyramidTargetsBody")){
+    updatePyramidTargetRow(key);
+  }
+  const newDisabled = isSavingDisabledForMonth(key);
+  if(newDisabled){
+    setTimeout(() => { renderSavingFields(); }, 50);
+  }
 }
 
 function renderMonth(){
@@ -1961,11 +2262,181 @@ function renderMonthDate(){
   else disp.value = "—";
 }
 
+function renderPyramidTargets(){
+  const body = document.getElementById("pyramidTargetsBody");
+  if(!body) return;
+  const levels = getPyramidLevels();
+  body.innerHTML = levels.map((lvl, idx) => {
+    const target = getPyramidTarget(lvl.key);
+    const saved = getCumulativeSaved(lvl.key);
+    const withdrawn = getWithdrawnTotal(lvl.key);
+    const net = saved - withdrawn;
+    const remaining = Math.max(0, target - net);
+    const pct = target > 0 ? Math.min(100, (net / target) * 100) : 0;
+    const reached = target > 0 && net >= target;
+    const noTarget = target <= 0;
+    const status = noTarget ? t('tgt_status_none') : (reached ? t('tgt_status_reached') : t('tgt_status_progress'));
+    const statusClass = noTarget ? 'muted' : (reached ? 'green' : 'gold');
+    const wCount = getWithdrawals(lvl.key).length;
+    const levelLabel = `<span style="display:inline-block;min-width:22px;padding:1px 6px;border-radius:6px;background:rgba(143,163,184,.15);color:var(--muted);font-size:10px;font-weight:700;text-align:center;margin-inline-end:6px">${idx+1}</span>`;
+    return `<tr data-target-key="${lvl.key}">
+      <td><div class="target-name">${levelLabel}<span class="target-dot" style="background:${lvl.color}"></span>${lvl.subtitle} ${lvl.label}</div></td>
+      <td><input type="number" class="target-input" value="${inVal(target)}" min="0" step="0.001" oninput="updPyramidTarget('${lvl.key}', this.value)" placeholder="0"></td>
+      <td class="num tgt-saved">${saved > 0 ? money(saved) : '—'}</td>
+      <td class="num tgt-withdrawn ${withdrawn > 0 ? 'neg' : 'muted'}">${withdrawn > 0 ? money(withdrawn) : '—'}</td>
+      <td class="num tgt-net" style="color:${lvl.color};font-weight:800">${money(net)}</td>
+      <td>
+        <div class="progress-bar"><div class="progress-fill tgt-progress-fill" style="width:${pct}%;background:${lvl.color}"></div></div>
+        <div class="progress-text tgt-progress-text">${noTarget ? '—' : `${pct.toFixed(0)}% • ${LANG==='ar'?'متبقي':'Left'}: ${fmt(remaining)}`}</div>
+      </td>
+      <td><span class="badge ${statusClass} tgt-status">${status}</span></td>
+      <td>
+        <div class="target-actions tgt-actions">
+          <button class="icon-btn withdraw" onclick="withdrawFromPyramid('${lvl.key}')" title="${t('tgt_withdraw_btn')}">⬇</button>
+          ${wCount > 0 ? `<button class="icon-btn history" onclick="showWithdrawHistory('${lvl.key}')" title="${t('tgt_history_btn')}">📜</button>` : ''}
+        </div>
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+function updPyramidTarget(key, val){
+  setPyramidTarget(key, val);
+  save();
+  updatePyramidTargetRow(key);
+  debounceMonthSavingRefresh();
+}
+
+function updatePyramidTargetRow(key){
+  const lvl = getPyramidLevels().find(l => l.key === key);
+  if(!lvl) return;
+  const row = document.querySelector(`tr[data-target-key="${key}"]`);
+  if(!row) return;
+  const target = getPyramidTarget(key);
+  const saved = getCumulativeSaved(key);
+  const withdrawn = getWithdrawnTotal(key);
+  const net = saved - withdrawn;
+  const remaining = Math.max(0, target - net);
+  const pct = target > 0 ? Math.min(100, (net / target) * 100) : 0;
+  const reached = target > 0 && net >= target;
+  const noTarget = target <= 0;
+  const status = noTarget ? t('tgt_status_none') : (reached ? t('tgt_status_reached') : t('tgt_status_progress'));
+  const statusClass = noTarget ? 'muted' : (reached ? 'green' : 'gold');
+
+  const savedEl = row.querySelector('.tgt-saved');
+  if(savedEl) savedEl.textContent = saved > 0 ? money(saved) : '—';
+
+  const wdEl = row.querySelector('.tgt-withdrawn');
+  if(wdEl){
+    wdEl.textContent = withdrawn > 0 ? money(withdrawn) : '—';
+    wdEl.classList.toggle('neg', withdrawn > 0);
+    wdEl.classList.toggle('muted', withdrawn <= 0);
+  }
+
+  const netEl = row.querySelector('.tgt-net');
+  if(netEl) netEl.textContent = money(net);
+
+  const fillEl = row.querySelector('.tgt-progress-fill');
+  if(fillEl) fillEl.style.width = pct + '%';
+
+  const textEl = row.querySelector('.tgt-progress-text');
+  if(textEl){
+    textEl.textContent = noTarget ? '—' : `${pct.toFixed(0)}% • ${LANG==='ar'?'متبقي':'Left'}: ${fmt(remaining)}`;
+  }
+
+  const statusEl = row.querySelector('.tgt-status');
+  if(statusEl){
+    statusEl.textContent = status;
+    statusEl.className = 'badge ' + statusClass + ' tgt-status';
+  }
+}
+
+let _monthRefreshTimer = null;
+function debounceMonthSavingRefresh(){
+  if(_monthRefreshTimer) clearTimeout(_monthRefreshTimer);
+  _monthRefreshTimer = setTimeout(() => {
+    const activeTab = document.querySelector('nav.tabs button.active');
+    if(activeTab && activeTab.dataset.view === "month"){
+      renderSavingFields();
+    }
+  }, 600);
+}
+
+function withdrawFromPyramid(key){
+  const lvl = getPyramidLevels().find(l => l.key === key);
+  const name = lvl ? `${lvl.subtitle} ${lvl.label}` : key;
+  const net = getNetSaved(key);
+  if(net <= 0){
+    toast(t('tgt_withdraw_no_balance'), 'warn');
+    return;
+  }
+  const amountStr = prompt(
+    `${t('tgt_withdraw_prompt')} "${name}"?\n${LANG==='ar'?'الرصيد الصافي الحالي:':'Current net balance:'} ${fmt(net)} ${LANG==='ar'?'د.ب':'BHD'}`,
+    ''
+  );
+  if(amountStr === null) return;
+  const amount = parseFloat(amountStr);
+  if(!amount || amount <= 0 || isNaN(amount)){
+    toast(t('tgt_withdraw_invalid'), 'error');
+    return;
+  }
+  if(amount > net){
+    toast(t('tgt_withdraw_exceeds'), 'error');
+    return;
+  }
+  const reason = prompt(t('tgt_withdraw_reason'), '') || '';
+  getWithdrawals(key).push({
+    id: Date.now(),
+    amount,
+    date: new Date().toISOString(),
+    reason
+  });
+  save();
+  renderPyramidTargets();
+  renderSavingFields();
+  renderMonthResults();
+  renderPyramid();
+  toast(t('tgt_withdraw_success') + fmt(amount) + ' ' + (LANG==='ar'?'د.ب':'BHD'), 'success');
+}
+
+function showWithdrawHistory(key){
+  const ws = getWithdrawals(key);
+  const lvl = getPyramidLevels().find(l => l.key === key);
+  const name = lvl ? `${lvl.subtitle} ${lvl.label}` : key;
+  if(!ws.length){
+    toast(t('tgt_history_empty'), 'warn');
+    return;
+  }
+  const lines = ws.slice().sort((a,b)=> new Date(b.date) - new Date(a.date)).map(w => {
+    const d = new Date(w.date);
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    return `  • ${dateStr} — ${fmt(w.amount)} ${LANG==='ar'?'د.ب':'BHD'}${w.reason ? ` (${w.reason})` : ''}`;
+  });
+  const total = getWithdrawnTotal(key);
+  alert(`${t('tgt_history_title')}${name}\n\n${lines.join('\n')}\n\n${t('tgt_history_total')}${fmt(total)} ${LANG==='ar'?'د.ب':'BHD'}`);
+}
+
+function openInstructions(){
+  const modal = document.getElementById("instructionsModal");
+  if(modal){ modal.classList.add("show"); document.body.style.overflow = "hidden"; }
+}
+function closeInstructions(){
+  const modal = document.getElementById("instructionsModal");
+  if(modal){ modal.classList.remove("show"); document.body.style.overflow = ""; }
+}
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    const modal = document.getElementById("instructionsModal");
+    if(modal && modal.classList.contains("show")) closeInstructions();
+  }
+});
+
+/* ⭐ renderPyramid — يعرض المجاميع التراكمية عبر جميع السنوات (مثل بطاقة الأهداف) */
 function renderPyramid(){
   const levels = getPyramidLevels();
-  const months = M();
   const totals = {};
-  levels.forEach(lvl => { totals[lvl.key] = months.reduce((s,m)=>s+(+m[lvl.key]||0),0); });
+  /* ✅ المجاميع تراكمية عبر جميع السنوات - لا تتأثر بتغيير السنة */
+  levels.forEach(lvl => { totals[lvl.key] = getCumulativeSaved(lvl.key); });
   const grandTotal = Object.values(totals).reduce((a,b)=>a+b,0);
   const apexY = 25, bottomY = 430, apexLeftX = 190, apexRightX = 310, baseLeftX = 20, baseRightX = 480;
   const sliceH = (bottomY - apexY) / levels.length;
@@ -1995,14 +2466,15 @@ function renderPyramid(){
     </div>
   `).join("");
   let html = `<thead><tr><th>${t('th_level')}</th><th>${t('th_item_name')}</th><th>${t('th_year_total')}</th><th>${t('th_pct')}</th></tr></thead><tbody>`;
-  levels.slice().reverse().forEach((lvl, idx) => {
-    const level = levels.length - idx;
+  levels.forEach((lvl, idx) => {
+    const level = idx + 1;
     const amt = totals[lvl.key] || 0;
     const pct = grandTotal > 0 ? (amt/grandTotal*100) : 0;
     html += `<tr><td style="color:${lvl.color};font-weight:700">${level}</td><td>${lvl.subtitle} ${lvl.label}</td><td class="num" style="color:${lvl.color};font-weight:700">${money(amt)}</td><td class="num">${fmtPct(pct)}%</td></tr>`;
   });
   html += `<tr style="background:rgba(34,193,164,.1);font-weight:700"><td colspan="2">${t('th_total')}</td><td class="num" style="color:var(--accent);font-weight:700">${money(grandTotal)}</td><td class="num">100%</td></tr></tbody>`;
   document.getElementById("pyramidTable").innerHTML = html;
+  renderPyramidTargets();
 }
 
 function onDebtTypeChange(val){ document.getElementById("d_categoryWrap").style.display = (val === "installment") ? "flex" : "none"; }
@@ -2037,82 +2509,60 @@ function updDebtType(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) 
 function updDebtCategory(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.category = val; save(); }
 function updDebtNotes(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.notes = val; save(); renderMonth(); }
 
-/* ⭐ بناء معلومات "مسدد + تاريخ آخر دفعة" — يظهر دائماً عند وجود أي دفعة (كاملة أو جزئية) */
 function buildPaidInfoHtml(d){
   const fullyPaid = isDebtFullyPaid(d);
   const lp = lastPaymentInfo(d);
   const hasPaidBefore = +d.paidBefore > 0;
-  /* لا شيء لعرضه إن لم يكن مسدداً ولا توجد دفعات ولا مدفوع سابق */
   if(!fullyPaid && !lp && !hasPaidBefore) return '';
 
   let html = '<div class="fully-paid-info">';
-  if(fullyPaid){
-    html += `<span class="badge fully-paid">✅ ${t('debt_paid')}</span>`;
-  }
+  if(fullyPaid){ html += `<span class="badge fully-paid">✅ ${t('debt_paid')}</span>`; }
   if(lp){
-    /* زر قابل للنقر — ينقل إلى الشهر والسنة */
     html += `<button type="button" class="last-pay-date" onclick="goToLastPayment(${d.id}, event)" title="${t('last_pay_go_hint')}">
       📅 ${t('last_pay')}: ${lp.shortLabel}
       <span class="last-pay-amount">${fmt(lp.amount)}</span>
       <span class="last-pay-go">↗</span>
     </button>`;
   } else if(hasPaidBefore){
-    html += `<span class="last-pay-prior">
-      ${t('last_pay_none')} (${t('last_pay_prior')})
-    </span>`;
+    html += `<span class="last-pay-prior">${t('last_pay_none')} (${t('last_pay_prior')})</span>`;
   }
   html += '</div>';
   return html;
 }
 
-/* ⭐ الانتقال إلى آخر دفعة: يغير السنة + الشهر + يفتح تبويب إدخال الشهور + يظلل الدين */
 function goToLastPayment(id, ev){
   if(ev){ ev.stopPropagation(); ev.preventDefault(); }
   const d = state.debts.find(x=>x.id===id);
   if(!d) return;
   const lp = lastPaymentInfo(d);
-  if(!lp){
-    toast(t('no_last_pay'), 'warn');
-    return;
-  }
-  /* التأكد من وجود السنة في القائمة */
+  if(!lp){ toast(t('no_last_pay'), 'warn'); return; }
   if(!state.years[lp.year]) state.years[lp.year] = emptyYear();
   if(state.yearList.indexOf(lp.year) === -1){
     state.yearList.push(lp.year);
     state.yearList.sort((a,b)=>a-b);
   }
-  /* تغيير السنة والشهر */
   state.activeYear = lp.year;
   state.activeMonth = lp.month;
   save();
   renderYearSelect();
   renderMonthPills();
-
-  /* التبديل إلى تبويب "إدخال الشهور" */
   document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   const monthBtn = document.querySelector('nav.tabs button[data-view="month"]');
   if(monthBtn) monthBtn.classList.add("active");
   const monthView = document.getElementById("month");
   if(monthView) monthView.classList.add("active");
-
-  /* إعادة رسم قسم الشهور */
   renderMonth();
-
-  /* التمرير إلى الدين وتظليله */
   setTimeout(() => {
     const row = document.querySelector(`tr[data-debt-row="${id}"]`);
     if(row){
       row.scrollIntoView({behavior:'smooth', block:'center'});
       row.classList.remove('highlight-jump');
-      /* إعادة تشغيل الأنيميشن */
       void row.offsetWidth;
       row.classList.add('highlight-jump');
       setTimeout(() => row.classList.remove('highlight-jump'), 2200);
     }
   }, 220);
-
-  /* إشعار */
   toast(t('jumped_to') + `${lp.monthName} ${lp.year} — ${fmt(lp.amount)} ${LANG==='ar'?'د.ب':'BHD'}`, 'success');
 }
 
@@ -2184,7 +2634,6 @@ function renderDebts(){
     const paid = debtPaidInYear(d, y), rem = debtRemaining(d);
     const fullyPaid = isDebtFullyPaid(d);
     const rowCls = fullyPaid ? rc + ' fully-paid-row' : rc;
-    /* ⭐ معلومات الدفع (مسدد + تاريخ آخر دفعة) */
     const paidBadge = buildPaidInfoHtml(d);
     body += `<tr class="${rowCls}" data-debt-id="${d.id}">
       <td><input type="text" class="inline-input name" value="${esc(d.name)}" onchange="updDebtName(${d.id}, this.value)"><div class="fully-paid-badge-wrap">${paidBadge}</div></td>
