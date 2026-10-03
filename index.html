@@ -208,10 +208,11 @@
   .pyramid-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
   @media(max-width:768px){.pyramid-legend{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:500px){.pyramid-legend{grid-template-columns:1fr}}
-  .pyr-legend-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:10px}
+  .pyr-legend-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;flex-wrap:wrap}
   .pyr-color{width:16px;height:16px;border-radius:4px;flex-shrink:0}
-  .pyr-legend-item .pyr-label{font-size:12px;color:var(--muted);flex:1}
+  .pyr-legend-item .pyr-label{font-size:12px;color:var(--muted);flex:1;min-width:100px}
   .pyr-legend-item .pyr-val{font-family:monospace;font-weight:700;color:var(--txt);font-size:14px;direction:ltr}
+  .pyr-legend-item .pyr-note{width:100%;font-size:11px;color:var(--gold);font-style:italic;margin-top:4px;padding:4px 8px;background:rgba(234,179,8,.08);border-radius:6px;border:1px solid rgba(234,179,8,.25);white-space:pre-wrap;word-break:break-word}
   @media(max-width:768px){.expense-table{min-width:520px;font-size:12px}.expense-table th,.expense-table td{padding:5px 6px}.bank-item{min-width:120px;font-size:11px}.debts-month-table{min-width:780px}}
   .excluded-cell{color:var(--danger) !important;text-decoration:underline;opacity:.65;font-size:12px}
   .year-chart{display:flex;gap:16px;align-items:flex-end;justify-content:center;padding:20px 10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;min-height:280px;overflow-x:auto}
@@ -244,13 +245,16 @@
   .target-card{border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.08),transparent)}
   .target-card h2{color:var(--accent2)}
   .target-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
-  .target-table{width:100%;border-collapse:collapse;font-size:12px;min-width:1000px}
+  .target-table{width:100%;border-collapse:collapse;font-size:12px;min-width:1200px}
   .target-table thead{background:var(--panel2)}
   .target-table th{padding:8px 10px;text-align:right;color:var(--accent2);font-size:11px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
   html[dir="ltr"] .target-table th{text-align:left}
   .target-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
   .target-table .target-input{width:100px;background:var(--panel2);border:1px solid var(--line);color:var(--gold);padding:6px 8px;border-radius:6px;font-size:13px;font-weight:700;outline:none;font-family:monospace;text-align:center;transition:.2s}
   .target-table .target-input:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(59,130,246,.2)}
+  .target-table .target-note{width:100%;min-width:160px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:6px 8px;border-radius:6px;font-size:12px;font-family:inherit;outline:none;transition:.2s}
+  .target-table .target-note:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(234,179,8,.2);color:var(--gold)}
+  .target-table .target-note::placeholder{color:var(--muted);font-style:italic}
   .target-table .num{direction:ltr;text-align:left;font-family:monospace;font-weight:700;font-size:12px}
   html[dir="ltr"] .target-table .num{text-align:right}
   .target-name{display:flex;align-items:center;gap:8px;font-weight:700;white-space:nowrap}
@@ -292,7 +296,7 @@
     .modal-body{padding:16px;font-size:13px}
     .modal-header h2{font-size:14px}
     .modal-body h3{font-size:13px}
-    .target-table{min-width:900px;font-size:11px}
+    .target-table{min-width:1000px;font-size:11px}
   }
 
   @media print{
@@ -583,7 +587,7 @@
 
   <div class="card target-card">
     <h2 id="lblPyramidTargets">🎯 أهداف هرم الأمان المالي</h2>
-    <p class="muted" style="margin-bottom:14px" id="lblPyramidTargetsHint">أدخل المبلغ المستهدف لكل بند. عند وصول المجموع المُدَّخر للهدف، يتم تعطيل خانة الإدخال تلقائياً في تبويب «إدخال الشهور». استخدم زر ⬇ للسحب (سيُعيد فتح الخانة).</p>
+    <p class="muted" style="margin-bottom:14px" id="lblPyramidTargetsHint">أدخل المبلغ المستهدف لكل بند، وأضف ملاحظاتك. عند وصول المجموع المُدَّخر للهدف، يتم تعطيل خانة الإدخال تلقائياً في تبويب «إدخال الشهور». استخدم زر ⬇ للسحب.</p>
     <div class="target-table-wrap">
       <table class="target-table">
         <thead><tr>
@@ -594,6 +598,7 @@
           <th id="thTgtNet">الصافي</th>
           <th id="thTgtProgress">التقدم</th>
           <th id="thTgtStatus">الحالة</th>
+          <th id="thTgtNote">ملاحظات</th>
           <th id="thTgtActions">إجراء</th>
         </tr></thead>
         <tbody id="pyramidTargetsBody"></tbody>
@@ -646,18 +651,33 @@
         <tbody>
           <tr>
             <td><strong>🚨 مبلغ الطوارئ</strong></td>
-            <td><strong class="hl">30% - 50%</strong> من المدخرات</td>
-            <td>أولوية قصوى. يُبنى حتى يغطي <strong>3-6 أشهر</strong> من المصاريف الأساسية. يُفضل وضعه في حساب سهل الوصول (High-Yield).</td>
+            <td><strong class="hl">30% - 50%</strong></td>
+            <td>أولوية قصوى. يُبنى حتى يغطي <strong>3-6 أشهر</strong> من المصاريف الأساسية. يُفضل وضعه في حساب سهل الوصول.</td>
           </tr>
           <tr>
-            <td><strong>📋 التزامات</strong></td>
+            <td><strong>💳 قروض</strong></td>
+            <td><strong class="hl">10% - 20%</strong></td>
+            <td>للايفاء بسداد القروض المتبقية. سداد القروض أولى من الاستثمار.</td>
+          </tr>
+          <tr>
+            <td><strong>📋 التزامات أخرى</strong></td>
             <td><strong class="hl">15% - 25%</strong></td>
             <td>للأقساط والديون قصيرة الأجل. إن كانت التزاماتك كبيرة، ارفع النسبة مؤقتًا.</td>
           </tr>
           <tr>
-            <td><strong>🛡️ تأمين + تسجيل</strong></td>
+            <td><strong>🛡️ تأمين وتسجيل لجميع السيارات</strong></td>
             <td><strong class="hl">5% - 10%</strong></td>
             <td>مبلغ سنوي ثابت (يُقسم على 12). يُمكن ادخاره شهريًا حتى يحين موعد الدفع.</td>
+          </tr>
+          <tr>
+            <td><strong>👕 ثياب العيد</strong></td>
+            <td><strong class="hl">2% - 5%</strong></td>
+            <td>مبلغ موسمي (عيدين في السنة). يُدَّخر شهرياً حتى يحين موعد العيد.</td>
+          </tr>
+          <tr>
+            <td><strong>📈 الاستثمار</strong></td>
+            <td><strong class="hl">10% - 20%</strong></td>
+            <td>يُبدأ به <strong>بعد</strong> الوصول لـ 3 أشهر طوارئ على الأقل. للأهداف طويلة المدى.</td>
           </tr>
           <tr>
             <td><strong>👥 جمعية</strong></td>
@@ -670,50 +690,37 @@
             <td>بعد تأمين القاعدة. يُفضل فصله في حساب فرعي لتجنب الصرف.</td>
           </tr>
           <tr>
-            <td><strong>📈 الاستثمار</strong></td>
-            <td><strong class="hl">10% - 20%</strong></td>
-            <td>يُبدأ به <strong>بعد</strong> الوصول لـ 3 أشهر طوارئ على الأقل. للأهداف طويلة المدى (تقاعد، نمو ثروة).</td>
-          </tr>
-          <tr>
             <td><strong>🎉 عيادي العيد</strong></td>
             <td><strong class="hl">0% - 10%</strong></td>
-            <td>مبلغ موسمي (عيدين في السنة). إن لم يكن لديك عجز، يمكن تجاهله أو دمجه في السفر/الاستثمار.</td>
+            <td>مبلغ موسمي (عيدين في السنة).</td>
           </tr>
         </tbody>
       </table>
 
       <h3>💡 مبادئ عملية لضبط النسب</h3>
       <ol>
-        <li><strong>صندوق الطوارئ أولاً:</strong> لا تبدأ الاستثمار أو السفر حتى تمتلك على الأقل <strong>3 أشهر</strong> من مصاريفك الأساسية في صندوق الطوارئ. هذا هو خط الدفاع الأول.</li>
-        <li><strong>عدّل النسب حسب المرحلة:</strong>
-          <ul>
-            <li><strong>مرحلة البناء (أول 6-12 شهرًا):</strong> وجّه معظم المدخرات (<strong>60-70%</strong>) لصندوق الطوارئ والتزامات الديون. تجاهل السفر والاستثمار مؤقتًا.</li>
-            <li><strong>مرحلة الاستقرار (بعد تكوين الطوارئ):</strong> أعد التوازن: <strong>30%</strong> طوارئ (لتعزيزه)، <strong>20%</strong> التزامات، <strong>20%</strong> استثمار، <strong>15%</strong> سفر، <strong>15%</strong> بنود أخرى.</li>
-          </ul>
-        </li>
-        <li><strong>الالتزامات ليست ادخارًا:</strong> سداد الديون (خاصة ذات الفائدة العالية) هو <strong>أفضل استثمار</strong> من الناحية العملية. لا توجه أموالاً للاستثمار قبل سداد الديون الاستهلاكية.</li>
-        <li><strong>المرونة هي المفتاح:</strong> هذه النسب ليست مقدسة. إذا كان لديك التزامات كبيرة، ارفع نسبتهم. إذا كان دخلك مرتفعًا واستقرارك الوظيفي عاليًا، يمكنك تقليل نسبة الطوارئ (إلى 3 أشهر) وزيادة الاستثمار.</li>
+        <li><strong>صندوق الطوارئ أولاً:</strong> لا تبدأ الاستثمار أو السفر حتى تمتلك على الأقل <strong>3 أشهر</strong> من مصاريفك الأساسية.</li>
+        <li><strong>سداد القروض قبل الاستثمار:</strong> القروض ذات الفائدة هي أولوية قبل أي استثمار.</li>
+        <li><strong>عدّل النسب حسب المرحلة:</strong> في مرحلة البناء ركز على القاعدة، وفي مرحلة الاستقرار وازن بين جميع البنود.</li>
+        <li><strong>المرونة هي المفتاح:</strong> هذه النسب إرشادية وليست مقدسة.</li>
       </ol>
 
       <h3>⚠️ نقطة مهمة: الفرق بين "الادخار" و "الاستثمار"</h3>
       <ul>
-        <li><strong>الادخار (Savings):</strong> أموال قصيرة الأجل (طوارئ، سفر، التزامات). يجب أن تكون <strong>سائلة</strong> (يمكن سحبها فورًا) ومنخفضة المخاطر.</li>
-        <li><strong>الاستثمار (Investment):</strong> أموال طويلة الأجل (تقاعد، نمو ثروة). تقبل تقلبات السوق مقابل عوائد أعلى محتملة.</li>
+        <li><strong>الادخار (Savings):</strong> أموال قصيرة الأجل. سائلة ومنخفضة المخاطر.</li>
+        <li><strong>الاستثمار (Investment):</strong> أموال طويلة الأجل. تقبل تقلبات السوق مقابل عوائد أعلى محتملة.</li>
       </ul>
-      <p>هرم الأمان المالي يجمع بين الاثنين، لكن <strong>القاعدة</strong> (الطوارئ + الالتزامات) هي ادخار، و<strong>القمة</strong> (الاستثمار) هي استثمار.</p>
 
       <h3>🎯 خلاصة للبدء</h3>
-      <p>ابدأ بهذا التوزيع المبسط كمرحلة أولى:</p>
       <div class="success">
         <div>
-          <strong>70%</strong> من مدخراتك → صندوق الطوارئ (حتى يصل 3-6 أشهر).<br>
-          <strong>30%</strong> → الالتزامات والتأمين (الأمور الإلزامية).<br>
-          <strong>0%</strong> → سفر، استثمار، عيادي (مؤقتًا).
+          <strong>70%</strong> من مدخراتك → صندوق الطوارئ والقروض والالتزامات.<br>
+          <strong>30%</strong> → باقي البنود (تأمين، ثياب، استثمار، جمعية، سفر).<br>
+          <strong>0%</strong> → عيادي مؤقتًا (حتى تستقر ماليًا).
         </div>
       </div>
-      <p>بعد تكوين صندوق الطوارئ (3-6 أشهر)، أعد التوزيع إلى النسب المذكورة في الجدول أعلاه.</p>
 
-      <div class="warn">ملاحظة أخيرة: أفضل نسبة هي التي <strong>تستطيع الالتزام بها باستمرار</strong>. لا تحاول تطبيق نسب مثالية ثم تتوقف. الاستمرارية أهم من الكمال.</div>
+      <div class="warn">ملاحظة أخيرة: أفضل نسبة هي التي <strong>تستطيع الالتزام بها باستمرار</strong>. الاستمرارية أهم من الكمال.</div>
     </div>
     <div class="modal-footer">
       <button class="btn primary" onclick="closeInstructions()">✓ فهمت، إغلاق</button>
@@ -765,11 +772,11 @@ const I18N = {
     th_debt_rem_after:"المتبقي بعده",th_debt_note:"ملاحظة",th_debt_bank:"البنك / الجهة",
     th_debt_ref:"مرجع",
     lbl_savings:"💰 مبالغ الادخار (د.ب)",
-    savings_hint:"🔢 يدعم حتى 3 أرقام عشرية — \"غير محسوب ذي الشهر\" يستثني المبلغ من الحسابات",
+    savings_hint:"🔢 يدعم حتى 3 أرقام عشرية — \"غير محسوب ذي الشهر\" يستثني المبلغ من جميع الحسابات والهرم",
     lbl_month_result:"النتيجة الشهرية",lbl_month_notes:"ملاحظات على الشهر",
     th_sav_item:"بند الادخار",th_sav_amount:"المبلغ (د.ب)",th_sav_bank:"البنك / الجهة",th_sav_note:"ملاحظة",th_sav_ref:"مرجع",
     pyr_title:"🔺 هرم الأمان المالي",
-    pyr_desc:"ترتيب الأولويات المالية من القاعدة إلى القمة. الأرقام تتراكم من جميع السنوات.",
+    pyr_desc:"ترتيب الأولويات المالية من القاعدة إلى القمة. الأرقام تتراكم من جميع السنوات (باستثناء البنود المعلَّمة \"غير محسوب ذي الشهر\").",
     pyr_detail:"تفصيل الهرم",th_level:"المستوى",th_item_name:"البند",
     th_year_total:"المجموع التراكمي (د.ب)",th_pct:"النسبة",th_total:"الإجمالي",
     debts_summary:"📊 ملخص الديون والأقساط",add_debt:"➕ إضافة دين / سلفة / قسط",
@@ -814,10 +821,11 @@ const I18N = {
     no_last_pay:"لا توجد دفعات مسجّلة",
     btn_instructions:"📖 تعليمات",
     lbl_pyramid_targets:"🎯 أهداف هرم الأمان المالي",
-    lbl_pyramid_targets_hint:"أدخل المبلغ المستهدف لكل بند. عند وصول المجموع المُدَّخر للهدف، يتم تعطيل خانة الإدخال تلقائياً في تبويب «إدخال الشهور». استخدم زر ⬇ للسحب (سيُعيد فتح الخانة).",
+    lbl_pyramid_targets_hint:"أدخل المبلغ المستهدف لكل بند، وأضف ملاحظاتك. عند وصول المجموع المُدَّخر للهدف، يتم تعطيل خانة الإدخال تلقائياً في تبويب «إدخال الشهور». استخدم زر ⬇ للسحب.",
     th_tgt_item:"البند", th_tgt_target:"الهدف (د.ب)", th_tgt_saved:"المُدَّخر (تراكمي)",
     th_tgt_withdrawn:"المسحوب", th_tgt_net:"الصافي", th_tgt_progress:"التقدم",
-    th_tgt_status:"الحالة", th_tgt_actions:"إجراء",
+    th_tgt_status:"الحالة", th_tgt_note:"ملاحظات", th_tgt_actions:"إجراء",
+    tgt_note_placeholder:"اكتب ملاحظة...",
     tgt_status_none:"— بدون هدف", tgt_status_progress:"🔄 جاري", tgt_status_reached:"✅ تم الوصول",
     tgt_withdraw_btn:"سحب", tgt_history_btn:"السجل",
     tgt_withdraw_prompt:"كم تريد أن تسحب من",
@@ -856,13 +864,17 @@ const I18N = {
     bd_none:"— لا أحد —",bd_wife:"زوجة",bd_husband:"الزوج",bd_kids:"العيال",
     s_assembly:"👥 جمعية (د.ب)",s_investment:"📈 الاستثمار (د.ب)",
     s_eidMoneySaving:"🎉 عيادي العيد (د.ب)",
-    s_insuranceSaving:"🛡️ ادخار (تأمين + تسجيل + ثياب العيد + الروضة) (د.ب)",
+    s_eidClothes:"👕 ثياب العيد (د.ب)",
+    s_insuranceSaving:"🛡️ تأمين وتسجيل لجميع السيارات (د.ب)",
     s_travelSaving:"✈️ ادخار للسفر (د.ب)",s_emergencyFund:"🚨 مبلغ الطوارئ (د.ب)",
-    s_obligationsSaving:"📋 التزامات (د.ب)",
+    s_obligationsSaving:"📋 التزامات اخرى (د.ب)",
+    s_loans:"💳 قروض (د.ب)",
     eid_fitar:"🎉 عيد الفطر",eid_adha:"🐑 عيد الأضحى",
     p_emergencyFund:"مبلغ الطوارئ",p_eidMoneySaving:"عيادي العيد",
-    p_insuranceSaving:"تأمين وتسجيل + العيد + الروضة",p_assembly:"جمعية",
-    p_obligationsSaving:"التزامات",p_travelSaving:"ادخار للسفر",p_investment:"الاستثمار",
+    p_eidClothes:"ثياب العيد",
+    p_insuranceSaving:"تأمين وتسجيل لجميع السيارات",p_assembly:"جمعية",
+    p_obligationsSaving:"التزامات اخرى",p_travelSaving:"ادخار للسفر",p_investment:"الاستثمار",
+    p_loans:"قروض",
     es_total:"الإجمالي الكلي",es_counted:"✅ المحتسب",es_excluded:"⛔ المستثنى",es_by_bank:"🏦 الإجمالي حسب البنك",
     dt_credit:"دائن (أدفع)",dt_debit:"مدين (أستلم)",dt_inst:"قسط (أدفع)",
     dt_credit_label:"دائن",dt_debit_label:"مدين",dt_inst_label:"قسط",
@@ -925,10 +937,10 @@ const I18N = {
     th_debt_rem_before:"Remaining Before",th_debt_this_month:"This Month",
     th_debt_rem_after:"Remaining After",th_debt_note:"Note",th_debt_bank:"Bank",
     th_debt_ref:"Reference",
-    lbl_savings:"💰 Savings Amounts (BHD)",savings_hint:"🔢 Supports 3 decimals — \"Not counted this month\" excludes amount",
+    lbl_savings:"💰 Savings Amounts (BHD)",savings_hint:"🔢 Supports 3 decimals — \"Not counted this month\" excludes amount from all calculations and pyramid",
     lbl_month_result:"Monthly Result",lbl_month_notes:"Month Notes",
     th_sav_item:"Savings Item",th_sav_amount:"Amount (BHD)",th_sav_bank:"Bank",th_sav_note:"Note",th_sav_ref:"Reference",
-    pyr_title:"🔺 Financial Safety Pyramid",pyr_desc:"Priorities from base to top. Cumulative across all years.",
+    pyr_title:"🔺 Financial Safety Pyramid",pyr_desc:"Priorities from base to top. Cumulative across all years (excluding items marked \"Not counted this month\").",
     pyr_detail:"Pyramid Details",th_level:"Level",th_item_name:"Item",
     th_year_total:"Cumulative Total (BHD)",th_pct:"%",th_total:"Total",
     debts_summary:"📊 Debts & Installments Summary",add_debt:"➕ Add Debt / Loan / Installment",
@@ -971,10 +983,11 @@ const I18N = {
     no_last_pay:"No payments recorded",
     btn_instructions:"📖 Instructions",
     lbl_pyramid_targets:"🎯 Financial Pyramid Targets",
-    lbl_pyramid_targets_hint:"Enter target amount per level. When savings reach target, the input field in Monthly Entry tab will be disabled. Use ⬇ to withdraw (re-enables the field).",
+    lbl_pyramid_targets_hint:"Enter target amount per level, and add your notes. When savings reach target, the input field in Monthly Entry tab will be disabled. Use ⬇ to withdraw.",
     th_tgt_item:"Item", th_tgt_target:"Target (BHD)", th_tgt_saved:"Saved (cumulative)",
     th_tgt_withdrawn:"Withdrawn", th_tgt_net:"Net", th_tgt_progress:"Progress",
-    th_tgt_status:"Status", th_tgt_actions:"Actions",
+    th_tgt_status:"Status", th_tgt_note:"Notes", th_tgt_actions:"Actions",
+    tgt_note_placeholder:"Write a note...",
     tgt_status_none:"— No target", tgt_status_progress:"🔄 In progress", tgt_status_reached:"✅ Reached",
     tgt_withdraw_btn:"Withdraw", tgt_history_btn:"History",
     tgt_withdraw_prompt:"How much to withdraw from",
@@ -1013,13 +1026,17 @@ const I18N = {
     bd_none:"— None —",bd_wife:"Wife",bd_husband:"Husband",bd_kids:"Kids",
     s_assembly:"👥 Assembly",s_investment:"📈 Investment",
     s_eidMoneySaving:"🎉 Eid Money",
-    s_insuranceSaving:"🛡️ Insurance + Reg + Eid + KG",
+    s_eidClothes:"👕 Eid Clothes (BHD)",
+    s_insuranceSaving:"🛡️ Car Insurance + Registration (BHD)",
     s_travelSaving:"✈️ Travel",s_emergencyFund:"🚨 Emergency",
-    s_obligationsSaving:"📋 Obligations",
+    s_obligationsSaving:"📋 Other Obligations (BHD)",
+    s_loans:"💳 Loans (BHD)",
     eid_fitar:"🎉 Eid Al-Fitr",eid_adha:"🐑 Eid Al-Adha",
     p_emergencyFund:"Emergency",p_eidMoneySaving:"Eid Money",
-    p_insuranceSaving:"Insurance + Reg + Eid + KG",p_assembly:"Assembly",
-    p_obligationsSaving:"Obligations",p_travelSaving:"Travel",p_investment:"Investment",
+    p_eidClothes:"Eid Clothes",
+    p_insuranceSaving:"Car Insurance + Registration",p_assembly:"Assembly",
+    p_obligationsSaving:"Other Obligations",p_travelSaving:"Travel",p_investment:"Investment",
+    p_loans:"Loans",
     es_total:"Grand Total",es_counted:"✅ Counted",es_excluded:"⛔ Excluded",es_by_bank:"🏦 By Bank",
     dt_credit:"Credit",dt_debit:"Debit",dt_inst:"Installment",
     dt_credit_label:"Credit",dt_debit_label:"Debit",dt_inst_label:"Installment",
@@ -1070,6 +1087,7 @@ let STORAGE_OK = true;
 let LOADED_FROM_DATA = false;
 let SAVE_TIMER = null;
 let SAVE_PENDING = false;
+let _pyramidNoteTimer = null;
 
 const t = key => (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key;
 const getMonths = () => I18N[LANG].months;
@@ -1110,20 +1128,29 @@ const getExpenseRows = () => [
   {type:"simple",key:"tutoring",label:t('e_tutoring')},
   {type:"simple",key:"humanitarianAid",label:t('e_humanitarianAid')},
 ];
+/* ⭐ الترتيب الجديد للادخار حسب الهرم من القاعدة (الطوارئ) إلى القمة (العيادي) */
 const getSavingFields = () => [
-  ["assembly", t('s_assembly')],["investment", t('s_investment')],
+  ["emergencyFund", t('s_emergencyFund')],
+  ["loans", t('s_loans')],
+  ["obligationsSaving", t('s_obligationsSaving')],
+  ["insuranceSaving", t('s_insuranceSaving')],
+  ["eidClothes", t('s_eidClothes')],
+  ["investment", t('s_investment')],
+  ["assembly", t('s_assembly')],
+  ["travelSaving", t('s_travelSaving')],
   ["eidMoneySaving", t('s_eidMoneySaving'), "eidDropdown"],
-  ["insuranceSaving", t('s_insuranceSaving')],["travelSaving", t('s_travelSaving')],
-  ["emergencyFund", t('s_emergencyFund')],["obligationsSaving", t('s_obligationsSaving')],
 ];
 
+/* ⭐ ترتيب الهرم من القاعدة (الطوارئ) إلى القمة (العيادي) مع إضافة القروض */
 const getPyramidLevels = () => [
   {key:"emergencyFund",label:t('p_emergencyFund'),color:"#ef4444",subtitle:"🚨"},
+  {key:"loans",label:t('p_loans'),color:"#64748b",subtitle:"💳"},
   {key:"obligationsSaving",label:t('p_obligationsSaving'),color:"#3b82f6",subtitle:"📋"},
   {key:"insuranceSaving",label:t('p_insuranceSaving'),color:"#eab308",subtitle:"🛡️"},
+  {key:"eidClothes",label:t('p_eidClothes'),color:"#ec4899",subtitle:"👕"},
+  {key:"investment",label:t('p_investment'),color:"#22c55e",subtitle:"📈"},
   {key:"assembly",label:t('p_assembly'),color:"#a855f7",subtitle:"👥"},
   {key:"travelSaving",label:t('p_travelSaving'),color:"#14b8a6",subtitle:"✈️"},
-  {key:"investment",label:t('p_investment'),color:"#22c55e",subtitle:"📈"},
   {key:"eidMoneySaving",label:t('p_eidMoneySaving'),color:"#f97316",subtitle:"🎉"},
 ];
 
@@ -1140,6 +1167,8 @@ const EMPTY_MONTH = () => ({
   humanitarianAid:0,expenseMeta:{},refMeta:{},savingRefMeta:{},
   incomeNotes:{salary:"",costOfLiving:"",housing:"",charity:"",freelance:"",meat:""},
   assembly:0,investment:0,eidMoneySaving:0,eidMoneyType:"fitar",
+  eidClothes:0,
+  loans:0,
   insuranceSaving:0,travelSaving:0,emergencyFund:0,obligationsSaving:0,
   savingMeta:{},
   carInsurance: DEFAULT_EXTRA(),
@@ -1156,6 +1185,7 @@ let state = {
   debts: [],
   yearExtras: {},
   pyramidTargets: {},
+  pyramidNotes: {},
   pyramidWithdrawals: {}
 };
 
@@ -1187,6 +1217,17 @@ function getPyramidTarget(key){
 function setPyramidTarget(key, val){
   ensurePyramidTargets()[key] = Math.max(0, parseFloat(val) || 0);
 }
+/* ⭐ دوال الملاحظات */
+function ensurePyramidNotes(){
+  if(!state.pyramidNotes) state.pyramidNotes = {};
+  return state.pyramidNotes;
+}
+function getPyramidNote(key){
+  return ensurePyramidNotes()[key] || "";
+}
+function setPyramidNote(key, val){
+  ensurePyramidNotes()[key] = String(val || "");
+}
 function ensurePyramidWithdrawals(){
   if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {};
   return state.pyramidWithdrawals;
@@ -1199,10 +1240,12 @@ function getWithdrawals(key){
 function getWithdrawnTotal(key){
   return getWithdrawals(key).reduce((s,x)=>s+(+x.amount||0),0);
 }
+
 function getCumulativeSaved(key){
   let total = 0;
   Object.keys(state.years || {}).forEach(y => {
     (state.years[y] || []).forEach(m => {
+      if(isSavingExcluded(m, key)) return;
       total += (+m[key] || 0);
     });
   });
@@ -1213,6 +1256,7 @@ function getCumulativeSavedExcluding(key, excludeYear, excludeMonth){
   Object.keys(state.years || {}).forEach(y => {
     (state.years[y] || []).forEach((m, i) => {
       if(parseInt(y) === excludeYear && i === excludeMonth) return;
+      if(isSavingExcluded(m, key)) return;
       total += (+m[key] || 0);
     });
   });
@@ -1321,6 +1365,7 @@ function load(){
     const oldYearExtras = d.yearExtras || {};
     state = {...state, ...d};
     if(!state.pyramidTargets) state.pyramidTargets = {};
+    if(!state.pyramidNotes) state.pyramidNotes = {};
     if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {};
     state.yearList = state.yearList || [];
     Object.keys(state.years||{}).forEach(y => {
@@ -1332,6 +1377,8 @@ function load(){
         if(!merged.savingRefMeta) merged.savingRefMeta = {};
         if(!merged.carInsurance) merged.carInsurance = DEFAULT_EXTRA();
         if(!merged.zakat) merged.zakat = DEFAULT_EXTRA();
+        if(typeof merged.eidClothes !== 'number') merged.eidClothes = 0;
+        if(typeof merged.loans !== 'number') merged.loans = 0;
         return merged;
       });
       while(state.years[y].length < 12) state.years[y].push(EMPTY_MONTH());
@@ -1376,6 +1423,7 @@ function load(){
         const d = JSON.parse(backup);
         state = {...state, ...d};
         if(!state.pyramidTargets) state.pyramidTargets = {};
+        if(!state.pyramidNotes) state.pyramidNotes = {};
         if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {};
         LOADED_FROM_DATA = true;
         toast(LANG==='ar'?'⚠️ تم استرجاع نسخة احتياطية':'⚠️ Restored from backup', 'warn');
@@ -1388,6 +1436,7 @@ function initIfEmpty(){
   if(!state.yearList || !state.yearList.length){ const y = new Date().getFullYear(); state.years = { [y]: emptyYear() }; state.yearList = [y]; state.activeYear = y; }
   if(!state.years[state.activeYear]) state.years[state.activeYear] = emptyYear();
   ensurePyramidTargets();
+  ensurePyramidNotes();
   ensurePyramidWithdrawals();
 }
 
@@ -1638,6 +1687,7 @@ function applyLang(){
   document.getElementById('thTgtNet').textContent = t('th_tgt_net');
   document.getElementById('thTgtProgress').textContent = t('th_tgt_progress');
   document.getElementById('thTgtStatus').textContent = t('th_tgt_status');
+  document.getElementById('thTgtNote').textContent = t('th_tgt_note');
   document.getElementById('thTgtActions').textContent = t('th_tgt_actions');
   document.getElementById('instTitle').textContent = t('inst_title');
   document.getElementById('lblDebtsSummary').textContent = t('debts_summary');
@@ -1936,6 +1986,12 @@ function updSavingBank(key, val){
   renderMonthResults();
   renderMonthPills();
   renderDashboard();
+  if(document.getElementById("pyramidTargetsBody")){
+    updatePyramidTargetRow(key);
+  }
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
+    renderPyramidSvg();
+  }
 }
 function updSavingRef(key, val){
   const m = M()[state.activeMonth];
@@ -2173,6 +2229,9 @@ function updSaving(key, val){
   if(document.getElementById("pyramidTargetsBody")){
     updatePyramidTargetRow(key);
   }
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
+    renderPyramidSvg();
+  }
   const newDisabled = isSavingDisabledForMonth(key);
   if(newDisabled){
     setTimeout(() => { renderSavingFields(); }, 50);
@@ -2262,6 +2321,7 @@ function renderMonthDate(){
   else disp.value = "—";
 }
 
+/* ⭐ بطاقة الأهداف مع عمود الملاحظات */
 function renderPyramidTargets(){
   const body = document.getElementById("pyramidTargetsBody");
   if(!body) return;
@@ -2278,6 +2338,7 @@ function renderPyramidTargets(){
     const status = noTarget ? t('tgt_status_none') : (reached ? t('tgt_status_reached') : t('tgt_status_progress'));
     const statusClass = noTarget ? 'muted' : (reached ? 'green' : 'gold');
     const wCount = getWithdrawals(lvl.key).length;
+    const note = getPyramidNote(lvl.key);
     const levelLabel = `<span style="display:inline-block;min-width:22px;padding:1px 6px;border-radius:6px;background:rgba(143,163,184,.15);color:var(--muted);font-size:10px;font-weight:700;text-align:center;margin-inline-end:6px">${idx+1}</span>`;
     return `<tr data-target-key="${lvl.key}">
       <td><div class="target-name">${levelLabel}<span class="target-dot" style="background:${lvl.color}"></span>${lvl.subtitle} ${lvl.label}</div></td>
@@ -2290,6 +2351,7 @@ function renderPyramidTargets(){
         <div class="progress-text tgt-progress-text">${noTarget ? '—' : `${pct.toFixed(0)}% • ${LANG==='ar'?'متبقي':'Left'}: ${fmt(remaining)}`}</div>
       </td>
       <td><span class="badge ${statusClass} tgt-status">${status}</span></td>
+      <td><input type="text" class="target-note" value="${esc(note)}" oninput="updPyramidNote('${lvl.key}', this.value)" placeholder="${t('tgt_note_placeholder')}"></td>
       <td>
         <div class="target-actions tgt-actions">
           <button class="icon-btn withdraw" onclick="withdrawFromPyramid('${lvl.key}')" title="${t('tgt_withdraw_btn')}">⬇</button>
@@ -2305,6 +2367,19 @@ function updPyramidTarget(key, val){
   save();
   updatePyramidTargetRow(key);
   debounceMonthSavingRefresh();
+}
+
+/* ⭐ تحديث الملاحظة - لا يُعيد رسم الجدول، فقط يُحدّث المثلث */
+function updPyramidNote(key, val){
+  setPyramidNote(key, val);
+  save();
+  if(_pyramidNoteTimer) clearTimeout(_pyramidNoteTimer);
+  _pyramidNoteTimer = setTimeout(() => {
+    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
+      renderPyramidSvg();
+      renderPyramidLegend();
+    }
+  }, 500);
 }
 
 function updatePyramidTargetRow(key){
@@ -2431,11 +2506,10 @@ document.addEventListener('keydown', function(e){
   }
 });
 
-/* ⭐ renderPyramid — يعرض المجاميع التراكمية عبر جميع السنوات (مثل بطاقة الأهداف) */
-function renderPyramid(){
+/* ⭐ دالة منفصلة لرسم SVG فقط (لتحديث الملاحظات بدون إعادة رسم الجدول) */
+function renderPyramidSvg(){
   const levels = getPyramidLevels();
   const totals = {};
-  /* ✅ المجاميع تراكمية عبر جميع السنوات - لا تتأثر بتغيير السنة */
   levels.forEach(lvl => { totals[lvl.key] = getCumulativeSaved(lvl.key); });
   const grandTotal = Object.values(totals).reduce((a,b)=>a+b,0);
   const apexY = 25, bottomY = 430, apexLeftX = 190, apexRightX = 310, baseLeftX = 20, baseRightX = 480;
@@ -2449,22 +2523,49 @@ function renderPyramid(){
     const cx = (x1+x2+x3+x4)/4, cy = (yTop+yBot)/2;
     const amt = totals[lvl.key] || 0;
     const pct = grandTotal > 0 ? (amt/grandTotal*100) : 0;
-    const fs = 12 - i * 0.5, afs = 11 - i * 0.4;
+    const fs = 10 - i * 0.35, afs = 9 - i * 0.3;
+    const note = getPyramidNote(lvl.key);
+    const maxChars = Math.max(10, 28 - i * 2);
+    const truncatedNote = note.length > maxChars ? note.substring(0, maxChars) + '…' : note;
+    const hasNote = note.length > 0;
     svg += `
       <polygon points="${x1},${yTop} ${x2},${yTop} ${x3},${yBot} ${x4},${yBot}" fill="${lvl.color}" fill-opacity="0.88" stroke="${lvl.color}" stroke-width="1.5"/>
-      <text x="${cx}" y="${cy - 6}" text-anchor="middle" fill="#fff" font-size="${fs}" font-weight="700">${lvl.subtitle} ${lvl.label}</text>
-      <text x="${cx}" y="${cy + 7}" text-anchor="middle" fill="#fff" font-size="${afs}" font-weight="600" font-family="monospace">${fmt(amt)} ${LANG==='ar'?'د.ب':'BHD'}</text>
-      <text x="${cx}" y="${cy + 18}" text-anchor="middle" fill="#fff" font-size="${afs - 1}" font-weight="500" opacity="0.85">${pct.toFixed(1)}%</text>
+      <text x="${cx}" y="${cy - 13}" text-anchor="middle" fill="#fff" font-size="${fs}" font-weight="700">${lvl.subtitle} ${lvl.label}</text>
+      <text x="${cx}" y="${cy - 3}" text-anchor="middle" fill="#fff" font-size="${afs}" font-weight="600" font-family="monospace">${fmt(amt)} ${LANG==='ar'?'د.ب':'BHD'}</text>
+      <text x="${cx}" y="${cy + 6}" text-anchor="middle" fill="#fff" font-size="${afs - 1.5}" font-weight="500" opacity="0.85">${pct.toFixed(1)}%</text>
+      ${hasNote ? `<text x="${cx}" y="${cy + 16}" text-anchor="middle" fill="#fff" font-size="7" font-style="italic" opacity="0.95">📝 ${truncatedNote}</text>` : ''}
     `;
   });
   document.getElementById("pyramidSvg").innerHTML = svg;
-  document.getElementById("pyramidLegend").innerHTML = levels.slice().reverse().map(lvl => `
-    <div class="pyr-legend-item">
-      <div class="pyr-color" style="background:${lvl.color}"></div>
-      <div class="pyr-label">${lvl.subtitle} ${lvl.label}</div>
-      <div class="pyr-val">${fmt(totals[lvl.key])} ${LANG==='ar'?'د.ب':'BHD'}</div>
-    </div>
-  `).join("");
+}
+
+/* ⭐ دالة منفصلة لرسم الأسطورة مع الملاحظات */
+function renderPyramidLegend(){
+  const levels = getPyramidLevels();
+  const totals = {};
+  levels.forEach(lvl => { totals[lvl.key] = getCumulativeSaved(lvl.key); });
+  document.getElementById("pyramidLegend").innerHTML = levels.slice().reverse().map(lvl => {
+    const note = getPyramidNote(lvl.key);
+    return `
+      <div class="pyr-legend-item">
+        <div class="pyr-color" style="background:${lvl.color}"></div>
+        <div class="pyr-label">${lvl.subtitle} ${lvl.label}</div>
+        <div class="pyr-val">${fmt(totals[lvl.key])} ${LANG==='ar'?'د.ب':'BHD'}</div>
+        ${note ? `<div class="pyr-note">📝 ${esc(note)}</div>` : ''}
+      </div>
+    `;
+  }).join("");
+}
+
+function renderPyramid(){
+  const levels = getPyramidLevels();
+  const totals = {};
+  levels.forEach(lvl => { totals[lvl.key] = getCumulativeSaved(lvl.key); });
+  const grandTotal = Object.values(totals).reduce((a,b)=>a+b,0);
+
+  renderPyramidSvg();
+  renderPyramidLegend();
+
   let html = `<thead><tr><th>${t('th_level')}</th><th>${t('th_item_name')}</th><th>${t('th_year_total')}</th><th>${t('th_pct')}</th></tr></thead><tbody>`;
   levels.forEach((lvl, idx) => {
     const level = idx + 1;
