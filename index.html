@@ -799,6 +799,8 @@ const I18N = {
     tgt_auto_hint_loans:"🔗 يُحسب من الأقساط في تبويب السلف والديون",
     tgt_auto_hint_obligations:"🔗 يُحسب من الالتزامات في تبويب السلف والديون (نوع: التزامات أخرى)",
     tgt_no_installments:"لا توجد أقساط مسجّلة",
+    pyr_remaining_label:"متبقي",
+    pyr_done_label:"✅ تم",
     inst_title:"📖 تعليمات هرم الأمان المالي",
     close_btn:"إغلاق",
     months:["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"],
@@ -966,6 +968,8 @@ const I18N = {
     tgt_auto_hint_loans:"🔗 Auto-calculated from installments in Debts tab",
     tgt_auto_hint_obligations:"🔗 Auto-calculated from obligations in Debts tab (type: Other Obligations)",
     tgt_no_installments:"No installments recorded",
+    pyr_remaining_label:"Left",
+    pyr_done_label:"✅ Done",
     inst_title:"📖 Financial Safety Pyramid Instructions",
     close_btn:"Close",
     months:["January","February","March","April","May","June","July","August","September","October","November","December"],
@@ -1170,7 +1174,6 @@ function getYearExtras(year){
 
 function isObligation(d){ return d.type === "obligation"; }
 
-/* ⭐ القروض = الأقساط فقط (لا تشمل الالتزامات) */
 function getLoansCumulativePaid(){
   let total = 0;
   (state.debts || []).filter(d => d.type === "installment" && !isDebtExcluded(d)).forEach(d => {
@@ -1186,7 +1189,6 @@ function getLoansTotalAmount(){
   return total;
 }
 
-/* ⭐ الالتزامات = نوع "obligation" — مثل القروض تماماً لكن لها بندها الخاص في الهرم */
 function getObligationsTotalAmount(){
   let total = 0;
   (state.debts || []).filter(d => d.type === "obligation" && !isDebtExcluded(d)).forEach(d => {
@@ -1200,9 +1202,6 @@ function getObligationsCumulativePaid(){
     total += debtPaidAllYears(d);
   });
   return total;
-}
-function getObligationsTotalWithExcluded(){
-  return (state.debts || []).filter(d => d.type === "obligation").reduce((s,d)=>s+(+d.total||0), 0);
 }
 
 function ensurePyramidTargets(){
@@ -1395,7 +1394,6 @@ function load(){
     if(!state.pyramidTargets) state.pyramidTargets = {};
     if(!state.pyramidNotes) state.pyramidNotes = {};
     if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {};
-    /* ⭐ ترحيل التزامات قديمة (في حال وُجدت) إلى ديون من نوع obligation */
     if(state.obligations && Array.isArray(state.obligations) && state.obligations.length){
       state.obligations.forEach(o => {
         state.debts.push({
@@ -1556,7 +1554,6 @@ function shouldShowDebtInMonthlyEntry(d, year, mi){ if(debtRemaining(d) > 0) ret
 function totalDebtReceipts(year, mi){
   return state.debts.filter(d=>d.type==="debit" && !isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0);
 }
-/* ⭐ الدفعات = دائن + قسط + التزام (كلها أموال أدفعها) */
 function totalDebtPayments(year, mi){
   return state.debts.filter(d=>(d.type==="credit"||d.type==="installment"||d.type==="obligation") && !isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0);
 }
@@ -2616,6 +2613,7 @@ document.addEventListener('keydown', function(e){
   }
 });
 
+/* ⭐ دالة الرسم البياني للهرم — تعرض المتبقي لكل شريحة */
 function renderPyramidSvg(){
   const levels = getPyramidLevels();
   const totals = {};
@@ -2631,18 +2629,31 @@ function renderPyramidSvg(){
     const x1 = leftAt(yTop), x2 = rightAt(yTop), x3 = rightAt(yBot), x4 = leftAt(yBot);
     const cx = (x1+x2+x3+x4)/4, cy = (yTop+yBot)/2;
     const amt = totals[lvl.key] || 0;
+    const withdrawn = getWithdrawnTotal(lvl.key);
+    const netSaved = amt - withdrawn;
+    const target = getPyramidTarget(lvl.key);
+    const remaining = target > 0 ? Math.max(0, target - netSaved) : null;
+    const reached = target > 0 && netSaved >= target;
     const pct = grandTotal > 0 ? (amt/grandTotal*100) : 0;
     const fs = 10 - i * 0.35, afs = 9 - i * 0.3;
     const note = getPyramidNote(lvl.key);
     const maxChars = Math.max(10, 28 - i * 2);
     const truncatedNote = note.length > maxChars ? note.substring(0, maxChars) + '…' : note;
     const hasNote = note.length > 0;
+    const remBhd = LANG === 'ar' ? 'د.ب' : 'BHD';
+    const remText = remaining !== null
+      ? (reached
+          ? `${t('pyr_done_label')}`
+          : `📌 ${t('pyr_remaining_label')}: ${fmt(remaining)} ${remBhd}`)
+      : '';
+    const remColor = reached ? '#86efac' : '#fde68a';
     svg += `
       <polygon points="${x1},${yTop} ${x2},${yTop} ${x3},${yBot} ${x4},${yBot}" fill="${lvl.color}" fill-opacity="0.88" stroke="${lvl.color}" stroke-width="1.5"/>
-      <text x="${cx}" y="${cy - 13}" text-anchor="middle" fill="#fff" font-size="${fs}" font-weight="700">${lvl.subtitle} ${lvl.label}</text>
-      <text x="${cx}" y="${cy - 3}" text-anchor="middle" fill="#fff" font-size="${afs}" font-weight="600" font-family="monospace">${fmt(amt)} ${LANG==='ar'?'د.ب':'BHD'}</text>
-      <text x="${cx}" y="${cy + 6}" text-anchor="middle" fill="#fff" font-size="${afs - 1.5}" font-weight="500" opacity="0.85">${pct.toFixed(1)}%</text>
-      ${hasNote ? `<text x="${cx}" y="${cy + 16}" text-anchor="middle" fill="#fff" font-size="7" font-style="italic" opacity="0.95">📝 ${truncatedNote}</text>` : ''}
+      <text x="${cx}" y="${cy - 16}" text-anchor="middle" fill="#fff" font-size="${fs}" font-weight="700">${lvl.subtitle} ${lvl.label}</text>
+      <text x="${cx}" y="${cy - 6}" text-anchor="middle" fill="#fff" font-size="${afs}" font-weight="600" font-family="monospace">${fmt(amt)} ${remBhd}</text>
+      <text x="${cx}" y="${cy + 3}" text-anchor="middle" fill="#fff" font-size="${afs - 1.5}" font-weight="500" opacity="0.85">${pct.toFixed(1)}%</text>
+      ${remaining !== null ? `<text x="${cx}" y="${cy + 13}" text-anchor="middle" fill="${remColor}" font-size="${afs - 1.5}" font-weight="800" font-family="monospace">${remText}</text>` : ''}
+      ${hasNote ? `<text x="${cx}" y="${cy + 22}" text-anchor="middle" fill="#fff" font-size="7" font-style="italic" opacity="0.95">📝 ${truncatedNote}</text>` : ''}
     `;
   });
   document.getElementById("pyramidSvg").innerHTML = svg;
