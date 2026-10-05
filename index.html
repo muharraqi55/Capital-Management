@@ -158,6 +158,7 @@
   .debts-month-table input[type="number"]:focus{box-shadow:0 0 0 3px rgba(34,193,164,.15)}
   .debts-month-table input.input-debit{border-color:var(--ok);color:var(--ok);background:rgba(34,197,94,.08)}
   .debts-month-table input.input-credit{border-color:var(--danger);color:var(--danger);background:rgba(239,68,68,.08)}
+  .debts-month-table input.input-obligation{border-color:#a855f7;color:#c084fc;background:rgba(168,85,247,.08)}
   .debts-month-table input[type="text"]{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:5px 8px;border-radius:5px;font-size:11px;font-family:inherit;outline:none;transition:.15s;color:var(--muted)}
   .debts-month-table input[type="text"]:focus{border-color:var(--accent2);color:var(--txt)}
   .debts-month-table select{width:110px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 6px;border-radius:6px;font-size:12px;font-weight:600;outline:none;cursor:pointer;font-family:inherit}
@@ -165,6 +166,7 @@
   .debts-month-table tr.row-debit{background:rgba(34,197,94,.04)}
   .debts-month-table tr.row-credit{background:rgba(239,68,68,.04)}
   .debts-month-table tr.row-installment{background:rgba(59,130,246,.04)}
+  .debts-month-table tr.row-obligation{background:rgba(168,85,247,.05)}
   .debts-month-table tr.excluded{background:rgba(239,68,68,.08) !important}
   .debts-month-table tr.excluded td:first-child{color:var(--danger);text-decoration:underline;opacity:.75}
   .debts-month-table .debt-name{font-weight:700;white-space:nowrap}
@@ -175,7 +177,6 @@
   .debts-table th{padding:8px 6px;text-align:center;color:var(--accent);font-size:10px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
   .debts-table td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}
   .debts-table input[type="number"]{width:58px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:4px 3px;border-radius:4px;text-align:center;font-size:11px;font-family:monospace;outline:none}
-  .debts-table input[type="number"]:disabled{background:rgba(100,116,139,.15);color:var(--muted);cursor:not-allowed;opacity:.5}
   .debts-table .paid-cell{font-family:monospace;font-weight:700;color:var(--accent);direction:ltr;font-size:12px}
   .debts-table .remain-cell{font-family:monospace;font-weight:700;direction:ltr;font-size:12px}
   .debts-table .remain-cell.pos{color:var(--ok)}
@@ -535,7 +536,7 @@
           <option value="credit" data-i18n="dbt_credit">🔴 دائن (أنا آخذ سلفة — أدفع)</option>
           <option value="debit" data-i18n="dbt_debit">🟢 مدين (ناس آخذين مني — أستلم)</option>
           <option value="installment" data-i18n="dbt_inst">🏦 قسط (بنك/فيزا — أدفع)</option>
-          <option value="obligation" data-i18n="dbt_obligation">📋 التزامات أخرى</option>
+          <option value="obligation" data-i18n="dbt_obligation">📋 التزامات أخرى (أدفع)</option>
         </select>
       </div>
       <div class="field" id="d_categoryWrap" style="display:none"><label id="lblDebtCat"></label>
@@ -646,7 +647,7 @@
       <div class="note">هرم الأمان المالي يقع بالكامل داخل الـ <strong>20%</strong> المخصصة للمدخرات.</div>
 
       <h3>💳 القروض و📋 الالتزامات (تلقائية)</h3>
-      <div class="note">بند <strong>القروض</strong> و<strong>الالتزامات</strong> يُحسبان تلقائياً من تبويب السلف والديون. أضف الالتزام من نوع «📋 التزامات أخرى» وسيُجمع تلقائياً في الهرم.</div>
+      <div class="note">بند <strong>القروض</strong> يُحسب تلقائياً من الأقساط، وبند <strong>الالتزامات</strong> يُحسب تلقائياً من الالتزامات. كلاهما في تبويب «السلف والديون والالتزامات»، وتُدفع شهرياً في تبويب «إدارة الشهور».</div>
 
       <h3>📊 توزيع نسبي مقترح</h3>
       <table>
@@ -654,7 +655,7 @@
         <tbody>
           <tr><td><strong>🚨 الطوارئ</strong></td><td><strong class="hl">30% - 50%</strong></td><td>أولوية قصوى - 3-6 أشهر من المصاريف.</td></tr>
           <tr><td><strong>💳 القروض</strong></td><td>تلقائي</td><td>يُحسب من الأقساط.</td></tr>
-          <tr><td><strong>📋 الالتزامات</strong></td><td><strong class="hl">15% - 25%</strong></td><td>يُحسب من تبويب السلف والديون.</td></tr>
+          <tr><td><strong>📋 الالتزامات</strong></td><td>تلقائي</td><td>يُحسب من الالتزامات.</td></tr>
           <tr><td><strong>🛡️ تأمين وتسجيل</strong></td><td><strong class="hl">5% - 10%</strong></td><td>مبلغ سنوي يُقسم على 12.</td></tr>
           <tr><td><strong>👕 ثياب العيد</strong></td><td><strong class="hl">2% - 5%</strong></td><td>مبلغ موسمي.</td></tr>
           <tr><td><strong>📈 الاستثمار</strong></td><td><strong class="hl">10% - 20%</strong></td><td>بعد الوصول لـ 3 أشهر طوارئ.</td></tr>
@@ -718,51 +719,51 @@ const I18N = {
     lbl_eid_amount:"القيمة الإجمالية (هذا المبلغ لأغراض المرجعية فقط ولن يتم احتسابه)",
     lbl_expenses:"💸 المصاريف (د.ب)",th_item:"البند",th_amount:"المبلغ (د.ب)",
     th_bank:"البنك / الجهة",th_note:"ملاحظة",th_ref:"مرجع",
-    lbl_debts_month:"دفعات السلف والأقساط",
-    debts_month_help:"تظهر فقط الديون النشطة. 🟢 المستلمة (مدين) تُضاف للدخل — 🔴 المدفوعة تُخصم.",
+    lbl_debts_month:"دفعات السلف والأقساط والالتزامات",
+    debts_month_help:"تظهر فقط البنود النشطة. 🟢 المستلمة (مدين) تُضاف للدخل — 🔴 المدفوعة (دائن + قسط + التزام) تُخصم.",
     th_debt_name:"الاسم",th_debt_type:"النوع",th_debt_total:"الكلي",
     th_debt_rem_before:"المتبقي قبل الشهر",th_debt_this_month:"هذا الشهر",
     th_debt_rem_after:"المتبقي بعده",th_debt_note:"ملاحظة",th_debt_bank:"البنك / الجهة",
     th_debt_ref:"مرجع",
     lbl_savings:"💰 مبالغ الادخار (د.ب)",
-    savings_hint:"🔢 يدعم حتى 3 أرقام عشرية — \"غير محسوب ذي الشهر\" يستثني المبلغ من جميع الحسابات والهرم. القروض تُحسب تلقائياً من تبويب السلف والديون.",
+    savings_hint:"🔢 يدعم حتى 3 أرقام عشرية — \"غير محسوب ذي الشهر\" يستثني المبلغ من جميع الحسابات والهرم. القروض والالتزامات تُحسب تلقائياً من تبويب السلف والديون.",
     lbl_month_result:"النتيجة الشهرية",lbl_month_notes:"ملاحظات على الشهر",
     th_sav_item:"بند الادخار",th_sav_amount:"المبلغ (د.ب)",th_sav_bank:"البنك / الجهة",th_sav_note:"ملاحظة",th_sav_ref:"مرجع",
     pyr_title:"🔺 هرم الأمان المالي",
-    pyr_desc:"ترتيب الأولويات المالية من القاعدة إلى القمة. الأرقام تتراكم من جميع السنوات. القروض والالتزامات تُحسب تلقائياً.",
+    pyr_desc:"ترتيب الأولويات المالية من القاعدة إلى القمة. الأرقام تتراكم من جميع السنوات. القروض والالتزامات تُحسب تلقائياً ولا يمكن تعديلها.",
     pyr_detail:"تفصيل الهرم",th_level:"المستوى",th_item_name:"البند",
     th_year_total:"المجموع التراكمي (د.ب)",th_pct:"النسبة",th_total:"الإجمالي",
-    debts_summary:"📊 ملخص الديون والأقساط",add_debt:"➕ إضافة دين / سلفة / قسط / التزام",
+    debts_summary:"📊 ملخص الديون والأقساط والالتزامات",add_debt:"➕ إضافة دين / سلفة / قسط / التزام",
     lbl_debt_name:"الاسم",lbl_debt_type:"النوع",lbl_debt_cat:"فئة القسط",
     lbl_debt_total:"المبلغ الكلي (د.ب)",lbl_debt_paidbefore:"مدفوع سابقاً (د.ب)",
     lbl_debt_start:"تاريخ البداية",lbl_debt_end:"تاريخ الانتهاء",lbl_debt_notes:"ملاحظات",
     btn_add_debt:"➕ إضافة",
     dbt_credit:"🔴 دائن (أنا آخذ سلفة — أدفع)",dbt_debit:"🟢 مدين (ناس آخذين مني — أستلم)",
     dbt_inst:"🏦 قسط (بنك/فيزا — أدفع)",
-    dbt_obligation:"📋 التزامات أخرى",
+    dbt_obligation:"📋 التزامات أخرى (أدفع)",
     dbt_visa:"بطاقة فيزا",dbt_bank:"بنك",dbt_misc:"متنوع",
     debts_table:"📋 جدول الديون والأقساط والالتزامات — عرض السنة النشطة",
-    debts_table_hint:"✏️ كل الخلايا قابلة للتعديل مباشرة. اضغط على 📅 آخر دفعة للانتقال إلى الشهر والسنة. الالتزامات لا تحتاج دفعات شهرية — تُجمع تلقائياً في الهرم.",
+    debts_table_hint:"✏️ كل الخلايا قابلة للتعديل مباشرة. اضغط على 📅 آخر دفعة للانتقال إلى الشهر والسنة. الالتزامات تُدفع شهرياً مثل الأقساط وتُجمع تلقائياً في الهرم.",
     lbl_annual:"الملخص السنوي التفصيلي (د.ب)",
-    kpi_recv_year_d:"💰 سأستلم هذه السنة (مدينون)",kpi_pay_year_d:"💸 سأدفع هذه السنة (دائن + أقساط)",
+    kpi_recv_year_d:"💰 سأستلم هذه السنة (مدينون)",kpi_pay_year_d:"💸 سأدفع هذه السنة (دائن + أقساط + التزامات)",
     kpi_net_year_d:"📊 صافي السنة",kpi_rem_to_me:"📌 متبقي لي (مدينون)",
-    kpi_rem_on_me:"📌 متبقي عليّ (دائن + أقساط)",kpi_net_remaining:"⚖️ صافي المتبقي",
+    kpi_rem_on_me:"📌 متبقي عليّ (دائن + أقساط + التزامات)",kpi_net_remaining:"⚖️ صافي المتبقي",
     kpi_total_debt:"💵 إجمالي الديون الكلية",kpi_count:"📋 عدد البنود",
     kpi_obligations_total:"📋 إجمالي الالتزامات",
     mr_inc_core:"الدخل الأساسي (راتب + إضافي)",mr_inc_salary_only:"الدخل الأساسي (راتب)",
     mr_inc_debt:"💰 + مستلم من مدينين",mr_inc_total:"= إجمالي الدخل الشهري",
     mr_exp:"إجمالي المصاريف",mr_exp_excl:"مصاريف مستثناة",
     mr_saving:"الادخار المباشر",mr_sav_excl:"ادخار مستثنى",
-    mr_debtpay:"💸 دفعات الديون",mr_debt_excl:"دفعات ديون مستثناة",
+    mr_debtpay:"💸 دفعات الديون والالتزامات",mr_debt_excl:"دفعات ديون مستثناة",
     mr_remaining:"المتبقي",mr_eid_ref:"قيمة العيد (مرجعية)",
     mr_base_remaining:"المتبقي (من الراتب فقط)",
     mr_extra_income:"💰 + مستلم من مدينين",mr_total_income:"= الإجمالي الشهري",
     mr_with_extra_remaining:"المتبقي (مع جميع الإيرادات)",
     mr_once_yearly:"⭐ مصاريف هذا الشهر (تأمين + زكاة)",
     mr_once_excl:"مصاريف شهرية مستثناة",
-    dms_recv:"💰 سأستلم هذا الشهر (مدين)",dms_pay:"💸 سأدفع هذا الشهر (دائن + قسط)",
+    dms_recv:"💰 سأستلم هذا الشهر (مدين)",dms_pay:"💸 سأدفع هذا الشهر (دائن + قسط + التزام)",
     dms_net:"📊 صافي الشهر",dms_remaining:"📌 متبقي علىّ بعد كل الدفعات",
-    dms_empty:"لا توجد ديون نشطة — المسددة والالتزامات تظهر في تبويب \"🤝 السلف والديون و الالتزامات\"",
+    dms_empty:"لا توجد بنود نشطة — المسددة تظهر في تبويب \"🤝 السلف والديون و الالتزامات\"",
     dms_total:"الإجمالي",dms_excluded_badge:"مستثنى",
     saved_date:"✅ تم حفظ التاريخ: ",saved_time:"✅ تم حفظ الوقت",
     exported:"📤 تم التصدير",added:"✅ تمت الإضافة",
@@ -774,7 +775,6 @@ const I18N = {
     last_pay_go_hint:"اضغط للانتقال إلى هذه الدفعة",
     jumped_to:"✅ تم الانتقال إلى: ",
     no_last_pay:"لا توجد دفعات مسجّلة",
-    obligation_no_monthly:"— لا دفعات شهرية —",
     btn_instructions:"📖 تعليمات",
     lbl_pyramid_targets:"🎯 أهداف هرم الأمان المالي",
     lbl_pyramid_targets_hint:"أدخل المبلغ المستهدف لكل بند، وأضف ملاحظاتك. عند وصول المجموع المُدَّخر للهدف، يتم تعطيل خانة الإدخال تلقائياً في تبويب «إدارة الشهور». استخدم زر ⬇ للسحب.",
@@ -835,7 +835,7 @@ const I18N = {
     p_obligationsSaving:"التزامات أخرى",p_travelSaving:"ادخار للسفر",p_investment:"الاستثمار",
     p_loans:"قروض",
     es_total:"الإجمالي الكلي",es_counted:"✅ المحتسب",es_excluded:"⛔ المستثنى",es_by_bank:"🏦 الإجمالي حسب البنك",
-    dt_credit:"دائن (أدفع)",dt_debit:"مدين (أستلم)",dt_inst:"قسط (أدفع)",dt_obligation:"التزام",
+    dt_credit:"دائن (أدفع)",dt_debit:"مدين (أستلم)",dt_inst:"قسط (أدفع)",dt_obligation:"التزام (أدفع)",
     dt_credit_label:"دائن",dt_debit_label:"مدين",dt_inst_label:"قسط",dt_obligation_label:"التزام",
     y_title_kpi:"📊 ملخص جميع السنوات",y_title_chart:"📈 رسم بياني — مقارنة السنوات",
     y_title_table:"📋 جدول مقارنة السنوات",y_title_dist:"🏦 توزيع الادخار حسب السنة",
@@ -890,47 +890,47 @@ const I18N = {
     lbl_eid_amount:"Total value (reference only)",
     lbl_expenses:"💸 Expenses (BHD)",th_item:"Item",th_amount:"Amount (BHD)",
     th_bank:"Bank / Source",th_note:"Note",th_ref:"Reference",
-    lbl_debts_month:"Debt & Installment Payments",
-    debts_month_help:"Only active debts shown.",
+    lbl_debts_month:"Debts, Installments & Obligations Payments",
+    debts_month_help:"Only active items shown.",
     th_debt_name:"Name",th_debt_type:"Type",th_debt_total:"Total",
     th_debt_rem_before:"Remaining Before",th_debt_this_month:"This Month",
     th_debt_rem_after:"Remaining After",th_debt_note:"Note",th_debt_bank:"Bank",
     th_debt_ref:"Reference",
-    lbl_savings:"💰 Savings Amounts (BHD)",savings_hint:"🔢 Supports 3 decimals. Loans are auto-calculated from Debts tab.",
+    lbl_savings:"💰 Savings Amounts (BHD)",savings_hint:"🔢 Supports 3 decimals. Loans and obligations are auto-calculated from Debts tab.",
     lbl_month_result:"Monthly Result",lbl_month_notes:"Month Notes",
     th_sav_item:"Savings Item",th_sav_amount:"Amount (BHD)",th_sav_bank:"Bank",th_sav_note:"Note",th_sav_ref:"Reference",
-    pyr_title:"🔺 Financial Safety Pyramid",pyr_desc:"Priorities from base to top. Cumulative across all years.",
+    pyr_title:"🔺 Financial Safety Pyramid",pyr_desc:"Priorities from base to top. Cumulative across all years. Loans and obligations are auto-calculated and cannot be edited.",
     pyr_detail:"Pyramid Details",th_level:"Level",th_item_name:"Item",
     th_year_total:"Cumulative Total (BHD)",th_pct:"%",th_total:"Total",
-    debts_summary:"📊 Debts & Installments Summary",add_debt:"➕ Add Debt / Loan / Installment / Obligation",
+    debts_summary:"📊 Debts, Installments & Obligations Summary",add_debt:"➕ Add Debt / Loan / Installment / Obligation",
     lbl_debt_name:"Name",lbl_debt_type:"Type",lbl_debt_cat:"Category",
     lbl_debt_total:"Total (BHD)",lbl_debt_paidbefore:"Paid Before (BHD)",
     lbl_debt_start:"Start Date",lbl_debt_end:"End Date",lbl_debt_notes:"Notes",
     btn_add_debt:"➕ Add",
     dbt_credit:"🔴 Creditor",dbt_debit:"🟢 Debtor",dbt_inst:"🏦 Installment",
-    dbt_obligation:"📋 Other Obligations",
+    dbt_obligation:"📋 Other Obligations (pay)",
     dbt_visa:"Visa",dbt_bank:"Bank",dbt_misc:"Misc",
-    debts_table:"📋 Debts Table",debts_table_hint:"✏️ Every cell is editable. Obligations don't need monthly payments — auto-summed in pyramid.",
+    debts_table:"📋 Debts, Installments & Obligations Table",debts_table_hint:"✏️ Every cell is editable. Obligations are paid monthly like installments and auto-summed in the pyramid.",
     lbl_annual:"Detailed Annual Summary (BHD)",
-    kpi_recv_year_d:"💰 To receive this year",kpi_pay_year_d:"💸 To pay this year",
+    kpi_recv_year_d:"💰 To receive this year",kpi_pay_year_d:"💸 To pay this year (credit + installments + obligations)",
     kpi_net_year_d:"📊 Net year",kpi_rem_to_me:"📌 Remaining to me",
-    kpi_rem_on_me:"📌 Remaining on me",kpi_net_remaining:"⚖️ Net remaining",
+    kpi_rem_on_me:"📌 Remaining on me (credit + installments + obligations)",kpi_net_remaining:"⚖️ Net remaining",
     kpi_total_debt:"💵 Total debts",kpi_count:"📋 Items count",
     kpi_obligations_total:"📋 Total Obligations",
     mr_inc_core:"Base income (salary + extra)",mr_inc_salary_only:"Base income (salary only)",
     mr_inc_debt:"💰 + Received from debtors",mr_inc_total:"= Total monthly income",
     mr_exp:"Total expenses",mr_exp_excl:"Excluded expenses",
     mr_saving:"Direct savings",mr_sav_excl:"Excluded savings",
-    mr_debtpay:"💸 Debt payments",mr_debt_excl:"Excluded debt payments",
+    mr_debtpay:"💸 Debts & obligations payments",mr_debt_excl:"Excluded debt payments",
     mr_remaining:"Remaining",mr_eid_ref:"Eid (reference)",
     mr_base_remaining:"Remaining (salary only)",
     mr_extra_income:"💰 + Received from debtors",mr_total_income:"= Total monthly",
     mr_with_extra_remaining:"Remaining (all income)",
     mr_once_yearly:"⭐ This month's expenses (insurance + zakat)",
     mr_once_excl:"Excluded monthly expenses",
-    dms_recv:"💰 To receive (debit)",dms_pay:"💸 To pay (credit + installment)",
+    dms_recv:"💰 To receive (debit)",dms_pay:"💸 To pay (credit + installment + obligation)",
     dms_net:"📊 Month net",dms_remaining:"📌 Remaining after payments",
-    dms_empty:"No active debts",
+    dms_empty:"No active items",
     dms_total:"Total",dms_excluded_badge:"Excluded",
     saved_date:"✅ Date saved: ",saved_time:"✅ Time saved",
     exported:"📤 Exported",added:"✅ Added",
@@ -942,7 +942,6 @@ const I18N = {
     last_pay_go_hint:"Click to jump to this payment",
     jumped_to:"✅ Jumped to: ",
     no_last_pay:"No payments recorded",
-    obligation_no_monthly:"— No monthly payments —",
     btn_instructions:"📖 Instructions",
     lbl_pyramid_targets:"🎯 Financial Pyramid Targets",
     lbl_pyramid_targets_hint:"Enter target amount per level, and add your notes. When savings reach target, the input field in Month Management tab will be disabled.",
@@ -1003,7 +1002,7 @@ const I18N = {
     p_obligationsSaving:"Other Obligations",p_travelSaving:"Travel",p_investment:"Investment",
     p_loans:"Loans",
     es_total:"Grand Total",es_counted:"✅ Counted",es_excluded:"⛔ Excluded",es_by_bank:"🏦 By Bank",
-    dt_credit:"Credit",dt_debit:"Debit",dt_inst:"Installment",dt_obligation:"Obligation",
+    dt_credit:"Credit",dt_debit:"Debit",dt_inst:"Installment",dt_obligation:"Obligation (pay)",
     dt_credit_label:"Credit",dt_debit_label:"Debit",dt_inst_label:"Installment",dt_obligation_label:"Obligation",
     y_title_kpi:"📊 All Years Summary",y_title_chart:"📈 Years Chart",
     y_title_table:"📋 Years Table",y_title_dist:"🏦 Savings by Year",
@@ -1064,7 +1063,6 @@ const getIncomeFields = () => [
   ["housing", t('f_housing')],["charity", t('f_charity')],["freelance", t('f_freelance')],
 ];
 
-/* ⭐ الالتزامات أُزيلت نهائياً من المصاريف — تُدار من تبويب السلف والديون كنوع جديد */
 const getExpenseRows = () => [
   {type:"simple",key:"wifeSalary",label:t('e_wifeSalary')},
   {type:"simple",key:"familyExpenses",label:t('e_familyExpenses')},
@@ -1170,6 +1168,9 @@ function getYearExtras(year){
   return state.yearExtras[year];
 }
 
+function isObligation(d){ return d.type === "obligation"; }
+
+/* ⭐ القروض = الأقساط فقط (لا تشمل الالتزامات) */
 function getLoansCumulativePaid(){
   let total = 0;
   (state.debts || []).filter(d => d.type === "installment" && !isDebtExcluded(d)).forEach(d => {
@@ -1185,12 +1186,23 @@ function getLoansTotalAmount(){
   return total;
 }
 
-/* ⭐ الالتزامات الأخرى — تُحسب تلقائياً من الديون من نوع "obligation" */
-function getObligationsCumulative(){
-  return (state.debts || []).filter(d => d.type === "obligation").reduce((s,d)=>s+(+d.total||0), 0);
+/* ⭐ الالتزامات = نوع "obligation" — مثل القروض تماماً لكن لها بندها الخاص في الهرم */
+function getObligationsTotalAmount(){
+  let total = 0;
+  (state.debts || []).filter(d => d.type === "obligation" && !isDebtExcluded(d)).forEach(d => {
+    total += (+d.total || 0);
+  });
+  return total;
 }
-function getObligationsCumulativeExcluding(excludeYear, excludeMonth){
-  return getObligationsCumulative();
+function getObligationsCumulativePaid(){
+  let total = 0;
+  (state.debts || []).filter(d => d.type === "obligation" && !isDebtExcluded(d)).forEach(d => {
+    total += debtPaidAllYears(d);
+  });
+  return total;
+}
+function getObligationsTotalWithExcluded(){
+  return (state.debts || []).filter(d => d.type === "obligation").reduce((s,d)=>s+(+d.total||0), 0);
 }
 
 function ensurePyramidTargets(){
@@ -1199,7 +1211,7 @@ function ensurePyramidTargets(){
 }
 function getPyramidTarget(key){
   if(key === "loans") return getLoansTotalAmount();
-  if(key === "obligationsSaving") return getObligationsCumulative();
+  if(key === "obligationsSaving") return getObligationsTotalAmount();
   return +(ensurePyramidTargets()[key]) || 0;
 }
 function setPyramidTarget(key, val){
@@ -1233,7 +1245,7 @@ function getWithdrawnTotal(key){
 
 function getCumulativeSaved(key){
   if(key === "loans") return getLoansCumulativePaid();
-  if(key === "obligationsSaving") return getObligationsCumulative();
+  if(key === "obligationsSaving") return getObligationsCumulativePaid();
   let total = 0;
   Object.keys(state.years || {}).forEach(y => {
     (state.years[y] || []).forEach(m => {
@@ -1257,7 +1269,16 @@ function getCumulativeSavedExcluding(key, excludeYear, excludeMonth){
     return total;
   }
   if(key === "obligationsSaving"){
-    return getObligationsCumulativeExcluding(excludeYear, excludeMonth);
+    let total = 0;
+    (state.debts || []).filter(d => d.type === "obligation" && !isDebtExcluded(d)).forEach(d => {
+      Object.keys(d.monthlyByYear || {}).forEach(y => {
+        (d.monthlyByYear[y] || []).forEach((v, i) => {
+          if(parseInt(y) === excludeYear && i === excludeMonth) return;
+          total += (+v || 0);
+        });
+      });
+    });
+    return total;
   }
   let total = 0;
   Object.keys(state.years || {}).forEach(y => {
@@ -1374,7 +1395,7 @@ function load(){
     if(!state.pyramidTargets) state.pyramidTargets = {};
     if(!state.pyramidNotes) state.pyramidNotes = {};
     if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {};
-    /* ⭐ ترحيل: إذا كانت هناك التزامات قديمة مخزنة في state.obligations، حوّلها إلى debts */
+    /* ⭐ ترحيل التزامات قديمة (في حال وُجدت) إلى ديون من نوع obligation */
     if(state.obligations && Array.isArray(state.obligations) && state.obligations.length){
       state.obligations.forEach(o => {
         state.debts.push({
@@ -1483,7 +1504,6 @@ function ensureSavingRefMeta(m){ if(!m.savingRefMeta) m.savingRefMeta = {}; retu
 function getSavingRefMeta(m, key){ const rm = ensureSavingRefMeta(m); if(!(key in rm)) rm[key] = ""; return rm[key]; }
 
 function isDebtExcluded(d){ return d.bank === EXCLUDED_BANK; }
-function isObligation(d){ return d.type === "obligation"; }
 
 function ensureDebtRefByYear(d){ if(!d.refByYear) d.refByYear = {}; return d.refByYear; }
 function getDebtRef(d, year, mi){
@@ -1502,19 +1522,17 @@ function setDm(d, year, mi, val){ if(!d.monthlyByYear) d.monthlyByYear = {}; if(
 function debtPaidInYear(d, year){ return (d.monthlyByYear?.[year] || []).reduce((a,b)=>a+(+b||0),0); }
 function debtPaidAllYears(d){ if(!d.monthlyByYear) return 0; return Object.values(d.monthlyByYear).reduce((s,arr)=>s+arr.reduce((a,b)=>a+(+b||0),0),0); }
 function debtPaidTotal(d){ return (+d.paidBefore||0) + debtPaidAllYears(d); }
-function debtRemaining(d){ if(isObligation(d)) return 0; return Math.max(0,(+d.total||0) - debtPaidTotal(d)); }
+function debtRemaining(d){ return Math.max(0,(+d.total||0) - debtPaidTotal(d)); }
 function debtRemainingBefore(d, year, mi){
-  if(isObligation(d)) return 0;
   let paid = (+d.paidBefore || 0);
   Object.keys(d.monthlyByYear||{}).forEach(y => { if(parseInt(y) < parseInt(year)) paid += (d.monthlyByYear[y]||[]).reduce((a,b)=>a+(+b||0),0); });
   const arr = d.monthlyByYear?.[year] || [];
   for(let i=0;i<mi;i++) paid += (+arr[i]||0);
   return Math.max(0, (+d.total||0) - paid);
 }
-function isDebtFullyPaid(d){ if(isObligation(d)) return false; return debtRemaining(d) === 0; }
+function isDebtFullyPaid(d){ return debtRemaining(d) === 0; }
 
 function lastPaymentInfo(d){
-  if(isObligation(d)) return null;
   if(!d.monthlyByYear) return null;
   const years = Object.keys(d.monthlyByYear).map(Number).sort((a,b)=>b-a);
   for(const y of years){
@@ -1533,18 +1551,14 @@ function lastPaymentInfo(d){
   return null;
 }
 
-/* ⭐ الالتزامات لا تظهر في قسم الدفعات الشهرية */
-function shouldShowDebtInMonthlyEntry(d, year, mi){ 
-  if(isObligation(d)) return false;
-  if(debtRemaining(d) > 0) return true; 
-  return dm(d, year, mi) > 0; 
-}
+function shouldShowDebtInMonthlyEntry(d, year, mi){ if(debtRemaining(d) > 0) return true; return dm(d, year, mi) > 0; }
 
 function totalDebtReceipts(year, mi){
   return state.debts.filter(d=>d.type==="debit" && !isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0);
 }
+/* ⭐ الدفعات = دائن + قسط + التزام (كلها أموال أدفعها) */
 function totalDebtPayments(year, mi){
-  return state.debts.filter(d=>(d.type==="credit"||d.type==="installment") && !isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0);
+  return state.debts.filter(d=>(d.type==="credit"||d.type==="installment"||d.type==="obligation") && !isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0);
 }
 function totalDebtReceiptsYear(year){ let s=0; for(let i=0;i<12;i++) s+=totalDebtReceipts(year, i); return s; }
 function totalDebtPaymentsYear(year){ let s=0; for(let i=0;i<12;i++) s+=totalDebtPayments(year, i); return s; }
@@ -1552,7 +1566,7 @@ function totalDebtReceiptsExcluded(year, mi){
   return state.debts.filter(d=>d.type==="debit" && isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0);
 }
 function totalDebtPaymentsExcluded(year, mi){
-  return state.debts.filter(d=>(d.type==="credit"||d.type==="installment") && isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0);
+  return state.debts.filter(d=>(d.type==="credit"||d.type==="installment"||d.type==="obligation") && isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0);
 }
 
 function totalIncomeCore(m, mi){
@@ -1615,15 +1629,16 @@ function allYearsTotals(){
 
 function debtTotals(){
   const recv = state.debts.filter(d=>d.type==="debit").reduce((s,d)=>s+debtPaidAllYears(d),0);
-  const pay = state.debts.filter(d=>d.type==="credit"||d.type==="installment").reduce((s,d)=>s+debtPaidAllYears(d),0);
+  const pay = state.debts.filter(d=>d.type==="credit"||d.type==="installment"||d.type==="obligation").reduce((s,d)=>s+debtPaidAllYears(d),0);
   const remToMe = state.debts.filter(d=>d.type==="debit").reduce((s,d)=>s+debtRemaining(d),0);
-  const remOnMe = state.debts.filter(d=>d.type==="credit"||d.type==="installment").reduce((s,d)=>s+debtRemaining(d),0);
+  const remOnMe = state.debts.filter(d=>d.type==="credit"||d.type==="installment"||d.type==="obligation").reduce((s,d)=>s+debtRemaining(d),0);
   const obligationsTotal = state.debts.filter(d=>d.type==="obligation").reduce((s,d)=>s+(+d.total||0),0);
+  const totalDebtAll = state.debts.filter(d=>d.type!=="obligation").reduce((s,d)=>s+(+d.total||0),0);
   return {
     receiveThisYear:recv, payThisYear:pay, netThisYear:recv-pay,
-    remainingToReceive:remToMe, remainingToPay:remOnMe,
+    remainingToReceive:remToMe, remainingOnMe:remOnMe, remainingToPay:remOnMe,
     netRemaining:remToMe-remOnMe,
-    totalDebt: state.debts.filter(d=>d.type!=="obligation").reduce((s,d)=>s+(+d.total||0),0),
+    totalDebt: totalDebtAll,
     obligationsTotal: obligationsTotal
   };
 }
@@ -2065,9 +2080,9 @@ function renderDebtsMonthSection(){
     tbody.innerHTML = `<tr><td colspan="9" style="padding:20px;text-align:center;color:var(--muted)">${t('dms_empty')}</td></tr>`;
     tfoot.innerHTML = ""; summary.innerHTML = ""; return;
   }
-  const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦"};
-  const typeLabel = {credit:t('dt_credit'), debit:t('dt_debit'), installment:t('dt_inst')};
-  const typeCls = {credit:"row-credit", debit:"row-debit", installment:"row-installment"};
+  const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦", obligation:"📋"};
+  const typeLabel = {credit:t('dt_credit'), debit:t('dt_debit'), installment:t('dt_inst'), obligation:t('dt_obligation')};
+  const typeCls = {credit:"row-credit", debit:"row-debit", installment:"row-installment", obligation:"row-obligation"};
   const refOptsFor = val => REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${val===o.v?'selected':''}>${o.l}</option>`).join('');
   let recv = 0, pay = 0, recvExcl = 0, payExcl = 0;
   tbody.innerHTML = visibleDebts.map(d => {
@@ -2080,14 +2095,14 @@ function renderDebtsMonthSection(){
     } else {
       if(d.type === "debit") recv += thisMonth; else pay += thisMonth;
     }
-    const inputCls = d.type === "debit" ? "input-debit" : "input-credit";
+    const inputCls = d.type === "debit" ? "input-debit" : (d.type === "obligation" ? "input-obligation" : "input-credit");
     const bankVal = d.bank || "بطاقة صراف الالي";
     const bankOpts = BANKS.map(b => `<option value="${b}" ${bankVal===b?'selected':''}>${bankLabel(b)}</option>`).join('');
     const refVal = getDebtRef(d, y, mi);
     const exclBadge = excluded ? `<span class="badge excluded-badge">⛔ ${t('dms_excluded_badge')}</span>` : '';
     return `<tr class="${typeCls[d.type]} ${excluded?'excluded':''}" data-debt-row="${d.id}">
       <td class="debt-name">${typeIcon[d.type]} ${d.name} ${exclBadge}</td>
-      <td><span class="badge ${d.type==='credit'?'red':d.type==='debit'?'green':'blue'}">${typeLabel[d.type]}</span></td>
+      <td><span class="badge ${d.type==='credit'?'red':d.type==='debit'?'green':(d.type==='obligation'?'purple':'blue')}">${typeLabel[d.type]}</span></td>
       <td class="num">${money(d.total)}</td>
       <td class="num muted">${money(remBefore)}</td>
       <td><input type="number" class="${inputCls}" value="${inVal(thisMonth)}" min="0" step="0.001" oninput="updDebtMonthInEntry(${d.id}, this.value)"></td>
@@ -2118,6 +2133,8 @@ function updDebtBank(id, val){
   renderMonthResults();
   renderMonthPills();
   renderDashboard();
+  updatePyramidTargetRow("loans");
+  updatePyramidTargetRow("obligationsSaving");
   if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
     renderPyramid();
   }
@@ -2146,6 +2163,7 @@ function updDebtMonthInEntry(id, val){
   renderDashboard();
   renderDebts();
   updatePyramidTargetRow("loans");
+  updatePyramidTargetRow("obligationsSaving");
 }
 function refreshDebtsMonthCells(){
   const mi = state.activeMonth, y = state.activeYear;
@@ -2675,11 +2693,11 @@ function addDebt(){
   const paidBefore = parseFloat(document.getElementById("d_paidBefore").value)||0;
   const type = document.getElementById("d_type").value;
   if(!name || total<=0){ toast(t('need_name_total')); return; }
-  if(type !== "obligation" && paidBefore > total){ toast(t('paid_gt_total')); return; }
+  if(paidBefore > total){ toast(t('paid_gt_total')); return; }
   state.debts.push({
     id: Date.now(), name, type,
     category: type === "installment" ? document.getElementById("d_category").value : "",
-    total, paidBefore: type === "obligation" ? 0 : paidBefore,
+    total, paidBefore,
     bank: "بطاقة صراف الالي",
     monthlyByYear: { [state.activeYear]: Array(12).fill(0) },
     refByYear: { [state.activeYear]: Array(12).fill("") },
@@ -2690,11 +2708,32 @@ function addDebt(){
   ["d_name","d_notes"].forEach(id=>document.getElementById(id).value="");
   ["d_total","d_paidBefore"].forEach(id=>document.getElementById(id).value="");
   save(); renderDebts(); renderDashboard(); renderMonth();
+  updatePyramidTargetRow("loans");
+  updatePyramidTargetRow("obligationsSaving");
   if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); }
   toast(t('added'), 'success');
 }
-function delDebt(id){ if(!confirm(t('confirm_delete'))) return; state.debts = state.debts.filter(d=>d.id!==id); save(); renderDebts(); renderDashboard(); renderMonth(); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); } }
-function updDebtMonth(id, mi, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDm(d, state.activeYear, mi, Math.max(0, parseFloat(val)||0)); save(); refreshDebtTotals(); renderDebtsSummary(); renderDashboard(); renderDebts(); updatePyramidTargetRow("loans"); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); } }
+function delDebt(id){ 
+  if(!confirm(t('confirm_delete'))) return; 
+  state.debts = state.debts.filter(d=>d.id!==id); 
+  save(); 
+  renderDebts(); 
+  renderDashboard(); 
+  renderMonth(); 
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); } 
+}
+function updDebtMonth(id, mi, val){ 
+  const d = state.debts.find(x=>x.id===id); if(!d) return; 
+  setDm(d, state.activeYear, mi, Math.max(0, parseFloat(val)||0)); 
+  save(); 
+  refreshDebtTotals(); 
+  renderDebtsSummary(); 
+  renderDashboard(); 
+  renderDebts(); 
+  updatePyramidTargetRow("loans"); 
+  updatePyramidTargetRow("obligationsSaving"); 
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); } 
+}
 function updDebtName(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.name = val; save(); renderDashboard(); renderMonth(); renderDebtsSummary(); }
 function updDebtTotal(id, val){ 
   const d = state.debts.find(x=>x.id===id); if(!d) return; 
@@ -2708,16 +2747,11 @@ function updDebtTotal(id, val){
   updatePyramidTargetRow("obligationsSaving");
   if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); renderPyramidTargets(); } 
 }
-function updDebtPaidBefore(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; if(isObligation(d)) return; d.paidBefore = Math.max(0, parseFloat(val)||0); save(); refreshDebtRowCells(d); renderDebtsSummary(); renderDashboard(); renderMonthPills(); }
+function updDebtPaidBefore(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.paidBefore = Math.max(0, parseFloat(val)||0); save(); refreshDebtRowCells(d); renderDebtsSummary(); renderDashboard(); renderMonthPills(); }
 function updDebtType(id, val){ 
   const d = state.debts.find(x=>x.id===id); if(!d) return; 
-  const wasObligation = isObligation(d);
   d.type = val; 
   if(val !== "installment") d.category = ""; 
-  if(val === "obligation"){ 
-    d.paidBefore = 0; 
-    d.monthlyByYear = {}; 
-  }
   save(); 
   renderDebts(); 
   renderDashboard(); 
@@ -2730,7 +2764,6 @@ function updDebtCategory(id, val){ const d = state.debts.find(x=>x.id===id); if(
 function updDebtNotes(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.notes = val; save(); renderMonth(); }
 
 function buildPaidInfoHtml(d){
-  if(isObligation(d)) return '';
   const fullyPaid = isDebtFullyPaid(d);
   const lp = lastPaymentInfo(d);
   const hasPaidBefore = +d.paidBefore > 0;
@@ -2793,12 +2826,8 @@ function refreshDebtRowCells(d){
   const paid = debtPaidInYear(d, state.activeYear);
   const rem = debtRemaining(d);
   const pc = row.querySelector('.paid-cell'), rc = row.querySelector('.remain-cell');
-  if(pc) pc.textContent = isObligation(d) ? '—' : fmt(paid);
-  if(rc){ 
-    rc.textContent = isObligation(d) ? fmt(+d.total||0) : fmt(rem); 
-    rc.classList.toggle('pos', isObligation(d) || rem === 0); 
-    rc.classList.toggle('neg', !isObligation(d) && rem > 0); 
-  }
+  if(pc) pc.textContent = fmt(paid);
+  if(rc){ rc.textContent = fmt(rem); rc.classList.toggle('pos', rem === 0); rc.classList.toggle('neg', rem > 0); }
   const bw = row.querySelector('.fully-paid-badge-wrap');
   if(bw) bw.innerHTML = buildPaidInfoHtml(d);
   updateDebtsFooter();
@@ -2809,8 +2838,8 @@ function refreshDebtTotals(){
     if(!row) return;
     const paid = debtPaidInYear(d, state.activeYear), rem = debtRemaining(d);
     const pc = row.querySelector('.paid-cell'), rc = row.querySelector('.remain-cell');
-    if(pc) pc.textContent = isObligation(d) ? '—' : fmt(paid);
-    if(rc){ rc.textContent = isObligation(d) ? fmt(+d.total||0) : fmt(rem); rc.classList.toggle('pos', isObligation(d) || rem === 0); rc.classList.toggle('neg', !isObligation(d) && rem > 0); }
+    if(pc) pc.textContent = fmt(paid);
+    if(rc){ rc.textContent = fmt(rem); rc.classList.toggle('pos', rem === 0); rc.classList.toggle('neg', rem > 0); }
   });
   updateDebtsFooter();
 }
@@ -2819,12 +2848,7 @@ function updateDebtsFooter(){
   if(!foot) return;
   const mTotals = Array(12).fill(0);
   let tp = 0, tr = 0;
-  state.debts.forEach(d=>{ 
-    if(isObligation(d)) return;
-    for(let i=0;i<12;i++) mTotals[i] += dm(d, state.activeYear, i); 
-    tp += debtPaidInYear(d, state.activeYear); 
-    tr += debtRemaining(d); 
-  });
+  state.debts.forEach(d=>{ for(let i=0;i<12;i++) mTotals[i] += dm(d, state.activeYear, i); tp += debtPaidInYear(d, state.activeYear); tr += debtRemaining(d); });
   let html = `<tr><td colspan="6">${t('dms_total')}</td>`;
   for(let i=0;i<12;i++) html += `<td>${mTotals[i] > 0 ? fmt(mTotals[i]) : "—"}</td>`;
   html += `<td class="paid-cell">${fmt(tp)}</td><td class="remain-cell">${fmt(tr)}</td><td></td></tr>`;
@@ -2837,7 +2861,7 @@ function renderDebtsSummary(){
     ${kpi(t('kpi_pay_year_d'), money(dt.payThisYear), "neg")}
     ${kpi(t('kpi_net_year_d'), money(dt.netThisYear), dt.netThisYear>=0?"pos":"neg")}
     ${kpi(t('kpi_rem_to_me'), money(dt.remainingToReceive), "pos")}
-    ${kpi(t('kpi_rem_on_me'), money(dt.remainingToPay), "neg")}
+    ${kpi(t('kpi_rem_on_me'), money(dt.remainingOnMe), "neg")}
     ${kpi(t('kpi_net_remaining'), money(dt.netRemaining), dt.netRemaining>=0?"pos":"neg")}
     ${kpi(t('kpi_total_debt'), money(dt.totalDebt), "gold")}
     ${kpi(t('kpi_obligations_total'), money(dt.obligationsTotal), "acc")}
@@ -2861,14 +2885,11 @@ function renderDebts(){
   head += `<th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th><th></th></tr></thead>`;
   let body = `<tbody>`;
   state.debts.forEach(d => {
-    const obligation = isObligation(d);
     const rc = d.type === "credit" ? "row-credit" : d.type === "debit" ? "row-debit" : d.type === "obligation" ? "row-obligation" : "row-installment";
     const paid = debtPaidInYear(d, y), rem = debtRemaining(d);
     const fullyPaid = isDebtFullyPaid(d);
     const rowCls = fullyPaid ? rc + ' fully-paid-row' : rc;
     const paidBadge = buildPaidInfoHtml(d);
-    const monthlyDisabled = obligation ? 'disabled style="opacity:.35;cursor:not-allowed"' : '';
-    const paidBeforeDisabled = obligation ? 'disabled style="opacity:.35;cursor:not-allowed"' : '';
     body += `<tr class="${rowCls}" data-debt-id="${d.id}">
       <td><input type="text" class="inline-input name" value="${esc(d.name)}" onchange="updDebtName(${d.id}, this.value)"><div class="fully-paid-badge-wrap">${paidBadge}</div></td>
       <td><select class="inline-select type-sel" onchange="updDebtType(${d.id}, this.value)">
@@ -2877,30 +2898,22 @@ function renderDebts(){
         <option value="installment" ${d.type==='installment'?'selected':''}>🏦 ${t('dt_inst_label')}</option>
         <option value="obligation" ${d.type==='obligation'?'selected':''}>📋 ${t('dt_obligation_label')}</option>
       </select></td>
-      <td><select class="inline-select" onchange="updDebtCategory(${d.id}, this.value)" ${obligation?'disabled style="opacity:.35"':''}>
+      <td><select class="inline-select" onchange="updDebtCategory(${d.id}, this.value)">
         <option value="" ${!d.category?'selected':''}>—</option>
         <option value="فيزا" ${d.category==='فيزا'?'selected':''}>${t('dbt_visa')}</option>
         <option value="بنك" ${d.category==='بنك'?'selected':''}>${t('dbt_bank')}</option>
         <option value="متنوع" ${d.category==='متنوع'?'selected':''}>${t('dbt_misc')}</option>
       </select></td>
       <td><input type="number" class="inline-input num" value="${inVal(d.total)}" min="0" step="0.001" oninput="updDebtTotal(${d.id}, this.value)"></td>
-      <td><input type="number" class="inline-input num paid-before" value="${inVal(d.paidBefore)}" min="0" step="0.001" oninput="updDebtPaidBefore(${d.id}, this.value)" ${paidBeforeDisabled}></td>
+      <td><input type="number" class="inline-input num paid-before" value="${inVal(d.paidBefore)}" min="0" step="0.001" oninput="updDebtPaidBefore(${d.id}, this.value)"></td>
       <td><input type="text" class="inline-input notes" value="${esc(d.notes)}" placeholder="..." onchange="updDebtNotes(${d.id}, this.value)"></td>`;
-    for(let i=0;i<12;i++){ body += `<td><input type="number" value="${inVal(dm(d,y,i))}" min="0" step="0.001" oninput="updDebtMonth(${d.id}, ${i}, this.value)" ${monthlyDisabled}></td>`; }
-    const remainDisplay = obligation ? fmt(+d.total||0) : fmt(rem);
-    const remainClass = obligation ? 'pos' : (rem===0?'pos':'neg');
-    const paidDisplay = obligation ? '—' : fmt(paid);
-    body += `<td class="paid-cell">${paidDisplay}</td><td class="remain-cell ${remainClass}">${remainDisplay}</td><td><button class="icon-btn" onclick="delDebt(${d.id})">✕</button></td></tr>`;
+    for(let i=0;i<12;i++){ body += `<td><input type="number" value="${inVal(dm(d,y,i))}" min="0" step="0.001" oninput="updDebtMonth(${d.id}, ${i}, this.value)"></td>`; }
+    body += `<td class="paid-cell">${fmt(paid)}</td><td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td><td><button class="icon-btn" onclick="delDebt(${d.id})">✕</button></td></tr>`;
   });
   body += `</tbody>`;
   const mTotals = Array(12).fill(0);
   let tp = 0, tr = 0;
-  state.debts.forEach(d=>{ 
-    if(isObligation(d)) return;
-    for(let i=0;i<12;i++) mTotals[i] += dm(d,y,i); 
-    tp += debtPaidInYear(d,y); 
-    tr += debtRemaining(d); 
-  });
+  state.debts.forEach(d=>{ for(let i=0;i<12;i++) mTotals[i] += dm(d,y,i); tp += debtPaidInYear(d,y); tr += debtRemaining(d); });
   let foot = `<tfoot><tr><td colspan="6">${t('dms_total')}</td>`;
   for(let i=0;i<12;i++) foot += `<td>${mTotals[i] > 0 ? fmt(mTotals[i]) : "—"}</td>`;
   foot += `<td class="paid-cell">${fmt(tp)}</td><td class="remain-cell">${fmt(tr)}</td><td></td></tr></tfoot>`;
