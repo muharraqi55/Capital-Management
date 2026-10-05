@@ -382,7 +382,7 @@
 <nav class="tabs">
   <button data-view="dashboard" class="active" data-i18n="t_dash">📊 اللوحة الرئيسية</button>
   <button data-view="month" data-i18n="t_month">📅 إدارة الشهور</button>
-  <button data-view="debts" data-i18n="t_debts">🤝 السلف والديون</button>
+  <button data-view="debts" data-i18n="t_debts">🤝 السلف والديون و الالتزامات</button>
   <button data-view="annual" data-i18n="t_annual">📈 الملخص السنوي</button>
   <button data-view="years" data-i18n="t_years">📆 مقارنة السنوات</button>
   <button data-view="pyramid" data-i18n="t_pyr">🔺 هرم الأمان المالي</button>
@@ -549,6 +549,24 @@
       <div class="field"><label>&nbsp;</label><button class="btn primary" onclick="addDebt()" id="btnAddDebt"></button></div>
     </div>
   </div>
+
+  <!-- ⭐ جديد: بطاقة إضافة الالتزامات -->
+  <div class="card" style="border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.08),transparent)">
+    <h2 id="lblAddObligation" style="color:var(--accent2)">📋 إضافة التزام</h2>
+    <div class="grid g4">
+      <div class="field"><label id="lblObligationName">اسم الالتزام</label><input id="o_name"></div>
+      <div class="field"><label id="lblObligationAmount">المبلغ (د.ب)</label><input id="o_amount" type="number" min="0" step="0.001"></div>
+      <div class="field"><label id="lblObligationNotes">ملاحظات</label><input id="o_notes"></div>
+      <div class="field"><label>&nbsp;</label><button class="btn primary" onclick="addObligation()" id="btnAddObligation">➕ إضافة</button></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 id="lblObligationsTable" style="color:var(--accent2)">📋 جدول الالتزامات</h2>
+    <p class="muted" style="margin-bottom:12px" id="lblObligationsTableHint">تُجمع كل الالتزامات تلقائياً في هرم الأمان المالي تحت بند «التزامات أخرى».</p>
+    <div class="debts-table-wrap"><table class="debts-table" id="obligationsTable" style="min-width:700px"></table></div>
+  </div>
+
   <div class="card">
     <h2 id="lblDebtsTable"></h2>
     <p class="muted" style="margin-bottom:12px" id="lblDebtsTableHint"></p>
@@ -641,8 +659,8 @@
       </ul>
       <div class="note">هرم الأمان المالي يقع بالكامل داخل الـ <strong>20%</strong> المخصصة للمدخرات.</div>
 
-      <h3>💳 القروض و📋 التزامات أخرى (تلقائية)</h3>
-      <div class="note">بند <strong>القروض</strong> يُحسب تلقائياً من الأقساط في تبويب السلف والديون. بند <strong>التزامات أخرى</strong> أصبح بنداً في قسم المصاريف ويُحسب تلقائياً من هناك.</div>
+      <h3>💳 القروض و📋 الالتزامات (تلقائية)</h3>
+      <div class="note">بند <strong>القروض</strong> يُحسب تلقائياً من الأقساط في تبويب «السلف والديون والالتزامات». بند <strong>الالتزامات</strong> يُحسب تلقائياً من قائمة الالتزامات في نفس التبويب.</div>
 
       <h3>📊 توزيع نسبي مقترح</h3>
       <table>
@@ -650,7 +668,7 @@
         <tbody>
           <tr><td><strong>🚨 الطوارئ</strong></td><td><strong class="hl">30% - 50%</strong></td><td>أولوية قصوى - 3-6 أشهر من المصاريف.</td></tr>
           <tr><td><strong>💳 القروض</strong></td><td>تلقائي</td><td>يُحسب من الأقساط.</td></tr>
-          <tr><td><strong>📋 التزامات أخرى</strong></td><td><strong class="hl">15% - 25%</strong></td><td>بند من المصاريف - يُحسب تلقائياً.</td></tr>
+          <tr><td><strong>📋 الالتزامات</strong></td><td><strong class="hl">15% - 25%</strong></td><td>تُضاف من تبويب السلف والديون والالتزامات.</td></tr>
           <tr><td><strong>🛡️ تأمين وتسجيل</strong></td><td><strong class="hl">5% - 10%</strong></td><td>مبلغ سنوي يُقسم على 12.</td></tr>
           <tr><td><strong>👕 ثياب العيد</strong></td><td><strong class="hl">2% - 5%</strong></td><td>مبلغ موسمي.</td></tr>
           <tr><td><strong>📈 الاستثمار</strong></td><td><strong class="hl">10% - 20%</strong></td><td>بعد الوصول لـ 3 أشهر طوارئ.</td></tr>
@@ -684,7 +702,7 @@ const I18N = {
   ar: {
     app_title:"نظام إدارة رأس المال",footer:"جميع الحقوق محفوظة لـ Muharraqi",
     t_dash:"📊 اللوحة الرئيسية",t_month:"📅 إدارة الشهور",t_years:"📆 مقارنة السنوات",
-    t_pyr:"🔺 هرم الأمان المالي",t_debts:"🤝 السلف والديون",t_annual:"📈 الملخص السنوي",
+    t_pyr:"🔺 هرم الأمان المالي",t_debts:"🤝 السلف والديون و الالتزامات",t_annual:"📈 الملخص السنوي",
     btn_export:"📤 تصدير",btn_import:"📥 استيراد",btn_reset:"🗑 تصفير",
     btn_save:"💾 حفظ",
     save_manual_ok:"💾 تم حفظ البيانات بنجاح",
@@ -738,6 +756,15 @@ const I18N = {
     dbt_visa:"بطاقة فيزا",dbt_bank:"بنك",dbt_misc:"متنوع",
     debts_table:"📋 جدول الديون والأقساط — عرض السنة النشطة",
     debts_table_hint:"✏️ كل الخلايا قابلة للتعديل مباشرة. اضغط على 📅 آخر دفعة للانتقال إلى الشهر والسنة.",
+    /* ⭐ جديد: نصوص الالتزامات */
+    lblAddObligation:"📋 إضافة التزام",
+    lblObligationName:"اسم الالتزام",
+    lblObligationAmount:"المبلغ (د.ب)",
+    lblObligationNotes:"ملاحظات",
+    btnAddObligation:"➕ إضافة",
+    lblObligationsTable:"📋 جدول الالتزامات",
+    lblObligationsTableHint:"تُجمع كل الالتزامات تلقائياً في هرم الأمان المالي تحت بند «التزامات أخرى».",
+    obligation_added:"✅ تمت إضافة الالتزام",
     lbl_annual:"الملخص السنوي التفصيلي (د.ب)",
     kpi_recv_year_d:"💰 سأستلم هذه السنة (مدينون)",kpi_pay_year_d:"💸 سأدفع هذه السنة (دائن + أقساط)",
     kpi_net_year_d:"📊 صافي السنة",kpi_rem_to_me:"📌 متبقي لي (مدينون)",
@@ -756,7 +783,7 @@ const I18N = {
     mr_once_excl:"مصاريف شهرية مستثناة",
     dms_recv:"💰 سأستلم هذا الشهر (مدين)",dms_pay:"💸 سأدفع هذا الشهر (دائن + قسط)",
     dms_net:"📊 صافي الشهر",dms_remaining:"📌 متبقي علىّ بعد كل الدفعات",
-    dms_empty:"لا توجد ديون نشطة — المسددة تظهر في تبويب \"🤝 السلف والديون\"",
+    dms_empty:"لا توجد ديون نشطة — المسددة تظهر في تبويب \"🤝 السلف والديون و الالتزامات\"",
     dms_total:"الإجمالي",dms_excluded_badge:"مستثنى",
     saved_date:"✅ تم حفظ التاريخ: ",saved_time:"✅ تم حفظ الوقت",
     exported:"📤 تم التصدير",added:"✅ تمت الإضافة",
@@ -790,7 +817,7 @@ const I18N = {
     tgt_history_total:"الإجمالي المسحوب: ",
     tgt_auto_badge:"تلقائي",
     tgt_auto_hint_loans:"🔗 يُحسب من الأقساط في تبويب السلف والديون",
-    tgt_auto_hint_obligations:"🔗 يُحسب من بند «التزامات أخرى» في قسم المصاريف",
+    tgt_auto_hint_obligations:"🔗 يُحسب من قائمة الالتزامات في تبويب السلف والديون والالتزامات",
     tgt_no_installments:"لا توجد أقساط مسجّلة",
     inst_title:"📖 تعليمات هرم الأمان المالي",
     close_btn:"إغلاق",
@@ -855,7 +882,7 @@ const I18N = {
   en: {
     app_title:"Capital Manager",footer:"All rights reserved to Muharraqi",
     t_dash:"📊 Dashboard",t_month:"📅 Month Management",t_years:"📆 Years Comparison",
-    t_pyr:"🔺 Financial Safety Pyramid",t_debts:"🤝 Debts & Loans",t_annual:"📈 Annual Summary",
+    t_pyr:"🔺 Financial Safety Pyramid",t_debts:"🤝 Debts, Loans & Obligations",t_annual:"📈 Annual Summary",
     btn_export:"📤 Export",btn_import:"📥 Import",btn_reset:"🗑 Reset",
     btn_save:"💾 Save",
     save_manual_ok:"💾 Data saved successfully",
@@ -905,6 +932,15 @@ const I18N = {
     dbt_credit:"🔴 Creditor",dbt_debit:"🟢 Debtor",dbt_inst:"🏦 Installment",
     dbt_visa:"Visa",dbt_bank:"Bank",dbt_misc:"Misc",
     debts_table:"📋 Debts Table",debts_table_hint:"✏️ Every cell is editable.",
+    /* ⭐ New: Obligations text */
+    lblAddObligation:"📋 Add Obligation",
+    lblObligationName:"Obligation Name",
+    lblObligationAmount:"Amount (BHD)",
+    lblObligationNotes:"Notes",
+    btnAddObligation:"➕ Add",
+    lblObligationsTable:"📋 Obligations Table",
+    lblObligationsTableHint:"All obligations are summed automatically in the Financial Safety Pyramid under 'Other Obligations'.",
+    obligation_added:"✅ Obligation added",
     lbl_annual:"Detailed Annual Summary (BHD)",
     kpi_recv_year_d:"💰 To receive this year",kpi_pay_year_d:"💸 To pay this year",
     kpi_net_year_d:"📊 Net year",kpi_rem_to_me:"📌 Remaining to me",
@@ -957,7 +993,7 @@ const I18N = {
     tgt_history_total:"Total withdrawn: ",
     tgt_auto_badge:"Auto",
     tgt_auto_hint_loans:"🔗 Auto-calculated from installments in Debts tab",
-    tgt_auto_hint_obligations:"🔗 Auto-calculated from 'Other Obligations' in Expenses section",
+    tgt_auto_hint_obligations:"🔗 Auto-calculated from Obligations list in Debts tab",
     tgt_no_installments:"No installments recorded",
     inst_title:"📖 Financial Safety Pyramid Instructions",
     close_btn:"Close",
@@ -1058,9 +1094,8 @@ const getIncomeFields = () => [
   ["housing", t('f_housing')],["charity", t('f_charity')],["freelance", t('f_freelance')],
 ];
 
-/* ⭐ التزامات أخرى الآن في أعلى المصاريف */
+/* ⭐ التزامات أخرى أُزيلت من المصاريف — تُدار الآن من تبويب السلف والديون */
 const getExpenseRows = () => [
-  {type:"simple",key:"obligationsSaving",label:t('e_obligations')},
   {type:"simple",key:"wifeSalary",label:t('e_wifeSalary')},
   {type:"simple",key:"familyExpenses",label:t('e_familyExpenses')},
   {type:"simple",key:"rent",label:t('e_rent')},
@@ -1091,7 +1126,6 @@ const getExpenseRows = () => [
   {type:"simple",key:"humanitarianAid",label:t('e_humanitarianAid')},
 ];
 
-/* ⭐ التزامات أخرى أُزيلت من الادخار */
 const getSavingFields = () => [
   ["emergencyFund", t('s_emergencyFund')],
   ["insuranceSaving", t('s_insuranceSaving')],
@@ -1143,6 +1177,7 @@ let state = {
   activeYear: new Date().getFullYear(),
   activeMonth: 0,
   debts: [],
+  obligations: [],
   yearExtras: {},
   pyramidTargets: {},
   pyramidNotes: {},
@@ -1182,27 +1217,12 @@ function getLoansTotalAmount(){
   return total;
 }
 
-/* ⭐ التزامات أخرى - حساب تلقائي من المصاريف */
+/* ⭐ التزامات أخرى - حساب تلقائي من قائمة الالتزامات في تبويب السلف والديون */
 function getObligationsCumulative(){
-  let total = 0;
-  Object.keys(state.years || {}).forEach(y => {
-    (state.years[y] || []).forEach(m => {
-      if(isExcluded(m, "obligationsSaving")) return;
-      total += (+m.obligationsSaving || 0);
-    });
-  });
-  return total;
+  return (state.obligations || []).reduce((s,o)=>s+(+o.amount||0), 0);
 }
 function getObligationsCumulativeExcluding(excludeYear, excludeMonth){
-  let total = 0;
-  Object.keys(state.years || {}).forEach(y => {
-    (state.years[y] || []).forEach((m, i) => {
-      if(parseInt(y) === excludeYear && i === excludeMonth) return;
-      if(isExcluded(m, "obligationsSaving")) return;
-      total += (+m.obligationsSaving || 0);
-    });
-  });
-  return total;
+  return getObligationsCumulative();
 }
 
 function ensurePyramidTargets(){
@@ -1377,6 +1397,7 @@ function load(){
       const y = new Date().getFullYear();
       state.years = { [y]: d.months }; state.yearList = [y]; state.activeYear = y; state.activeMonth = d.activeMonth || 0;
       state.debts = (d.debts||[]).map(dd => { const n = {...dd}; n.monthlyByYear = { [y]: dd.monthly || Array(12).fill(0) }; delete n.monthly; return n; });
+      state.obligations = d.obligations || [];
       if(migratedFrom) setTimeout(() => save(), 100);
       LOADED_FROM_DATA = true;
       return;
@@ -1386,6 +1407,7 @@ function load(){
     if(!state.pyramidTargets) state.pyramidTargets = {};
     if(!state.pyramidNotes) state.pyramidNotes = {};
     if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {};
+    if(!state.obligations) state.obligations = [];
     state.yearList = state.yearList || [];
     Object.keys(state.years||{}).forEach(y => {
       state.years[y] = (state.years[y]||[]).map(m => {
@@ -1399,7 +1421,6 @@ function load(){
         if(!merged.zakat) merged.zakat = DEFAULT_EXTRA();
         if(typeof merged.eidClothes !== 'number') merged.eidClothes = 0;
         if(typeof merged.obligationsSaving !== 'number') merged.obligationsSaving = 0;
-        /* ⭐ ترحيل: نقل meta الالتزامات من savingMeta إلى expenseMeta */
         if(merged.savingMeta && merged.savingMeta.obligationsSaving && !merged.expenseMeta.obligationsSaving){
           merged.expenseMeta.obligationsSaving = {...merged.savingMeta.obligationsSaving};
         }
@@ -1449,6 +1470,7 @@ function load(){
         if(!state.pyramidTargets) state.pyramidTargets = {};
         if(!state.pyramidNotes) state.pyramidNotes = {};
         if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {};
+        if(!state.obligations) state.obligations = [];
         LOADED_FROM_DATA = true;
         toast(LANG==='ar'?'⚠️ تم استرجاع نسخة احتياطية':'⚠️ Restored from backup', 'warn');
       }
@@ -1459,6 +1481,7 @@ function load(){
 function initIfEmpty(){
   if(!state.yearList || !state.yearList.length){ const y = new Date().getFullYear(); state.years = { [y]: emptyYear() }; state.yearList = [y]; state.activeYear = y; }
   if(!state.years[state.activeYear]) state.years[state.activeYear] = emptyYear();
+  if(!state.obligations) state.obligations = [];
   ensurePyramidTargets();
   ensurePyramidNotes();
   ensurePyramidWithdrawals();
@@ -1727,6 +1750,14 @@ function applyLang(){
   document.getElementById('btnAddDebt').textContent = t('btn_add_debt');
   document.getElementById('lblDebtsTable').textContent = t('debts_table');
   document.getElementById('lblDebtsTableHint').textContent = t('debts_table_hint');
+  /* ⭐ ترجمات الالتزامات الجديدة */
+  document.getElementById('lblAddObligation').textContent = t('lblAddObligation');
+  document.getElementById('lblObligationName').textContent = t('lblObligationName');
+  document.getElementById('lblObligationAmount').textContent = t('lblObligationAmount');
+  document.getElementById('lblObligationNotes').textContent = t('lblObligationNotes');
+  document.getElementById('btnAddObligation').textContent = t('btnAddObligation');
+  document.getElementById('lblObligationsTable').textContent = t('lblObligationsTable');
+  document.getElementById('lblObligationsTableHint').textContent = t('lblObligationsTableHint');
   document.getElementById('lblAnnualTitle').textContent = t('lbl_annual');
   document.getElementById('lblYearsKpi').textContent = t('y_title_kpi');
   document.getElementById('lblYearsChart').textContent = t('y_title_chart');
@@ -2251,14 +2282,6 @@ function updExpenseAmount(key, val){
   renderMonthResults();
   renderMonthDate();
   renderMonthPills();
-  /* ⭐ تحديث الهرم عند تغيير التزامات أخرى */
-  if(key === "obligationsSaving"){
-    updatePyramidTargetRow("obligationsSaving");
-    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
-      renderPyramidSvg();
-      renderPyramidLegend();
-    }
-  }
 }
 function updExpenseBank(key, val){
   const m = M()[state.activeMonth];
@@ -2269,13 +2292,6 @@ function updExpenseBank(key, val){
   renderMonthResults();
   renderMonthDate();
   renderMonthPills();
-  if(key === "obligationsSaving"){
-    updatePyramidTargetRow("obligationsSaving");
-    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
-      renderPyramidSvg();
-      renderPyramidLegend();
-    }
-  }
 }
 function updExpenseNote(key, val){ const m = M()[state.activeMonth]; getMeta(m, key).note = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 function updBirthdayPerson(val){ const m = M()[state.activeMonth]; m.birthdayPerson = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
@@ -2524,7 +2540,7 @@ function withdrawFromPyramid(key){
     return;
   }
   if(key === "obligationsSaving"){
-    toast(LANG==='ar'?'⚠️ التزامات أخرى تلقائية - لا يمكن السحب منها':'⚠️ Obligations are automatic', 'warn');
+    toast(LANG==='ar'?'⚠️ الالتزامات تلقائية - لا يمكن السحب منها':'⚠️ Obligations are automatic', 'warn');
     return;
   }
   const lvl = getPyramidLevels().find(l => l.key === key);
@@ -2699,6 +2715,101 @@ function updDebtType(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) 
 function updDebtCategory(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.category = val; save(); }
 function updDebtNotes(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.notes = val; save(); renderMonth(); }
 
+/* ⭐ جديد: دوال الالتزامات */
+function addObligation(){
+  const name = document.getElementById("o_name").value.trim();
+  const amount = parseFloat(document.getElementById("o_amount").value)||0;
+  if(!name || amount <= 0){ toast(t('need_name_total')); return; }
+  if(!state.obligations) state.obligations = [];
+  state.obligations.push({
+    id: Date.now(),
+    name,
+    amount,
+    notes: document.getElementById("o_notes").value.trim()
+  });
+  document.getElementById("o_name").value = "";
+  document.getElementById("o_amount").value = "";
+  document.getElementById("o_notes").value = "";
+  save();
+  renderObligations();
+  renderDebtsSummary();
+  updatePyramidTargetRow("obligationsSaving");
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
+    renderPyramid();
+  }
+  toast(t('obligation_added'), 'success');
+}
+function delObligation(id){
+  if(!confirm(t('confirm_delete'))) return;
+  state.obligations = (state.obligations||[]).filter(o => o.id !== id);
+  save();
+  renderObligations();
+  renderDebtsSummary();
+  updatePyramidTargetRow("obligationsSaving");
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
+    renderPyramid();
+  }
+}
+function updObligationName(id, val){
+  const o = (state.obligations||[]).find(x => x.id === id);
+  if(!o) return;
+  o.name = val;
+  save();
+}
+function updObligationAmount(id, val){
+  const o = (state.obligations||[]).find(x => x.id === id);
+  if(!o) return;
+  o.amount = Math.max(0, parseFloat(val)||0);
+  save();
+  renderObligations();
+  updatePyramidTargetRow("obligationsSaving");
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
+    renderPyramidSvg();
+    renderPyramidLegend();
+  }
+}
+function updObligationNotes(id, val){
+  const o = (state.obligations||[]).find(x => x.id === id);
+  if(!o) return;
+  o.notes = val;
+  save();
+}
+function renderObligations(){
+  const el = document.getElementById("obligationsTable");
+  if(!el) return;
+  if(!state.obligations || !state.obligations.length){
+    el.innerHTML = `<thead><tr>
+      <th style="min-width:180px">${t('lblObligationName')}</th>
+      <th style="min-width:120px">${t('lblObligationAmount')}</th>
+      <th style="min-width:200px">${t('lblObligationNotes')}</th>
+      <th style="width:50px"></th>
+    </tr></thead><tbody><tr><td colspan="4" style="padding:20px;text-align:center;color:var(--muted)">—</td></tr></tbody>`;
+    return;
+  }
+  let html = `<thead><tr>
+    <th style="min-width:180px">${t('lblObligationName')}</th>
+    <th style="min-width:120px">${t('lblObligationAmount')}</th>
+    <th style="min-width:200px">${t('lblObligationNotes')}</th>
+    <th style="width:50px"></th>
+  </tr></thead><tbody>`;
+  let total = 0;
+  state.obligations.forEach(o => {
+    total += (+o.amount||0);
+    html += `<tr>
+      <td><input type="text" class="inline-input name" value="${esc(o.name)}" onchange="updObligationName(${o.id}, this.value)"></td>
+      <td><input type="number" class="inline-input num" value="${inVal(o.amount)}" min="0" step="0.001" oninput="updObligationAmount(${o.id}, this.value)"></td>
+      <td><input type="text" class="inline-input notes" value="${esc(o.notes||'')}" onchange="updObligationNotes(${o.id}, this.value)" placeholder="..."></td>
+      <td><button class="icon-btn" onclick="delObligation(${o.id})">✕</button></td>
+    </tr>`;
+  });
+  html += `</tbody><tfoot><tr>
+    <td>${t('dms_total')}</td>
+    <td class="num" style="color:var(--accent2);font-weight:700">${money(total)}</td>
+    <td colspan="2"></td>
+  </tr></tfoot>`;
+  el.innerHTML = html;
+}
+
 function buildPaidInfoHtml(d){
   const fullyPaid = isDebtFullyPaid(d);
   const lp = lastPaymentInfo(d);
@@ -2805,6 +2916,7 @@ function renderDebtsSummary(){
 }
 function renderDebts(){
   renderDebtsSummary();
+  renderObligations();
   const el = document.getElementById("debtsTable");
   if(!state.debts.length){ el.innerHTML = `<thead><tr><th colspan="21" style="padding:20px;color:var(--muted)">—</th></tr></thead>`; return; }
   const months = getMonths(); const y = state.activeYear;
