@@ -91,6 +91,7 @@
   .badge.fully-paid{background:rgba(34,197,94,.2);color:var(--ok);border:1px solid var(--ok);font-size:10px;padding:2px 6px;margin-inline-start:6px;font-weight:700}
   .badge.excluded-badge{background:rgba(239,68,68,.2);color:var(--danger);border:1px solid var(--danger);font-size:10px;padding:2px 6px;margin-inline-start:6px;font-weight:700}
   .badge.muted{background:rgba(143,163,184,.15);color:var(--muted)}
+  .badge.negative{background:rgba(239,68,68,.2);color:var(--danger);border:1px solid var(--danger);font-size:10px;padding:1px 6px;font-weight:700}
   .card.eid-card{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.18),rgba(234,179,8,.06));box-shadow:0 0 0 3px rgba(234,179,8,.15);transition:.3s}
   .card.eid-card h2.eid-title{color:#111827;background:var(--gold);border-bottom-color:rgba(0,0,0,.15);padding:8px 12px;border-radius:6px;font-weight:700;font-size:14px;line-height:1.4}
   .card.eid-card h2.eid-title::before{content:"⚠";color:#7c2d12;font-size:14px}
@@ -176,7 +177,8 @@
   .debts-table thead{background:var(--panel2);position:sticky;top:0;z-index:2}
   .debts-table th{padding:8px 6px;text-align:center;color:var(--accent);font-size:10px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
   .debts-table td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}
-  .debts-table input[type="number"]{width:58px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:4px 3px;border-radius:4px;text-align:center;font-size:11px;font-family:monospace;outline:none}
+  .debts-table input[type="number"]{width:72px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:5px 4px;border-radius:4px;text-align:center;font-size:12px;font-family:monospace;outline:none;transition:.15s}
+  .debts-table input[type="number"]:focus{border-color:var(--accent);background:var(--bg);box-shadow:0 0 0 2px rgba(34,193,164,.2)}
   .debts-table .paid-cell{font-family:monospace;font-weight:700;color:var(--accent);direction:ltr;font-size:12px}
   .debts-table .remain-cell{font-family:monospace;font-weight:700;direction:ltr;font-size:12px}
   .debts-table .remain-cell.pos{color:var(--ok)}
@@ -647,15 +649,15 @@
       <div class="note">هرم الأمان المالي يقع بالكامل داخل الـ <strong>20%</strong> المخصصة للمدخرات.</div>
 
       <h3>💳 القروض و📋 الالتزامات (تلقائية)</h3>
-      <div class="note">بند <strong>القروض</strong> يُحسب تلقائياً من الأقساط، وبند <strong>الالتزامات</strong> يُحسب تلقائياً من الالتزامات. كلاهما في تبويب «السلف والديون والالتزامات»، وتُدفع شهرياً في تبويب «إدارة الشهور».</div>
+      <div class="note">بند <strong>القروض</strong> يُحسب تلقائياً من الأقساط، وبند <strong>الالتزامات</strong> يُحسب تلقائياً من الالتزامات. كلاهما في تبويب «السلف والديون والالتزامات»، وتُدفع شهرياً في تبويب «إدارة الشهور». القروض والالتزامات <strong>سلبية</strong> ولا تُحتسب في إجمالي الادخار.</div>
 
       <h3>📊 توزيع نسبي مقترح</h3>
       <table>
         <thead><tr><th>البند</th><th>النسبة</th><th>ملاحظات</th></tr></thead>
         <tbody>
           <tr><td><strong>🚨 الطوارئ</strong></td><td><strong class="hl">30% - 50%</strong></td><td>أولوية قصوى - 3-6 أشهر من المصاريف.</td></tr>
-          <tr><td><strong>💳 القروض</strong></td><td>تلقائي</td><td>يُحسب من الأقساط.</td></tr>
-          <tr><td><strong>📋 الالتزامات</strong></td><td>تلقائي</td><td>يُحسب من الالتزامات.</td></tr>
+          <tr><td><strong>💳 القروض</strong></td><td>تلقائي</td><td>يُحسب من الأقساط — سلبي.</td></tr>
+          <tr><td><strong>📋 الالتزامات</strong></td><td>تلقائي</td><td>يُحسب من الالتزامات — سلبي.</td></tr>
           <tr><td><strong>🛡️ تأمين وتسجيل</strong></td><td><strong class="hl">5% - 10%</strong></td><td>مبلغ سنوي يُقسم على 12.</td></tr>
           <tr><td><strong>👕 ثياب العيد</strong></td><td><strong class="hl">2% - 5%</strong></td><td>مبلغ موسمي.</td></tr>
           <tr><td><strong>📈 الاستثمار</strong></td><td><strong class="hl">10% - 20%</strong></td><td>بعد الوصول لـ 3 أشهر طوارئ.</td></tr>
@@ -730,9 +732,11 @@ const I18N = {
     lbl_month_result:"النتيجة الشهرية",lbl_month_notes:"ملاحظات على الشهر",
     th_sav_item:"بند الادخار",th_sav_amount:"المبلغ (د.ب)",th_sav_bank:"البنك / الجهة",th_sav_note:"ملاحظة",th_sav_ref:"مرجع",
     pyr_title:"🔺 هرم الأمان المالي",
-    pyr_desc:"ترتيب الأولويات المالية من القاعدة إلى القمة. الأرقام تتراكم من جميع السنوات. القروض والالتزامات تُحسب تلقائياً ولا يمكن تعديلها.",
+    pyr_desc:"ترتيب الأولويات المالية من القاعدة إلى القمة. الأرقام تتراكم من جميع السنوات. القروض والالتزامات تُحسب تلقائياً ولا يمكن تعديلها. الإجمالي يحتسب بنود الادخار فقط (بدون القروض والالتزامات لأنها سلبية).",
     pyr_detail:"تفصيل الهرم",th_level:"المستوى",th_item_name:"البند",
     th_year_total:"المجموع التراكمي (د.ب)",th_pct:"النسبة",th_total:"الإجمالي",
+    th_total_positive:"إجمالي الادخار (إيجابي)",
+    th_total_negative:"إجمالي الالتزامات (سلبي)",
     debts_summary:"📊 ملخص الديون والأقساط والالتزامات",add_debt:"➕ إضافة دين / سلفة / قسط / التزام",
     lbl_debt_name:"الاسم",lbl_debt_type:"النوع",lbl_debt_cat:"فئة القسط",
     lbl_debt_total:"المبلغ الكلي (د.ب)",lbl_debt_paidbefore:"مدفوع سابقاً (د.ب)",
@@ -801,6 +805,7 @@ const I18N = {
     tgt_no_installments:"لا توجد أقساط مسجّلة",
     pyr_remaining_label:"متبقي",
     pyr_done_label:"✅ تم",
+    pyr_negative_hint:"سلبي — لا يُحتسب في الإجمالي",
     inst_title:"📖 تعليمات هرم الأمان المالي",
     close_btn:"إغلاق",
     months:["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"],
@@ -901,9 +906,11 @@ const I18N = {
     lbl_savings:"💰 Savings Amounts (BHD)",savings_hint:"🔢 Supports 3 decimals. Loans and obligations are auto-calculated from Debts tab.",
     lbl_month_result:"Monthly Result",lbl_month_notes:"Month Notes",
     th_sav_item:"Savings Item",th_sav_amount:"Amount (BHD)",th_sav_bank:"Bank",th_sav_note:"Note",th_sav_ref:"Reference",
-    pyr_title:"🔺 Financial Safety Pyramid",pyr_desc:"Priorities from base to top. Cumulative across all years. Loans and obligations are auto-calculated and cannot be edited.",
+    pyr_title:"🔺 Financial Safety Pyramid",pyr_desc:"Priorities from base to top. Cumulative across all years. Loans and obligations are auto-calculated and cannot be edited. Total counts savings items only (excludes loans and obligations as they are negative).",
     pyr_detail:"Pyramid Details",th_level:"Level",th_item_name:"Item",
     th_year_total:"Cumulative Total (BHD)",th_pct:"%",th_total:"Total",
+    th_total_positive:"Savings Total (Positive)",
+    th_total_negative:"Obligations Total (Negative)",
     debts_summary:"📊 Debts, Installments & Obligations Summary",add_debt:"➕ Add Debt / Loan / Installment / Obligation",
     lbl_debt_name:"Name",lbl_debt_type:"Type",lbl_debt_cat:"Category",
     lbl_debt_total:"Total (BHD)",lbl_debt_paidbefore:"Paid Before (BHD)",
@@ -970,6 +977,7 @@ const I18N = {
     tgt_no_installments:"No installments recorded",
     pyr_remaining_label:"Left",
     pyr_done_label:"✅ Done",
+    pyr_negative_hint:"Negative — not counted in total",
     inst_title:"📖 Financial Safety Pyramid Instructions",
     close_btn:"Close",
     months:["January","February","March","April","May","June","July","August","September","October","November","December"],
@@ -1056,6 +1064,7 @@ let LOADED_FROM_DATA = false;
 let SAVE_TIMER = null;
 let SAVE_PENDING = false;
 let _pyramidNoteTimer = null;
+let _debtMonthRefreshTimer = null;
 
 const t = key => (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key;
 const getMonths = () => I18N[LANG].months;
@@ -1110,8 +1119,8 @@ const getSavingFields = () => [
 
 const getPyramidLevels = () => [
   {key:"emergencyFund",label:t('p_emergencyFund'),color:"#ef4444",subtitle:"🚨"},
-  {key:"loans",label:t('p_loans'),color:"#64748b",subtitle:"💳",auto:true},
-  {key:"obligationsSaving",label:t('p_obligationsSaving'),color:"#3b82f6",subtitle:"📋",auto:true},
+  {key:"loans",label:t('p_loans'),color:"#64748b",subtitle:"💳",auto:true,negative:true},
+  {key:"obligationsSaving",label:t('p_obligationsSaving'),color:"#3b82f6",subtitle:"📋",auto:true,negative:true},
   {key:"insuranceSaving",label:t('p_insuranceSaving'),color:"#eab308",subtitle:"🛡️"},
   {key:"eidClothes",label:t('p_eidClothes'),color:"#ec4899",subtitle:"👕"},
   {key:"investment",label:t('p_investment'),color:"#22c55e",subtitle:"📈"},
@@ -1119,6 +1128,10 @@ const getPyramidLevels = () => [
   {key:"travelSaving",label:t('p_travelSaving'),color:"#14b8a6",subtitle:"✈️"},
   {key:"eidMoneySaving",label:t('p_eidMoneySaving'),color:"#f97316",subtitle:"🎉"},
 ];
+
+function isPyramidNegativeLevel(key){
+  return key === "loans" || key === "obligationsSaving";
+}
 
 const EMPTY_MONTH = () => ({
   salary:0,costOfLiving:0,housing:0,hasMeatSupport:false,meat:0,
@@ -1308,6 +1321,17 @@ function isSavingDisabledForMonth(key){
   const totalExcl = getCumulativeSavedExcluding(key, state.activeYear, state.activeMonth);
   const withdrawn = getWithdrawnTotal(key);
   return (totalExcl - withdrawn) >= target;
+}
+
+function getPyramidPositiveTotal(){
+  const levels = getPyramidLevels();
+  return levels.filter(l => !isPyramidNegativeLevel(l.key))
+               .reduce((s, l) => s + getCumulativeSaved(l.key), 0);
+}
+function getPyramidNegativeTotal(){
+  const levels = getPyramidLevels();
+  return levels.filter(l => isPyramidNegativeLevel(l.key))
+               .reduce((s, l) => s + getCumulativeSaved(l.key), 0);
 }
 
 function testStorage(){ try{ const k = "__test_"+Date.now(); localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }catch(e){ return false; } }
@@ -2613,12 +2637,12 @@ document.addEventListener('keydown', function(e){
   }
 });
 
-/* ⭐ دالة الرسم البياني للهرم — تعرض المتبقي لكل شريحة */
 function renderPyramidSvg(){
   const levels = getPyramidLevels();
   const totals = {};
   levels.forEach(lvl => { totals[lvl.key] = getCumulativeSaved(lvl.key); });
-  const grandTotal = Object.values(totals).reduce((a,b)=>a+b,0);
+  const positiveTotal = levels.filter(l => !isPyramidNegativeLevel(l.key))
+                              .reduce((s,l)=>s+(totals[l.key]||0),0);
   const apexY = 25, bottomY = 430, apexLeftX = 190, apexRightX = 310, baseLeftX = 20, baseRightX = 480;
   const sliceH = (bottomY - apexY) / levels.length;
   const leftAt = y => apexLeftX + (baseLeftX - apexLeftX) * (y - apexY) / (bottomY - apexY);
@@ -2632,9 +2656,10 @@ function renderPyramidSvg(){
     const withdrawn = getWithdrawnTotal(lvl.key);
     const netSaved = amt - withdrawn;
     const target = getPyramidTarget(lvl.key);
+    const isNegative = isPyramidNegativeLevel(lvl.key);
     const remaining = target > 0 ? Math.max(0, target - netSaved) : null;
     const reached = target > 0 && netSaved >= target;
-    const pct = grandTotal > 0 ? (amt/grandTotal*100) : 0;
+    const pct = positiveTotal > 0 ? (amt/positiveTotal*100) : 0;
     const fs = 10 - i * 0.35, afs = 9 - i * 0.3;
     const note = getPyramidNote(lvl.key);
     const maxChars = Math.max(10, 28 - i * 2);
@@ -2647,13 +2672,17 @@ function renderPyramidSvg(){
           : `📌 ${t('pyr_remaining_label')}: ${fmt(remaining)} ${remBhd}`)
       : '';
     const remColor = reached ? '#86efac' : '#fde68a';
+    const negBadge = isNegative ? `<text x="${cx}" y="${cy + (remaining !== null ? 22 : 13)}" text-anchor="middle" fill="#fca5a5" font-size="7" font-weight="700">⚠ ${t('pyr_negative_hint')}</text>` : '';
+    const pctText = isNegative ? '—' : `${pct.toFixed(1)}%`;
+    const pctFill = isNegative ? '#fca5a5' : '#fff';
     svg += `
-      <polygon points="${x1},${yTop} ${x2},${yTop} ${x3},${yBot} ${x4},${yBot}" fill="${lvl.color}" fill-opacity="0.88" stroke="${lvl.color}" stroke-width="1.5"/>
+      <polygon points="${x1},${yTop} ${x2},${yTop} ${x3},${yBot} ${x4},${yBot}" fill="${lvl.color}" fill-opacity="${isNegative ? 0.55 : 0.88}" stroke="${lvl.color}" stroke-width="1.5" ${isNegative ? 'stroke-dasharray="4,2"' : ''}/>
       <text x="${cx}" y="${cy - 16}" text-anchor="middle" fill="#fff" font-size="${fs}" font-weight="700">${lvl.subtitle} ${lvl.label}</text>
       <text x="${cx}" y="${cy - 6}" text-anchor="middle" fill="#fff" font-size="${afs}" font-weight="600" font-family="monospace">${fmt(amt)} ${remBhd}</text>
-      <text x="${cx}" y="${cy + 3}" text-anchor="middle" fill="#fff" font-size="${afs - 1.5}" font-weight="500" opacity="0.85">${pct.toFixed(1)}%</text>
+      <text x="${cx}" y="${cy + 3}" text-anchor="middle" fill="${pctFill}" font-size="${afs - 1.5}" font-weight="500" opacity="0.9">${pctText}</text>
       ${remaining !== null ? `<text x="${cx}" y="${cy + 13}" text-anchor="middle" fill="${remColor}" font-size="${afs - 1.5}" font-weight="800" font-family="monospace">${remText}</text>` : ''}
-      ${hasNote ? `<text x="${cx}" y="${cy + 22}" text-anchor="middle" fill="#fff" font-size="7" font-style="italic" opacity="0.95">📝 ${truncatedNote}</text>` : ''}
+      ${negBadge}
+      ${hasNote && !isNegative ? `<text x="${cx}" y="${cy + 22}" text-anchor="middle" fill="#fff" font-size="7" font-style="italic" opacity="0.95">📝 ${truncatedNote}</text>` : ''}
     `;
   });
   document.getElementById("pyramidSvg").innerHTML = svg;
@@ -2665,11 +2694,12 @@ function renderPyramidLegend(){
   levels.forEach(lvl => { totals[lvl.key] = getCumulativeSaved(lvl.key); });
   document.getElementById("pyramidLegend").innerHTML = levels.slice().reverse().map(lvl => {
     const note = getPyramidNote(lvl.key);
+    const isNegative = isPyramidNegativeLevel(lvl.key);
     return `
-      <div class="pyr-legend-item">
+      <div class="pyr-legend-item" ${isNegative ? 'style="border-color:rgba(239,68,68,.4)"' : ''}>
         <div class="pyr-color" style="background:${lvl.color}"></div>
-        <div class="pyr-label">${lvl.subtitle} ${lvl.label}</div>
-        <div class="pyr-val">${fmt(totals[lvl.key])} ${LANG==='ar'?'د.ب':'BHD'}</div>
+        <div class="pyr-label">${lvl.subtitle} ${lvl.label} ${isNegative ? '⚠' : ''}</div>
+        <div class="pyr-val" style="${isNegative ? 'color:var(--danger)' : ''}">${fmt(totals[lvl.key])} ${LANG==='ar'?'د.ب':'BHD'}</div>
         ${note ? `<div class="pyr-note">📝 ${esc(note)}</div>` : ''}
       </div>
     `;
@@ -2680,7 +2710,11 @@ function renderPyramid(){
   const levels = getPyramidLevels();
   const totals = {};
   levels.forEach(lvl => { totals[lvl.key] = getCumulativeSaved(lvl.key); });
-  const grandTotal = Object.values(totals).reduce((a,b)=>a+b,0);
+
+  const positiveTotal = levels.filter(l => !isPyramidNegativeLevel(l.key))
+                              .reduce((s,l)=>s+(totals[l.key]||0),0);
+  const negativeTotal = levels.filter(l => isPyramidNegativeLevel(l.key))
+                              .reduce((s,l)=>s+(totals[l.key]||0),0);
 
   renderPyramidSvg();
   renderPyramidLegend();
@@ -2689,10 +2723,36 @@ function renderPyramid(){
   levels.forEach((lvl, idx) => {
     const level = idx + 1;
     const amt = totals[lvl.key] || 0;
-    const pct = grandTotal > 0 ? (amt/grandTotal*100) : 0;
-    html += `<tr><td style="color:${lvl.color};font-weight:700">${level}</td><td>${lvl.subtitle} ${lvl.label}</td><td class="num" style="color:${lvl.color};font-weight:700">${money(amt)}</td><td class="num">${fmtPct(pct)}%</td></tr>`;
+    const isNegative = isPyramidNegativeLevel(lvl.key);
+    const pct = isNegative ? null : (positiveTotal > 0 ? (amt/positiveTotal*100) : 0);
+    const negBadge = isNegative ? ` <span class="badge negative">⚠ ${LANG==='ar'?'سلبي':'Negative'}</span>` : '';
+    const amtDisplay = isNegative
+      ? `<span style="color:var(--danger)">- ${money(amt)}</span>`
+      : `<span style="color:${lvl.color};font-weight:700">${money(amt)}</span>`;
+    const pctDisplay = pct === null ? `<span style="color:var(--muted)">—</span>` : `${fmtPct(pct)}%`;
+    html += `<tr${isNegative ? ' style="background:rgba(239,68,68,.05)"' : ''}>
+      <td style="color:${lvl.color};font-weight:700">${level}</td>
+      <td>${lvl.subtitle} ${lvl.label} ${negBadge}</td>
+      <td class="num">${amtDisplay}</td>
+      <td class="num">${pctDisplay}</td>
+    </tr>`;
   });
-  html += `<tr style="background:rgba(34,193,164,.1);font-weight:700"><td colspan="2">${t('th_total')}</td><td class="num" style="color:var(--accent);font-weight:700">${money(grandTotal)}</td><td class="num">100%</td></tr></tbody>`;
+
+  html += `<tr style="background:rgba(34,193,164,.15);font-weight:700;border-top:2px solid var(--accent)">
+    <td colspan="2" style="color:var(--accent)">✅ ${t('th_total_positive')}</td>
+    <td class="num" style="color:var(--accent);font-weight:800;font-size:15px">${money(positiveTotal)}</td>
+    <td class="num" style="color:var(--accent)">100%</td>
+  </tr>`;
+
+  if(negativeTotal > 0){
+    html += `<tr style="background:rgba(239,68,68,.08);font-weight:700;border-top:1px dashed var(--danger)">
+      <td colspan="2" style="color:var(--danger)">⚠ ${t('th_total_negative')}</td>
+      <td class="num" style="color:var(--danger);font-weight:800">- ${money(negativeTotal)}</td>
+      <td class="num" style="color:var(--muted)">—</td>
+    </tr>`;
+  }
+
+  html += `</tbody>`;
   document.getElementById("pyramidTable").innerHTML = html;
   renderPyramidTargets();
 }
@@ -2733,24 +2793,41 @@ function delDebt(id){
   renderMonth(); 
   if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); } 
 }
+
+/* ⭐⭐ الحل: دالة تحديث شهر بدون إعادة رسم الجدول (تحافظ على التركيز) ⭐⭐ */
 function updDebtMonth(id, mi, val){ 
-  const d = state.debts.find(x=>x.id===id); if(!d) return; 
+  const d = state.debts.find(x=>x.id===id); 
+  if(!d) return; 
   setDm(d, state.activeYear, mi, Math.max(0, parseFloat(val)||0)); 
   save(); 
-  refreshDebtTotals(); 
-  renderDebtsSummary(); 
-  renderDashboard(); 
-  renderDebts(); 
-  updatePyramidTargetRow("loans"); 
-  updatePyramidTargetRow("obligationsSaving"); 
-  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); } 
+  
+  /* ⭐ تحديث خلايا الصف الحالي فقط (بدون إعادة بناء الجدول) */
+  refreshDebtRowCells(d); 
+  
+  /* ⭐ تحديث الإجماليات في الأسفل */
+  updateDebtsFooter();
+  
+  /* ⭐ تحديث بطاقات KPI ولوحة التحكم (بشكل مؤجل لتجنب البطء أثناء الكتابة) */
+  if(_debtMonthRefreshTimer) clearTimeout(_debtMonthRefreshTimer);
+  _debtMonthRefreshTimer = setTimeout(() => {
+    renderDebtsSummary(); 
+    renderDashboard(); 
+    updatePyramidTargetRow("loans"); 
+    updatePyramidTargetRow("obligationsSaving"); 
+    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ 
+      renderPyramidSvg(); 
+      renderPyramidLegend(); 
+    } 
+  }, 400);
 }
+
 function updDebtName(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.name = val; save(); renderDashboard(); renderMonth(); renderDebtsSummary(); }
 function updDebtTotal(id, val){ 
   const d = state.debts.find(x=>x.id===id); if(!d) return; 
   d.total = Math.max(0, parseFloat(val)||0); 
   save(); 
   refreshDebtRowCells(d); 
+  updateDebtsFooter();
   renderDebtsSummary(); 
   renderDashboard(); 
   renderMonthPills(); 
@@ -2758,7 +2835,7 @@ function updDebtTotal(id, val){
   updatePyramidTargetRow("obligationsSaving");
   if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); renderPyramidTargets(); } 
 }
-function updDebtPaidBefore(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.paidBefore = Math.max(0, parseFloat(val)||0); save(); refreshDebtRowCells(d); renderDebtsSummary(); renderDashboard(); renderMonthPills(); }
+function updDebtPaidBefore(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.paidBefore = Math.max(0, parseFloat(val)||0); save(); refreshDebtRowCells(d); updateDebtsFooter(); renderDebtsSummary(); renderDashboard(); renderMonthPills(); }
 function updDebtType(id, val){ 
   const d = state.debts.find(x=>x.id===id); if(!d) return; 
   d.type = val; 
@@ -2841,7 +2918,6 @@ function refreshDebtRowCells(d){
   if(rc){ rc.textContent = fmt(rem); rc.classList.toggle('pos', rem === 0); rc.classList.toggle('neg', rem > 0); }
   const bw = row.querySelector('.fully-paid-badge-wrap');
   if(bw) bw.innerHTML = buildPaidInfoHtml(d);
-  updateDebtsFooter();
 }
 function refreshDebtTotals(){
   state.debts.forEach(d => {
@@ -2892,7 +2968,7 @@ function renderDebts(){
     <th style="min-width:85px">${t('th_debt_total')}</th>
     <th style="min-width:85px">${t('lbl_debt_paidbefore')}</th>
     <th style="min-width:120px">${t('lbl_debt_notes')}</th>`;
-  months.forEach(m => { head += `<th style="width:60px">${m}</th>`; });
+  months.forEach(m => { head += `<th style="width:80px">${m}</th>`; });
   head += `<th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th><th></th></tr></thead>`;
   let body = `<tbody>`;
   state.debts.forEach(d => {
@@ -2918,7 +2994,7 @@ function renderDebts(){
       <td><input type="number" class="inline-input num" value="${inVal(d.total)}" min="0" step="0.001" oninput="updDebtTotal(${d.id}, this.value)"></td>
       <td><input type="number" class="inline-input num paid-before" value="${inVal(d.paidBefore)}" min="0" step="0.001" oninput="updDebtPaidBefore(${d.id}, this.value)"></td>
       <td><input type="text" class="inline-input notes" value="${esc(d.notes)}" placeholder="..." onchange="updDebtNotes(${d.id}, this.value)"></td>`;
-    for(let i=0;i<12;i++){ body += `<td><input type="number" value="${inVal(dm(d,y,i))}" min="0" step="0.001" oninput="updDebtMonth(${d.id}, ${i}, this.value)"></td>`; }
+    for(let i=0;i<12;i++){ body += `<td><input type="number" value="${inVal(dm(d,y,i))}" min="0" step="0.001" oninput="updDebtMonth(${d.id}, ${i}, this.value)" onblur="onDebtMonthBlur()"></td>`; }
     body += `<td class="paid-cell">${fmt(paid)}</td><td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td><td><button class="icon-btn" onclick="delDebt(${d.id})">✕</button></td></tr>`;
   });
   body += `</tbody>`;
@@ -2929,6 +3005,18 @@ function renderDebts(){
   for(let i=0;i<12;i++) foot += `<td>${mTotals[i] > 0 ? fmt(mTotals[i]) : "—"}</td>`;
   foot += `<td class="paid-cell">${fmt(tp)}</td><td class="remain-cell">${fmt(tr)}</td><td></td></tr></tfoot>`;
   el.innerHTML = head + body + foot;
+}
+
+function onDebtMonthBlur(){
+  /* عند مغادرة الحقل: نُحدّث البطاقات ولوحة التحكم */
+  renderDebtsSummary();
+  renderDashboard();
+  updatePyramidTargetRow("loans");
+  updatePyramidTargetRow("obligationsSaving");
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
+    renderPyramidSvg();
+    renderPyramidLegend();
+  }
 }
 
 function renderYears(){
