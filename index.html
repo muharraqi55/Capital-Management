@@ -6,7 +6,7 @@
 <title>إدارة رأس المال | Capital Manager</title>
 <style>
   :root{--bg:#0f1720;--panel:#17212b;--panel2:#1e2b38;--line:#2a3a4a;--txt:#e6eef7;--muted:#8fa3b8;--accent:#22c1a4;--accent2:#3b82f6;--danger:#ef4444;--ok:#22c55e;--gold:#eab308;--shadow:rgba(0,0,0,.35);}
-  html[data-theme="light"]{--bg:#f0f4f8;--panel:#ffffff;--panel2:#e8eef5;--line:#cbd5e1;--txt:#0f172a;--muted:#64748b;--accent:#0891b2;--accent2:#2563eb;--danger:#dc2626;--ok:#16a34a;--gold:#d97706;--shadow:rgba(0,0,0,.12);}
+  html[data-theme="light"]{--bg:#f0f4f8;--panel:#ffffff;--panel2:#e8eef5;--line:#94a3b8;--txt:#0f172a;--muted:#475569;--accent:#0891b2;--accent2:#2563eb;--danger:#dc2626;--ok:#16a34a;--gold:#d97706;--shadow:rgba(0,0,0,.12);}
   *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI","Tahoma",sans-serif}
   html,body{height:100%}
   body{background:var(--bg);color:var(--txt);min-height:100vh;font-size:14px;transition:background .3s,color .3s}
@@ -81,6 +81,7 @@
   .icon-btn:hover{border-color:var(--danger);color:var(--danger)}
   .icon-btn.withdraw:hover{border-color:var(--gold);color:var(--gold);background:rgba(234,179,8,.1)}
   .icon-btn.history:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(59,130,246,.1)}
+  .icon-btn.print-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(34,193,164,.1)}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
   .badge.green{background:rgba(34,197,94,.15);color:var(--ok)}
   .badge.red{background:rgba(239,68,68,.15);color:var(--danger)}
@@ -92,6 +93,7 @@
   .badge.excluded-badge{background:rgba(239,68,68,.2);color:var(--danger);border:1px solid var(--danger);font-size:10px;padding:2px 6px;margin-inline-start:6px;font-weight:700}
   .badge.muted{background:rgba(143,163,184,.15);color:var(--muted)}
   .badge.negative{background:rgba(239,68,68,.2);color:var(--danger);border:1px solid var(--danger);font-size:10px;padding:1px 6px;font-weight:700}
+  .badge.investment{background:rgba(34,197,94,.2);color:var(--ok);border:1px solid var(--ok);font-size:10px;padding:1px 6px;font-weight:700}
   .card.eid-card{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.18),rgba(234,179,8,.06));box-shadow:0 0 0 3px rgba(234,179,8,.15);transition:.3s}
   .card.eid-card h2.eid-title{color:#111827;background:var(--gold);border-bottom-color:rgba(0,0,0,.15);padding:8px 12px;border-radius:6px;font-weight:700;font-size:14px;line-height:1.4}
   .card.eid-card h2.eid-title::before{content:"⚠";color:#7c2d12;font-size:14px}
@@ -101,9 +103,12 @@
   .card.eid-card.eid-no h2.eid-title{background:var(--ok);color:#052e16}
   .card.eid-card.eid-no h2.eid-title::before{color:#052e16}
   .card.eid-card.eid-no .field label{color:#86efac}
-  .meat-status{display:flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:8px;font-size:13px;font-weight:700;border:1.5px solid;transition:.25s;user-select:none;min-height:40px}
-  .meat-status.meat-status-no{background:linear-gradient(180deg,#2a1416,rgba(239,68,68,.35));border-color:var(--danger);color:#ffdcdc}
-  .meat-status.meat-status-yes{background:linear-gradient(180deg,#123322,rgba(34,197,94,.35));border-color:var(--ok);color:#d6ffe2}
+  /* ⭐ تم إصلاح ألوان دعم اللحوم - لون واحد واضح */
+  .meat-status{display:flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:8px;font-size:13px;font-weight:700;border:2px solid;transition:.25s;user-select:none;min-height:40px;letter-spacing:.3px}
+  .meat-status.meat-status-no{background:#7f1d1d;border-color:#991b1b;color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+  .meat-status.meat-status-yes{background:#14532d;border-color:#15803d;color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+  html[data-theme="light"] .meat-status.meat-status-no{background:#b91c1c;border-color:#7f1d1d;color:#ffffff}
+  html[data-theme="light"] .meat-status.meat-status-yes{background:#15803d;border-color:#14532d;color:#ffffff}
   .expense-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
   .expense-table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
   .expense-table thead{background:var(--panel2)}
@@ -308,10 +313,15 @@
     .target-table{min-width:1000px;font-size:11px}
   }
 
+  /* ⭐ قسم زر الطباعة في أسفل كل تبويب */
+  .print-section{text-align:center;margin:24px 0 8px;padding:20px 12px;border-top:2px dashed var(--line);border-radius:0 0 12px 12px}
+  .print-section .btn{padding:12px 34px;font-size:15px;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.15);letter-spacing:.3px}
+  .print-section .btn:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(34,193,164,.25)}
+
   @media print{
     @page{size:A4;margin:12mm 10mm}
     html,body{background:#fff !important;color:#000 !important;font-size:10pt !important}
-    header,nav.tabs,.toolbar,.settings-bar,.btn,.icon-btn,.toast,.monthPills,.site-footer,.modal,.eid-type-inline,.year-picker,.save-indicator{display:none !important}
+    header,nav.tabs,.toolbar,.settings-bar,.btn,.icon-btn,.toast,.monthPills,.site-footer,.modal,.eid-type-inline,.year-picker,.save-indicator,.print-section{display:none !important}
     main{padding:0 !important;max-width:100% !important}
     .view{display:none !important}.view.active{display:block !important}
     .card{break-inside:avoid;page-break-inside:avoid;border:1px solid #999 !important;background:#fff !important;box-shadow:none !important;padding:10pt !important;margin-bottom:8pt !important;border-radius:4pt}
@@ -326,7 +336,7 @@
     td{color:#000 !important;padding:4pt !important;border-color:#ccc !important}
     input,select,textarea{border:none !important;background:transparent !important;color:#000 !important;padding:0 !important;font-size:9pt !important;font-weight:600 !important;-webkit-appearance:none;appearance:none}
     input[type="number"]{text-align:center}
-    .meat-status{border:1px solid #999 !important;background:#f5f5f5 !important;color:#000 !important;padding:3pt !important;font-size:8pt !important}
+    .meat-status{border:1px solid #666 !important;background:#f5f5f5 !important;color:#000 !important;padding:3pt !important;font-size:8pt !important}
     .expense-table,.debts-month-table,.debts-table,.target-table{min-width:100% !important}
     .debts-table{font-size:6.5pt !important}.debts-table input{width:auto;font-size:7pt !important}
     .pyramid-wrap{background:#fff !important;border:1px solid #ccc !important}
@@ -401,6 +411,9 @@
   <div class="card"><h2 id="dashTitle2"></h2><div class="grid g4" id="dashDist"></div></div>
   <div class="card"><h2 id="dashTitle3"></h2><div class="grid g4" id="dashDebts"></div></div>
   <div class="card"><h2 id="dashTitle4"></h2><div style="overflow-x:auto"><table id="dashTable"></table></div></div>
+  <div class="print-section">
+    <button class="btn primary" onclick="printCurrentView()" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+  </div>
 </section>
 
 <section id="month" class="view">
@@ -525,6 +538,9 @@
   <div class="card"><h2 id="lblMonthNotes"></h2>
     <div class="field"><textarea id="monthNotes" rows="4" oninput="updateMonthNotes(this.value)"></textarea></div>
   </div>
+  <div class="print-section">
+    <button class="btn primary" onclick="printCurrentView(true)" id="btnPrintMonth">🖨️ طباعة هذا الشهر</button>
+  </div>
 </section>
 
 <section id="debts" class="view">
@@ -561,10 +577,16 @@
     <p class="muted" style="margin-bottom:12px" id="lblDebtsTableHint"></p>
     <div class="debts-table-wrap"><table class="debts-table" id="debtsTable"></table></div>
   </div>
+  <div class="print-section">
+    <button class="btn primary" onclick="printCurrentView()" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+  </div>
 </section>
 
 <section id="annual" class="view">
   <div class="card"><h2 id="lblAnnualTitle"></h2><div style="overflow-x:auto"><table id="annualTable"></table></div></div>
+  <div class="print-section">
+    <button class="btn primary" onclick="printCurrentView()" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+  </div>
 </section>
 
 <section id="years" class="view">
@@ -581,6 +603,9 @@
   </div>
   <div class="card"><h2 id="lblYearsTable"></h2><div style="overflow-x:auto"><table id="yearsTable"></table></div></div>
   <div class="card"><h2 id="lblYearsDist"></h2><div style="overflow-x:auto"><table id="yearsDistTable"></table></div></div>
+  <div class="print-section">
+    <button class="btn primary" onclick="printCurrentView()" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+  </div>
 </section>
 
 <section id="pyramid" class="view">
@@ -617,6 +642,10 @@
   </div>
 
   <div class="card"><h2 id="lblPyrDetail"></h2><div style="overflow-x:auto"><table id="pyramidTable"></table></div></div>
+
+  <div class="print-section">
+    <button class="btn primary" onclick="printCurrentView()" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+  </div>
 </section>
 
 </main>
@@ -694,6 +723,8 @@ const I18N = {
     t_pyr:"🔺 هرم الأمان المالي",t_debts:"🤝 السلف والديون و الالتزامات",t_annual:"📈 الملخص السنوي",
     btn_export:"📤 تصدير",btn_import:"📥 استيراد",btn_reset:"🗑 تصفير",
     btn_save:"💾 حفظ",
+    btn_print_page:"🖨️ طباعة هذه الصفحة",
+    btn_print_month:"🖨️ طباعة هذا الشهر",
     save_manual_ok:"💾 تم حفظ البيانات بنجاح",
     save_pending:"📝 جاري الحفظ...",
     save_saved:"✓ محفوظ ",
@@ -732,11 +763,44 @@ const I18N = {
     lbl_month_result:"النتيجة الشهرية",lbl_month_notes:"ملاحظات على الشهر",
     th_sav_item:"بند الادخار",th_sav_amount:"المبلغ (د.ب)",th_sav_bank:"البنك / الجهة",th_sav_note:"ملاحظة",th_sav_ref:"مرجع",
     pyr_title:"🔺 هرم الأمان المالي",
-    pyr_desc:"ترتيب الأولويات المالية من القاعدة إلى القمة. الأرقام تتراكم من جميع السنوات. القروض والالتزامات تُحسب تلقائياً ولا يمكن تعديلها. الإجمالي يحتسب بنود الادخار فقط (بدون القروض والالتزامات لأنها سلبية).",
+    pyr_desc:"ترتيب الأولويات المالية من القاعدة إلى القمة. الأرقام تتراكم من جميع السنوات. القروض والالتزامات تُحسب تلقائياً ولا يمكن تعديلها.",
     pyr_detail:"تفصيل الهرم",th_level:"المستوى",th_item_name:"البند",
     th_year_total:"المجموع التراكمي (د.ب)",th_pct:"النسبة",th_total:"الإجمالي",
-    th_total_positive:"إجمالي الادخار (إيجابي)",
+    th_total_bank_savings:"إجمالي الادخار الموجود الكلي في البنك (إيجابي)",
+    th_total_investment:"إجمالي الاستثمار (إيجابي)",
     th_total_negative:"إجمالي الالتزامات (سلبي)",
+    th_actions:"إجراء",
+    btn_print_row:"🖨️ طباعة",
+    print_report_title:"تقرير",
+    print_generated:"تم الإنشاء في",
+    print_target:"الهدف",
+    print_cumulative:"المُدَّخر التراكمي",
+    print_withdrawn:"المسحوب",
+    print_net:"الصافي",
+    print_remaining_to_target:"المتبقي للوصول للهدف",
+    print_reached:"✅ تم الوصول",
+    print_notes_label:"ملاحظات",
+    print_years_breakdown:"📅 تفصيل حسب السنة والشهر",
+    print_withdrawals_history:"📜 سجل السحوبات",
+    print_year:"السنة",
+    print_amount:"المبلغ",
+    print_date:"التاريخ",
+    print_reason:"السبب",
+    print_total:"الإجمالي",
+    print_total_withdrawn:"إجمالي المسحوب",
+    print_year_total:"إجمالي سنة",
+    print_month:"الشهر",
+    print_day_month:"التاريخ (يوم/شهر)",
+    print_no_data:"لا توجد بيانات مسجلة",
+    print_no_withdrawals:"لا توجد سحوبات",
+    print_auto_hint:"🔗 بند تلقائي يُحسب من تبويب السلف والديون",
+    print_savings_source:"مصدر البيانات: تبويب «إدارة الشهور» — بند الادخار",
+    print_debt_source_loans:"مصدر البيانات: تبويب «السلف والديون» — الأقساط",
+    print_debt_source_obligations:"مصدر البيانات: تبويب «السلف والديون» — الالتزامات",
+    print_error_popup:"⚠️ الرجاء السماح بالنوافذ المنبثقة للطباعة",
+    print_index:"م",
+    print_debt_name:"البند",
+    print_no_deposits_year:"لا إيداعات هذه السنة",
     debts_summary:"📊 ملخص الديون والأقساط والالتزامات",add_debt:"➕ إضافة دين / سلفة / قسط / التزام",
     lbl_debt_name:"الاسم",lbl_debt_type:"النوع",lbl_debt_cat:"فئة القسط",
     lbl_debt_total:"المبلغ الكلي (د.ب)",lbl_debt_paidbefore:"مدفوع سابقاً (د.ب)",
@@ -870,6 +934,8 @@ const I18N = {
     t_pyr:"🔺 Financial Safety Pyramid",t_debts:"🤝 Debts, Loans & Obligations",t_annual:"📈 Annual Summary",
     btn_export:"📤 Export",btn_import:"📥 Import",btn_reset:"🗑 Reset",
     btn_save:"💾 Save",
+    btn_print_page:"🖨️ Print this page",
+    btn_print_month:"🖨️ Print this month",
     save_manual_ok:"💾 Data saved successfully",
     save_pending:"📝 Saving...",
     save_saved:"✓ Saved ",
@@ -906,11 +972,44 @@ const I18N = {
     lbl_savings:"💰 Savings Amounts (BHD)",savings_hint:"🔢 Supports 3 decimals. Loans and obligations are auto-calculated from Debts tab.",
     lbl_month_result:"Monthly Result",lbl_month_notes:"Month Notes",
     th_sav_item:"Savings Item",th_sav_amount:"Amount (BHD)",th_sav_bank:"Bank",th_sav_note:"Note",th_sav_ref:"Reference",
-    pyr_title:"🔺 Financial Safety Pyramid",pyr_desc:"Priorities from base to top. Cumulative across all years. Loans and obligations are auto-calculated and cannot be edited. Total counts savings items only (excludes loans and obligations as they are negative).",
+    pyr_title:"🔺 Financial Safety Pyramid",pyr_desc:"Priorities from base to top. Cumulative across all years. Loans and obligations are auto-calculated and cannot be edited.",
     pyr_detail:"Pyramid Details",th_level:"Level",th_item_name:"Item",
     th_year_total:"Cumulative Total (BHD)",th_pct:"%",th_total:"Total",
-    th_total_positive:"Savings Total (Positive)",
-    th_total_negative:"Obligations Total (Negative)",
+    th_total_bank_savings:"Total Bank Savings (Positive)",
+    th_total_investment:"Total Investment (Positive)",
+    th_total_negative:"Total Liabilities (Negative)",
+    th_actions:"Actions",
+    btn_print_row:"🖨️ Print",
+    print_report_title:"Report",
+    print_generated:"Generated on",
+    print_target:"Target",
+    print_cumulative:"Cumulative Saved",
+    print_withdrawn:"Withdrawn",
+    print_net:"Net",
+    print_remaining_to_target:"Remaining to target",
+    print_reached:"✅ Reached",
+    print_notes_label:"Notes",
+    print_years_breakdown:"📅 Breakdown by Year and Month",
+    print_withdrawals_history:"📜 Withdrawal History",
+    print_year:"Year",
+    print_amount:"Amount",
+    print_date:"Date",
+    print_reason:"Reason",
+    print_total:"Total",
+    print_total_withdrawn:"Total Withdrawn",
+    print_year_total:"Total for year",
+    print_month:"Month",
+    print_day_month:"Date (day/month)",
+    print_no_data:"No data recorded",
+    print_no_withdrawals:"No withdrawals",
+    print_auto_hint:"🔗 Auto-calculated from Debts tab",
+    print_savings_source:"Data source: Month Management tab — savings item",
+    print_debt_source_loans:"Data source: Debts tab — Installments",
+    print_debt_source_obligations:"Data source: Debts tab — Obligations",
+    print_error_popup:"⚠️ Please allow pop-ups for printing",
+    print_index:"#",
+    print_debt_name:"Item",
+    print_no_deposits_year:"No deposits this year",
     debts_summary:"📊 Debts, Installments & Obligations Summary",add_debt:"➕ Add Debt / Loan / Installment / Obligation",
     lbl_debt_name:"Name",lbl_debt_type:"Type",lbl_debt_cat:"Category",
     lbl_debt_total:"Total (BHD)",lbl_debt_paidbefore:"Paid Before (BHD)",
@@ -1123,7 +1222,7 @@ const getPyramidLevels = () => [
   {key:"obligationsSaving",label:t('p_obligationsSaving'),color:"#3b82f6",subtitle:"📋",auto:true,negative:true},
   {key:"insuranceSaving",label:t('p_insuranceSaving'),color:"#eab308",subtitle:"🛡️"},
   {key:"eidClothes",label:t('p_eidClothes'),color:"#ec4899",subtitle:"👕"},
-  {key:"investment",label:t('p_investment'),color:"#22c55e",subtitle:"📈"},
+  {key:"investment",label:t('p_investment'),color:"#22c55e",subtitle:"📈",investment:true},
   {key:"assembly",label:t('p_assembly'),color:"#a855f7",subtitle:"👥"},
   {key:"travelSaving",label:t('p_travelSaving'),color:"#14b8a6",subtitle:"✈️"},
   {key:"eidMoneySaving",label:t('p_eidMoneySaving'),color:"#f97316",subtitle:"🎉"},
@@ -1131,6 +1230,12 @@ const getPyramidLevels = () => [
 
 function isPyramidNegativeLevel(key){
   return key === "loans" || key === "obligationsSaving";
+}
+function isPyramidInvestmentLevel(key){
+  return key === "investment";
+}
+function isPyramidBankSavingsLevel(key){
+  return !isPyramidNegativeLevel(key) && !isPyramidInvestmentLevel(key);
 }
 
 const EMPTY_MONTH = () => ({
@@ -1323,15 +1428,21 @@ function isSavingDisabledForMonth(key){
   return (totalExcl - withdrawn) >= target;
 }
 
-function getPyramidPositiveTotal(){
+function getPyramidBankSavingsTotal(){
   const levels = getPyramidLevels();
-  return levels.filter(l => !isPyramidNegativeLevel(l.key))
+  return levels.filter(l => isPyramidBankSavingsLevel(l.key))
                .reduce((s, l) => s + getCumulativeSaved(l.key), 0);
+}
+function getPyramidInvestmentTotal(){
+  return getCumulativeSaved("investment");
 }
 function getPyramidNegativeTotal(){
   const levels = getPyramidLevels();
   return levels.filter(l => isPyramidNegativeLevel(l.key))
                .reduce((s, l) => s + getCumulativeSaved(l.key), 0);
+}
+function getPyramidAllPositiveTotal(){
+  return getPyramidBankSavingsTotal() + getPyramidInvestmentTotal();
 }
 
 function testStorage(){ try{ const k = "__test_"+Date.now(); localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }catch(e){ return false; } }
@@ -1813,17 +1924,45 @@ function applyTheme(){ document.documentElement.dataset.theme = THEME; document.
 function toggleTheme(){ THEME = THEME === 'dark' ? 'light' : 'dark'; localStorage.setItem('cm_theme', THEME); applyTheme(); toast(THEME === 'dark' ? (LANG==='ar'?'🌙 الوضع الليلي':'🌙 Dark mode') : (LANG==='ar'?'☀️ الوضع النهاري':'☀️ Light mode')); }
 function applyFontScale(){ document.getElementById('mainContent').style.zoom = FONT_SCALE; }
 function changeFontSize(delta){ FONT_SCALE = Math.max(0.75, Math.min(1.6, FONT_SCALE + delta * 0.1)); localStorage.setItem('cm_font', FONT_SCALE); applyFontScale(); toast((LANG==='ar'?'🔠 حجم الخط: ':'🔠 Font size: ') + Math.round(FONT_SCALE*100) + '%'); }
-function printPage(){
+
+/* ⭐ دالة الطباعة العامة للتبويب الحالي (بدون نافذة منبثقة) */
+function printCurrentView(includeMonthName){
   const now = new Date();
   const dateStr = now.toLocaleDateString(LANG === 'ar' ? 'ar-BH' : 'en-GB', { year:'numeric', month:'long', day:'numeric' });
   const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-  const activeTabName = document.querySelector('nav.tabs button.active').textContent.trim();
-  document.getElementById('phMeta').textContent = `${t('print_meta')}: ${dateStr} — ${timeStr} | ${state.activeYear}`;
-  document.getElementById('printFooterMeta').textContent = `${activeTabName} | ${state.activeYear} | ${dateStr} ${timeStr}`;
-  setTimeout(() => window.print(), 150);
+  const activeTabBtn = document.querySelector('nav.tabs button.active');
+  const activeTabName = activeTabBtn ? activeTabBtn.textContent.trim() : '';
+  let metaExtra = `${state.activeYear}`;
+  if(includeMonthName){
+    metaExtra = `${getMonths()[state.activeMonth]} ${state.activeYear}`;
+  }
+  document.getElementById('phMeta').textContent = `${t('print_meta')}: ${dateStr} — ${timeStr} | ${metaExtra}`;
+  document.getElementById('printFooterMeta').textContent = `${activeTabName} | ${metaExtra} | ${dateStr} ${timeStr}`;
+  setTimeout(() => window.print(), 120);
 }
 
-function renderAll(){ renderYearSelect(); renderMonthPills(); renderMonth(); renderDashboard(); renderDebts(); renderPyramid(); renderYears(); }
+function printPage(){
+  printCurrentView(document.querySelector('nav.tabs button.active')?.dataset.view === 'month');
+}
+
+/* ⭐ تحديث نص زر الطباعة لتبويب إدارة الشهور ديناميكياً */
+function updateMonthPrintBtn(){
+  const btn = document.getElementById('btnPrintMonth');
+  if(!btn) return;
+  const monthName = getMonths()[state.activeMonth];
+  btn.textContent = `🖨️ ${t('btn_print_month')} — ${monthName} ${state.activeYear}`;
+}
+
+function renderAll(){
+  renderYearSelect();
+  renderMonthPills();
+  renderMonth();
+  renderDashboard();
+  renderDebts();
+  renderPyramid();
+  renderYears();
+  updateMonthPrintBtn();
+}
 
 function renderDashboard(){
   const months = M(); const y = state.activeYear;
@@ -1885,7 +2024,7 @@ function renderMonthPills(){
     return `<button class="${i===state.activeMonth?'active':''} ${hasData?'hasData':''}" onclick="selectMonth(${i})">${m}</button>`;
   }).join("");
 }
-function selectMonth(i){ state.activeMonth=i; renderMonthPills(); renderMonth(); save(); }
+function selectMonth(i){ state.activeMonth=i; renderMonthPills(); renderMonth(); updateMonthPrintBtn(); save(); }
 
 function renderIncomeFields(){
   const m = M()[state.activeMonth];
@@ -2456,6 +2595,7 @@ function renderPyramidTargets(){
          </div>`
       : `<input type="number" class="target-input" value="${inVal(target)}" min="0" step="0.001" oninput="updPyramidTarget('${lvl.key}', this.value)" placeholder="0">`;
     const withdrawBtn = isAuto ? '' : `<button class="icon-btn withdraw" onclick="withdrawFromPyramid('${lvl.key}')" title="${t('tgt_withdraw_btn')}">⬇</button>`;
+    const printBtn = `<button class="icon-btn print-btn" onclick="printPyramidLevelDetail('${lvl.key}')" title="${t('btn_print_row')}">🖨️</button>`;
     return `<tr data-target-key="${lvl.key}" class="${isAuto?'auto-row':''}">
       <td><div class="target-name">${levelLabel}<span class="target-dot" style="background:${lvl.color}"></span>${lvl.subtitle} ${lvl.label} ${autoBadge}</div></td>
       <td>${targetCell}</td>
@@ -2472,6 +2612,7 @@ function renderPyramidTargets(){
         <div class="target-actions tgt-actions">
           ${withdrawBtn}
           ${wCount > 0 ? `<button class="icon-btn history" onclick="showWithdrawHistory('${lvl.key}')" title="${t('tgt_history_btn')}">📜</button>` : ''}
+          ${printBtn}
         </div>
       </td>
     </tr>`;
@@ -2622,6 +2763,294 @@ function showWithdrawHistory(key){
   alert(`${t('tgt_history_title')}${name}\n\n${lines.join('\n')}\n\n${t('tgt_history_total')}${fmt(total)} ${LANG==='ar'?'د.ب':'BHD'}`);
 }
 
+function formatPrintDate(m, mi){
+  if(m && m.customDate && /^\d{4}-\d{2}-\d{2}$/.test(m.customDate)){
+    const parts = m.customDate.split('-');
+    const day = parseInt(parts[2], 10);
+    const month = parseInt(parts[1], 10);
+    if(day > 0 && month > 0){
+      return `${day}/${month}`;
+    }
+  }
+  return `${mi + 1}`;
+}
+
+function printPyramidLevelDetail(key){
+  const lvl = getPyramidLevels().find(l => l.key === key);
+  if(!lvl) return;
+  const L = LANG === 'ar';
+  const cur = L ? 'د.ب' : 'BHD';
+  const monthNames = getMonths();
+
+  const target = getPyramidTarget(key);
+  const cumulativeSaved = getCumulativeSaved(key);
+  const withdrawn = getWithdrawnTotal(key);
+  const net = cumulativeSaved - withdrawn;
+  const note = getPyramidNote(key);
+  const remaining = target > 0 ? Math.max(0, target - net) : null;
+  const reached = target > 0 && net >= target;
+
+  const sortedYears = state.yearList.slice().sort((a,b)=>a-b);
+  const detailedYears = [];
+
+  sortedYears.forEach(y => {
+    const monthsArr = Mof(y);
+    const monthRows = [];
+
+    if(key === "loans" || key === "obligationsSaving"){
+      const filterType = key === "loans" ? "installment" : "obligation";
+      const relevantDebts = (state.debts || []).filter(d => d.type === filterType && !isDebtExcluded(d));
+      monthsArr.forEach((m, mi) => {
+        const entries = [];
+        let monthTotal = 0;
+        relevantDebts.forEach(d => {
+          const v = dm(d, y, mi);
+          if(v > 0){
+            monthTotal += v;
+            entries.push({
+              name: d.name,
+              amount: v,
+              ref: getDebtRef(d, y, mi) || '',
+              notes: d.notes || ''
+            });
+          }
+        });
+        if(monthTotal > 0){
+          monthRows.push({
+            mi,
+            dateDisplay: formatPrintDate(m, mi),
+            monthName: monthNames[mi],
+            amount: monthTotal,
+            entries: entries,
+            note: ''
+          });
+        }
+      });
+    } else {
+      monthsArr.forEach((m, mi) => {
+        if(isSavingExcluded(m, key)) return;
+        const amount = +m[key] || 0;
+        const meta = m.savingMeta?.[key] || {};
+        const monthNote = meta.note || '';
+        const refVal = m.savingRefMeta?.[key] || '';
+        if(amount > 0 || monthNote){
+          monthRows.push({
+            mi,
+            dateDisplay: formatPrintDate(m, mi),
+            monthName: monthNames[mi],
+            amount: amount,
+            entries: [],
+            note: monthNote,
+            ref: refVal
+          });
+        }
+      });
+    }
+
+    if(monthRows.length){
+      const yearTotal = monthRows.reduce((s, r) => s + r.amount, 0);
+      detailedYears.push({ year: y, months: monthRows, total: yearTotal });
+    }
+  });
+
+  const ws = getWithdrawals(key).slice().sort((a,b) => new Date(a.date) - new Date(b.date));
+
+  let sourceText = '';
+  if(key === "loans") sourceText = t('print_debt_source_loans');
+  else if(key === "obligationsSaving") sourceText = t('print_debt_source_obligations');
+  else sourceText = t('print_savings_source');
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
+  const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+
+  let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('print_report_title')}: ${lvl.label}</title>`;
+  html += `<style>
+    @page{size:A4;margin:15mm}
+    *{box-sizing:border-box}
+    body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:20px;line-height:1.7;margin:0}
+    .header{text-align:center;margin-bottom:24px;padding-bottom:12px;border-bottom:3px double #333}
+    .header .logo{display:inline-block;width:54px;height:54px;line-height:54px;border-radius:50%;background:#0e7490;color:#fff;font-weight:900;font-size:24px;text-align:center}
+    .header h2{margin:10px 0 4px;color:${lvl.color};font-size:22px}
+    .header .meta{color:#666;font-size:12px}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 24px}
+    .kpi{border:2px solid #ccc;border-radius:8px;padding:12px 8px;text-align:center;background:#f9fafb}
+    .kpi .lbl{font-size:11px;color:#666;margin-bottom:6px;font-weight:600}
+    .kpi .val{font-size:17px;font-weight:800;font-family:monospace;direction:ltr}
+    .kpi.green{border-color:#16a34a;background:#f0fdf4}.kpi.green .val{color:#16a34a}
+    .kpi.red{border-color:#dc2626;background:#fef2f2}.kpi.red .val{color:#dc2626}
+    .kpi.gold{border-color:#d97706;background:#fffbeb}.kpi.gold .val{color:#d97706}
+    .kpi.gray{border-color:#64748b;background:#f8fafc}.kpi.gray .val{color:#334155}
+    .section-title{background:#f0f4f8;padding:10px 14px;border-right:5px solid ${lvl.color};font-weight:700;margin:22px 0 10px;font-size:14px;color:#1e293b}
+    .year-block{margin-bottom:20px;page-break-inside:avoid}
+    .year-header{background:linear-gradient(90deg,${lvl.color}22,transparent);border-right:5px solid ${lvl.color};padding:10px 14px;font-weight:800;font-size:15px;color:${lvl.color};border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+    .year-header .year-total{font-family:monospace;font-size:14px;color:#16a34a;background:#f0fdf4;padding:4px 12px;border-radius:20px;border:1px solid #16a34a}
+    table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}
+    th{background:#e5e7eb;color:#111;padding:9px 10px;text-align:${L?'right':'left'};border:1px solid #999;font-size:11px;font-weight:700}
+    td{padding:8px 10px;border:1px solid #ccc;text-align:${L?'right':'left'}}
+    td.num{font-family:monospace;direction:ltr;text-align:center;font-weight:700}
+    td.date{font-family:monospace;direction:ltr;text-align:center;color:${lvl.color};font-weight:800;font-size:13px}
+    td.month-name{font-weight:700;color:#1e293b}
+    td.note{color:#475569;font-size:11px;font-style:italic}
+    tbody tr:nth-child(even){background:#f9fafb}
+    .total-row{background:#e0f2fe !important;font-weight:700}
+    .total-row td{border-top:2px solid #0891b2;font-family:monospace}
+    .sub-row td{border-top:none;border-bottom:1px dashed #cbd5e1;background:#fafbfc;font-size:11px;color:#64748b}
+    .sub-row td:first-child{padding-right:30px}
+    .note-box{background:#fffbeb;border:1px solid #fde68a;padding:12px 16px;border-radius:8px;margin:14px 0;font-size:13px;color:#78350f}
+    .note-box strong{color:#92400e}
+    .empty{color:#999;font-style:italic;text-align:center;padding:24px;background:#f9fafb;border:1px dashed #ccc;border-radius:6px}
+    .footer{text-align:center;margin-top:36px;padding-top:12px;border-top:2px solid #999;color:#666;font-size:11px;line-height:1.8}
+    .footer strong{color:#0e7490}
+    .badge{display:inline-block;padding:3px 10px;border-radius:14px;font-size:11px;font-weight:700;margin-inline-start:8px}
+    .badge.green{background:#dcfce7;color:#166534;border:1px solid #16a34a}
+    .source-line{font-size:11px;color:#64748b;font-style:italic;text-align:center;margin-bottom:12px}
+    @media print{body{padding:0}.noprint{display:none}}
+  </style></head><body>`;
+
+  html += `<div class="header">
+    <div class="logo">M</div>
+    <h2>${lvl.subtitle} ${lvl.label}</h2>
+    <div class="meta">${t('print_report_title')} — ${t('print_generated')}: ${dateStr} ${timeStr}</div>
+    <div class="source-line">${sourceText}</div>
+  </div>`;
+
+  html += `<div class="kpis">
+    <div class="kpi gold"><div class="lbl">🎯 ${t('print_target')}</div><div class="val">${target > 0 ? fmt(target) + ' ' + cur : '—'}</div></div>
+    <div class="kpi green"><div class="lbl">💰 ${t('print_cumulative')}</div><div class="val">${fmt(cumulativeSaved)} ${cur}</div></div>
+    <div class="kpi red"><div class="lbl">📤 ${t('print_withdrawn')}</div><div class="val">${fmt(withdrawn)} ${cur}</div></div>
+    <div class="kpi gray"><div class="lbl">📊 ${t('print_net')}</div><div class="val">${fmt(net)} ${cur}</div></div>
+  </div>`;
+
+  if(remaining !== null){
+    html += `<div class="note-box">
+      🎯 <strong>${t('print_remaining_to_target')}:</strong> ${fmt(remaining)} ${cur}
+      ${reached ? `<span class="badge green">${t('print_reached')}</span>` : ''}
+    </div>`;
+  }
+
+  if(note){
+    html += `<div class="note-box">
+      📝 <strong>${t('print_notes_label')}:</strong> ${esc(note)}
+    </div>`;
+  }
+
+  html += `<div class="section-title">${t('print_years_breakdown')}</div>`;
+
+  if(detailedYears.length){
+    detailedYears.forEach(yb => {
+      html += `<div class="year-block">`;
+      html += `<div class="year-header">
+        <span>📅 ${t('print_year')} ${yb.year}</span>
+        <span class="year-total">${fmt(yb.total)} ${cur}</span>
+      </div>`;
+      const isDebtType = (key === "loans" || key === "obligationsSaving");
+      if(isDebtType){
+        html += `<table><thead><tr>
+          <th style="width:40px">${t('print_index')}</th>
+          <th style="width:80px">${t('print_day_month')}</th>
+          <th style="width:100px">${t('print_month')}</th>
+          <th>${t('print_debt_name')}</th>
+          <th style="width:110px">${t('print_amount')} (${cur})</th>
+          <th style="width:80px">${t('th_ref')}</th>
+        </tr></thead><tbody>`;
+        let counter = 0;
+        yb.months.forEach(mr => {
+          mr.entries.forEach((en, idx) => {
+            counter++;
+            html += `<tr>
+              <td class="num">${counter}</td>
+              <td class="date">${idx === 0 ? mr.dateDisplay : ''}</td>
+              <td class="month-name">${idx === 0 ? mr.monthName : ''}</td>
+              <td>${esc(en.name)}</td>
+              <td class="num">${fmt(en.amount)}</td>
+              <td style="text-align:center">${esc(en.ref) || '—'}</td>
+            </tr>`;
+            if(en.notes && idx === 0){
+              html += `<tr class="sub-row"><td></td><td></td><td></td><td colspan="3">📝 ${esc(en.notes)}</td></tr>`;
+            }
+          });
+        });
+        html += `<tr class="total-row">
+          <td colspan="4"><strong>${t('print_year_total')} ${yb.year}</strong></td>
+          <td class="num">${fmt(yb.total)}</td>
+          <td></td>
+        </tr></tbody></table>`;
+      } else {
+        html += `<table><thead><tr>
+          <th style="width:40px">${t('print_index')}</th>
+          <th style="width:80px">${t('print_day_month')}</th>
+          <th style="width:110px">${t('print_month')}</th>
+          <th style="width:130px">${t('print_amount')} (${cur})</th>
+          <th>${t('print_notes_label')}</th>
+          <th style="width:70px">${t('th_ref')}</th>
+        </tr></thead><tbody>`;
+        yb.months.forEach((mr, idx) => {
+          html += `<tr>
+            <td class="num">${idx + 1}</td>
+            <td class="date">${mr.dateDisplay}</td>
+            <td class="month-name">${mr.monthName}</td>
+            <td class="num">${fmt(mr.amount)}</td>
+            <td class="note">${esc(mr.note) || '—'}</td>
+            <td style="text-align:center">${esc(mr.ref || '') || '—'}</td>
+          </tr>`;
+        });
+        html += `<tr class="total-row">
+          <td colspan="3"><strong>${t('print_year_total')} ${yb.year}</strong></td>
+          <td class="num">${fmt(yb.total)}</td>
+          <td colspan="2"></td>
+        </tr></tbody></table>`;
+      }
+      html += `</div>`;
+    });
+  } else {
+    html += `<div class="empty">${t('print_no_data')}</div>`;
+  }
+
+  html += `<div class="section-title">${t('print_withdrawals_history')}</div>`;
+  if(ws.length){
+    html += `<table><thead><tr>
+      <th style="width:40px">${t('print_index')}</th>
+      <th>${t('print_date')}</th>
+      <th>${t('print_amount')} (${cur})</th>
+      <th>${t('print_reason')}</th>
+    </tr></thead><tbody>`;
+    ws.forEach((w, idx) => {
+      const d = new Date(w.date);
+      const wdateStr = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+      html += `<tr>
+        <td class="num">${idx + 1}</td>
+        <td class="date">${wdateStr}</td>
+        <td class="num">${fmt(+w.amount || 0)}</td>
+        <td>${esc(w.reason) || '—'}</td>
+      </tr>`;
+    });
+    html += `<tr class="total-row"><td colspan="2"><strong>${t('print_total_withdrawn')}</strong></td><td class="num">${fmt(withdrawn)}</td><td></td></tr></tbody></table>`;
+  } else {
+    html += `<div class="empty">${t('print_no_withdrawals')}</div>`;
+  }
+
+  html += `<div class="footer">
+    <div><strong>Muharraqi</strong> — ${t('print_title')}</div>
+    <div>© 2025 Muharraqi. All Rights Reserved.</div>
+    <div style="margin-top:6px;font-size:10px;color:#999">${L?'تم الإنشاء في':'Generated on'}: ${dateStr} ${timeStr}</div>
+  </div>`;
+
+  html += `</body></html>`;
+
+  const w = window.open('', '_blank', 'width=900,height=900');
+  if(w){
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    setTimeout(() => {
+      try { w.focus(); w.print(); } catch(e){ console.error(e); }
+    }, 500);
+  } else {
+    toast(t('print_error_popup'), 'error');
+  }
+}
+
 function openInstructions(){
   const modal = document.getElementById("instructionsModal");
   if(modal){ modal.classList.add("show"); document.body.style.overflow = "hidden"; }
@@ -2641,8 +3070,7 @@ function renderPyramidSvg(){
   const levels = getPyramidLevels();
   const totals = {};
   levels.forEach(lvl => { totals[lvl.key] = getCumulativeSaved(lvl.key); });
-  const positiveTotal = levels.filter(l => !isPyramidNegativeLevel(l.key))
-                              .reduce((s,l)=>s+(totals[l.key]||0),0);
+  const allPositiveTotal = getPyramidAllPositiveTotal();
   const apexY = 25, bottomY = 430, apexLeftX = 190, apexRightX = 310, baseLeftX = 20, baseRightX = 480;
   const sliceH = (bottomY - apexY) / levels.length;
   const leftAt = y => apexLeftX + (baseLeftX - apexLeftX) * (y - apexY) / (bottomY - apexY);
@@ -2659,7 +3087,7 @@ function renderPyramidSvg(){
     const isNegative = isPyramidNegativeLevel(lvl.key);
     const remaining = target > 0 ? Math.max(0, target - netSaved) : null;
     const reached = target > 0 && netSaved >= target;
-    const pct = positiveTotal > 0 ? (amt/positiveTotal*100) : 0;
+    const pct = allPositiveTotal > 0 ? (amt/allPositiveTotal*100) : 0;
     const fs = 10 - i * 0.35, afs = 9 - i * 0.3;
     const note = getPyramidNote(lvl.key);
     const maxChars = Math.max(10, 28 - i * 2);
@@ -2711,21 +3139,32 @@ function renderPyramid(){
   const totals = {};
   levels.forEach(lvl => { totals[lvl.key] = getCumulativeSaved(lvl.key); });
 
-  const positiveTotal = levels.filter(l => !isPyramidNegativeLevel(l.key))
-                              .reduce((s,l)=>s+(totals[l.key]||0),0);
+  const bankSavingsTotal = levels.filter(l => isPyramidBankSavingsLevel(l.key))
+                                 .reduce((s,l)=>s+(totals[l.key]||0),0);
+  const investmentTotal = totals["investment"] || 0;
   const negativeTotal = levels.filter(l => isPyramidNegativeLevel(l.key))
                               .reduce((s,l)=>s+(totals[l.key]||0),0);
+  const allPositiveTotal = bankSavingsTotal + investmentTotal;
 
   renderPyramidSvg();
   renderPyramidLegend();
 
-  let html = `<thead><tr><th>${t('th_level')}</th><th>${t('th_item_name')}</th><th>${t('th_year_total')}</th><th>${t('th_pct')}</th></tr></thead><tbody>`;
+  let html = `<thead><tr>
+    <th>${t('th_level')}</th>
+    <th>${t('th_item_name')}</th>
+    <th>${t('th_year_total')}</th>
+    <th>${t('th_pct')}</th>
+    <th style="width:60px">${t('th_actions')}</th>
+  </tr></thead><tbody>`;
   levels.forEach((lvl, idx) => {
     const level = idx + 1;
     const amt = totals[lvl.key] || 0;
     const isNegative = isPyramidNegativeLevel(lvl.key);
-    const pct = isNegative ? null : (positiveTotal > 0 ? (amt/positiveTotal*100) : 0);
-    const negBadge = isNegative ? ` <span class="badge negative">⚠ ${LANG==='ar'?'سلبي':'Negative'}</span>` : '';
+    const isInvestment = isPyramidInvestmentLevel(lvl.key);
+    const pct = isNegative ? null : (allPositiveTotal > 0 ? (amt/allPositiveTotal*100) : 0);
+    let negBadge = '';
+    if(isNegative) negBadge = ` <span class="badge negative">⚠ ${LANG==='ar'?'سلبي':'Negative'}</span>`;
+    else if(isInvestment) negBadge = ` <span class="badge investment">📈 ${LANG==='ar'?'استثمار':'Investment'}</span>`;
     const amtDisplay = isNegative
       ? `<span style="color:var(--danger)">- ${money(amt)}</span>`
       : `<span style="color:${lvl.color};font-weight:700">${money(amt)}</span>`;
@@ -2735,13 +3174,22 @@ function renderPyramid(){
       <td>${lvl.subtitle} ${lvl.label} ${negBadge}</td>
       <td class="num">${amtDisplay}</td>
       <td class="num">${pctDisplay}</td>
+      <td style="text-align:center"><button class="icon-btn print-btn" onclick="printPyramidLevelDetail('${lvl.key}')" title="${t('btn_print_row')}">🖨️</button></td>
     </tr>`;
   });
 
   html += `<tr style="background:rgba(34,193,164,.15);font-weight:700;border-top:2px solid var(--accent)">
-    <td colspan="2" style="color:var(--accent)">✅ ${t('th_total_positive')}</td>
-    <td class="num" style="color:var(--accent);font-weight:800;font-size:15px">${money(positiveTotal)}</td>
-    <td class="num" style="color:var(--accent)">100%</td>
+    <td colspan="2" style="color:var(--accent)">✅ ${t('th_total_bank_savings')}</td>
+    <td class="num" style="color:var(--accent);font-weight:800;font-size:15px">${money(bankSavingsTotal)}</td>
+    <td class="num" style="color:var(--accent)">${allPositiveTotal > 0 ? fmtPct(bankSavingsTotal/allPositiveTotal*100) + '%' : '—'}</td>
+    <td></td>
+  </tr>`;
+
+  html += `<tr style="background:rgba(34,197,94,.12);font-weight:700;border-top:2px solid var(--ok)">
+    <td colspan="2" style="color:var(--ok)">📈 ${t('th_total_investment')}</td>
+    <td class="num" style="color:var(--ok);font-weight:800;font-size:15px">${money(investmentTotal)}</td>
+    <td class="num" style="color:var(--ok)">${allPositiveTotal > 0 ? fmtPct(investmentTotal/allPositiveTotal*100) + '%' : '—'}</td>
+    <td></td>
   </tr>`;
 
   if(negativeTotal > 0){
@@ -2749,6 +3197,7 @@ function renderPyramid(){
       <td colspan="2" style="color:var(--danger)">⚠ ${t('th_total_negative')}</td>
       <td class="num" style="color:var(--danger);font-weight:800">- ${money(negativeTotal)}</td>
       <td class="num" style="color:var(--muted)">—</td>
+      <td></td>
     </tr>`;
   }
 
@@ -2793,21 +3242,13 @@ function delDebt(id){
   renderMonth(); 
   if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); } 
 }
-
-/* ⭐⭐ الحل: دالة تحديث شهر بدون إعادة رسم الجدول (تحافظ على التركيز) ⭐⭐ */
 function updDebtMonth(id, mi, val){ 
   const d = state.debts.find(x=>x.id===id); 
   if(!d) return; 
   setDm(d, state.activeYear, mi, Math.max(0, parseFloat(val)||0)); 
   save(); 
-  
-  /* ⭐ تحديث خلايا الصف الحالي فقط (بدون إعادة بناء الجدول) */
   refreshDebtRowCells(d); 
-  
-  /* ⭐ تحديث الإجماليات في الأسفل */
   updateDebtsFooter();
-  
-  /* ⭐ تحديث بطاقات KPI ولوحة التحكم (بشكل مؤجل لتجنب البطء أثناء الكتابة) */
   if(_debtMonthRefreshTimer) clearTimeout(_debtMonthRefreshTimer);
   _debtMonthRefreshTimer = setTimeout(() => {
     renderDebtsSummary(); 
@@ -2820,7 +3261,6 @@ function updDebtMonth(id, mi, val){
     } 
   }, 400);
 }
-
 function updDebtName(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.name = val; save(); renderDashboard(); renderMonth(); renderDebtsSummary(); }
 function updDebtTotal(id, val){ 
   const d = state.debts.find(x=>x.id===id); if(!d) return; 
@@ -2895,6 +3335,7 @@ function goToLastPayment(id, ev){
   const monthView = document.getElementById("month");
   if(monthView) monthView.classList.add("active");
   renderMonth();
+  updateMonthPrintBtn();
   setTimeout(() => {
     const row = document.querySelector(`tr[data-debt-row="${id}"]`);
     if(row){
@@ -3008,7 +3449,6 @@ function renderDebts(){
 }
 
 function onDebtMonthBlur(){
-  /* عند مغادرة الحقل: نُحدّث البطاقات ولوحة التحكم */
   renderDebtsSummary();
   renderDashboard();
   updatePyramidTargetRow("loans");
