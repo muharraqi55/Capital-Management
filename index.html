@@ -22,6 +22,8 @@
   .btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
   .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
   .btn.primary:hover{background:var(--accent2);border-color:var(--accent2)}
+  .btn.share{background:linear-gradient(180deg,#8b5cf6,#6d28d9);color:#fff;border-color:#8b5cf6;font-weight:700}
+  .btn.share:hover{background:linear-gradient(180deg,#7c3aed,#5b21b6);border-color:#7c3aed;transform:translateY(-2px)}
   .btn.success{background:linear-gradient(180deg,var(--ok),#15803d);color:#fff;border-color:var(--ok);font-weight:700;box-shadow:0 0 0 3px rgba(34,197,94,.15);animation:pulseGlow 2s infinite}
   @keyframes pulseGlow{0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.15)}50%{box-shadow:0 0 0 6px rgba(34,197,94,.25)}}
   .btn.danger{background:transparent;color:var(--danger);border-color:var(--danger)}
@@ -82,6 +84,7 @@
   .icon-btn.withdraw:hover{border-color:var(--gold);color:var(--gold);background:rgba(234,179,8,.1)}
   .icon-btn.history:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(59,130,246,.1)}
   .icon-btn.print-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(34,193,164,.1)}
+  .icon-btn.share-btn:hover{border-color:#8b5cf6;color:#8b5cf6;background:rgba(139,92,246,.1)}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
   .badge.green{background:rgba(34,197,94,.15);color:var(--ok)}
   .badge.red{background:rgba(239,68,68,.15);color:var(--danger)}
@@ -103,7 +106,6 @@
   .card.eid-card.eid-no h2.eid-title{background:var(--ok);color:#052e16}
   .card.eid-card.eid-no h2.eid-title::before{color:#052e16}
   .card.eid-card.eid-no .field label{color:#86efac}
-  /* ⭐ تم إصلاح ألوان دعم اللحوم - لون واحد واضح */
   .meat-status{display:flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:8px;font-size:13px;font-weight:700;border:2px solid;transition:.25s;user-select:none;min-height:40px;letter-spacing:.3px}
   .meat-status.meat-status-no{background:#7f1d1d;border-color:#991b1b;color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
   .meat-status.meat-status-yes{background:#14532d;border-color:#15803d;color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
@@ -313,13 +315,18 @@
     .target-table{min-width:1000px;font-size:11px}
   }
 
-  /* ⭐ قسم زر الطباعة في أسفل كل تبويب */
-  .print-section{text-align:center;margin:24px 0 8px;padding:20px 12px;border-top:2px dashed var(--line);border-radius:0 0 12px 12px}
+  .print-section{text-align:center;margin:24px 0 8px;padding:20px 12px;border-top:2px dashed var(--line);border-radius:0 0 12px 12px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
   .print-section .btn{padding:12px 34px;font-size:15px;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.15);letter-spacing:.3px}
   .print-section .btn:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(34,193,164,.25)}
 
+  /* ⭐ Force print colors (for year chart bars and other colored elements) */
   @media print{
-    @page{size:A4;margin:12mm 10mm}
+    *{
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+    @page{size: A4 portrait;margin:12mm 10mm}
     html,body{background:#fff !important;color:#000 !important;font-size:10pt !important}
     header,nav.tabs,.toolbar,.settings-bar,.btn,.icon-btn,.toast,.monthPills,.site-footer,.modal,.eid-type-inline,.year-picker,.save-indicator,.print-section{display:none !important}
     main{padding:0 !important;max-width:100% !important}
@@ -342,7 +349,16 @@
     .pyramid-wrap{background:#fff !important;border:1px solid #ccc !important}
     .pyramid-svg text{fill:#000 !important}
     .muted,.notice-bhd,.notice-int{color:#444 !important;background:#f8f8f8 !important;border-color:#bbb !important}
-    .year-chart{background:#fff !important;border:1px solid #ccc !important}
+    .year-chart{background:#fff !important;border:1px solid #ccc !important;overflow:visible !important;min-height:auto !important;padding:10pt !important}
+    .year-bar-wrap{min-width:60pt !important}
+    .year-bar-group{height:150pt !important}
+    .year-bar{min-height:2pt !important}
+    .year-bar.inc{background:#0d9488 !important;border:1px solid #0f766e !important}
+    .year-bar.exp{background:#991b1b !important;border:1px solid #7f1d1d !important}
+    .year-bar.sav{background:#92400e !important;border:1px solid #78350f !important}
+    .year-bar.rem{background:#1e40af !important;border:1px solid #1e3a8a !important}
+    .year-bar-legend .dot{display:inline-block !important}
+    .year-bar-legend .dot[style*="linear-gradient"]{background:#666 !important}
     .print-header,.print-footer{display:block !important}
     .print-header{text-align:center;padding-bottom:8pt;margin-bottom:12pt;border-bottom:3px double #000}
     .print-header h1{color:#000 !important;font-size:18pt;margin-bottom:4pt}
@@ -357,6 +373,8 @@
     .last-pay-amount{background:#166534 !important;color:#fff !important}
     .progress-bar{background:#eee !important;border:1px solid #999 !important}
     .progress-fill{background:#0891b2 !important}
+    /* Landscape specific */
+    html.print-landscape @page{size: A4 landscape !important}
   }
 </style>
 </head>
@@ -412,7 +430,8 @@
   <div class="card"><h2 id="dashTitle3"></h2><div class="grid g4" id="dashDebts"></div></div>
   <div class="card"><h2 id="dashTitle4"></h2><div style="overflow-x:auto"><table id="dashTable"></table></div></div>
   <div class="print-section">
-    <button class="btn primary" onclick="printCurrentView()" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn primary" onclick="printCurrentView(false, 'portrait')" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn share" onclick="shareViewPDF('dashboard', false, 'portrait')" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
   </div>
 </section>
 
@@ -539,7 +558,8 @@
     <div class="field"><textarea id="monthNotes" rows="4" oninput="updateMonthNotes(this.value)"></textarea></div>
   </div>
   <div class="print-section">
-    <button class="btn primary" onclick="printCurrentView(true)" id="btnPrintMonth">🖨️ طباعة هذا الشهر</button>
+    <button class="btn primary" onclick="printCurrentView(true, 'landscape')" id="btnPrintMonth">🖨️ طباعة هذا الشهر</button>
+    <button class="btn share" onclick="shareViewPDF('month', true, 'landscape')" id="btnShareMonth">📤 مشاركة PDF</button>
   </div>
 </section>
 
@@ -578,14 +598,16 @@
     <div class="debts-table-wrap"><table class="debts-table" id="debtsTable"></table></div>
   </div>
   <div class="print-section">
-    <button class="btn primary" onclick="printCurrentView()" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn primary" onclick="printCurrentView(false, 'landscape')" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn share" onclick="shareViewPDF('debts', false, 'landscape')" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
   </div>
 </section>
 
 <section id="annual" class="view">
   <div class="card"><h2 id="lblAnnualTitle"></h2><div style="overflow-x:auto"><table id="annualTable"></table></div></div>
   <div class="print-section">
-    <button class="btn primary" onclick="printCurrentView()" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn primary" onclick="printCurrentView(false, 'landscape')" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn share" onclick="shareViewPDF('annual', false, 'landscape')" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
   </div>
 </section>
 
@@ -604,7 +626,8 @@
   <div class="card"><h2 id="lblYearsTable"></h2><div style="overflow-x:auto"><table id="yearsTable"></table></div></div>
   <div class="card"><h2 id="lblYearsDist"></h2><div style="overflow-x:auto"><table id="yearsDistTable"></table></div></div>
   <div class="print-section">
-    <button class="btn primary" onclick="printCurrentView()" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn primary" onclick="printCurrentView(false, 'landscape')" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn share" onclick="shareViewPDF('years', false, 'landscape')" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
   </div>
 </section>
 
@@ -644,7 +667,8 @@
   <div class="card"><h2 id="lblPyrDetail"></h2><div style="overflow-x:auto"><table id="pyramidTable"></table></div></div>
 
   <div class="print-section">
-    <button class="btn primary" onclick="printCurrentView()" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn primary" onclick="printCurrentView(false, 'landscape')" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn share" onclick="shareViewPDF('pyramid', false, 'landscape')" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
   </div>
 </section>
 
@@ -725,6 +749,14 @@ const I18N = {
     btn_save:"💾 حفظ",
     btn_print_page:"🖨️ طباعة هذه الصفحة",
     btn_print_month:"🖨️ طباعة هذا الشهر",
+    btn_share_pdf:"📤 مشاركة PDF",
+    btn_share_pdf_row:"📤 مشاركة PDF",
+    creating_pdf:"⏳ جاري إنشاء ملف PDF...",
+    share_success:"✅ تمت المشاركة بنجاح",
+    pdf_downloaded:"📥 تم تنزيل ملف PDF",
+    share_not_supported:"⚠️ المشاركة غير مدعومة — تم تنزيل الملف",
+    share_failed:"⚠️ فشل إنشاء PDF",
+    share_cancelled:"تم إلغاء المشاركة",
     save_manual_ok:"💾 تم حفظ البيانات بنجاح",
     save_pending:"📝 جاري الحفظ...",
     save_saved:"✓ محفوظ ",
@@ -936,6 +968,14 @@ const I18N = {
     btn_save:"💾 Save",
     btn_print_page:"🖨️ Print this page",
     btn_print_month:"🖨️ Print this month",
+    btn_share_pdf:"📤 Share PDF",
+    btn_share_pdf_row:"📤 Share PDF",
+    creating_pdf:"⏳ Generating PDF...",
+    share_success:"✅ Shared successfully",
+    pdf_downloaded:"📥 PDF downloaded",
+    share_not_supported:"⚠️ Sharing not supported — file downloaded",
+    share_failed:"⚠️ Failed to create PDF",
+    share_cancelled:"Share cancelled",
     save_manual_ok:"💾 Data saved successfully",
     save_pending:"📝 Saving...",
     save_saved:"✓ Saved ",
@@ -1164,6 +1204,7 @@ let SAVE_TIMER = null;
 let SAVE_PENDING = false;
 let _pyramidNoteTimer = null;
 let _debtMonthRefreshTimer = null;
+let _html2pdfLoading = null;
 
 const t = key => (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key;
 const getMonths = () => I18N[LANG].months;
@@ -1925,8 +1966,25 @@ function toggleTheme(){ THEME = THEME === 'dark' ? 'light' : 'dark'; localStorag
 function applyFontScale(){ document.getElementById('mainContent').style.zoom = FONT_SCALE; }
 function changeFontSize(delta){ FONT_SCALE = Math.max(0.75, Math.min(1.6, FONT_SCALE + delta * 0.1)); localStorage.setItem('cm_font', FONT_SCALE); applyFontScale(); toast((LANG==='ar'?'🔠 حجم الخط: ':'🔠 Font size: ') + Math.round(FONT_SCALE*100) + '%'); }
 
-/* ⭐ دالة الطباعة العامة للتبويب الحالي (بدون نافذة منبثقة) */
-function printCurrentView(includeMonthName){
+/* ⭐ ضبط اتجاه الطباعة ديناميكياً */
+function setPrintOrientation(orientation){
+  let styleEl = document.getElementById('print-orientation-style');
+  if(!styleEl){
+    styleEl = document.createElement('style');
+    styleEl.id = 'print-orientation-style';
+    document.head.appendChild(styleEl);
+  }
+  if(orientation === 'landscape'){
+    document.documentElement.classList.add('print-landscape');
+    styleEl.textContent = '@media print { @page { size: A4 landscape !important; } }';
+  } else {
+    document.documentElement.classList.remove('print-landscape');
+    styleEl.textContent = '@media print { @page { size: A4 portrait !important; } }';
+  }
+}
+
+/* ⭐ دالة الطباعة العامة للتبويب الحالي */
+function printCurrentView(includeMonthName, orientation){
   const now = new Date();
   const dateStr = now.toLocaleDateString(LANG === 'ar' ? 'ar-BH' : 'en-GB', { year:'numeric', month:'long', day:'numeric' });
   const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
@@ -1938,19 +1996,274 @@ function printCurrentView(includeMonthName){
   }
   document.getElementById('phMeta').textContent = `${t('print_meta')}: ${dateStr} — ${timeStr} | ${metaExtra}`;
   document.getElementById('printFooterMeta').textContent = `${activeTabName} | ${metaExtra} | ${dateStr} ${timeStr}`;
-  setTimeout(() => window.print(), 120);
+  setPrintOrientation(orientation || 'portrait');
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => setPrintOrientation('portrait'), 800);
+  }, 120);
 }
 
 function printPage(){
-  printCurrentView(document.querySelector('nav.tabs button.active')?.dataset.view === 'month');
+  const view = document.querySelector('nav.tabs button.active')?.dataset.view;
+  const landscapeViews = ['month','debts','annual','years','pyramid'];
+  const orientation = landscapeViews.includes(view) ? 'landscape' : 'portrait';
+  printCurrentView(view === 'month', orientation);
 }
 
-/* ⭐ تحديث نص زر الطباعة لتبويب إدارة الشهور ديناميكياً */
+/* ⭐⭐ تحميل html2pdf.js ديناميكياً */
+function loadHtml2Pdf(){
+  if(window.html2pdf) return Promise.resolve();
+  if(_html2pdfLoading) return _html2pdfLoading;
+  _html2pdfLoading = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+    script.onload = () => resolve();
+    script.onerror = () => { _html2pdfLoading = null; reject(new Error('Failed to load html2pdf.js')); };
+    document.head.appendChild(script);
+  });
+  return _html2pdfLoading;
+}
+
+/* ⭐ تحويل ألوان CSS variables إلى قيم ثابتة للـ PDF */
+function prepareCloneForPdf(clone){
+  // Remove interactive elements
+  clone.querySelectorAll('.print-section').forEach(el => el.remove());
+  clone.querySelectorAll('button').forEach(el => el.remove());
+  clone.querySelectorAll('.icon-btn').forEach(el => el.remove());
+  // Replace input values with text or keep as is
+  clone.querySelectorAll('input,select,textarea').forEach(el => {
+    el.style.border = 'none';
+    el.style.background = 'transparent';
+    el.style.color = '#000';
+    el.style.fontWeight = '700';
+    el.style.textAlign = 'center';
+    if(el.tagName === 'INPUT' && el.type === 'number'){
+      el.style.fontFamily = 'monospace';
+    }
+  });
+  // Apply white theme
+  clone.querySelectorAll('*').forEach(el => {
+    const tag = el.tagName.toLowerCase();
+    if(['div','section','table','thead','tbody','tr','td','th','span','p','h1','h2','h3','h4','label','input','select'].includes(tag)){
+      const bg = getComputedStyle(el).backgroundColor;
+      if(bg && (bg.includes('rgb(23, 33, 43)') || bg.includes('rgb(30, 43, 56)') || bg.includes('rgb(15, 23, 32)'))){
+        el.style.background = '#ffffff';
+        el.style.color = '#000';
+      }
+    }
+  });
+}
+
+/* ⭐⭐ مشاركة PDF لتبويب كامل */
+async function shareViewPDF(viewId, includeMonthName, orientation){
+  try {
+    toast(t('creating_pdf'));
+    await loadHtml2Pdf();
+    const viewEl = document.getElementById(viewId);
+    if(!viewEl){ toast(t('share_failed'), 'error'); return; }
+    
+    // Clone the view
+    const clone = viewEl.cloneNode(true);
+    // Remove interactive elements
+    clone.querySelectorAll('.print-section').forEach(el => el.remove());
+    clone.querySelectorAll('button').forEach(el => el.remove());
+    clone.classList.add('active');
+    clone.style.display = 'block';
+    clone.style.background = '#ffffff';
+    clone.style.color = '#000000';
+    clone.style.padding = '15px';
+    clone.style.fontFamily = 'Segoe UI, Tahoma, sans-serif';
+    clone.style.direction = LANG === 'ar' ? 'rtl' : 'ltr';
+    clone.style.width = orientation === 'landscape' ? '277mm' : '190mm';
+    
+    // Prepare clone for PDF (convert colors)
+    prepareCloneForPdf(clone);
+    clone.querySelectorAll('.card, .kpi, table, th, td, .expense-table, .debts-table, .debts-month-table, .target-table').forEach(el => {
+      el.style.background = '#ffffff';
+      el.style.color = '#000000';
+    });
+    clone.querySelectorAll('.card').forEach(el => {
+      el.style.border = '1px solid #999';
+      el.style.marginBottom = '10px';
+      el.style.padding = '10px';
+    });
+    clone.querySelectorAll('th').forEach(el => {
+      el.style.background = '#e5e7eb';
+      el.style.color = '#000';
+      el.style.border = '1px solid #999';
+    });
+    clone.querySelectorAll('td').forEach(el => {
+      el.style.border = '1px solid #ccc';
+      el.style.color = '#000';
+    });
+    clone.querySelectorAll('.kpi').forEach(el => {
+      el.style.background = '#f5f5f5';
+      el.style.border = '1px solid #999';
+    });
+    clone.querySelectorAll('.kpi .val').forEach(el => {
+      el.style.color = '#000';
+    });
+    clone.querySelectorAll('.kpi .val.pos').forEach(el => el.style.color = '#166534');
+    clone.querySelectorAll('.kpi .val.neg').forEach(el => el.style.color = '#991b1b');
+    clone.querySelectorAll('.kpi .val.gold').forEach(el => el.style.color = '#78350f');
+    clone.querySelectorAll('.kpi .val.acc').forEach(el => el.style.color = '#0e7490');
+    clone.querySelectorAll('.card h2').forEach(el => {
+      el.style.color = '#000';
+      el.style.borderBottom = '1.5px solid #333';
+    });
+    clone.querySelectorAll('.card h2::before').forEach(el => el.style.color = '#000');
+    
+    // Create a wrapper
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'fixed';
+    wrapper.style.left = '-99999px';
+    wrapper.style.top = '0';
+    wrapper.style.background = '#ffffff';
+    wrapper.appendChild(clone);
+    document.body.appendChild(wrapper);
+    
+    const filename = `capital_manager_${viewId}_${new Date().toISOString().slice(0,10)}.pdf`;
+    const opt = {
+      margin: [8, 8, 8, 8],
+      filename: filename,
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { 
+        scale: 2, 
+        useCORS: true, 
+        backgroundColor: '#ffffff',
+        logging: false,
+        windowWidth: orientation === 'landscape' ? 1400 : 900
+      },
+      jsPDF: { 
+        unit: 'mm', 
+        format: 'a4', 
+        orientation: orientation || 'portrait',
+        compress: true
+      },
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
+    
+    const pdfBlob = await html2pdf().set(opt).from(clone).outputPdf('blob');
+    document.body.removeChild(wrapper);
+    
+    await sharePdfBlob(pdfBlob, filename);
+  } catch(err){
+    console.error('shareViewPDF error:', err);
+    if(err && err.name === 'AbortError'){
+      toast(t('share_cancelled'));
+      return;
+    }
+    toast(t('share_failed'), 'error');
+  }
+}
+
+/* ⭐⭐ مشاركة Blob كملف PDF */
+async function sharePdfBlob(blob, filename){
+  const file = new File([blob], filename, { type: 'application/pdf' });
+  if(navigator.share && navigator.canShare && navigator.canShare({ files: [file] })){
+    try {
+      await navigator.share({
+        files: [file],
+        title: LANG === 'ar' ? 'تقرير مالي' : 'Financial Report',
+        text: LANG === 'ar' ? 'تقرير من نظام إدارة رأس المال' : 'Report from Capital Manager'
+      });
+      toast(t('share_success'), 'success');
+      return;
+    } catch(err){
+      if(err.name === 'AbortError'){
+        toast(t('share_cancelled'));
+        return;
+      }
+      console.warn('Share failed, downloading:', err);
+    }
+  }
+  // Fallback: download
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 100);
+  toast(t('pdf_downloaded'), 'success');
+}
+
+/* ⭐⭐ مشاركة PDF لبند من الهرم */
+async function sharePyramidLevelPDF(key){
+  try {
+    const lvl = getPyramidLevels().find(l => l.key === key);
+    if(!lvl){ toast(t('share_failed'), 'error'); return; }
+    toast(t('creating_pdf'));
+    await loadHtml2Pdf();
+    
+    const htmlStr = generatePyramidLevelReportHTML(key);
+    // Create a container with this HTML
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.left = '-99999px';
+    container.style.top = '0';
+    container.style.width = '190mm';
+    container.style.background = '#ffffff';
+    
+    // Extract body content only (skip html/head/style)
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlStr;
+    const bodyContent = tempDiv.querySelector('body');
+    if(bodyContent){
+      container.innerHTML = bodyContent.innerHTML;
+    } else {
+      container.innerHTML = htmlStr;
+    }
+    document.body.appendChild(container);
+    
+    const safeName = lvl.label.replace(/[^\w\u0600-\u06FF]/g, '_');
+    const filename = `pyramid_${safeName}_${new Date().toISOString().slice(0,10)}.pdf`;
+    
+    const opt = {
+      margin: [8, 8, 8, 8],
+      filename: filename,
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { 
+        scale: 2, 
+        useCORS: true, 
+        backgroundColor: '#ffffff',
+        logging: false,
+        windowWidth: 900
+      },
+      jsPDF: { 
+        unit: 'mm', 
+        format: 'a4', 
+        orientation: 'portrait',
+        compress: true
+      },
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
+    
+    const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
+    document.body.removeChild(container);
+    
+    await sharePdfBlob(pdfBlob, filename);
+  } catch(err){
+    console.error('sharePyramidLevelPDF error:', err);
+    if(err && err.name === 'AbortError'){
+      toast(t('share_cancelled'));
+      return;
+    }
+    toast(t('share_failed'), 'error');
+  }
+}
+
 function updateMonthPrintBtn(){
   const btn = document.getElementById('btnPrintMonth');
-  if(!btn) return;
+  const btnShare = document.getElementById('btnShareMonth');
   const monthName = getMonths()[state.activeMonth];
-  btn.textContent = `🖨️ ${t('btn_print_month')} — ${monthName} ${state.activeYear}`;
+  const label = `${monthName} ${state.activeYear}`;
+  if(btn) btn.textContent = `🖨️ ${t('btn_print_month')} — ${label}`;
+  if(btnShare) btnShare.textContent = `📤 ${t('btn_share_pdf')} — ${label}`;
 }
 
 function renderAll(){
@@ -2596,6 +2909,7 @@ function renderPyramidTargets(){
       : `<input type="number" class="target-input" value="${inVal(target)}" min="0" step="0.001" oninput="updPyramidTarget('${lvl.key}', this.value)" placeholder="0">`;
     const withdrawBtn = isAuto ? '' : `<button class="icon-btn withdraw" onclick="withdrawFromPyramid('${lvl.key}')" title="${t('tgt_withdraw_btn')}">⬇</button>`;
     const printBtn = `<button class="icon-btn print-btn" onclick="printPyramidLevelDetail('${lvl.key}')" title="${t('btn_print_row')}">🖨️</button>`;
+    const shareBtn = `<button class="icon-btn share-btn" onclick="sharePyramidLevelPDF('${lvl.key}')" title="${t('btn_share_pdf_row')}">📤</button>`;
     return `<tr data-target-key="${lvl.key}" class="${isAuto?'auto-row':''}">
       <td><div class="target-name">${levelLabel}<span class="target-dot" style="background:${lvl.color}"></span>${lvl.subtitle} ${lvl.label} ${autoBadge}</div></td>
       <td>${targetCell}</td>
@@ -2613,6 +2927,7 @@ function renderPyramidTargets(){
           ${withdrawBtn}
           ${wCount > 0 ? `<button class="icon-btn history" onclick="showWithdrawHistory('${lvl.key}')" title="${t('tgt_history_btn')}">📜</button>` : ''}
           ${printBtn}
+          ${shareBtn}
         </div>
       </td>
     </tr>`;
@@ -2775,9 +3090,10 @@ function formatPrintDate(m, mi){
   return `${mi + 1}`;
 }
 
-function printPyramidLevelDetail(key){
+/* ⭐ دالة توليد HTML لتقرير بند من الهرم (تُستخدم للطباعة والمشاركة) */
+function generatePyramidLevelReportHTML(key){
   const lvl = getPyramidLevels().find(l => l.key === key);
-  if(!lvl) return;
+  if(!lvl) return '';
   const L = LANG === 'ar';
   const cur = L ? 'د.ب' : 'BHD';
   const monthNames = getMonths();
@@ -2867,7 +3183,7 @@ function printPyramidLevelDetail(key){
   let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('print_report_title')}: ${lvl.label}</title>`;
   html += `<style>
     @page{size:A4;margin:15mm}
-    *{box-sizing:border-box}
+    *{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
     body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:20px;line-height:1.7;margin:0}
     .header{text-align:center;margin-bottom:24px;padding-bottom:12px;border-bottom:3px double #333}
     .header .logo{display:inline-block;width:54px;height:54px;line-height:54px;border-radius:50%;background:#0e7490;color:#fff;font-weight:900;font-size:24px;text-align:center}
@@ -2883,7 +3199,7 @@ function printPyramidLevelDetail(key){
     .kpi.gray{border-color:#64748b;background:#f8fafc}.kpi.gray .val{color:#334155}
     .section-title{background:#f0f4f8;padding:10px 14px;border-right:5px solid ${lvl.color};font-weight:700;margin:22px 0 10px;font-size:14px;color:#1e293b}
     .year-block{margin-bottom:20px;page-break-inside:avoid}
-    .year-header{background:linear-gradient(90deg,${lvl.color}22,transparent);border-right:5px solid ${lvl.color};padding:10px 14px;font-weight:800;font-size:15px;color:${lvl.color};border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+    .year-header{background:${lvl.color}22;border-right:5px solid ${lvl.color};padding:10px 14px;font-weight:800;font-size:15px;color:${lvl.color};border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
     .year-header .year-total{font-family:monospace;font-size:14px;color:#16a34a;background:#f0fdf4;padding:4px 12px;border-radius:20px;border:1px solid #16a34a}
     table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}
     th{background:#e5e7eb;color:#111;padding:9px 10px;text-align:${L?'right':'left'};border:1px solid #999;font-size:11px;font-weight:700}
@@ -3037,11 +3353,17 @@ function printPyramidLevelDetail(key){
   </div>`;
 
   html += `</body></html>`;
+  return html;
+}
 
+/* ⭐ طباعة بند من الهرم في نافذة منبثقة */
+function printPyramidLevelDetail(key){
+  const htmlStr = generatePyramidLevelReportHTML(key);
+  if(!htmlStr) return;
   const w = window.open('', '_blank', 'width=900,height=900');
   if(w){
     w.document.open();
-    w.document.write(html);
+    w.document.write(htmlStr);
     w.document.close();
     setTimeout(() => {
       try { w.focus(); w.print(); } catch(e){ console.error(e); }
@@ -3614,7 +3936,7 @@ document.querySelectorAll("nav.tabs button").forEach(btn=>{
     document.getElementById(btn.dataset.view).classList.add("active");
     const v = btn.dataset.view;
     if(v==="dashboard") renderDashboard();
-    if(v==="month") renderMonth();
+    if(v==="month"){ renderMonth(); updateMonthPrintBtn(); }
     if(v==="years") renderYears();
     if(v==="pyramid") renderPyramid();
     if(v==="debts") renderDebts();
