@@ -79,9 +79,14 @@
   .toast.success{background:linear-gradient(180deg,var(--ok),#15803d)}
   .toast.error{background:linear-gradient(180deg,var(--danger),#991b1b)}
   .toast.warn{background:linear-gradient(180deg,var(--gold),#92400e);color:#fff}
-  .icon-btn{background:transparent;border:1px solid var(--line);color:var(--muted);width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:14px;transition:.2s;display:inline-flex;align-items:center;justify-content:center}
+  .icon-btn{background:transparent;border:1px solid var(--line);color:var(--muted);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:13px;transition:.2s;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;padding:0}
   .icon-btn:hover{border-color:var(--danger);color:var(--danger)}
-  .icon-btn.add-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(34,193,164,.12)}
+  .icon-btn.add-btn{color:var(--accent);border-color:rgba(34,193,164,.5);font-weight:900;font-size:15px;line-height:1}
+  .icon-btn.add-btn:hover{border-color:var(--accent);color:#fff;background:var(--accent)}
+  .icon-btn.collapse-btn{color:var(--accent2);border-color:rgba(59,130,246,.5);font-weight:700;font-size:11px;width:auto;padding:0 6px;gap:3px}
+  .icon-btn.collapse-btn:hover{border-color:var(--accent2);color:#fff;background:var(--accent2)}
+  .icon-btn.remove-btn{color:var(--danger);border-color:rgba(239,68,68,.5);font-weight:700}
+  .icon-btn.remove-btn:hover{border-color:var(--danger);color:#fff;background:var(--danger)}
   .icon-btn.withdraw:hover{border-color:var(--gold);color:var(--gold);background:rgba(234,179,8,.1)}
   .icon-btn.history:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(59,130,246,.1)}
   .icon-btn.print-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(34,193,164,.1)}
@@ -113,30 +118,32 @@
   html[data-theme="light"] .meat-status.meat-status-no{background:#b91c1c;border-color:#7f1d1d;color:#ffffff}
   html[data-theme="light"] .meat-status.meat-status-yes{background:#15803d;border-color:#14532d;color:#ffffff}
   .expense-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
-  .expense-table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
+  .expense-table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
   .expense-table thead{background:var(--panel2)}
   .expense-table th{padding:10px 12px;text-align:right;color:var(--accent);font-size:11px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
   html[dir="ltr"] .expense-table th{text-align:left}
   .expense-table td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
-  .expense-table td:first-child{font-weight:600;color:var(--txt);white-space:nowrap;padding-right:14px}
+  .expense-table td:first-child{font-weight:600;color:var(--txt);padding-right:14px}
   html[dir="ltr"] .expense-table td:first-child{padding-right:8px;padding-left:14px}
   .expense-table input,.expense-table select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 10px;border-radius:6px;font-size:13px;outline:none;transition:.2s;font-family:inherit}
   .expense-table input:focus,.expense-table select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,193,164,.15)}
   .expense-table tr.excluded{background:rgba(239,68,68,.06)}
   .expense-table tr.excluded td:first-child{color:var(--danger);text-decoration:underline;opacity:.75}
-  .expense-table tr.extra-expanded{background:rgba(34,193,164,.04)}
-  .expense-table tr.extra-expanded:hover{background:rgba(34,193,164,.08)}
-  .expense-table tr.extra-collapsed{background:rgba(34,193,164,.07);cursor:pointer}
-  .expense-table tr.extra-collapsed:hover{background:rgba(34,193,164,.12)}
-  .expense-table tr.extra-collapsed td:first-child{color:var(--muted);font-weight:600}
-  .expense-table .extra-name{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
-  .expense-table .extra-actions-cell{width:80px;text-align:center}
-  .expense-table .extra-actions-cell .icon-btn{margin:0 1px}
+  .expense-table tr.main-row{background:rgba(34,193,164,.05)}
+  .expense-table tr.main-row:hover{background:rgba(34,193,164,.1)}
+  .expense-table tr.extra-row{background:rgba(59,130,246,.04);border-left:3px solid var(--accent2)}
+  html[dir="rtl"] .expense-table tr.extra-row{border-left:none;border-right:3px solid var(--accent2)}
+  .expense-table tr.extra-row:hover{background:rgba(59,130,246,.09)}
+  .expense-table tr.extra-row td:first-child{padding-right:20px;font-weight:500;font-size:12px}
+  html[dir="ltr"] .expense-table tr.extra-row td:first-child{padding-right:8px;padding-left:20px}
+  .extra-name{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--accent2);font-weight:700}
+  .extra-name .extra-hash{opacity:.7;font-family:monospace}
+  .add-btn-inline{margin-inline-start:6px}
   .bank-excluded{background:rgba(239,68,68,.15) !important;border-color:var(--danger) !important;color:#ffdcdc !important}
   .expense-table tr.group-header{background:linear-gradient(90deg,rgba(59,130,246,.15),transparent)}
   .expense-table tr.group-header td{color:var(--accent2);font-weight:700;font-size:12px;padding:8px 14px;border-bottom:1px dashed var(--line)}
   .birthday-cell{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .birthday-cell select{max-width:110px;padding:5px 8px !important;font-size:12px !important;background:rgba(234,179,8,.1) !important;border-color:var(--gold) !important;color:#facc15 !important}
+  .birthday-cell select{max-width:110px;padding:4px 8px !important;font-size:11px !important;background:rgba(234,179,8,.1) !important;border-color:var(--gold) !important;color:#facc15 !important;width:auto !important}
   .expense-table tr.bday-row{background:rgba(234,179,8,.04)}
   .expense-summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding:14px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:13px}
   .exp-sum-item{display:flex;gap:8px;align-items:center;padding:6px 12px;border-radius:8px;background:var(--panel);border:1px solid var(--line)}
@@ -236,7 +243,7 @@
   .pyr-legend-item .pyr-label{font-size:12px;color:var(--muted);flex:1;min-width:100px}
   .pyr-legend-item .pyr-val{font-family:monospace;font-weight:700;color:var(--txt);font-size:14px;direction:ltr}
   .pyr-legend-item .pyr-note{width:100%;font-size:11px;color:var(--gold);font-style:italic;margin-top:4px;padding:4px 8px;background:rgba(234,179,8,.08);border-radius:6px;border:1px solid rgba(234,179,8,.25);white-space:pre-wrap;word-break:break-word}
-  @media(max-width:768px){.expense-table{min-width:600px;font-size:12px}.expense-table th,.expense-table td{padding:5px 6px}.bank-item{min-width:120px;font-size:11px}.debts-month-table{min-width:780px}}
+  @media(max-width:768px){.expense-table{min-width:520px;font-size:12px}.expense-table th,.expense-table td{padding:5px 6px}.bank-item{min-width:120px;font-size:11px}.debts-month-table{min-width:780px}}
   .excluded-cell{color:var(--danger) !important;text-decoration:underline;opacity:.65;font-size:12px}
   .year-chart{display:flex;gap:16px;align-items:flex-end;justify-content:center;padding:20px 10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;min-height:280px;overflow-x:auto}
   .year-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px}
@@ -378,8 +385,8 @@
     .last-pay-prior{font-size:7pt !important}
     .progress-bar{background:#eee !important;border:1px solid #999 !important}
     .progress-fill{background:#0891b2 !important}
-    .expense-table tr.extra-collapsed{background:#f5f5f5 !important}
-    .expense-table tr.extra-expanded{background:#fafafa !important}
+    .expense-table tr.main-row{background:#f5f5f5 !important}
+    .expense-table tr.extra-row{background:#fafafa !important;border-right:2px solid #666 !important}
     
     .debts-table-wrap,
     .expense-table-wrap,
@@ -510,7 +517,6 @@
     .expense-table {
       min-width: 0 !important;
       width: 100% !important;
-      table-layout: fixed !important;
     }
     .expense-table th,
     .expense-table td {
@@ -660,7 +666,6 @@
           <th id="thBank"></th>
           <th id="thNote"></th>
           <th id="thRef"></th>
-          <th class="noprint" style="width:60px">⚙</th>
         </tr></thead>
         <tbody id="expenseFields"></tbody>
       </table>
@@ -1076,10 +1081,10 @@ const I18N = {
     pyr_negative_hint:"سلبي — لا يُحتسب في الإجمالي",
     inst_title:"📖 تعليمات هرم الأمان المالي",
     close_btn:"إغلاق",
-    add_extra_title:"إضافة بند جديد",
-    remove_extra_title:"حذف هذا البند",
-    collapse_title:"طي البند",
-    expand_title:"توسيع البند",
+    add_extra_title:"إضافة بند فرعي",
+    remove_extra_title:"حذف البند الفرعي",
+    collapse_all_title:"طي كل البنود الفرعية",
+    expand_all_title:"توسيع كل البنود الفرعية",
     months:["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"],
     print_title:"نظام إدارة رأس المال",print_subtitle:"Capital Manager — تقرير مالي",print_meta:"تم الإنشاء في",
     f_salary:"الراتب الشهري (د.ب)",f_costOfLiving:"غلاء المعيشة (د.ب)",
@@ -1092,10 +1097,10 @@ const I18N = {
     e_rent:"إيجار الشقة/المنزل",e_houseMaintenance:"ماجلة البيت",
     e_internet:"الإنترنت والهاتف",e_electricity:"الكهرباء والماء",
     e_misc:"مصروفات أخرى",e_treatment:"العلاج",
-    e_visaCard1:"بطاقة الفيزا",e_visaCard2:"بطاقة الفيزا ٢",e_visaCard3:"بطاقة الفيزا ٣",
+    e_visaCard1:"بطاقة الفيزا",
     e_fuel:"البترول",e_carCleaning:"عامل التنظيف",
-    e_carRepair1:"تصليح السيارة",e_carRepair2:"تصليح السيارة ٢",e_carRepair3:"تصليح السيارة ٣",
-    e_homeRepair1:"تعديل/تصليح المنزل",e_homeRepair2:"تعديل/تصليح المنزل ٢",e_homeRepair3:"تعديل/تصليح المنزل ٣",
+    e_carRepair1:"تصليح السيارة",
+    e_homeRepair1:"تعديل/تصليح المنزل",
     e_birthday:"عيد ميلاد",e_kids_group:"🎒 احتياجات الأطفال",
     e_kidsSchool:"↳ المدرسة",e_kidsClothes:"↳ الملابس",e_kidsEid:"↳ العيد",
     e_privateSchool:"مدرسة خاصة",e_kindergarten:"روضة",e_university:"جامعة",
@@ -1297,10 +1302,10 @@ const I18N = {
     pyr_negative_hint:"Negative — not counted in total",
     inst_title:"📖 Financial Safety Pyramid Instructions",
     close_btn:"Close",
-    add_extra_title:"Add new item",
-    remove_extra_title:"Delete this item",
-    collapse_title:"Collapse item",
-    expand_title:"Expand item",
+    add_extra_title:"Add sub-item",
+    remove_extra_title:"Delete sub-item",
+    collapse_all_title:"Collapse all sub-items",
+    expand_all_title:"Expand all sub-items",
     months:["January","February","March","April","May","June","July","August","September","October","November","December"],
     print_title:"Capital Manager",print_subtitle:"Financial Report",print_meta:"Generated on",
     f_salary:"Salary (BHD)",f_costOfLiving:"Cost of Living (BHD)",
@@ -1313,10 +1318,10 @@ const I18N = {
     e_rent:"Rent",e_houseMaintenance:"House Maintenance",
     e_internet:"Internet & Phone",e_electricity:"Electricity & Water",
     e_misc:"Miscellaneous",e_treatment:"Treatment",
-    e_visaCard1:"Visa Card",e_visaCard2:"Visa Card 2",e_visaCard3:"Visa Card 3",
+    e_visaCard1:"Visa Card",
     e_fuel:"Fuel",e_carCleaning:"Car Cleaning",
-    e_carRepair1:"Car Repair",e_carRepair2:"Car Repair 2",e_carRepair3:"Car Repair 3",
-    e_homeRepair1:"Home Repair",e_homeRepair2:"Home Repair 2",e_homeRepair3:"Home Repair 3",
+    e_carRepair1:"Car Repair",
+    e_homeRepair1:"Home Repair",
     e_birthday:"Birthday",e_kids_group:"🎒 Kids Needs",
     e_kidsSchool:"↳ School",e_kidsClothes:"↳ Clothes",e_kidsEid:"↳ Eid",
     e_privateSchool:"Private School",e_kindergarten:"KG",e_university:"University",
@@ -1400,32 +1405,41 @@ const getIncomeFields = () => [
   ["housing", t('f_housing')],["charity", t('f_charity')],["freelance", t('f_freelance')],
 ];
 
-const getExpenseRows = () => [
-  {type:"simple",key:"wifeSalary",label:t('e_wifeSalary')},
-  {type:"simple",key:"familyExpenses",label:t('e_familyExpenses')},
-  {type:"simple",key:"rent",label:t('e_rent')},
-  {type:"simple",key:"houseMaintenance",label:t('e_houseMaintenance')},
-  {type:"simple",key:"internet",label:t('e_internet')},
-  {type:"simple",key:"electricity",label:t('e_electricity')},
-  {type:"simple",key:"misc",label:t('e_misc')},
-  {type:"simple",key:"treatment",label:t('e_treatment')},
-  {type:"repeatable",key:"visaCard1",extraKey:"visaCardExtra",label:t('e_visaCard1')},
-  {type:"simple",key:"fuel",label:t('e_fuel')},
-  {type:"simple",key:"carCleaning",label:t('e_carCleaning')},
-  {type:"repeatable",key:"carRepair1",extraKey:"carRepairExtra",label:t('e_carRepair1')},
-  {type:"repeatable",key:"homeRepair1",extraKey:"homeRepairExtra",label:t('e_homeRepair1')},
-  {type:"birthday",key:"birthday",label:t('e_birthday')},
-  {type:"group",label:t('e_kids_group')},
-  {type:"simple",key:"kidsSchool",label:t('e_kidsSchool')},
-  {type:"simple",key:"kidsClothes",label:t('e_kidsClothes')},
-  {type:"simple",key:"kidsEid",label:t('e_kidsEid')},
-  {type:"simple",key:"privateSchool",label:t('e_privateSchool')},
-  {type:"simple",key:"kindergarten",label:t('e_kindergarten')},
-  {type:"simple",key:"university",label:t('e_university')},
-  {type:"simple",key:"transport",label:t('e_transport')},
-  {type:"simple",key:"tutoring",label:t('e_tutoring')},
-  {type:"simple",key:"humanitarianAid",label:t('e_humanitarianAid')},
+/* EVERY expense row is now repeatable */
+const EXPENSE_BASE_ROWS = [
+  {key:"wifeSalary",label:"e_wifeSalary"},
+  {key:"familyExpenses",label:"e_familyExpenses"},
+  {key:"rent",label:"e_rent"},
+  {key:"houseMaintenance",label:"e_houseMaintenance"},
+  {key:"internet",label:"e_internet"},
+  {key:"electricity",label:"e_electricity"},
+  {key:"misc",label:"e_misc"},
+  {key:"treatment",label:"e_treatment"},
+  {key:"visaCard1",label:"e_visaCard1"},
+  {key:"fuel",label:"e_fuel"},
+  {key:"carCleaning",label:"e_carCleaning"},
+  {key:"carRepair1",label:"e_carRepair1"},
+  {key:"homeRepair1",label:"e_homeRepair1"},
+  {key:"birthday",label:"e_birthday",birthday:true},
+  {type:"group",label:"e_kids_group"},
+  {key:"kidsSchool",label:"e_kidsSchool"},
+  {key:"kidsClothes",label:"e_kidsClothes"},
+  {key:"kidsEid",label:"e_kidsEid"},
+  {key:"privateSchool",label:"e_privateSchool"},
+  {key:"kindergarten",label:"e_kindergarten"},
+  {key:"university",label:"e_university"},
+  {key:"transport",label:"e_transport"},
+  {key:"tutoring",label:"e_tutoring"},
+  {key:"humanitarianAid",label:"e_humanitarianAid"},
 ];
+
+const getExpenseRows = () => EXPENSE_BASE_ROWS.map(r => {
+  if(r.type === "group") return { type:"group", label: t(r.label) };
+  return { type:"repeatable", key:r.key, extraKey: r.key+"Extra", label: t(r.label), birthday: !!r.birthday };
+});
+
+// Collect all extra keys for EMPTY_MONTH
+const EXPENSE_EXTRA_KEYS = EXPENSE_BASE_ROWS.filter(r => r.key).map(r => r.key + "Extra");
 
 const getSavingFields = () => [
   ["emergencyFund", t('s_emergencyFund')],
@@ -1461,28 +1475,24 @@ function isPyramidBankSavingsLevel(key){
   return !isPyramidNegativeLevel(key) && !isPyramidInvestmentLevel(key);
 }
 
-const EMPTY_MONTH = () => ({
-  salary:0,costOfLiving:0,housing:0,hasMeatSupport:false,meat:0,
-  charity:0,freelance:0,eidType:"no",eidAmount:0,
-  wifeSalary:0,familyExpenses:0,rent:0,houseMaintenance:0,
-  internet:0,electricity:0,misc:0,treatment:0,
-  visaCard1:0,visaCardExtra:[],
-  fuel:0,carCleaning:0,
-  carRepair1:0,carRepairExtra:[],
-  homeRepair1:0,homeRepairExtra:[],
-  birthday:0,birthdayPerson:"none",
-  kidsSchool:0,kidsClothes:0,kidsEid:0,
-  privateSchool:0,kindergarten:0,university:0,transport:0,tutoring:0,
-  humanitarianAid:0,expenseMeta:{},refMeta:{},savingRefMeta:{},
-  incomeNotes:{salary:"",costOfLiving:"",housing:"",charity:"",freelance:"",meat:""},
-  assembly:0,investment:0,eidMoneySaving:0,eidMoneyType:"fitar",
-  eidClothes:0,hajj:0,
-  insuranceSaving:0,travelSaving:0,emergencyFund:0,
-  savingMeta:{},
-  carInsurance: DEFAULT_EXTRA(),
-  zakat: DEFAULT_EXTRA(),
-  notes:"",customDate:"",customTime:"",lastModified:""
-});
+function makeEmptyMonth(){
+  const base = {
+    salary:0,costOfLiving:0,housing:0,hasMeatSupport:false,meat:0,
+    charity:0,freelance:0,eidType:"no",eidAmount:0,
+    birthdayPerson:"none",
+    expenseMeta:{},refMeta:{},savingRefMeta:{},
+    incomeNotes:{salary:"",costOfLiving:"",housing:"",charity:"",freelance:"",meat:""},
+    eidMoneyType:"fitar",
+    savingMeta:{},
+    carInsurance: DEFAULT_EXTRA(),
+    zakat: DEFAULT_EXTRA(),
+    notes:"",customDate:"",customTime:"",lastModified:"",
+    extraCollapsedMap:{}
+  };
+  EXPENSE_EXTRA_KEYS.forEach(k => base[k] = []);
+  return base;
+}
+const EMPTY_MONTH = makeEmptyMonth;
 const emptyYear = () => Array.from({length:12}, EMPTY_MONTH);
 
 let state = {
@@ -1518,11 +1528,34 @@ function getExpenseRowValue(m, row){
   if(row.type === "repeatable") v += sumRepeatableExtras(m, row.extraKey);
   return v;
 }
-
-function addRepeatableExtra(extraKey){
+function isGroupCollapsed(m, extraKey){
+  if(!m.extraCollapsedMap) m.extraCollapsedMap = {};
+  return !!m.extraCollapsedMap[extraKey];
+}
+function toggleAllExtras(extraKey){
+  const m = M()[state.activeMonth];
+  if(!m.extraCollapsedMap) m.extraCollapsedMap = {};
+  m.extraCollapsedMap[extraKey] = !m.extraCollapsedMap[extraKey];
+  m.lastModified = new Date().toISOString();
+  save();
+  renderExpenseFields();
+  renderMonthDate();
+}
+function addRepeatableExtra(extraKey, isBirthday){
   const m = M()[state.activeMonth];
   const arr = getRepeatableExtras(m, extraKey);
-  arr.push({ id: Date.now() + Math.floor(Math.random()*1000), amount: 0, bank: "بطاقة صراف الالي", note: "", ref: "", collapsed: false });
+  const newEx = {
+    id: Date.now() + Math.floor(Math.random()*10000),
+    amount: 0,
+    bank: "بطاقة صراف الالي",
+    note: "",
+    ref: ""
+  };
+  if(isBirthday) newEx.person = "none";
+  arr.push(newEx);
+  // auto-expand the group
+  if(!m.extraCollapsedMap) m.extraCollapsedMap = {};
+  m.extraCollapsedMap[extraKey] = false;
   m.lastModified = new Date().toISOString();
   save();
   renderExpenseFields();
@@ -1530,6 +1563,7 @@ function addRepeatableExtra(extraKey){
   renderMonthResults();
   renderMonthPills();
   renderDashboard();
+  renderMonthDate();
 }
 function removeRepeatableExtra(extraKey, id){
   const m = M()[state.activeMonth];
@@ -1544,6 +1578,7 @@ function removeRepeatableExtra(extraKey, id){
   renderMonthResults();
   renderMonthPills();
   renderDashboard();
+  renderMonthDate();
 }
 function updExtraField(extraKey, id, field, val){
   const m = M()[state.activeMonth];
@@ -1560,15 +1595,7 @@ function updExtraField(extraKey, id, field, val){
     renderMonthPills();
     renderDashboard();
   }
-}
-function toggleExtraCollapse(extraKey, id){
-  const m = M()[state.activeMonth];
-  const arr = getRepeatableExtras(m, extraKey);
-  const item = arr.find(x => x.id === id);
-  if(!item) return;
-  item.collapsed = !item.collapsed;
-  save();
-  renderExpenseFields();
+  renderMonthDate();
 }
 
 /* ===================== MAIN STATE HELPERS ===================== */
@@ -1590,8 +1617,6 @@ function getYearExtras(year){
   return state.yearExtras[year];
 }
 
-function isObligation(d){ return d.type === "obligation"; }
-
 function getLoansCumulativePaid(){
   let total = 0;
   (state.debts || []).filter(d => d.type === "installment" && !isDebtExcluded(d)).forEach(d => {
@@ -1606,7 +1631,6 @@ function getLoansTotalAmount(){
   });
   return total;
 }
-
 function getObligationsTotalAmount(){
   let total = 0;
   (state.debts || []).filter(d => d.type === "obligation" && !isDebtExcluded(d)).forEach(d => {
@@ -1715,10 +1739,6 @@ function isTargetSet(key){
 }
 function isTargetReached(key){
   return isTargetSet(key) && getNetSaved(key) >= getPyramidTarget(key);
-}
-function getRemainingToTarget(key){
-  if(!isTargetSet(key)) return 0;
-  return Math.max(0, getPyramidTarget(key) - getNetSaved(key));
 }
 function isSavingDisabledForMonth(key){
   const target = getPyramidTarget(key);
@@ -1841,9 +1861,7 @@ function load(){
           bank: "بطاقة صراف الالي",
           monthlyByYear: { [state.activeYear]: Array(12).fill(0) },
           refByYear: { [state.activeYear]: Array(12).fill("") },
-          start: '',
-          end: '',
-          notes: o.notes || ''
+          start: '', end: '', notes: o.notes || ''
         });
       });
       delete state.obligations;
@@ -1852,9 +1870,9 @@ function load(){
     
     // Migration config: old numbered fields -> new extra arrays
     const migrationConfig = [
-      { base:"visaCard1", extra:"visaCardExtra", oldKeys:["visaCard2","visaCard3"] },
-      { base:"carRepair1", extra:"carRepairExtra", oldKeys:["carRepair2","carRepair3"] },
-      { base:"homeRepair1", extra:"homeRepairExtra", oldKeys:["homeRepair2","homeRepair3"] },
+      { base:"visaCard1", extra:"visaCard1Extra", oldKeys:["visaCard2","visaCard3"] },
+      { base:"carRepair1", extra:"carRepair1Extra", oldKeys:["carRepair2","carRepair3"] },
+      { base:"homeRepair1", extra:"homeRepair1Extra", oldKeys:["homeRepair2","homeRepair3"] },
     ];
     
     Object.keys(state.years||{}).forEach(y => {
@@ -1869,13 +1887,13 @@ function load(){
         if(!merged.zakat) merged.zakat = DEFAULT_EXTRA();
         if(typeof merged.eidClothes !== 'number') merged.eidClothes = 0;
         if(typeof merged.hajj !== 'number') merged.hajj = 0;
-        if(typeof merged.visaCard1 !== 'number') merged.visaCard1 = 0;
-        if(typeof merged.carRepair1 !== 'number') merged.carRepair1 = 0;
-        if(typeof merged.homeRepair1 !== 'number') merged.homeRepair1 = 0;
+        if(!merged.extraCollapsedMap) merged.extraCollapsedMap = {};
+        
+        // Ensure all extra arrays exist
+        EXPENSE_EXTRA_KEYS.forEach(k => { if(!Array.isArray(merged[k])) merged[k] = []; });
         
         // Migrate numbered duplicates into arrays
         migrationConfig.forEach(cfg => {
-          if(!Array.isArray(merged[cfg.extra])) merged[cfg.extra] = [];
           cfg.oldKeys.forEach(oldKey => {
             const amt = +merged[oldKey] || 0;
             if(amt > 0){
@@ -1885,8 +1903,7 @@ function load(){
                 amount: amt,
                 bank: meta.bank || "بطاقة صراف الالي",
                 note: meta.note || "",
-                ref: (merged.refMeta?.[oldKey]) || "",
-                collapsed: false
+                ref: (merged.refMeta?.[oldKey]) || ""
               });
             }
             delete merged[oldKey];
@@ -2008,11 +2025,7 @@ function lastPaymentInfo(d){
     for(let i=11; i>=0; i--){
       if(+arr[i] > 0){
         const monthName = getMonths()[i];
-        return {
-          year:y, month:i, amount:+arr[i], monthName: monthName,
-          shortLabel: `${monthName} ${y}`,
-          fullLabel: `${monthName} ${y} — ${fmt(+arr[i])} ${LANG==='ar'?'د.ب':'BHD'}`
-        };
+        return { year:y, month:i, amount:+arr[i], monthName, shortLabel: `${monthName} ${y}` };
       }
     }
   }
@@ -2102,8 +2115,6 @@ function totalOneTimeMonthlyExcluded(m){
   if(isExtraExcludedM(m, "zakat")) s += (+getZakat(m).amount||0);
   return s;
 }
-function totalOneTimeYearly(year){ let s=0; Mof(year).forEach(m => s += totalOneTimeMonthly(m)); return s; }
-function totalOneTimeYearlyExcluded(year){ let s=0; Mof(year).forEach(m => s += totalOneTimeMonthlyExcluded(m)); return s; }
 
 function yearTotals(year){
   const months = Mof(year);
@@ -2129,9 +2140,7 @@ function debtTotals(){
   return {
     receiveThisYear:recv, payThisYear:pay, netThisYear:recv-pay,
     remainingToReceive:remToMe, remainingOnMe:remOnMe, remainingToPay:remOnMe,
-    netRemaining:remToMe-remOnMe,
-    totalDebt: totalDebtAll,
-    obligationsTotal: obligationsTotal
+    netRemaining:remToMe-remOnMe, totalDebt: totalDebtAll, obligationsTotal
   };
 }
 
@@ -2287,11 +2296,7 @@ function changeFontSize(delta){ FONT_SCALE = Math.max(0.75, Math.min(1.6, FONT_S
 
 function setPrintOrientation(orientation){
   let styleEl = document.getElementById('print-orientation-style');
-  if(!styleEl){
-    styleEl = document.createElement('style');
-    styleEl.id = 'print-orientation-style';
-    document.head.appendChild(styleEl);
-  }
+  if(!styleEl){ styleEl = document.createElement('style'); styleEl.id = 'print-orientation-style'; document.head.appendChild(styleEl); }
   if(orientation === 'landscape'){
     document.documentElement.classList.add('print-landscape');
     styleEl.textContent = '@media print { @page { size: A4 landscape !important; margin: 8mm 6mm !important; } }';
@@ -2301,21 +2306,18 @@ function setPrintOrientation(orientation){
   }
 }
 
-/* ⭐⭐⭐ توليد HTML مخصص لطباعة جدول الديون والأقساط والالتزامات ⭐⭐⭐ */
+/* ===================== PRINT ===================== */
 function generateDebtsTablePrintHTML(){
   const months = getMonths();
   const y = state.activeYear;
   const L = LANG === 'ar';
   const cur = L ? 'د.ب' : 'BHD';
   const dt = debtTotals();
-  
   const now = new Date();
   const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
   const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-  
   const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦", obligation:"📋"};
   const typeLabel = {credit:t('dt_credit_label'), debit:t('dt_debit_label'), installment:t('dt_inst_label'), obligation:t('dt_obligation_label')};
-  
   let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('debts_table')}</title>`;
   html += `<style>
     @page{size:A4 landscape;margin:6mm}
@@ -2349,12 +2351,8 @@ function generateDebtsTablePrintHTML(){
     .footer{text-align:center;margin-top:10px;padding-top:5px;border-top:1px solid #999;font-size:8pt;color:#666;line-height:1.6}
     .footer strong{color:#0e7490}
   </style></head><body>`;
-  
-  html += `<div class="header">
-    <h1>${t('debts_table')}</h1>
-    <div class="meta">${t('print_generated')}: ${dateStr} ${timeStr} &nbsp;|&nbsp; ${L?'السنة':'Year'}: <strong>${y}</strong></div>
-  </div>`;
-  
+  html += `<div class="header"><h1>${t('debts_table')}</h1>
+    <div class="meta">${t('print_generated')}: ${dateStr} ${timeStr} &nbsp;|&nbsp; ${L?'السنة':'Year'}: <strong>${y}</strong></div></div>`;
   html += `<div class="kpis">
     <div class="kpi green"><div class="lbl">${t('kpi_recv_year_d')}</div><div class="val">${fmt(dt.receiveThisYear)} ${cur}</div></div>
     <div class="kpi red"><div class="lbl">${t('kpi_pay_year_d')}</div><div class="val">${fmt(dt.payThisYear)} ${cur}</div></div>
@@ -2363,48 +2361,19 @@ function generateDebtsTablePrintHTML(){
     <div class="kpi red"><div class="lbl">${t('kpi_rem_on_me')}</div><div class="val">${fmt(dt.remainingOnMe)} ${cur}</div></div>
     <div class="kpi blue"><div class="lbl">${t('kpi_total_debt')} / ${t('kpi_obligations_total')}</div><div class="val">${fmt(dt.totalDebt)} / ${fmt(dt.obligationsTotal)}</div></div>
   </div>`;
-  
   if(state.debts.length === 0){
     html += `<div style="text-align:center;padding:40px;color:#888;font-style:italic">${L?'لا توجد بيانات مسجّلة':'No data recorded'}</div>`;
   } else {
-    html += `<table>
-      <colgroup>
-        <col style="width:2.5%">
-        <col style="width:13%">
-        <col style="width:6%">
-        <col style="width:5%">
-        <col style="width:6%">
-        <col style="width:6%">
-        <col style="width:9%">
-        ${months.map(() => '<col style="width:3.2%">').join('')}
-        <col style="width:5.5%">
-        <col style="width:5.5%">
-      </colgroup>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>${t('th_debt_name')}</th>
-          <th>${t('th_debt_type')}</th>
-          <th>${t('lbl_debt_cat')}</th>
-          <th>${t('th_debt_total')}</th>
-          <th>${t('lbl_debt_paidbefore')}</th>
-          <th>${t('lbl_debt_notes')}</th>
-          ${months.map(m => `<th class="month-header">${m}</th>`).join('')}
-          <th>${t('th_debt_this_month')}</th>
-          <th>${t('th_debt_rem_after')}</th>
-        </tr>
-      </thead>
-      <tbody>`;
-    
+    html += `<table><colgroup><col style="width:2.5%"><col style="width:13%"><col style="width:6%"><col style="width:5%"><col style="width:6%"><col style="width:6%"><col style="width:9%">${months.map(() => '<col style="width:3.2%">').join('')}<col style="width:5.5%"><col style="width:5.5%"></colgroup>
+      <thead><tr><th>#</th><th>${t('th_debt_name')}</th><th>${t('th_debt_type')}</th><th>${t('lbl_debt_cat')}</th><th>${t('th_debt_total')}</th><th>${t('lbl_debt_paidbefore')}</th><th>${t('lbl_debt_notes')}</th>
+      ${months.map(m => `<th class="month-header">${m}</th>`).join('')}
+      <th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th></tr></thead><tbody>`;
     state.debts.forEach((d, idx) => {
       const cls = d.type === "credit" ? "row-credit" : d.type === "debit" ? "row-debit" : d.type === "obligation" ? "row-obligation" : "row-installment";
       const fullyPaid = isDebtFullyPaid(d);
       const rowCls = cls + (fullyPaid ? ' fully-paid-row' : '');
-      const paid = debtPaidInYear(d, y);
-      const rem = debtRemaining(d);
-      const icon = typeIcon[d.type] || '';
-      const label = typeLabel[d.type] || d.type;
-      
+      const paid = debtPaidInYear(d, y); const rem = debtRemaining(d);
+      const icon = typeIcon[d.type] || ''; const label = typeLabel[d.type] || d.type;
       html += `<tr class="${rowCls}">
         <td class="num">${idx + 1}</td>
         <td class="name-cell">${esc(d.name)}</td>
@@ -2413,35 +2382,18 @@ function generateDebtsTablePrintHTML(){
         <td class="num">${(+d.total||0).toFixed(3)}</td>
         <td class="num">${(+d.paidBefore||0).toFixed(3)}</td>
         <td class="notes-cell">${esc(d.notes) || '—'}</td>
-        ${months.map((_, mi) => {
-          const v = dm(d, y, mi);
-          return `<td class="num">${v > 0 ? v.toFixed(3) : '—'}</td>`;
-        }).join('')}
+        ${months.map((_, mi) => { const v = dm(d, y, mi); return `<td class="num">${v > 0 ? v.toFixed(3) : '—'}</td>`; }).join('')}
         <td class="num">${paid.toFixed(3)}</td>
         <td class="num">${rem.toFixed(3)}</td>
       </tr>`;
     });
-    
-    const mTotals = Array(12).fill(0);
-    let tp = 0, tr = 0;
-    state.debts.forEach(d => {
-      for(let i=0;i<12;i++) mTotals[i] += dm(d, y, i);
-      tp += debtPaidInYear(d, y);
-      tr += debtRemaining(d);
-    });
-    html += `</tbody><tfoot><tr>
-      <td colspan="7">${t('dms_total')}</td>
+    const mTotals = Array(12).fill(0); let tp = 0, tr = 0;
+    state.debts.forEach(d => { for(let i=0;i<12;i++) mTotals[i] += dm(d, y, i); tp += debtPaidInYear(d, y); tr += debtRemaining(d); });
+    html += `</tbody><tfoot><tr><td colspan="7">${t('dms_total')}</td>
       ${mTotals.map(v => `<td class="num">${v > 0 ? v.toFixed(3) : '—'}</td>`).join('')}
-      <td class="num">${tp.toFixed(3)}</td>
-      <td class="num">${tr.toFixed(3)}</td>
-    </tr></tfoot></table>`;
+      <td class="num">${tp.toFixed(3)}</td><td class="num">${tr.toFixed(3)}</td></tr></tfoot></table>`;
   }
-  
-  html += `<div class="footer">
-    <div><strong>Muharraqi</strong> — ${t('print_title')}</div>
-    <div>© 2025 Muharraqi. All Rights Reserved.</div>
-  </div>`;
-  
+  html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div>`;
   html += `</body></html>`;
   return html;
 }
@@ -2449,16 +2401,8 @@ function generateDebtsTablePrintHTML(){
 function printDebtsTable(){
   const html = generateDebtsTablePrintHTML();
   const w = window.open('', '_blank', 'width=1200,height=800');
-  if(w){
-    w.document.open();
-    w.document.write(html);
-    w.document.close();
-    setTimeout(() => {
-      try { w.focus(); w.print(); } catch(e){ console.error(e); }
-    }, 500);
-  } else {
-    toast(t('print_error_popup'), 'error');
-  }
+  if(w){ w.document.open(); w.document.write(html); w.document.close(); setTimeout(() => { try { w.focus(); w.print(); } catch(e){ console.error(e); } }, 500); }
+  else { toast(t('print_error_popup'), 'error'); }
 }
 
 async function shareDebtsTablePDF(){
@@ -2467,27 +2411,17 @@ async function shareDebtsTablePDF(){
     await loadHtml2Pdf();
     const htmlStr = generateDebtsTablePrintHTML();
     const container = document.createElement('div');
-    container.style.position = 'fixed';
-    container.style.left = '-99999px';
-    container.style.top = '0';
-    container.style.width = '277mm';
-    container.style.background = '#ffffff';
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlStr;
+    container.style.position = 'fixed'; container.style.left = '-99999px'; container.style.top = '0';
+    container.style.width = '277mm'; container.style.background = '#ffffff';
+    const tempDiv = document.createElement('div'); tempDiv.innerHTML = htmlStr;
     const bodyContent = tempDiv.querySelector('body');
-    if(bodyContent) container.innerHTML = bodyContent.innerHTML;
-    else container.innerHTML = htmlStr;
+    if(bodyContent) container.innerHTML = bodyContent.innerHTML; else container.innerHTML = htmlStr;
     document.body.appendChild(container);
-    
     const filename = `debts_table_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = {
-      margin: [4, 4, 4, 4],
-      filename,
-      image: { type: 'jpeg', quality: 0.95 },
+    const opt = { margin: [4,4,4,4], filename, image: { type: 'jpeg', quality: 0.95 },
       html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 1400 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape', compress: true },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
+      pagebreak: { mode: ['css', 'legacy'] } };
     const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
     document.body.removeChild(container);
     await sharePdfBlob(pdfBlob, filename);
@@ -2507,16 +2441,11 @@ function printCurrentView(includeMonthName, orientation){
   const activeTabBtn = document.querySelector('nav.tabs button.active');
   const activeTabName = activeTabBtn ? activeTabBtn.textContent.trim() : '';
   let metaExtra = `${state.activeYear}`;
-  if(includeMonthName){
-    metaExtra = `${getMonths()[state.activeMonth]} ${state.activeYear}`;
-  }
+  if(includeMonthName){ metaExtra = `${getMonths()[state.activeMonth]} ${state.activeYear}`; }
   document.getElementById('phMeta').textContent = `${t('print_meta')}: ${dateStr} — ${timeStr} | ${metaExtra}`;
   document.getElementById('printFooterMeta').textContent = `${activeTabName} | ${metaExtra} | ${dateStr} ${timeStr}`;
   setPrintOrientation(orientation || 'portrait');
-  setTimeout(() => {
-    window.print();
-    setTimeout(() => setPrintOrientation('portrait'), 800);
-  }, 120);
+  setTimeout(() => { window.print(); setTimeout(() => setPrintOrientation('portrait'), 800); }, 120);
 }
 
 function printPage(){
@@ -2544,24 +2473,9 @@ function prepareCloneForPdf(clone){
   clone.querySelectorAll('button').forEach(el => el.remove());
   clone.querySelectorAll('.icon-btn').forEach(el => el.remove());
   clone.querySelectorAll('input,select,textarea').forEach(el => {
-    el.style.border = 'none';
-    el.style.background = 'transparent';
-    el.style.color = '#000';
-    el.style.fontWeight = '700';
-    el.style.textAlign = 'center';
-    if(el.tagName === 'INPUT' && el.type === 'number'){
-      el.style.fontFamily = 'monospace';
-    }
-  });
-  clone.querySelectorAll('*').forEach(el => {
-    const tag = el.tagName.toLowerCase();
-    if(['div','section','table','thead','tbody','tr','td','th','span','p','h1','h2','h3','h4','label','input','select'].includes(tag)){
-      const bg = getComputedStyle(el).backgroundColor;
-      if(bg && (bg.includes('rgb(23, 33, 43)') || bg.includes('rgb(30, 43, 56)') || bg.includes('rgb(15, 23, 32)'))){
-        el.style.background = '#ffffff';
-        el.style.color = '#000';
-      }
-    }
+    el.style.border = 'none'; el.style.background = 'transparent'; el.style.color = '#000';
+    el.style.fontWeight = '700'; el.style.textAlign = 'center';
+    if(el.tagName === 'INPUT' && el.type === 'number'){ el.style.fontFamily = 'monospace'; }
   });
 }
 
@@ -2572,91 +2486,44 @@ async function shareViewPDF(viewId, includeMonthName, orientation){
     await loadHtml2Pdf();
     const viewEl = document.getElementById(viewId);
     if(!viewEl){ toast(t('share_failed'), 'error'); return; }
-    
     const clone = viewEl.cloneNode(true);
     clone.querySelectorAll('.print-section').forEach(el => el.remove());
     clone.querySelectorAll('button').forEach(el => el.remove());
     clone.classList.add('active');
-    clone.style.display = 'block';
-    clone.style.background = '#ffffff';
-    clone.style.color = '#000000';
-    clone.style.padding = '15px';
-    clone.style.fontFamily = 'Segoe UI, Tahoma, sans-serif';
+    clone.style.display = 'block'; clone.style.background = '#ffffff'; clone.style.color = '#000000';
+    clone.style.padding = '15px'; clone.style.fontFamily = 'Segoe UI, Tahoma, sans-serif';
     clone.style.direction = LANG === 'ar' ? 'rtl' : 'ltr';
     clone.style.width = orientation === 'landscape' ? '277mm' : '190mm';
-    
     prepareCloneForPdf(clone);
     clone.querySelectorAll('.card, .kpi, table, th, td, .expense-table, .debts-table, .debts-month-table, .target-table').forEach(el => {
-      el.style.background = '#ffffff';
-      el.style.color = '#000000';
+      el.style.background = '#ffffff'; el.style.color = '#000000';
     });
-    clone.querySelectorAll('.card').forEach(el => {
-      el.style.border = '1px solid #999';
-      el.style.marginBottom = '10px';
-      el.style.padding = '10px';
-    });
-    clone.querySelectorAll('th').forEach(el => {
-      el.style.background = '#e5e7eb';
-      el.style.color = '#000';
-      el.style.border = '1px solid #999';
-    });
-    clone.querySelectorAll('td').forEach(el => {
-      el.style.border = '1px solid #ccc';
-      el.style.color = '#000';
-    });
-    clone.querySelectorAll('.kpi').forEach(el => {
-      el.style.background = '#f5f5f5';
-      el.style.border = '1px solid #999';
-    });
+    clone.querySelectorAll('.card').forEach(el => { el.style.border = '1px solid #999'; el.style.marginBottom = '10px'; el.style.padding = '10px'; });
+    clone.querySelectorAll('th').forEach(el => { el.style.background = '#e5e7eb'; el.style.color = '#000'; el.style.border = '1px solid #999'; });
+    clone.querySelectorAll('td').forEach(el => { el.style.border = '1px solid #ccc'; el.style.color = '#000'; });
+    clone.querySelectorAll('.kpi').forEach(el => { el.style.background = '#f5f5f5'; el.style.border = '1px solid #999'; });
     clone.querySelectorAll('.kpi .val').forEach(el => el.style.color = '#000');
     clone.querySelectorAll('.kpi .val.pos').forEach(el => el.style.color = '#166534');
     clone.querySelectorAll('.kpi .val.neg').forEach(el => el.style.color = '#991b1b');
     clone.querySelectorAll('.kpi .val.gold').forEach(el => el.style.color = '#78350f');
     clone.querySelectorAll('.kpi .val.acc').forEach(el => el.style.color = '#0e7490');
-    clone.querySelectorAll('.card h2').forEach(el => {
-      el.style.color = '#000';
-      el.style.borderBottom = '1.5px solid #333';
-    });
-    
+    clone.querySelectorAll('.card h2').forEach(el => { el.style.color = '#000'; el.style.borderBottom = '1.5px solid #333'; });
     const wrapper = document.createElement('div');
-    wrapper.style.position = 'fixed';
-    wrapper.style.left = '-99999px';
-    wrapper.style.top = '0';
-    wrapper.style.background = '#ffffff';
-    wrapper.appendChild(clone);
+    wrapper.style.position = 'fixed'; wrapper.style.left = '-99999px'; wrapper.style.top = '0';
+    wrapper.style.background = '#ffffff'; wrapper.appendChild(clone);
     document.body.appendChild(wrapper);
-    
     const filename = `capital_manager_${viewId}_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = {
-      margin: [6, 6, 6, 6],
-      filename: filename,
+    const opt = { margin: [6,6,6,6], filename,
       image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { 
-        scale: 2, 
-        useCORS: true, 
-        backgroundColor: '#ffffff',
-        logging: false,
-        windowWidth: orientation === 'landscape' ? 1400 : 900
-      },
-      jsPDF: { 
-        unit: 'mm', 
-        format: 'a4', 
-        orientation: orientation || 'portrait',
-        compress: true
-      },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
-    
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: orientation === 'landscape' ? 1400 : 900 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: orientation || 'portrait', compress: true },
+      pagebreak: { mode: ['css', 'legacy'] } };
     const pdfBlob = await html2pdf().set(opt).from(clone).outputPdf('blob');
     document.body.removeChild(wrapper);
-    
     await sharePdfBlob(pdfBlob, filename);
   } catch(err){
     console.error('shareViewPDF error:', err);
-    if(err && err.name === 'AbortError'){
-      toast(t('share_cancelled'));
-      return;
-    }
+    if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
     toast(t('share_failed'), 'error');
   }
 }
@@ -2665,32 +2532,15 @@ async function sharePdfBlob(blob, filename){
   const file = new File([blob], filename, { type: 'application/pdf' });
   if(navigator.share && navigator.canShare && navigator.canShare({ files: [file] })){
     try {
-      await navigator.share({
-        files: [file],
-        title: LANG === 'ar' ? 'تقرير مالي' : 'Financial Report',
-        text: LANG === 'ar' ? 'تقرير من نظام إدارة رأس المال' : 'Report from Capital Manager'
-      });
+      await navigator.share({ files: [file], title: LANG === 'ar' ? 'تقرير مالي' : 'Financial Report', text: LANG === 'ar' ? 'تقرير من نظام إدارة رأس المال' : 'Report from Capital Manager' });
       toast(t('share_success'), 'success');
       return;
-    } catch(err){
-      if(err.name === 'AbortError'){
-        toast(t('share_cancelled'));
-        return;
-      }
-      console.warn('Share failed, downloading:', err);
-    }
+    } catch(err){ if(err.name === 'AbortError'){ toast(t('share_cancelled')); return; } console.warn('Share failed, downloading:', err); }
   }
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => {
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, 100);
+  const a = document.createElement('a'); a.href = url; a.download = filename; a.style.display = 'none';
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
   toast(t('pdf_downloaded'), 'success');
 }
 
@@ -2700,58 +2550,26 @@ async function sharePyramidLevelPDF(key){
     if(!lvl){ toast(t('share_failed'), 'error'); return; }
     toast(t('creating_pdf'));
     await loadHtml2Pdf();
-    
     const htmlStr = generatePyramidLevelReportHTML(key);
     const container = document.createElement('div');
-    container.style.position = 'fixed';
-    container.style.left = '-99999px';
-    container.style.top = '0';
-    container.style.width = '190mm';
-    container.style.background = '#ffffff';
-    
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlStr;
+    container.style.position = 'fixed'; container.style.left = '-99999px'; container.style.top = '0';
+    container.style.width = '190mm'; container.style.background = '#ffffff';
+    const tempDiv = document.createElement('div'); tempDiv.innerHTML = htmlStr;
     const bodyContent = tempDiv.querySelector('body');
-    if(bodyContent){
-      container.innerHTML = bodyContent.innerHTML;
-    } else {
-      container.innerHTML = htmlStr;
-    }
+    if(bodyContent){ container.innerHTML = bodyContent.innerHTML; } else { container.innerHTML = htmlStr; }
     document.body.appendChild(container);
-    
     const safeName = lvl.label.replace(/[^\w\u0600-\u06FF]/g, '_');
     const filename = `pyramid_${safeName}_${new Date().toISOString().slice(0,10)}.pdf`;
-    
-    const opt = {
-      margin: [8, 8, 8, 8],
-      filename: filename,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { 
-        scale: 2, 
-        useCORS: true, 
-        backgroundColor: '#ffffff',
-        logging: false,
-        windowWidth: 900
-      },
-      jsPDF: { 
-        unit: 'mm', 
-        format: 'a4', 
-        orientation: 'portrait',
-        compress: true
-      },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
-    
+    const opt = { margin: [8,8,8,8], filename, image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 900 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
+      pagebreak: { mode: ['css', 'legacy'] } };
     const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
     document.body.removeChild(container);
-    
     await sharePdfBlob(pdfBlob, filename);
   } catch(err){
     console.error('sharePyramidLevelPDF error:', err);
-    if(err && err.name === 'AbortError'){
-      toast(t('share_cancelled'));
-      return;
-    }
+    if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
     toast(t('share_failed'), 'error');
   }
 }
@@ -2814,16 +2632,14 @@ function renderDashboard(){
     const filled = inc>0||exp>0||sav>0||debtPay>0;
     let lastMod = "—";
     if(m.lastModified){ const d = new Date(m.lastModified); lastMod = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-    html += `<tr>
-      <td>${monthNames[i]}</td>
+    html += `<tr><td>${monthNames[i]}</td>
       <td class="num">${money(inc)}</td>
       <td class="num ${debtPay>0?'neg':''}">${debtPay>0?money(debtPay):"—"}</td>
       <td class="num">${money(exp)}</td>
       <td class="num">${money(sav)}</td>
       <td class="num ${rem>=0?'pos':'neg'}">${money(rem)}</td>
       <td class="muted">${lastMod}</td>
-      <td>${filled ? (rem>=0?`<span class="badge green">${t('status_good')}</span>`:`<span class="badge red">${t('status_bad')}</span>`) : `<span class="badge blue">${t('status_empty')}</span>`}</td>
-    </tr>`;
+      <td>${filled ? (rem>=0?`<span class="badge green">${t('status_good')}</span>`:`<span class="badge red">${t('status_bad')}</span>`) : `<span class="badge blue">${t('status_empty')}</span>`}</td></tr>`;
   });
   document.getElementById("dashTable").innerHTML = html + `</tbody>`;
 }
@@ -2846,11 +2662,9 @@ function renderIncomeFields(){
   if(!isMeat) m.meat = 0;
   const incN = ensureIncomeNotes(m);
   document.getElementById("incomeFields").innerHTML = getIncomeFields().map(([k,l])=>{
-    return `<tr>
-      <td>${l}</td>
+    return `<tr><td>${l}</td>
       <td><input type="number" value="${inVal(m[k])}" oninput="upd('${k}',this.value)" step="0.001"></td>
-      <td><input type="text" value="${esc(incN[k]||'')}" oninput="updIncomeNote('${k}', this.value)" placeholder="ملاحظة..."></td>
-    </tr>`;
+      <td><input type="text" value="${esc(incN[k]||'')}" oninput="updIncomeNote('${k}', this.value)" placeholder="ملاحظة..."></td></tr>`;
   }).join("");
   const meatBox = document.getElementById("meatStatusBox");
   meatBox.className = "meat-status " + (isMeat?'meat-status-yes':'meat-status-no');
@@ -2873,43 +2687,8 @@ function renderExpenseFields(){
   const rows = getExpenseRows();
   const refOptsFor = val => REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${val===o.v?'selected':''}>${o.l}</option>`).join('');
   const html = rows.map(row => {
-    if(row.type === "group") return `<tr class="group-header"><td colspan="6">${row.label}</td></tr>`;
-    if(row.type === "birthday"){
-      const meta = getMeta(m, row.key);
-      const excluded = isExcludedBank(meta.bank);
-      const person = m.birthdayPerson || "none";
-      const bankOpts = BANKS.map(b => `<option value="${b}" ${meta.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
-      const refVal = getRefMeta(m, row.key);
-      return `<tr class="${excluded?'excluded':''} bday-row">
-        <td><div class="birthday-cell"><span>🎂 ${row.label}</span>
-          <select onchange="updBirthdayPerson(this.value)">
-            <option value="none" ${person==='none'?'selected':''}>${t('bd_none')}</option>
-            <option value="زوجة" ${person==='زوجة'?'selected':''}>${t('bd_wife')}</option>
-            <option value="الزوج" ${person==='الزوج'?'selected':''}>${t('bd_husband')}</option>
-            <option value="العيال" ${person==='العيال'?'selected':''}>${t('bd_kids')}</option>
-          </select></div></td>
-        <td><input type="number" value="${inVal(m.birthday)}" oninput="updExpenseAmount('birthday', this.value)" step="0.001"></td>
-        <td><select class="${excluded?'bank-excluded':''}" onchange="updExpenseBank('birthday', this.value)">${bankOpts}</select></td>
-        <td><input type="text" value="${esc(meta.note)}" oninput="updExpenseNote('birthday', this.value)" placeholder="..."></td>
-        <td><select onchange="updRef('birthday', this.value)">${refOptsFor(refVal)}</select></td>
-        <td class="noprint extra-actions-cell"></td>
-      </tr>`;
-    }
-    if(row.type === "repeatable"){
-      return renderRepeatableRow(m, row, refOptsFor);
-    }
-    const meta = getMeta(m, row.key);
-    const excluded = isExcludedBank(meta.bank);
-    const bankOpts = BANKS.map(b => `<option value="${b}" ${meta.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
-    const refVal = getRefMeta(m, row.key);
-    return `<tr class="${excluded?'excluded':''}">
-      <td>${row.label}</td>
-      <td><input type="number" value="${inVal(m[row.key])}" oninput="updExpenseAmount('${row.key}', this.value)" step="0.001"></td>
-      <td><select class="${excluded?'bank-excluded':''}" onchange="updExpenseBank('${row.key}', this.value)">${bankOpts}</select></td>
-      <td><input type="text" value="${esc(meta.note)}" oninput="updExpenseNote('${row.key}', this.value)" placeholder="..."></td>
-      <td><select onchange="updRef('${row.key}', this.value)">${refOptsFor(refVal)}</select></td>
-      <td class="noprint extra-actions-cell"></td>
-    </tr>`;
+    if(row.type === "group") return `<tr class="group-header"><td colspan="5">${row.label}</td></tr>`;
+    return renderRepeatableRow(m, row, refOptsFor);
   }).join("");
   document.getElementById("expenseFields").innerHTML = html;
   renderExpenseSummary();
@@ -2920,53 +2699,75 @@ function renderRepeatableRow(m, row, refOptsFor){
   const mainExcluded = isExcludedBank(mainMeta.bank);
   const mainBankOpts = BANKS.map(b => `<option value="${b}" ${mainMeta.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
   const mainRef = getRefMeta(m, row.key);
+  const extras = getRepeatableExtras(m, row.extraKey);
+  const isCollapsed = isGroupCollapsed(m, row.extraKey);
   
-  let out = `<tr class="${mainExcluded?'excluded':''}">
-    <td>${row.label}</td>
+  // Build name cell with + button and collapse toggle
+  let nameHtml = '';
+  if(row.birthday){
+    const person = m.birthdayPerson || "none";
+    nameHtml = `<div class="birthday-cell"><span>🎂 ${row.label}</span>
+      <select onchange="updBirthdayPerson(this.value)">
+        <option value="none" ${person==='none'?'selected':''}>${t('bd_none')}</option>
+        <option value="زوجة" ${person==='زوجة'?'selected':''}>${t('bd_wife')}</option>
+        <option value="الزوج" ${person==='الزوج'?'selected':''}>${t('bd_husband')}</option>
+        <option value="العيال" ${person==='العيال'?'selected':''}>${t('bd_kids')}</option>
+      </select>
+      <button class="icon-btn add-btn" onclick="addRepeatableExtra('${row.extraKey}', true)" title="${t('add_extra_title')}">+</button>`;
+    if(extras.length > 0){
+      nameHtml += `<button class="icon-btn collapse-btn" onclick="toggleAllExtras('${row.extraKey}')" title="${isCollapsed?t('expand_all_title'):t('collapse_all_title')}">${isCollapsed?'▶':'▼'} <span>${extras.length}</span></button>`;
+    }
+    nameHtml += `</div>`;
+  } else {
+    nameHtml = `<span>${row.label}</span>
+      <button class="icon-btn add-btn add-btn-inline" onclick="addRepeatableExtra('${row.extraKey}', false)" title="${t('add_extra_title')}">+</button>`;
+    if(extras.length > 0){
+      nameHtml += `<button class="icon-btn collapse-btn add-btn-inline" onclick="toggleAllExtras('${row.extraKey}')" title="${isCollapsed?t('expand_all_title'):t('collapse_all_title')}">${isCollapsed?'▶':'▼'} <span>${extras.length}</span></button>`;
+    }
+  }
+  
+  let out = `<tr class="${mainExcluded?'excluded':''} main-row">
+    <td>${nameHtml}</td>
     <td><input type="number" value="${inVal(m[row.key])}" oninput="updExpenseAmount('${row.key}', this.value)" step="0.001"></td>
     <td><select class="${mainExcluded?'bank-excluded':''}" onchange="updExpenseBank('${row.key}', this.value)">${mainBankOpts}</select></td>
     <td><input type="text" value="${esc(mainMeta.note)}" oninput="updExpenseNote('${row.key}', this.value)" placeholder="..."></td>
     <td><select onchange="updRef('${row.key}', this.value)">${refOptsFor(mainRef)}</select></td>
-    <td class="noprint extra-actions-cell">
-      <button class="icon-btn add-btn" onclick="addRepeatableExtra('${row.extraKey}')" title="${t('add_extra_title')}">+</button>
-    </td>
   </tr>`;
   
-  const extras = getRepeatableExtras(m, row.extraKey);
-  extras.forEach((ex, idx) => {
-    const exExcluded = ex.bank === EXCLUDED_BANK;
-    const exBankOpts = BANKS.map(b => `<option value="${b}" ${ex.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
-    const exRefOpts = REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${ex.ref===o.v?'selected':''}>${o.l}</option>`).join('');
-    const suffix = ` #${idx+2}`;
-    
-    if(ex.collapsed){
-      out += `<tr class="${exExcluded?'excluded':''} extra-collapsed" onclick="if(event.target.tagName!=='BUTTON' && event.target.tagName!=='SELECT' && event.target.tagName!=='INPUT') toggleExtraCollapse('${row.extraKey}', ${ex.id})">
-        <td>
-          <button class="icon-btn noprint" onclick="event.stopPropagation();toggleExtraCollapse('${row.extraKey}', ${ex.id})" title="${t('expand_title')}" style="margin-inline-end:6px">▶</button>
-          <span class="extra-name">${row.label}${suffix}</span>
-        </td>
-        <td class="num" style="font-family:monospace">${money(ex.amount)}</td>
-        <td colspan="3" style="color:var(--muted);font-size:11px">${esc(ex.note) || '—'}</td>
-        <td class="noprint extra-actions-cell">
-          <button class="icon-btn" onclick="event.stopPropagation();removeRepeatableExtra('${row.extraKey}', ${ex.id})" title="${t('remove_extra_title')}">✕</button>
-        </td>
-      </tr>`;
-    } else {
-      out += `<tr class="${exExcluded?'excluded':''} extra-expanded">
-        <td>
-          <button class="icon-btn noprint" onclick="toggleExtraCollapse('${row.extraKey}', ${ex.id})" title="${t('collapse_title')}" style="margin-inline-end:6px">▼</button>
-          <span class="extra-name">${row.label}${suffix}</span>
-        </td>
+  if(!isCollapsed && extras.length > 0){
+    extras.forEach((ex, idx) => {
+      const exExcluded = ex.bank === EXCLUDED_BANK;
+      const exBankOpts = BANKS.map(b => `<option value="${b}" ${ex.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
+      const exRefOpts = REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${ex.ref===o.v?'selected':''}>${o.l}</option>`).join('');
+      const suffix = `#${idx+2}`;
+      
+      let exNameHtml = '';
+      if(row.birthday){
+        const exPerson = ex.person || "none";
+        exNameHtml = `<div class="birthday-cell">
+          <span class="extra-name">🎂 ${row.label} <span class="extra-hash">${suffix}</span></span>
+          <select onchange="updExtraField('${row.extraKey}', ${ex.id}, 'person', this.value)">
+            <option value="none" ${exPerson==='none'?'selected':''}>${t('bd_none')}</option>
+            <option value="زوجة" ${exPerson==='زوجة'?'selected':''}>${t('bd_wife')}</option>
+            <option value="الزوج" ${exPerson==='الزوج'?'selected':''}>${t('bd_husband')}</option>
+            <option value="العيال" ${exPerson==='العيال'?'selected':''}>${t('bd_kids')}</option>
+          </select>
+          <button class="icon-btn remove-btn" onclick="removeRepeatableExtra('${row.extraKey}', ${ex.id})" title="${t('remove_extra_title')}">✕</button>
+        </div>`;
+      } else {
+        exNameHtml = `<span class="extra-name">${row.label} <span class="extra-hash">${suffix}</span></span>
+          <button class="icon-btn remove-btn add-btn-inline" onclick="removeRepeatableExtra('${row.extraKey}', ${ex.id})" title="${t('remove_extra_title')}">✕</button>`;
+      }
+      
+      out += `<tr class="${exExcluded?'excluded':''} extra-row">
+        <td>${exNameHtml}</td>
         <td><input type="number" value="${inVal(ex.amount)}" oninput="updExtraField('${row.extraKey}', ${ex.id}, 'amount', this.value)" step="0.001"></td>
         <td><select class="${exExcluded?'bank-excluded':''}" onchange="updExtraField('${row.extraKey}', ${ex.id}, 'bank', this.value)">${exBankOpts}</select></td>
         <td><input type="text" value="${esc(ex.note)}" oninput="updExtraField('${row.extraKey}', ${ex.id}, 'note', this.value)" placeholder="..."></td>
         <td><select onchange="updExtraField('${row.extraKey}', ${ex.id}, 'ref', this.value)">${exRefOpts}</select></td>
-        <td class="noprint extra-actions-cell">
-          <button class="icon-btn" onclick="removeRepeatableExtra('${row.extraKey}', ${ex.id})" title="${t('remove_extra_title')}">✕</button>
-        </td>
       </tr>`;
-    }
-  });
+    });
+  }
   
   return out;
 }
@@ -3031,21 +2832,16 @@ function renderSavingFields(){
     const net = getNetSaved(k);
     let targetHint = "";
     if(target > 0){
-      if(disabled){
-        targetHint = `<span class="saving-target-hint">✅ ${LANG==='ar'?'الهدف مكتمل':'Target reached'} (${fmt(target)})</span>`;
-      } else {
-        targetHint = `<span class="saving-target-hint" style="background:rgba(234,179,8,.15);color:var(--gold);border-color:rgba(234,179,8,.4)">🎯 ${t('tgt_saving_target_hint')}${fmt(target)} • ${LANG==='ar'?'متبقي':'left'}: ${fmt(Math.max(0,target-net))}</span>`;
-      }
+      if(disabled){ targetHint = `<span class="saving-target-hint">✅ ${LANG==='ar'?'الهدف مكتمل':'Target reached'} (${fmt(target)})</span>`; }
+      else { targetHint = `<span class="saving-target-hint" style="background:rgba(234,179,8,.15);color:var(--gold);border-color:rgba(234,179,8,.4)">🎯 ${t('tgt_saving_target_hint')}${fmt(target)} • ${LANG==='ar'?'متبقي':'left'}: ${fmt(Math.max(0,target-net))}</span>`; }
     }
     return `<tr class="${excluded?'excluded':''} ${disabled?'target-reached-row':''}">
       <td class="saving-field">
         <label style="display:block;font-weight:600;color:var(--accent);font-size:12px;margin-bottom:2px">${l}</label>
-        ${extraHtml}
-        ${targetHint}
+        ${extraHtml}${targetHint}
       </td>
       <td><input type="number" value="${inVal(m[k])}" oninput="updSaving('${k}',this.value)" min="0" step="0.001"
-        ${disabled ? 'disabled' : ''}
-        placeholder="${disabled ? t('tgt_saving_disabled') : ''}"
+        ${disabled ? 'disabled' : ''} placeholder="${disabled ? t('tgt_saving_disabled') : ''}"
         style="font-weight:700;color:${disabled ? 'var(--ok)' : 'var(--accent)'};text-align:center;font-size:16px"></td>
       <td><select class="${excluded?'bank-excluded':''}" onchange="updSavingBank('${k}', this.value)">${bankOpts}</select></td>
       <td><input type="text" value="${esc(meta.note||'')}" oninput="updSavingNote('${k}', this.value)" placeholder="..."></td>
@@ -3057,9 +2853,7 @@ function renderSavingFields(){
 
 function renderSavingSummary(){
   const m = M()[state.activeMonth];
-  const raw = totalSavingsRaw(m);
-  const counted = totalSavings(m);
-  const excluded = totalExcludedSavings(m);
+  const raw = totalSavingsRaw(m), counted = totalSavings(m), excluded = totalExcludedSavings(m);
   const el = document.getElementById("savingSummary");
   if(!el) return;
   el.innerHTML = `
@@ -3069,45 +2863,15 @@ function renderSavingSummary(){
   `;
 }
 
-function updSavingNote(key, val){
-  const m = M()[state.activeMonth];
-  getSavingMeta(m, key).note = val;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderMonthDate();
-}
+function updSavingNote(key, val){ const m = M()[state.activeMonth]; getSavingMeta(m, key).note = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 function updSavingBank(key, val){
-  const m = M()[state.activeMonth];
-  getSavingMeta(m, key).bank = val;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderSavingFields();
-  renderMonthResults();
-  renderMonthPills();
-  renderDashboard();
-  if(document.getElementById("pyramidTargetsBody")){
-    updatePyramidTargetRow(key);
-  }
-  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
-    renderPyramidSvg();
-    renderPyramidLegend();
-  }
+  const m = M()[state.activeMonth]; getSavingMeta(m, key).bank = val; m.lastModified = new Date().toISOString(); save();
+  renderSavingFields(); renderMonthResults(); renderMonthPills(); renderDashboard();
+  if(document.getElementById("pyramidTargetsBody")){ updatePyramidTargetRow(key); }
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
 }
-function updSavingRef(key, val){
-  const m = M()[state.activeMonth];
-  ensureSavingRefMeta(m)[key] = val;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderMonthDate();
-}
-
-function updRef(key, val){
-  const m = M()[state.activeMonth];
-  ensureRefMeta(m)[key] = val;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderMonthDate();
-}
+function updSavingRef(key, val){ const m = M()[state.activeMonth]; ensureSavingRefMeta(m)[key] = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+function updRef(key, val){ const m = M()[state.activeMonth]; ensureRefMeta(m)[key] = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 
 function renderDebtsMonthSection(){
   const mi = state.activeMonth; const y = state.activeYear;
@@ -3132,11 +2896,8 @@ function renderDebtsMonthSection(){
     const remBefore = debtRemainingBefore(d, y, mi);
     const thisMonth = dm(d, y, mi);
     const remAfter = Math.max(0, remBefore - thisMonth);
-    if(excluded){
-      if(d.type === "debit") recvExcl += thisMonth; else payExcl += thisMonth;
-    } else {
-      if(d.type === "debit") recv += thisMonth; else pay += thisMonth;
-    }
+    if(excluded){ if(d.type === "debit") recvExcl += thisMonth; else payExcl += thisMonth; }
+    else { if(d.type === "debit") recv += thisMonth; else pay += thisMonth; }
     const inputCls = d.type === "debit" ? "input-debit" : (d.type === "obligation" ? "input-obligation" : "input-credit");
     const bankVal = d.bank || "بطاقة صراف الالي";
     const bankOpts = BANKS.map(b => `<option value="${b}" ${bankVal===b?'selected':''}>${bankLabel(b)}</option>`).join('');
@@ -3167,45 +2928,20 @@ function renderDebtsMonthSection(){
 }
 
 function updDebtBank(id, val){
-  const d = state.debts.find(x=>x.id===id);
-  if(!d) return;
-  d.bank = val;
-  save();
-  renderDebtsMonthSection();
-  renderMonthResults();
-  renderMonthPills();
-  renderDashboard();
-  updatePyramidTargetRow("loans");
-  updatePyramidTargetRow("obligationsSaving");
-  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
-    renderPyramid();
-  }
+  const d = state.debts.find(x=>x.id===id); if(!d) return;
+  d.bank = val; save();
+  renderDebtsMonthSection(); renderMonthResults(); renderMonthPills(); renderDashboard();
+  updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving");
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); }
 }
-function updDebtNoteInline(id, val){
-  const d = state.debts.find(x=>x.id===id);
-  if(!d) return;
-  d.notes = val;
-  save();
-}
-function updDebtRef(id, val){
-  const d = state.debts.find(x=>x.id===id);
-  if(!d) return;
-  setDebtRef(d, state.activeYear, state.activeMonth, val);
-  save();
-}
+function updDebtNoteInline(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.notes = val; save(); }
+function updDebtRef(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDebtRef(d, state.activeYear, state.activeMonth, val); save(); }
 
 function updDebtMonthInEntry(id, val){
-  const d = state.debts.find(x=>x.id===id);
-  if(!d) return;
-  setDm(d, state.activeYear, state.activeMonth, Math.max(0, parseFloat(val)||0));
-  save();
-  refreshDebtsMonthCells();
-  renderMonthResults();
-  renderMonthPills();
-  renderDashboard();
-  renderDebts();
-  updatePyramidTargetRow("loans");
-  updatePyramidTargetRow("obligationsSaving");
+  const d = state.debts.find(x=>x.id===id); if(!d) return;
+  setDm(d, state.activeYear, state.activeMonth, Math.max(0, parseFloat(val)||0)); save();
+  refreshDebtsMonthCells(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderDebts();
+  updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving");
 }
 function refreshDebtsMonthCells(){
   const mi = state.activeMonth, y = state.activeYear;
@@ -3217,17 +2953,13 @@ function refreshDebtsMonthCells(){
     const thisMonth = dm(d, y, mi);
     const remBefore = debtRemainingBefore(d, y, mi);
     const remAfter = Math.max(0, remBefore - thisMonth);
-    if(excluded){
-      if(d.type === "debit") recvExcl += thisMonth; else payExcl += thisMonth;
-    } else {
-      if(d.type === "debit") recv += thisMonth; else pay += thisMonth;
-    }
+    if(excluded){ if(d.type === "debit") recvExcl += thisMonth; else payExcl += thisMonth; }
+    else { if(d.type === "debit") recv += thisMonth; else pay += thisMonth; }
     const rc = row.querySelector('.debt-rem-after');
     if(rc){ rc.textContent = money(remAfter); rc.style.color = remAfter === 0 ? 'var(--ok)' : 'var(--txt)'; }
   });
   const tf = document.getElementById("debtsMonthFoot");
-  const totalAll = recv + pay;
-  const totalExcl = recvExcl + payExcl;
+  const totalAll = recv + pay, totalExcl = recvExcl + payExcl;
   if(tf) tf.innerHTML = `<tr><td colspan="5">${t('dms_total')} (${t('es_counted')})</td><td class="num" style="color:var(--accent2);font-weight:700">${money(totalAll)}</td><td colspan="3"></td></tr>` +
     (totalExcl > 0 ? `<tr><td colspan="5" style="color:var(--danger)">${t('es_excluded')}</td><td class="num" style="color:var(--danger);font-weight:700">${money(totalExcl)}</td><td colspan="3"></td></tr>` : "");
   const sm = document.getElementById("debtsMonthSummary");
@@ -3252,30 +2984,10 @@ function renderCarInsuranceOT(){
       <td><select class="${excluded?'bank-excluded':''}" onchange="updCarInsuranceBank(this.value)">${bankOpts}</select></td>
       <td><input type="text" value="${esc(ci.note)}" oninput="updCarInsuranceNote(this.value)" placeholder="..."></td>
       <td><select onchange="updCarInsuranceRef(this.value)">${refOpts}</select></td>
-    </tr>
-  `;
+    </tr>`;
 }
-function updCarInsuranceAmount(v){
-  const m = M()[state.activeMonth];
-  getCarInsurance(m).amount = Math.max(0, parseFloat(v)||0);
-  m.lastModified = new Date().toISOString();
-  save();
-  renderDashboard();
-  renderMonthResults();
-  renderYears();
-  renderMonthPills();
-}
-function updCarInsuranceBank(v){
-  const m = M()[state.activeMonth];
-  getCarInsurance(m).bank = v;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderCarInsuranceOT();
-  renderMonthResults();
-  renderDashboard();
-  renderYears();
-  renderMonthPills();
-}
+function updCarInsuranceAmount(v){ const m = M()[state.activeMonth]; getCarInsurance(m).amount = Math.max(0, parseFloat(v)||0); m.lastModified = new Date().toISOString(); save(); renderDashboard(); renderMonthResults(); renderYears(); renderMonthPills(); }
+function updCarInsuranceBank(v){ const m = M()[state.activeMonth]; getCarInsurance(m).bank = v; m.lastModified = new Date().toISOString(); save(); renderCarInsuranceOT(); renderMonthResults(); renderDashboard(); renderYears(); renderMonthPills(); }
 function updCarInsuranceNote(v){ getCarInsurance(M()[state.activeMonth]).note = v; save(); }
 function updCarInsuranceRef(v){ getCarInsurance(M()[state.activeMonth]).ref = v; save(); }
 
@@ -3292,89 +3004,37 @@ function renderZakatOT(){
       <td><select class="${excluded?'bank-excluded':''}" onchange="updZakatBank(this.value)">${bankOpts}</select></td>
       <td><input type="text" value="${esc(zk.note)}" oninput="updZakatNote(this.value)" placeholder="..."></td>
       <td><select onchange="updZakatRef(this.value)">${refOpts}</select></td>
-    </tr>
-  `;
+    </tr>`;
 }
-function updZakatAmount(v){
-  const m = M()[state.activeMonth];
-  getZakat(m).amount = Math.max(0, parseFloat(v)||0);
-  m.lastModified = new Date().toISOString();
-  save();
-  renderDashboard();
-  renderMonthResults();
-  renderYears();
-  renderMonthPills();
-}
-function updZakatBank(v){
-  const m = M()[state.activeMonth];
-  getZakat(m).bank = v;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderZakatOT();
-  renderMonthResults();
-  renderDashboard();
-  renderYears();
-  renderMonthPills();
-}
+function updZakatAmount(v){ const m = M()[state.activeMonth]; getZakat(m).amount = Math.max(0, parseFloat(v)||0); m.lastModified = new Date().toISOString(); save(); renderDashboard(); renderMonthResults(); renderYears(); renderMonthPills(); }
+function updZakatBank(v){ const m = M()[state.activeMonth]; getZakat(m).bank = v; m.lastModified = new Date().toISOString(); save(); renderZakatOT(); renderMonthResults(); renderDashboard(); renderYears(); renderMonthPills(); }
 function updZakatNote(v){ getZakat(M()[state.activeMonth]).note = v; save(); }
 function updZakatRef(v){ getZakat(M()[state.activeMonth]).ref = v; save(); }
 
 function updEidMoneyType(val){ const m = M()[state.activeMonth]; m.eidMoneyType = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 function updExpenseAmount(key, val){
-  const m = M()[state.activeMonth];
-  m[key] = parseFloat(val)||0;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderExpenseSummary();
-  renderMonthResults();
-  renderMonthDate();
-  renderMonthPills();
-  renderDashboard();
+  const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save();
+  renderExpenseSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills(); renderDashboard();
 }
 function updExpenseBank(key, val){
-  const m = M()[state.activeMonth];
-  getMeta(m, key).bank = val;
-  m.lastModified = new Date().toISOString();
-  save();
-  renderExpenseFields();
-  renderMonthResults();
-  renderMonthDate();
-  renderMonthPills();
-  renderDashboard();
+  const m = M()[state.activeMonth]; getMeta(m, key).bank = val; m.lastModified = new Date().toISOString(); save();
+  renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); renderDashboard();
 }
 function updExpenseNote(key, val){ const m = M()[state.activeMonth]; getMeta(m, key).note = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 function updBirthdayPerson(val){ const m = M()[state.activeMonth]; m.birthdayPerson = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
 function updSaving(key, val){
-  const m = M()[state.activeMonth];
-  m[key] = Math.max(0, parseFloat(val) || 0);
-  m.lastModified = new Date().toISOString();
-  save();
-  renderSavingSummary();
-  renderMonthResults();
-  renderMonthDate();
-  renderMonthPills();
-  if(document.getElementById("pyramidTargetsBody")){
-    updatePyramidTargetRow(key);
-  }
-  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
-    renderPyramidSvg();
-    renderPyramidLegend();
-  }
+  const m = M()[state.activeMonth]; m[key] = Math.max(0, parseFloat(val) || 0); m.lastModified = new Date().toISOString(); save();
+  renderSavingSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills();
+  if(document.getElementById("pyramidTargetsBody")){ updatePyramidTargetRow(key); }
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
   const newDisabled = isSavingDisabledForMonth(key);
-  if(newDisabled){
-    setTimeout(() => { renderSavingFields(); }, 50);
-  }
+  if(newDisabled){ setTimeout(() => { renderSavingFields(); }, 50); }
 }
 
 function renderMonth(){
   const m = M()[state.activeMonth];
   document.getElementById("monthTitle").textContent = getMonths()[state.activeMonth] + " " + state.activeYear;
-  renderIncomeFields();
-  renderExpenseFields();
-  renderDebtsMonthSection();
-  renderSavingFields();
-  renderCarInsuranceOT();
-  renderZakatOT();
+  renderIncomeFields(); renderExpenseFields(); renderDebtsMonthSection(); renderSavingFields(); renderCarInsuranceOT(); renderZakatOT();
   document.getElementById("eidSelect").value = m.eidType || "no";
   const showAmt = ["eid_money","clothes","both"].includes(m.eidType);
   document.getElementById("eidAmountWrap").style.display = showAmt ? "flex" : "none";
@@ -3382,8 +3042,7 @@ function renderMonth(){
   const ec = document.querySelector('.eid-card');
   if(ec) ec.classList.toggle('eid-no', m.eidType === 'no' || m.eidType === 'none');
   document.getElementById("monthNotes").value = m.notes || "";
-  renderMonthDate();
-  renderMonthResults();
+  renderMonthDate(); renderMonthResults();
 }
 function onEidChange(val){ const m = M()[state.activeMonth]; m.eidType = val; m.lastModified = new Date().toISOString(); save(); renderMonth(); }
 function upd(key, val){ const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
@@ -3406,7 +3065,6 @@ function renderMonthResults(){
   const oneTimeExcl = totalOneTimeMonthlyExcluded(m);
   const remBase = salaryOnly - exp - sav - debtPay - oneTime;
   const remWithExtra = inc - exp - sav - debtPay - oneTime;
-
   document.getElementById("monthResults").innerHTML = `
     <div class="mr-section-title base">${t('lbl_mr_base')}</div>
     ${kpi(t('mr_inc_salary_only'), money(salaryOnly), "acc")}
@@ -3415,9 +3073,7 @@ function renderMonthResults(){
     ${kpi(t('mr_saving'), money(sav), "gold")}
     ${kpi(t('mr_debtpay'), money(debtPay), "neg")}
     ${kpi(t('mr_base_remaining'), money(remBase), remBase>=0?"pos":"neg")}
-
     <div class="mr-divider"></div>
-
     <div class="mr-section-title extra">${t('lbl_mr_with_extra')}</div>
     ${kpi(t('mr_inc_core'), money(incCore), "acc")}
     ${kpi(t('mr_extra_income'), money(incDebt), "pos")}
@@ -3427,7 +3083,6 @@ function renderMonthResults(){
     ${kpi(t('mr_saving'), money(sav), "gold")}
     ${kpi(t('mr_debtpay'), money(debtPay), "neg")}
     ${kpi(t('mr_with_extra_remaining'), money(remWithExtra), remWithExtra>=0?"pos":"neg")}
-
     <div class="mr-mini-divider"></div>
     <div class="mr-section-title base" style="background:rgba(239,68,68,.08);border-right-color:var(--danger);color:var(--danger)">⛔ ${t('es_excluded')}</div>
     ${kpi(t('mr_exp_excl'), money(excl), "gold")}
@@ -3473,10 +3128,7 @@ function renderPyramidTargets(){
     if(lvl.key === "loans") autoHint = t('tgt_auto_hint_loans');
     else if(lvl.key === "obligationsSaving") autoHint = t('tgt_auto_hint_obligations');
     const targetCell = isAuto
-      ? `<div style="display:flex;flex-direction:column;gap:2px">
-           <input type="number" class="target-input auto-input" value="${target}" readonly title="${autoHint}">
-           <span class="target-hint">${autoHint}</span>
-         </div>`
+      ? `<div style="display:flex;flex-direction:column;gap:2px"><input type="number" class="target-input auto-input" value="${target}" readonly title="${autoHint}"><span class="target-hint">${autoHint}</span></div>`
       : `<input type="number" class="target-input" value="${inVal(target)}" min="0" step="0.001" oninput="updPyramidTarget('${lvl.key}', this.value)" placeholder="0">`;
     const withdrawBtn = isAuto ? '' : `<button class="icon-btn withdraw" onclick="withdrawFromPyramid('${lvl.key}')" title="${t('tgt_withdraw_btn')}">⬇</button>`;
     return `<tr data-target-key="${lvl.key}" class="${isAuto?'auto-row':''}">
@@ -3485,18 +3137,11 @@ function renderPyramidTargets(){
       <td class="num tgt-saved">${saved > 0 ? money(saved) : '—'}</td>
       <td class="num tgt-withdrawn ${withdrawn > 0 ? 'neg' : 'muted'}">${withdrawn > 0 ? money(withdrawn) : '—'}</td>
       <td class="num tgt-net" style="color:${lvl.color};font-weight:800">${money(net)}</td>
-      <td>
-        <div class="progress-bar"><div class="progress-fill tgt-progress-fill" style="width:${pct}%;background:${lvl.color}"></div></div>
-        <div class="progress-text tgt-progress-text">${noTarget ? '—' : `${pct.toFixed(0)}% • ${LANG==='ar'?'متبقي':'Left'}: ${fmt(remaining)}`}</div>
-      </td>
+      <td><div class="progress-bar"><div class="progress-fill tgt-progress-fill" style="width:${pct}%;background:${lvl.color}"></div></div>
+          <div class="progress-text tgt-progress-text">${noTarget ? '—' : `${pct.toFixed(0)}% • ${LANG==='ar'?'متبقي':'Left'}: ${fmt(remaining)}`}</div></td>
       <td><span class="badge ${statusClass} tgt-status">${status}</span></td>
       <td><input type="text" class="target-note" value="${esc(note)}" oninput="updPyramidNote('${lvl.key}', this.value)" placeholder="${t('tgt_note_placeholder')}"></td>
-      <td>
-        <div class="target-actions tgt-actions">
-          ${withdrawBtn}
-          ${wCount > 0 ? `<button class="icon-btn history" onclick="showWithdrawHistory('${lvl.key}')" title="${t('tgt_history_btn')}">📜</button>` : ''}
-        </div>
-      </td>
+      <td><div class="target-actions tgt-actions">${withdrawBtn}${wCount > 0 ? `<button class="icon-btn history" onclick="showWithdrawHistory('${lvl.key}')" title="${t('tgt_history_btn')}">📜</button>` : ''}</div></td>
     </tr>`;
   }).join("");
 }
@@ -3504,21 +3149,14 @@ function renderPyramidTargets(){
 function updPyramidTarget(key, val){
   if(key === "loans") return;
   if(key === "obligationsSaving") return;
-  setPyramidTarget(key, val);
-  save();
-  updatePyramidTargetRow(key);
-  debounceMonthSavingRefresh();
+  setPyramidTarget(key, val); save(); updatePyramidTargetRow(key); debounceMonthSavingRefresh();
 }
 
 function updPyramidNote(key, val){
-  setPyramidNote(key, val);
-  save();
+  setPyramidNote(key, val); save();
   if(_pyramidNoteTimer) clearTimeout(_pyramidNoteTimer);
   _pyramidNoteTimer = setTimeout(() => {
-    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
-      renderPyramidSvg();
-      renderPyramidLegend();
-    }
+    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
   }, 500);
 }
 
@@ -3538,38 +3176,16 @@ function updatePyramidTargetRow(key){
   const noTarget = target <= 0;
   const status = noTarget ? t('tgt_status_none') : (reached ? t('tgt_status_reached') : t('tgt_status_progress'));
   const statusClass = noTarget ? 'muted' : (reached ? 'green' : 'gold');
-
-  if(isAuto){
-    const inp = row.querySelector('.target-input.auto-input');
-    if(inp) inp.value = target;
-  }
-
-  const savedEl = row.querySelector('.tgt-saved');
-  if(savedEl) savedEl.textContent = saved > 0 ? money(saved) : '—';
-
+  if(isAuto){ const inp = row.querySelector('.target-input.auto-input'); if(inp) inp.value = target; }
+  const savedEl = row.querySelector('.tgt-saved'); if(savedEl) savedEl.textContent = saved > 0 ? money(saved) : '—';
   const wdEl = row.querySelector('.tgt-withdrawn');
-  if(wdEl){
-    wdEl.textContent = withdrawn > 0 ? money(withdrawn) : '—';
-    wdEl.classList.toggle('neg', withdrawn > 0);
-    wdEl.classList.toggle('muted', withdrawn <= 0);
-  }
-
-  const netEl = row.querySelector('.tgt-net');
-  if(netEl) netEl.textContent = money(net);
-
-  const fillEl = row.querySelector('.tgt-progress-fill');
-  if(fillEl) fillEl.style.width = pct + '%';
-
+  if(wdEl){ wdEl.textContent = withdrawn > 0 ? money(withdrawn) : '—'; wdEl.classList.toggle('neg', withdrawn > 0); wdEl.classList.toggle('muted', withdrawn <= 0); }
+  const netEl = row.querySelector('.tgt-net'); if(netEl) netEl.textContent = money(net);
+  const fillEl = row.querySelector('.tgt-progress-fill'); if(fillEl) fillEl.style.width = pct + '%';
   const textEl = row.querySelector('.tgt-progress-text');
-  if(textEl){
-    textEl.textContent = noTarget ? '—' : `${pct.toFixed(0)}% • ${LANG==='ar'?'متبقي':'Left'}: ${fmt(remaining)}`;
-  }
-
+  if(textEl){ textEl.textContent = noTarget ? '—' : `${pct.toFixed(0)}% • ${LANG==='ar'?'متبقي':'Left'}: ${fmt(remaining)}`; }
   const statusEl = row.querySelector('.tgt-status');
-  if(statusEl){
-    statusEl.textContent = status;
-    statusEl.className = 'badge ' + statusClass + ' tgt-status';
-  }
+  if(statusEl){ statusEl.textContent = status; statusEl.className = 'badge ' + statusClass + ' tgt-status'; }
 }
 
 let _monthRefreshTimer = null;
@@ -3577,54 +3193,25 @@ function debounceMonthSavingRefresh(){
   if(_monthRefreshTimer) clearTimeout(_monthRefreshTimer);
   _monthRefreshTimer = setTimeout(() => {
     const activeTab = document.querySelector('nav.tabs button.active');
-    if(activeTab && activeTab.dataset.view === "month"){
-      renderSavingFields();
-    }
+    if(activeTab && activeTab.dataset.view === "month"){ renderSavingFields(); }
   }, 600);
 }
 
 function withdrawFromPyramid(key){
-  if(key === "loans"){
-    toast(LANG==='ar'?'⚠️ القروض تلقائية - لا يمكن السحب منها':'⚠️ Loans are automatic', 'warn');
-    return;
-  }
-  if(key === "obligationsSaving"){
-    toast(LANG==='ar'?'⚠️ الالتزامات تلقائية - لا يمكن السحب منها':'⚠️ Obligations are automatic', 'warn');
-    return;
-  }
+  if(key === "loans"){ toast(LANG==='ar'?'⚠️ القروض تلقائية - لا يمكن السحب منها':'⚠️ Loans are automatic', 'warn'); return; }
+  if(key === "obligationsSaving"){ toast(LANG==='ar'?'⚠️ الالتزامات تلقائية - لا يمكن السحب منها':'⚠️ Obligations are automatic', 'warn'); return; }
   const lvl = getPyramidLevels().find(l => l.key === key);
   const name = lvl ? `${lvl.subtitle} ${lvl.label}` : key;
   const net = getNetSaved(key);
-  if(net <= 0){
-    toast(t('tgt_withdraw_no_balance'), 'warn');
-    return;
-  }
-  const amountStr = prompt(
-    `${t('tgt_withdraw_prompt')} "${name}"?\n${LANG==='ar'?'الرصيد الصافي الحالي:':'Current net balance:'} ${fmt(net)} ${LANG==='ar'?'د.ب':'BHD'}`,
-    ''
-  );
+  if(net <= 0){ toast(t('tgt_withdraw_no_balance'), 'warn'); return; }
+  const amountStr = prompt(`${t('tgt_withdraw_prompt')} "${name}"?\n${LANG==='ar'?'الرصيد الصافي الحالي:':'Current net balance:'} ${fmt(net)} ${LANG==='ar'?'د.ب':'BHD'}`, '');
   if(amountStr === null) return;
   const amount = parseFloat(amountStr);
-  if(!amount || amount <= 0 || isNaN(amount)){
-    toast(t('tgt_withdraw_invalid'), 'error');
-    return;
-  }
-  if(amount > net){
-    toast(t('tgt_withdraw_exceeds'), 'error');
-    return;
-  }
+  if(!amount || amount <= 0 || isNaN(amount)){ toast(t('tgt_withdraw_invalid'), 'error'); return; }
+  if(amount > net){ toast(t('tgt_withdraw_exceeds'), 'error'); return; }
   const reason = prompt(t('tgt_withdraw_reason'), '') || '';
-  getWithdrawals(key).push({
-    id: Date.now(),
-    amount,
-    date: new Date().toISOString(),
-    reason
-  });
-  save();
-  renderPyramidTargets();
-  renderSavingFields();
-  renderMonthResults();
-  renderPyramid();
+  getWithdrawals(key).push({ id: Date.now(), amount, date: new Date().toISOString(), reason });
+  save(); renderPyramidTargets(); renderSavingFields(); renderMonthResults(); renderPyramid();
   toast(t('tgt_withdraw_success') + fmt(amount) + ' ' + (LANG==='ar'?'د.ب':'BHD'), 'success');
 }
 
@@ -3632,10 +3219,7 @@ function showWithdrawHistory(key){
   const ws = getWithdrawals(key);
   const lvl = getPyramidLevels().find(l => l.key === key);
   const name = lvl ? `${lvl.subtitle} ${lvl.label}` : key;
-  if(!ws.length){
-    toast(t('tgt_history_empty'), 'warn');
-    return;
-  }
+  if(!ws.length){ toast(t('tgt_history_empty'), 'warn'); return; }
   const lines = ws.slice().sort((a,b)=> new Date(b.date) - new Date(a.date)).map(w => {
     const d = new Date(w.date);
     const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -3648,11 +3232,8 @@ function showWithdrawHistory(key){
 function formatPrintDate(m, mi){
   if(m && m.customDate && /^\d{4}-\d{2}-\d{2}$/.test(m.customDate)){
     const parts = m.customDate.split('-');
-    const day = parseInt(parts[2], 10);
-    const month = parseInt(parts[1], 10);
-    if(day > 0 && month > 0){
-      return `${day}/${month}`;
-    }
+    const day = parseInt(parts[2], 10), month = parseInt(parts[1], 10);
+    if(day > 0 && month > 0) return `${day}/${month}`;
   }
   return `${mi + 1}`;
 }
@@ -3663,7 +3244,6 @@ function generatePyramidLevelReportHTML(key){
   const L = LANG === 'ar';
   const cur = L ? 'د.ب' : 'BHD';
   const monthNames = getMonths();
-
   const target = getPyramidTarget(key);
   const cumulativeSaved = getCumulativeSaved(key);
   const withdrawn = getWithdrawnTotal(key);
@@ -3671,42 +3251,21 @@ function generatePyramidLevelReportHTML(key){
   const note = getPyramidNote(key);
   const remaining = target > 0 ? Math.max(0, target - net) : null;
   const reached = target > 0 && net >= target;
-
   const sortedYears = state.yearList.slice().sort((a,b)=>a-b);
   const detailedYears = [];
-
   sortedYears.forEach(y => {
     const monthsArr = Mof(y);
     const monthRows = [];
-
     if(key === "loans" || key === "obligationsSaving"){
       const filterType = key === "loans" ? "installment" : "obligation";
       const relevantDebts = (state.debts || []).filter(d => d.type === filterType && !isDebtExcluded(d));
       monthsArr.forEach((m, mi) => {
-        const entries = [];
-        let monthTotal = 0;
+        const entries = []; let monthTotal = 0;
         relevantDebts.forEach(d => {
           const v = dm(d, y, mi);
-          if(v > 0){
-            monthTotal += v;
-            entries.push({
-              name: d.name,
-              amount: v,
-              ref: getDebtRef(d, y, mi) || '',
-              notes: d.notes || ''
-            });
-          }
+          if(v > 0){ monthTotal += v; entries.push({ name: d.name, amount: v, ref: getDebtRef(d, y, mi) || '', notes: d.notes || '' }); }
         });
-        if(monthTotal > 0){
-          monthRows.push({
-            mi,
-            dateDisplay: formatPrintDate(m, mi),
-            monthName: monthNames[mi],
-            amount: monthTotal,
-            entries: entries,
-            note: ''
-          });
-        }
+        if(monthTotal > 0) monthRows.push({ mi, dateDisplay: formatPrintDate(m, mi), monthName: monthNames[mi], amount: monthTotal, entries, note: '' });
       });
     } else {
       monthsArr.forEach((m, mi) => {
@@ -3715,37 +3274,19 @@ function generatePyramidLevelReportHTML(key){
         const meta = m.savingMeta?.[key] || {};
         const monthNote = meta.note || '';
         const refVal = m.savingRefMeta?.[key] || '';
-        if(amount > 0 || monthNote){
-          monthRows.push({
-            mi,
-            dateDisplay: formatPrintDate(m, mi),
-            monthName: monthNames[mi],
-            amount: amount,
-            entries: [],
-            note: monthNote,
-            ref: refVal
-          });
-        }
+        if(amount > 0 || monthNote) monthRows.push({ mi, dateDisplay: formatPrintDate(m, mi), monthName: monthNames[mi], amount, entries: [], note: monthNote, ref: refVal });
       });
     }
-
-    if(monthRows.length){
-      const yearTotal = monthRows.reduce((s, r) => s + r.amount, 0);
-      detailedYears.push({ year: y, months: monthRows, total: yearTotal });
-    }
+    if(monthRows.length){ const yearTotal = monthRows.reduce((s, r) => s + r.amount, 0); detailedYears.push({ year: y, months: monthRows, total: yearTotal }); }
   });
-
   const ws = getWithdrawals(key).slice().sort((a,b) => new Date(a.date) - new Date(b.date));
-
   let sourceText = '';
   if(key === "loans") sourceText = t('print_debt_source_loans');
   else if(key === "obligationsSaving") sourceText = t('print_debt_source_obligations');
   else sourceText = t('print_savings_source');
-
   const now = new Date();
   const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
   const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-
   let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('print_report_title')}: ${lvl.label}</title>`;
   html += `<style>
     @page{size:A4;margin:15mm}
@@ -3789,135 +3330,57 @@ function generatePyramidLevelReportHTML(key){
     .source-line{font-size:11px;color:#64748b;font-style:italic;text-align:center;margin-bottom:12px}
     @media print{body{padding:0}.noprint{display:none}}
   </style></head><body>`;
-
-  html += `<div class="header">
-    <div class="logo">M</div>
-    <h2>${lvl.subtitle} ${lvl.label}</h2>
+  html += `<div class="header"><div class="logo">M</div><h2>${lvl.subtitle} ${lvl.label}</h2>
     <div class="meta">${t('print_report_title')} — ${t('print_generated')}: ${dateStr} ${timeStr}</div>
-    <div class="source-line">${sourceText}</div>
-  </div>`;
-
+    <div class="source-line">${sourceText}</div></div>`;
   html += `<div class="kpis">
     <div class="kpi gold"><div class="lbl">🎯 ${t('print_target')}</div><div class="val">${target > 0 ? fmt(target) + ' ' + cur : '—'}</div></div>
     <div class="kpi green"><div class="lbl">💰 ${t('print_cumulative')}</div><div class="val">${fmt(cumulativeSaved)} ${cur}</div></div>
     <div class="kpi red"><div class="lbl">📤 ${t('print_withdrawn')}</div><div class="val">${fmt(withdrawn)} ${cur}</div></div>
     <div class="kpi gray"><div class="lbl">📊 ${t('print_net')}</div><div class="val">${fmt(net)} ${cur}</div></div>
   </div>`;
-
   if(remaining !== null){
-    html += `<div class="note-box">
-      🎯 <strong>${t('print_remaining_to_target')}:</strong> ${fmt(remaining)} ${cur}
-      ${reached ? `<span class="badge green">${t('print_reached')}</span>` : ''}
-    </div>`;
+    html += `<div class="note-box">🎯 <strong>${t('print_remaining_to_target')}:</strong> ${fmt(remaining)} ${cur} ${reached ? `<span class="badge green">${t('print_reached')}</span>` : ''}</div>`;
   }
-
-  if(note){
-    html += `<div class="note-box">
-      📝 <strong>${t('print_notes_label')}:</strong> ${esc(note)}
-    </div>`;
-  }
-
+  if(note){ html += `<div class="note-box">📝 <strong>${t('print_notes_label')}:</strong> ${esc(note)}</div>`; }
   html += `<div class="section-title">${t('print_years_breakdown')}</div>`;
-
   if(detailedYears.length){
     detailedYears.forEach(yb => {
       html += `<div class="year-block">`;
-      html += `<div class="year-header">
-        <span>📅 ${t('print_year')} ${yb.year}</span>
-        <span class="year-total">${fmt(yb.total)} ${cur}</span>
-      </div>`;
+      html += `<div class="year-header"><span>📅 ${t('print_year')} ${yb.year}</span><span class="year-total">${fmt(yb.total)} ${cur}</span></div>`;
       const isDebtType = (key === "loans" || key === "obligationsSaving");
       if(isDebtType){
-        html += `<table><thead><tr>
-          <th style="width:40px">${t('print_index')}</th>
-          <th style="width:80px">${t('print_day_month')}</th>
-          <th style="width:100px">${t('print_month')}</th>
-          <th>${t('print_debt_name')}</th>
-          <th style="width:110px">${t('print_amount')} (${cur})</th>
-          <th style="width:80px">${t('th_ref')}</th>
-        </tr></thead><tbody>`;
+        html += `<table><thead><tr><th style="width:40px">${t('print_index')}</th><th style="width:80px">${t('print_day_month')}</th><th style="width:100px">${t('print_month')}</th><th>${t('print_debt_name')}</th><th style="width:110px">${t('print_amount')} (${cur})</th><th style="width:80px">${t('th_ref')}</th></tr></thead><tbody>`;
         let counter = 0;
         yb.months.forEach(mr => {
           mr.entries.forEach((en, idx) => {
             counter++;
-            html += `<tr>
-              <td class="num">${counter}</td>
-              <td class="date">${idx === 0 ? mr.dateDisplay : ''}</td>
-              <td class="month-name">${idx === 0 ? mr.monthName : ''}</td>
-              <td>${esc(en.name)}</td>
-              <td class="num">${fmt(en.amount)}</td>
-              <td style="text-align:center">${esc(en.ref) || '—'}</td>
-            </tr>`;
-            if(en.notes && idx === 0){
-              html += `<tr class="sub-row"><td></td><td></td><td></td><td colspan="3">📝 ${esc(en.notes)}</td></tr>`;
-            }
+            html += `<tr><td class="num">${counter}</td><td class="date">${idx === 0 ? mr.dateDisplay : ''}</td><td class="month-name">${idx === 0 ? mr.monthName : ''}</td><td>${esc(en.name)}</td><td class="num">${fmt(en.amount)}</td><td style="text-align:center">${esc(en.ref) || '—'}</td></tr>`;
+            if(en.notes && idx === 0){ html += `<tr class="sub-row"><td></td><td></td><td></td><td colspan="3">📝 ${esc(en.notes)}</td></tr>`; }
           });
         });
-        html += `<tr class="total-row">
-          <td colspan="4"><strong>${t('print_year_total')} ${yb.year}</strong></td>
-          <td class="num">${fmt(yb.total)}</td>
-          <td></td>
-        </tr></tbody></table>`;
+        html += `<tr class="total-row"><td colspan="4"><strong>${t('print_year_total')} ${yb.year}</strong></td><td class="num">${fmt(yb.total)}</td><td></td></tr></tbody></table>`;
       } else {
-        html += `<table><thead><tr>
-          <th style="width:40px">${t('print_index')}</th>
-          <th style="width:80px">${t('print_day_month')}</th>
-          <th style="width:110px">${t('print_month')}</th>
-          <th style="width:130px">${t('print_amount')} (${cur})</th>
-          <th>${t('print_notes_label')}</th>
-          <th style="width:70px">${t('th_ref')}</th>
-        </tr></thead><tbody>`;
+        html += `<table><thead><tr><th style="width:40px">${t('print_index')}</th><th style="width:80px">${t('print_day_month')}</th><th style="width:110px">${t('print_month')}</th><th style="width:130px">${t('print_amount')} (${cur})</th><th>${t('print_notes_label')}</th><th style="width:70px">${t('th_ref')}</th></tr></thead><tbody>`;
         yb.months.forEach((mr, idx) => {
-          html += `<tr>
-            <td class="num">${idx + 1}</td>
-            <td class="date">${mr.dateDisplay}</td>
-            <td class="month-name">${mr.monthName}</td>
-            <td class="num">${fmt(mr.amount)}</td>
-            <td class="note">${esc(mr.note) || '—'}</td>
-            <td style="text-align:center">${esc(mr.ref || '') || '—'}</td>
-          </tr>`;
+          html += `<tr><td class="num">${idx + 1}</td><td class="date">${mr.dateDisplay}</td><td class="month-name">${mr.monthName}</td><td class="num">${fmt(mr.amount)}</td><td class="note">${esc(mr.note) || '—'}</td><td style="text-align:center">${esc(mr.ref || '') || '—'}</td></tr>`;
         });
-        html += `<tr class="total-row">
-          <td colspan="3"><strong>${t('print_year_total')} ${yb.year}</strong></td>
-          <td class="num">${fmt(yb.total)}</td>
-          <td colspan="2"></td>
-        </tr></tbody></table>`;
+        html += `<tr class="total-row"><td colspan="3"><strong>${t('print_year_total')} ${yb.year}</strong></td><td class="num">${fmt(yb.total)}</td><td colspan="2"></td></tr></tbody></table>`;
       }
       html += `</div>`;
     });
-  } else {
-    html += `<div class="empty">${t('print_no_data')}</div>`;
-  }
-
+  } else { html += `<div class="empty">${t('print_no_data')}</div>`; }
   html += `<div class="section-title">${t('print_withdrawals_history')}</div>`;
   if(ws.length){
-    html += `<table><thead><tr>
-      <th style="width:40px">${t('print_index')}</th>
-      <th>${t('print_date')}</th>
-      <th>${t('print_amount')} (${cur})</th>
-      <th>${t('print_reason')}</th>
-    </tr></thead><tbody>`;
+    html += `<table><thead><tr><th style="width:40px">${t('print_index')}</th><th>${t('print_date')}</th><th>${t('print_amount')} (${cur})</th><th>${t('print_reason')}</th></tr></thead><tbody>`;
     ws.forEach((w, idx) => {
       const d = new Date(w.date);
       const wdateStr = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
-      html += `<tr>
-        <td class="num">${idx + 1}</td>
-        <td class="date">${wdateStr}</td>
-        <td class="num">${fmt(+w.amount || 0)}</td>
-        <td>${esc(w.reason) || '—'}</td>
-      </tr>`;
+      html += `<tr><td class="num">${idx + 1}</td><td class="date">${wdateStr}</td><td class="num">${fmt(+w.amount || 0)}</td><td>${esc(w.reason) || '—'}</td></tr>`;
     });
     html += `<tr class="total-row"><td colspan="2"><strong>${t('print_total_withdrawn')}</strong></td><td class="num">${fmt(withdrawn)}</td><td></td></tr></tbody></table>`;
-  } else {
-    html += `<div class="empty">${t('print_no_withdrawals')}</div>`;
-  }
-
-  html += `<div class="footer">
-    <div><strong>Muharraqi</strong> — ${t('print_title')}</div>
-    <div>© 2025 Muharraqi. All Rights Reserved.</div>
-    <div style="margin-top:6px;font-size:10px;color:#999">${L?'تم الإنشاء في':'Generated on'}: ${dateStr} ${timeStr}</div>
-  </div>`;
-
+  } else { html += `<div class="empty">${t('print_no_withdrawals')}</div>`; }
+  html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div>`;
   html += `</body></html>`;
   return html;
 }
@@ -3926,31 +3389,14 @@ function printPyramidLevelDetail(key){
   const htmlStr = generatePyramidLevelReportHTML(key);
   if(!htmlStr) return;
   const w = window.open('', '_blank', 'width=900,height=900');
-  if(w){
-    w.document.open();
-    w.document.write(htmlStr);
-    w.document.close();
-    setTimeout(() => {
-      try { w.focus(); w.print(); } catch(e){ console.error(e); }
-    }, 500);
-  } else {
-    toast(t('print_error_popup'), 'error');
-  }
+  if(w){ w.document.open(); w.document.write(htmlStr); w.document.close(); setTimeout(() => { try { w.focus(); w.print(); } catch(e){ console.error(e); } }, 500); }
+  else { toast(t('print_error_popup'), 'error'); }
 }
 
-function openInstructions(){
-  const modal = document.getElementById("instructionsModal");
-  if(modal){ modal.classList.add("show"); document.body.style.overflow = "hidden"; }
-}
-function closeInstructions(){
-  const modal = document.getElementById("instructionsModal");
-  if(modal){ modal.classList.remove("show"); document.body.style.overflow = ""; }
-}
+function openInstructions(){ const modal = document.getElementById("instructionsModal"); if(modal){ modal.classList.add("show"); document.body.style.overflow = "hidden"; } }
+function closeInstructions(){ const modal = document.getElementById("instructionsModal"); if(modal){ modal.classList.remove("show"); document.body.style.overflow = ""; } }
 document.addEventListener('keydown', function(e){
-  if(e.key === 'Escape'){
-    const modal = document.getElementById("instructionsModal");
-    if(modal && modal.classList.contains("show")) closeInstructions();
-  }
+  if(e.key === 'Escape'){ const modal = document.getElementById("instructionsModal"); if(modal && modal.classList.contains("show")) closeInstructions(); }
 });
 
 function renderPyramidSvg(){
@@ -3981,11 +3427,7 @@ function renderPyramidSvg(){
     const truncatedNote = note.length > maxChars ? note.substring(0, maxChars) + '…' : note;
     const hasNote = note.length > 0;
     const remBhd = LANG === 'ar' ? 'د.ب' : 'BHD';
-    const remText = remaining !== null
-      ? (reached
-          ? `${t('pyr_done_label')}`
-          : `📌 ${t('pyr_remaining_label')}: ${fmt(remaining)} ${remBhd}`)
-      : '';
+    const remText = remaining !== null ? (reached ? `${t('pyr_done_label')}` : `📌 ${t('pyr_remaining_label')}: ${fmt(remaining)} ${remBhd}`) : '';
     const remColor = reached ? '#86efac' : '#fde68a';
     const negBadge = isNegative ? `<text x="${cx}" y="${cy + (remaining !== null ? 22 : 13)}" text-anchor="middle" fill="#fca5a5" font-size="7" font-weight="700">⚠ ${t('pyr_negative_hint')}</text>` : '';
     const pctText = isNegative ? '—' : `${pct.toFixed(1)}%`;
@@ -4010,14 +3452,12 @@ function renderPyramidLegend(){
   document.getElementById("pyramidLegend").innerHTML = levels.slice().reverse().map(lvl => {
     const note = getPyramidNote(lvl.key);
     const isNegative = isPyramidNegativeLevel(lvl.key);
-    return `
-      <div class="pyr-legend-item" ${isNegative ? 'style="border-color:rgba(239,68,68,.4)"' : ''}>
-        <div class="pyr-color" style="background:${lvl.color}"></div>
-        <div class="pyr-label">${lvl.subtitle} ${lvl.label} ${isNegative ? '⚠' : ''}</div>
-        <div class="pyr-val" style="${isNegative ? 'color:var(--danger)' : ''}">${fmt(totals[lvl.key])} ${LANG==='ar'?'د.ب':'BHD'}</div>
-        ${note ? `<div class="pyr-note">📝 ${esc(note)}</div>` : ''}
-      </div>
-    `;
+    return `<div class="pyr-legend-item" ${isNegative ? 'style="border-color:rgba(239,68,68,.4)"' : ''}>
+      <div class="pyr-color" style="background:${lvl.color}"></div>
+      <div class="pyr-label">${lvl.subtitle} ${lvl.label} ${isNegative ? '⚠' : ''}</div>
+      <div class="pyr-val" style="${isNegative ? 'color:var(--danger)' : ''}">${fmt(totals[lvl.key])} ${LANG==='ar'?'د.ب':'BHD'}</div>
+      ${note ? `<div class="pyr-note">📝 ${esc(note)}</div>` : ''}
+    </div>`;
   }).join("");
 }
 
@@ -4025,24 +3465,12 @@ function renderPyramid(){
   const levels = getPyramidLevels();
   const totals = {};
   levels.forEach(lvl => { totals[lvl.key] = getCumulativeSaved(lvl.key); });
-
-  const bankSavingsTotal = levels.filter(l => isPyramidBankSavingsLevel(l.key))
-                                 .reduce((s,l)=>s+(totals[l.key]||0),0);
+  const bankSavingsTotal = levels.filter(l => isPyramidBankSavingsLevel(l.key)).reduce((s,l)=>s+(totals[l.key]||0),0);
   const investmentTotal = totals["investment"] || 0;
-  const negativeTotal = levels.filter(l => isPyramidNegativeLevel(l.key))
-                              .reduce((s,l)=>s+(totals[l.key]||0),0);
+  const negativeTotal = levels.filter(l => isPyramidNegativeLevel(l.key)).reduce((s,l)=>s+(totals[l.key]||0),0);
   const allPositiveTotal = bankSavingsTotal + investmentTotal;
-
-  renderPyramidSvg();
-  renderPyramidLegend();
-
-  let html = `<thead><tr>
-    <th>${t('th_level')}</th>
-    <th>${t('th_item_name')}</th>
-    <th>${t('th_year_total')}</th>
-    <th>${t('th_pct')}</th>
-    <th style="width:90px">${t('th_actions')}</th>
-  </tr></thead><tbody>`;
+  renderPyramidSvg(); renderPyramidLegend();
+  let html = `<thead><tr><th>${t('th_level')}</th><th>${t('th_item_name')}</th><th>${t('th_year_total')}</th><th>${t('th_pct')}</th><th style="width:90px">${t('th_actions')}</th></tr></thead><tbody>`;
   levels.forEach((lvl, idx) => {
     const level = idx + 1;
     const amt = totals[lvl.key] || 0;
@@ -4052,47 +3480,24 @@ function renderPyramid(){
     let negBadge = '';
     if(isNegative) negBadge = ` <span class="badge negative">⚠ ${LANG==='ar'?'سلبي':'Negative'}</span>`;
     else if(isInvestment) negBadge = ` <span class="badge investment">📈 ${LANG==='ar'?'استثمار':'Investment'}</span>`;
-    const amtDisplay = isNegative
-      ? `<span style="color:var(--danger)">- ${money(amt)}</span>`
-      : `<span style="color:${lvl.color};font-weight:700">${money(amt)}</span>`;
+    const amtDisplay = isNegative ? `<span style="color:var(--danger)">- ${money(amt)}</span>` : `<span style="color:${lvl.color};font-weight:700">${money(amt)}</span>`;
     const pctDisplay = pct === null ? `<span style="color:var(--muted)">—</span>` : `${fmtPct(pct)}%`;
     html += `<tr${isNegative ? ' style="background:rgba(239,68,68,.05)"' : ''}>
       <td style="color:${lvl.color};font-weight:700">${level}</td>
       <td>${lvl.subtitle} ${lvl.label} ${negBadge}</td>
       <td class="num">${amtDisplay}</td>
       <td class="num">${pctDisplay}</td>
-      <td style="text-align:center">
-        <div style="display:flex;gap:4px;justify-content:center">
-          <button class="icon-btn print-btn" onclick="printPyramidLevelDetail('${lvl.key}')" title="${t('btn_print_row')}">🖨️</button>
-          <button class="icon-btn share-btn" onclick="sharePyramidLevelPDF('${lvl.key}')" title="${t('btn_share_pdf_row')}">📤</button>
-        </div>
-      </td>
+      <td style="text-align:center"><div style="display:flex;gap:4px;justify-content:center">
+        <button class="icon-btn print-btn" onclick="printPyramidLevelDetail('${lvl.key}')" title="${t('btn_print_row')}">🖨️</button>
+        <button class="icon-btn share-btn" onclick="sharePyramidLevelPDF('${lvl.key}')" title="${t('btn_share_pdf_row')}">📤</button>
+      </div></td>
     </tr>`;
   });
-
-  html += `<tr style="background:rgba(34,193,164,.15);font-weight:700;border-top:2px solid var(--accent)">
-    <td colspan="2" style="color:var(--accent)">✅ ${t('th_total_bank_savings')}</td>
-    <td class="num" style="color:var(--accent);font-weight:800;font-size:15px">${money(bankSavingsTotal)}</td>
-    <td class="num" style="color:var(--accent)">${allPositiveTotal > 0 ? fmtPct(bankSavingsTotal/allPositiveTotal*100) + '%' : '—'}</td>
-    <td></td>
-  </tr>`;
-
-  html += `<tr style="background:rgba(34,197,94,.12);font-weight:700;border-top:2px solid var(--ok)">
-    <td colspan="2" style="color:var(--ok)">📈 ${t('th_total_investment')}</td>
-    <td class="num" style="color:var(--ok);font-weight:800;font-size:15px">${money(investmentTotal)}</td>
-    <td class="num" style="color:var(--ok)">${allPositiveTotal > 0 ? fmtPct(investmentTotal/allPositiveTotal*100) + '%' : '—'}</td>
-    <td></td>
-  </tr>`;
-
+  html += `<tr style="background:rgba(34,193,164,.15);font-weight:700;border-top:2px solid var(--accent)"><td colspan="2" style="color:var(--accent)">✅ ${t('th_total_bank_savings')}</td><td class="num" style="color:var(--accent);font-weight:800;font-size:15px">${money(bankSavingsTotal)}</td><td class="num" style="color:var(--accent)">${allPositiveTotal > 0 ? fmtPct(bankSavingsTotal/allPositiveTotal*100) + '%' : '—'}</td><td></td></tr>`;
+  html += `<tr style="background:rgba(34,197,94,.12);font-weight:700;border-top:2px solid var(--ok)"><td colspan="2" style="color:var(--ok)">📈 ${t('th_total_investment')}</td><td class="num" style="color:var(--ok);font-weight:800;font-size:15px">${money(investmentTotal)}</td><td class="num" style="color:var(--ok)">${allPositiveTotal > 0 ? fmtPct(investmentTotal/allPositiveTotal*100) + '%' : '—'}</td><td></td></tr>`;
   if(negativeTotal > 0){
-    html += `<tr style="background:rgba(239,68,68,.08);font-weight:700;border-top:1px dashed var(--danger)">
-      <td colspan="2" style="color:var(--danger)">⚠ ${t('th_total_negative')}</td>
-      <td class="num" style="color:var(--danger);font-weight:800">- ${money(negativeTotal)}</td>
-      <td class="num" style="color:var(--muted)">—</td>
-      <td></td>
-    </tr>`;
+    html += `<tr style="background:rgba(239,68,68,.08);font-weight:700;border-top:1px dashed var(--danger)"><td colspan="2" style="color:var(--danger)">⚠ ${t('th_total_negative')}</td><td class="num" style="color:var(--danger);font-weight:800">- ${money(negativeTotal)}</td><td class="num" style="color:var(--muted)">—</td><td></td></tr>`;
   }
-
   html += `</tbody>`;
   document.getElementById("pyramidTable").innerHTML = html;
   renderPyramidTargets();
@@ -4109,8 +3514,7 @@ function addDebt(){
   state.debts.push({
     id: Date.now(), name, type,
     category: type === "installment" ? document.getElementById("d_category").value : "",
-    total, paidBefore,
-    bank: "بطاقة صراف الالي",
+    total, paidBefore, bank: "بطاقة صراف الالي",
     monthlyByYear: { [state.activeYear]: Array(12).fill(0) },
     refByYear: { [state.activeYear]: Array(12).fill("") },
     start: document.getElementById("d_start").value,
@@ -4120,64 +3524,41 @@ function addDebt(){
   ["d_name","d_notes"].forEach(id=>document.getElementById(id).value="");
   ["d_total","d_paidBefore"].forEach(id=>document.getElementById(id).value="");
   save(); renderDebts(); renderDashboard(); renderMonth();
-  updatePyramidTargetRow("loans");
-  updatePyramidTargetRow("obligationsSaving");
+  updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving");
   if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); }
   toast(t('added'), 'success');
 }
 function delDebt(id){ 
   if(!confirm(t('confirm_delete'))) return; 
-  state.debts = state.debts.filter(d=>d.id!==id); 
-  save(); 
-  renderDebts(); 
-  renderDashboard(); 
-  renderMonth(); 
+  state.debts = state.debts.filter(d=>d.id!==id); save(); renderDebts(); renderDashboard(); renderMonth();
   if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); } 
 }
 function updDebtMonth(id, mi, val){ 
-  const d = state.debts.find(x=>x.id===id); 
-  if(!d) return; 
-  setDm(d, state.activeYear, mi, Math.max(0, parseFloat(val)||0)); 
-  save(); 
-  refreshDebtRowCells(d); 
-  updateDebtsFooter();
+  const d = state.debts.find(x=>x.id===id); if(!d) return; 
+  setDm(d, state.activeYear, mi, Math.max(0, parseFloat(val)||0)); save();
+  refreshDebtRowCells(d); updateDebtsFooter();
   if(_debtMonthRefreshTimer) clearTimeout(_debtMonthRefreshTimer);
   _debtMonthRefreshTimer = setTimeout(() => {
-    renderDebtsSummary(); 
-    renderDashboard(); 
-    updatePyramidTargetRow("loans"); 
-    updatePyramidTargetRow("obligationsSaving"); 
-    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ 
-      renderPyramidSvg(); 
-      renderPyramidLegend(); 
-    } 
+    renderDebtsSummary(); renderDashboard();
+    updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving");
+    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
   }, 400);
 }
 function updDebtName(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.name = val; save(); renderDashboard(); renderMonth(); renderDebtsSummary(); }
 function updDebtTotal(id, val){ 
   const d = state.debts.find(x=>x.id===id); if(!d) return; 
-  d.total = Math.max(0, parseFloat(val)||0); 
-  save(); 
-  refreshDebtRowCells(d); 
-  updateDebtsFooter();
-  renderDebtsSummary(); 
-  renderDashboard(); 
-  renderMonthPills(); 
-  updatePyramidTargetRow("loans"); 
-  updatePyramidTargetRow("obligationsSaving");
+  d.total = Math.max(0, parseFloat(val)||0); save();
+  refreshDebtRowCells(d); updateDebtsFooter();
+  renderDebtsSummary(); renderDashboard(); renderMonthPills();
+  updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving");
   if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); renderPyramidTargets(); } 
 }
 function updDebtPaidBefore(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.paidBefore = Math.max(0, parseFloat(val)||0); save(); refreshDebtRowCells(d); updateDebtsFooter(); renderDebtsSummary(); renderDashboard(); renderMonthPills(); }
 function updDebtType(id, val){ 
   const d = state.debts.find(x=>x.id===id); if(!d) return; 
-  d.type = val; 
-  if(val !== "installment") d.category = ""; 
-  save(); 
-  renderDebts(); 
-  renderDashboard(); 
-  renderMonth(); 
-  updatePyramidTargetRow("loans");
-  updatePyramidTargetRow("obligationsSaving");
+  d.type = val; if(val !== "installment") d.category = ""; save();
+  renderDebts(); renderDashboard(); renderMonth();
+  updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving");
   if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); } 
 }
 function updDebtCategory(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.category = val; save(); }
@@ -4188,7 +3569,6 @@ function buildPaidInfoHtml(d){
   const lp = lastPaymentInfo(d);
   const hasPaidBefore = +d.paidBefore > 0;
   if(!fullyPaid && !lp && !hasPaidBefore) return '';
-
   let html = '<div class="fully-paid-info">';
   if(fullyPaid){ html += `<span class="badge fully-paid">✅ ${t('debt_paid')}</span>`; }
   if(lp){
@@ -4206,34 +3586,25 @@ function buildPaidInfoHtml(d){
 
 function goToLastPayment(id, ev){
   if(ev){ ev.stopPropagation(); ev.preventDefault(); }
-  const d = state.debts.find(x=>x.id===id);
-  if(!d) return;
+  const d = state.debts.find(x=>x.id===id); if(!d) return;
   const lp = lastPaymentInfo(d);
   if(!lp){ toast(t('no_last_pay'), 'warn'); return; }
   if(!state.years[lp.year]) state.years[lp.year] = emptyYear();
-  if(state.yearList.indexOf(lp.year) === -1){
-    state.yearList.push(lp.year);
-    state.yearList.sort((a,b)=>a-b);
-  }
-  state.activeYear = lp.year;
-  state.activeMonth = lp.month;
-  save();
-  renderYearSelect();
-  renderMonthPills();
+  if(state.yearList.indexOf(lp.year) === -1){ state.yearList.push(lp.year); state.yearList.sort((a,b)=>a-b); }
+  state.activeYear = lp.year; state.activeMonth = lp.month; save();
+  renderYearSelect(); renderMonthPills();
   document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   const monthBtn = document.querySelector('nav.tabs button[data-view="month"]');
   if(monthBtn) monthBtn.classList.add("active");
   const monthView = document.getElementById("month");
   if(monthView) monthView.classList.add("active");
-  renderMonth();
-  updateMonthPrintBtn();
+  renderMonth(); updateMonthPrintBtn();
   setTimeout(() => {
     const row = document.querySelector(`tr[data-debt-row="${id}"]`);
     if(row){
       row.scrollIntoView({behavior:'smooth', block:'center'});
-      row.classList.remove('highlight-jump');
-      void row.offsetWidth;
+      row.classList.remove('highlight-jump'); void row.offsetWidth;
       row.classList.add('highlight-jump');
       setTimeout(() => row.classList.remove('highlight-jump'), 2200);
     }
@@ -4244,30 +3615,16 @@ function goToLastPayment(id, ev){
 function refreshDebtRowCells(d){
   const row = document.querySelector(`tr[data-debt-id="${d.id}"]`);
   if(!row) return;
-  const paid = debtPaidInYear(d, state.activeYear);
-  const rem = debtRemaining(d);
+  const paid = debtPaidInYear(d, state.activeYear), rem = debtRemaining(d);
   const pc = row.querySelector('.paid-cell'), rc = row.querySelector('.remain-cell');
   if(pc) pc.textContent = fmt(paid);
   if(rc){ rc.textContent = fmt(rem); rc.classList.toggle('pos', rem === 0); rc.classList.toggle('neg', rem > 0); }
   const bw = row.querySelector('.fully-paid-badge-wrap');
   if(bw) bw.innerHTML = buildPaidInfoHtml(d);
 }
-function refreshDebtTotals(){
-  state.debts.forEach(d => {
-    const row = document.querySelector(`tr[data-debt-id="${d.id}"]`);
-    if(!row) return;
-    const paid = debtPaidInYear(d, state.activeYear), rem = debtRemaining(d);
-    const pc = row.querySelector('.paid-cell'), rc = row.querySelector('.remain-cell');
-    if(pc) pc.textContent = fmt(paid);
-    if(rc){ rc.textContent = fmt(rem); rc.classList.toggle('pos', rem === 0); rc.classList.toggle('neg', rem > 0); }
-  });
-  updateDebtsFooter();
-}
 function updateDebtsFooter(){
-  const foot = document.querySelector("#debtsTable tfoot");
-  if(!foot) return;
-  const mTotals = Array(12).fill(0);
-  let tp = 0, tr = 0;
+  const foot = document.querySelector("#debtsTable tfoot"); if(!foot) return;
+  const mTotals = Array(12).fill(0); let tp = 0, tr = 0;
   state.debts.forEach(d=>{ for(let i=0;i<12;i++) mTotals[i] += dm(d, state.activeYear, i); tp += debtPaidInYear(d, state.activeYear); tr += debtRemaining(d); });
   let html = `<tr><td colspan="6">${t('dms_total')}</td>`;
   for(let i=0;i<12;i++) html += `<td>${mTotals[i] > 0 ? fmt(mTotals[i]) : "—"}</td>`;
@@ -4293,14 +3650,10 @@ function renderDebts(){
   const el = document.getElementById("debtsTable");
   if(!state.debts.length){ el.innerHTML = `<thead><tr><th colspan="21" style="padding:20px;color:var(--muted)">—</th></tr></thead>`; return; }
   const months = getMonths(); const y = state.activeYear;
-  const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦", obligation:"📋"};
   let head = `<thead><tr>
-    <th style="min-width:200px">${t('th_debt_name')}</th>
-    <th style="min-width:80px">${t('th_debt_type')}</th>
-    <th style="min-width:80px">${t('lbl_debt_cat')}</th>
-    <th style="min-width:85px">${t('th_debt_total')}</th>
-    <th style="min-width:85px">${t('lbl_debt_paidbefore')}</th>
-    <th style="min-width:120px">${t('lbl_debt_notes')}</th>`;
+    <th style="min-width:200px">${t('th_debt_name')}</th><th style="min-width:80px">${t('th_debt_type')}</th>
+    <th style="min-width:80px">${t('lbl_debt_cat')}</th><th style="min-width:85px">${t('th_debt_total')}</th>
+    <th style="min-width:85px">${t('lbl_debt_paidbefore')}</th><th style="min-width:120px">${t('lbl_debt_notes')}</th>`;
   months.forEach(m => { head += `<th style="width:80px">${m}</th>`; });
   head += `<th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th><th></th></tr></thead>`;
   let body = `<tbody>`;
@@ -4331,8 +3684,7 @@ function renderDebts(){
     body += `<td class="paid-cell">${fmt(paid)}</td><td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td><td><button class="icon-btn" onclick="delDebt(${d.id})">✕</button></td></tr>`;
   });
   body += `</tbody>`;
-  const mTotals = Array(12).fill(0);
-  let tp = 0, tr = 0;
+  const mTotals = Array(12).fill(0); let tp = 0, tr = 0;
   state.debts.forEach(d=>{ for(let i=0;i<12;i++) mTotals[i] += dm(d,y,i); tp += debtPaidInYear(d,y); tr += debtRemaining(d); });
   let foot = `<tfoot><tr><td colspan="6">${t('dms_total')}</td>`;
   for(let i=0;i<12;i++) foot += `<td>${mTotals[i] > 0 ? fmt(mTotals[i]) : "—"}</td>`;
@@ -4341,14 +3693,9 @@ function renderDebts(){
 }
 
 function onDebtMonthBlur(){
-  renderDebtsSummary();
-  renderDashboard();
-  updatePyramidTargetRow("loans");
-  updatePyramidTargetRow("obligationsSaving");
-  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
-    renderPyramidSvg();
-    renderPyramidLegend();
-  }
+  renderDebtsSummary(); renderDashboard();
+  updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving");
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
 }
 
 function renderYears(){
@@ -4374,22 +3721,15 @@ function renderYears(){
       const tot = yearTotals(y);
       const h = v => Math.max(2, (v / maxVal) * 200);
       const isActive = y === state.activeYear;
-      return `<div class="year-bar-wrap">
-        <div class="year-bar-group">
-          <div class="year-bar inc" style="height:${h(tot.income)}px" title="${t('y_inc')}: ${money(tot.income)}"></div>
-          <div class="year-bar exp" style="height:${h(tot.expenses)}px" title="${t('y_exp')}: ${money(tot.expenses)}"></div>
-          <div class="year-bar sav" style="height:${h(tot.savings)}px" title="${t('y_sav')}: ${money(tot.savings)}"></div>
-          <div class="year-bar rem" style="height:${h(Math.abs(tot.net))}px" title="${t('y_rem')}: ${money(tot.net)}"></div>
-        </div>
-        <div class="year-bar-label" style="${isActive?'color:var(--accent);':''}cursor:pointer" onclick="selectYear(${y})">${y}</div>
-      </div>`;
+      return `<div class="year-bar-wrap"><div class="year-bar-group">
+        <div class="year-bar inc" style="height:${h(tot.income)}px" title="${t('y_inc')}: ${money(tot.income)}"></div>
+        <div class="year-bar exp" style="height:${h(tot.expenses)}px" title="${t('y_exp')}: ${money(tot.expenses)}"></div>
+        <div class="year-bar sav" style="height:${h(tot.savings)}px" title="${t('y_sav')}: ${money(tot.savings)}"></div>
+        <div class="year-bar rem" style="height:${h(Math.abs(tot.net))}px" title="${t('y_rem')}: ${money(tot.net)}"></div>
+      </div><div class="year-bar-label" style="${isActive?'color:var(--accent);':''}cursor:pointer" onclick="selectYear(${y})">${y}</div></div>`;
     }).join("");
   }
-  let thtml = `<thead><tr>
-    <th>${t('y_year')}</th><th>${t('y_inc')}</th><th>${t('y_exp')}</th>
-    <th>${t('y_sav')}</th><th>${t('y_debtpay')}</th><th>${t('y_debtrecv')}</th>
-    <th>${t('y_rem')}</th><th>${t('th_status')}</th>
-  </tr></thead><tbody>`;
+  let thtml = `<thead><tr><th>${t('y_year')}</th><th>${t('y_inc')}</th><th>${t('y_exp')}</th><th>${t('y_sav')}</th><th>${t('y_debtpay')}</th><th>${t('y_debtrecv')}</th><th>${t('y_rem')}</th><th>${t('th_status')}</th></tr></thead><tbody>`;
   state.yearList.forEach(y => {
     const tot = yearTotals(y);
     const isActive = y === state.activeYear;
@@ -4402,8 +3742,7 @@ function renderYears(){
       <td class="num" style="color:var(--danger)">${money(tot.debtPay)}</td>
       <td class="num" style="color:var(--ok)">${money(tot.debtRecv)}</td>
       <td class="num ${tot.net>=0?'pos':'neg'}" style="font-weight:700">${money(tot.net)}</td>
-      <td>${status}</td>
-    </tr>`;
+      <td>${status}</td></tr>`;
   });
   thtml += `<tr style="background:rgba(34,193,164,.15);font-weight:700;color:var(--accent)">
     <td>${t('y_all')}</td>
@@ -4413,8 +3752,7 @@ function renderYears(){
     <td class="num" style="color:var(--danger)">${money(all.debtPay)}</td>
     <td class="num" style="color:var(--ok)">${money(all.debtRecv)}</td>
     <td class="num ${all.net>=0?'pos':'neg'}" style="font-weight:700">${money(all.net)}</td>
-    <td>—</td>
-  </tr></tbody>`;
+    <td>—</td></tr></tbody>`;
   document.getElementById("yearsTable").innerHTML = thtml;
   const sFields = getSavingFields();
   let dhtml = `<thead><tr><th>${t('th_item_name')}</th>${state.yearList.map(y=>`<th>${y}</th>`).join('')}<th>${t('th_total')}</th></tr></thead><tbody>`;
@@ -4468,11 +3806,8 @@ function renderAnnual(){
           const isExp = title.includes('المصاريف')||title.includes('Expenses');
           const isSav = title.includes('الادخار')||title.includes('Savings');
           let ex = false;
-          if(type === "repeatable"){
-            ex = isExp && isExcluded(mm, key);
-          } else {
-            ex = (isExp && isExcluded(mm, key)) || (isSav && isSavingExcluded(mm, key));
-          }
+          if(type === "repeatable"){ ex = isExp && isExcluded(mm, key); }
+          else { ex = (isExp && isExcluded(mm, key)) || (isSav && isSavingExcluded(mm, key)); }
           if(!v) return `<td class="num">—</td>`;
           return `<td class="num ${ex?'excluded-cell':''}">${money(v)}${ex?' ⛔':''}</td>`;
         }).join("") +
@@ -4496,13 +3831,11 @@ function renderAnnual(){
   const zkExclArr = monthsData.map(m => isExtraExcludedM(m, "zakat"));
   html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--gold);font-weight:700">⭐ ${t('lbl_car_insurance_ot')} / ${t('lbl_zakat_ot')}</td></tr>`;
   html += `<tr><td>${t('ot_car_insurance')}</td>${ciT.map((v,i)=>{
-    const ex = ciExclArr[i];
-    if(!v) return `<td class="num">—</td>`;
+    const ex = ciExclArr[i]; if(!v) return `<td class="num">—</td>`;
     return `<td class="num ${ex?'excluded-cell':''}">${money(v)}${ex?' ⛔':''}</td>`;
   }).join('')}<td class="num" style="color:var(--gold);font-weight:700">${money(ciT.reduce((a,b)=>a+b,0))}</td></tr>`;
   html += `<tr><td>${t('ot_zakat')}</td>${zkT.map((v,i)=>{
-    const ex = zkExclArr[i];
-    if(!v) return `<td class="num">—</td>`;
+    const ex = zkExclArr[i]; if(!v) return `<td class="num">—</td>`;
     return `<td class="num ${ex?'excluded-cell':''}">${money(v)}${ex?' ⛔':''}</td>`;
   }).join('')}<td class="num" style="color:var(--gold);font-weight:700">${money(zkT.reduce((a,b)=>a+b,0))}</td></tr>`;
   const inc = monthsData.map((m,i)=>totalIncome(m,i,y));
@@ -4549,8 +3882,7 @@ function importData(e){
 }
 function resetAll(){
   if(!confirm(t('confirm_reset'))) return;
-  localStorage.removeItem(KEY);
-  localStorage.removeItem(BACKUP_KEY);
+  localStorage.removeItem(KEY); localStorage.removeItem(BACKUP_KEY);
   OLD_KEYS.forEach(k => localStorage.removeItem(k));
   location.reload();
 }
@@ -4560,26 +3892,15 @@ window.addEventListener('beforeunload', function(){
   if(SAVE_PENDING || LAST_SAVE === null){ saveNow(); }
 });
 document.addEventListener('visibilitychange', function(){
-  if(document.hidden && SAVE_PENDING){
-    if(SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; }
-    saveNow();
-  }
+  if(document.hidden && SAVE_PENDING){ if(SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; } saveNow(); }
 });
 document.addEventListener('keydown', function(e){
-  if((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')){
-    e.preventDefault();
-    manualSave();
-  }
+  if((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')){ e.preventDefault(); manualSave(); }
 });
 setInterval(function(){
-  if(SAVE_PENDING && SAVE_TIMER){
-    clearTimeout(SAVE_TIMER); SAVE_TIMER = null;
-    saveNow();
-  }
+  if(SAVE_PENDING && SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; saveNow(); }
 }, 15000);
-window.addEventListener('pagehide', function(){
-  if(SAVE_PENDING){ saveNow(); }
-});
+window.addEventListener('pagehide', function(){ if(SAVE_PENDING){ saveNow(); } });
 
 load();
 initIfEmpty();
@@ -4587,11 +3908,8 @@ applyTheme();
 applyFontScale();
 applyLang();
 saveNow();
-if(LOADED_FROM_DATA){
-  setTimeout(function(){ toast(t('save_restored'), 'success'); }, 600);
-} else {
-  setTimeout(function(){ if(!state.yearList.length) toast(t('save_no_data'), 'warn'); }, 1000);
-}
+if(LOADED_FROM_DATA){ setTimeout(function(){ toast(t('save_restored'), 'success'); }, 600); }
+else { setTimeout(function(){ if(!state.yearList.length) toast(t('save_no_data'), 'warn'); }, 1000); }
 </script>
 </body>
 </html>
