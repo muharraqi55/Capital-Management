@@ -81,6 +81,7 @@
   .toast.warn{background:linear-gradient(180deg,var(--gold),#92400e);color:#fff}
   .icon-btn{background:transparent;border:1px solid var(--line);color:var(--muted);width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:14px;transition:.2s;display:inline-flex;align-items:center;justify-content:center}
   .icon-btn:hover{border-color:var(--danger);color:var(--danger)}
+  .icon-btn.add-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(34,193,164,.12)}
   .icon-btn.withdraw:hover{border-color:var(--gold);color:var(--gold);background:rgba(234,179,8,.1)}
   .icon-btn.history:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(59,130,246,.1)}
   .icon-btn.print-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(34,193,164,.1)}
@@ -112,7 +113,7 @@
   html[data-theme="light"] .meat-status.meat-status-no{background:#b91c1c;border-color:#7f1d1d;color:#ffffff}
   html[data-theme="light"] .meat-status.meat-status-yes{background:#15803d;border-color:#14532d;color:#ffffff}
   .expense-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
-  .expense-table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+  .expense-table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
   .expense-table thead{background:var(--panel2)}
   .expense-table th{padding:10px 12px;text-align:right;color:var(--accent);font-size:11px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
   html[dir="ltr"] .expense-table th{text-align:left}
@@ -123,6 +124,14 @@
   .expense-table input:focus,.expense-table select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,193,164,.15)}
   .expense-table tr.excluded{background:rgba(239,68,68,.06)}
   .expense-table tr.excluded td:first-child{color:var(--danger);text-decoration:underline;opacity:.75}
+  .expense-table tr.extra-expanded{background:rgba(34,193,164,.04)}
+  .expense-table tr.extra-expanded:hover{background:rgba(34,193,164,.08)}
+  .expense-table tr.extra-collapsed{background:rgba(34,193,164,.07);cursor:pointer}
+  .expense-table tr.extra-collapsed:hover{background:rgba(34,193,164,.12)}
+  .expense-table tr.extra-collapsed td:first-child{color:var(--muted);font-weight:600}
+  .expense-table .extra-name{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .expense-table .extra-actions-cell{width:80px;text-align:center}
+  .expense-table .extra-actions-cell .icon-btn{margin:0 1px}
   .bank-excluded{background:rgba(239,68,68,.15) !important;border-color:var(--danger) !important;color:#ffdcdc !important}
   .expense-table tr.group-header{background:linear-gradient(90deg,rgba(59,130,246,.15),transparent)}
   .expense-table tr.group-header td{color:var(--accent2);font-weight:700;font-size:12px;padding:8px 14px;border-bottom:1px dashed var(--line)}
@@ -227,7 +236,7 @@
   .pyr-legend-item .pyr-label{font-size:12px;color:var(--muted);flex:1;min-width:100px}
   .pyr-legend-item .pyr-val{font-family:monospace;font-weight:700;color:var(--txt);font-size:14px;direction:ltr}
   .pyr-legend-item .pyr-note{width:100%;font-size:11px;color:var(--gold);font-style:italic;margin-top:4px;padding:4px 8px;background:rgba(234,179,8,.08);border-radius:6px;border:1px solid rgba(234,179,8,.25);white-space:pre-wrap;word-break:break-word}
-  @media(max-width:768px){.expense-table{min-width:520px;font-size:12px}.expense-table th,.expense-table td{padding:5px 6px}.bank-item{min-width:120px;font-size:11px}.debts-month-table{min-width:780px}}
+  @media(max-width:768px){.expense-table{min-width:600px;font-size:12px}.expense-table th,.expense-table td{padding:5px 6px}.bank-item{min-width:120px;font-size:11px}.debts-month-table{min-width:780px}}
   .excluded-cell{color:var(--danger) !important;text-decoration:underline;opacity:.65;font-size:12px}
   .year-chart{display:flex;gap:16px;align-items:flex-end;justify-content:center;padding:20px 10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;min-height:280px;overflow-x:auto}
   .year-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px}
@@ -327,7 +336,7 @@
     }
     @page{size: A4 portrait;margin:10mm 8mm}
     html,body{background:#fff !important;color:#000 !important;font-size:10pt !important}
-    header,nav.tabs,.toolbar,.settings-bar,.btn,.icon-btn,.toast,.monthPills,.site-footer,.modal,.eid-type-inline,.year-picker,.save-indicator,.print-section{display:none !important}
+    header,nav.tabs,.toolbar,.settings-bar,.btn,.icon-btn,.toast,.monthPills,.site-footer,.modal,.eid-type-inline,.year-picker,.save-indicator,.print-section,.noprint{display:none !important}
     main{padding:0 !important;max-width:100% !important;width:100% !important}
     .view{display:none !important}.view.active{display:block !important}
     .card{break-inside:avoid;page-break-inside:avoid;border:1px solid #999 !important;background:#fff !important;box-shadow:none !important;padding:8pt !important;margin-bottom:6pt !important;border-radius:4pt}
@@ -369,6 +378,8 @@
     .last-pay-prior{font-size:7pt !important}
     .progress-bar{background:#eee !important;border:1px solid #999 !important}
     .progress-fill{background:#0891b2 !important}
+    .expense-table tr.extra-collapsed{background:#f5f5f5 !important}
+    .expense-table tr.extra-expanded{background:#fafafa !important}
     
     .debts-table-wrap,
     .expense-table-wrap,
@@ -499,6 +510,7 @@
     .expense-table {
       min-width: 0 !important;
       width: 100% !important;
+      table-layout: fixed !important;
     }
     .expense-table th,
     .expense-table td {
@@ -642,7 +654,14 @@
     <h2 id="lblExpenses"></h2>
     <div class="expense-table-wrap">
       <table class="expense-table">
-        <thead><tr><th id="thItem"></th><th id="thAmount"></th><th id="thBank"></th><th id="thNote"></th><th id="thRef"></th></tr></thead>
+        <thead><tr>
+          <th id="thItem"></th>
+          <th id="thAmount"></th>
+          <th id="thBank"></th>
+          <th id="thNote"></th>
+          <th id="thRef"></th>
+          <th class="noprint" style="width:60px">⚙</th>
+        </tr></thead>
         <tbody id="expenseFields"></tbody>
       </table>
     </div>
@@ -1057,6 +1076,10 @@ const I18N = {
     pyr_negative_hint:"سلبي — لا يُحتسب في الإجمالي",
     inst_title:"📖 تعليمات هرم الأمان المالي",
     close_btn:"إغلاق",
+    add_extra_title:"إضافة بند جديد",
+    remove_extra_title:"حذف هذا البند",
+    collapse_title:"طي البند",
+    expand_title:"توسيع البند",
     months:["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"],
     print_title:"نظام إدارة رأس المال",print_subtitle:"Capital Manager — تقرير مالي",print_meta:"تم الإنشاء في",
     f_salary:"الراتب الشهري (د.ب)",f_costOfLiving:"غلاء المعيشة (د.ب)",
@@ -1069,10 +1092,10 @@ const I18N = {
     e_rent:"إيجار الشقة/المنزل",e_houseMaintenance:"ماجلة البيت",
     e_internet:"الإنترنت والهاتف",e_electricity:"الكهرباء والماء",
     e_misc:"مصروفات أخرى",e_treatment:"العلاج",
-    e_visaCard1:"بطاقة الفيزا ١",e_visaCard2:"بطاقة الفيزا ٢",e_visaCard3:"بطاقة الفيزا ٣",
+    e_visaCard1:"بطاقة الفيزا",e_visaCard2:"بطاقة الفيزا ٢",e_visaCard3:"بطاقة الفيزا ٣",
     e_fuel:"البترول",e_carCleaning:"عامل التنظيف",
-    e_carRepair1:"تصليح السيارة ١",e_carRepair2:"تصليح السيارة ٢",e_carRepair3:"تصليح السيارة ٣",
-    e_homeRepair1:"تعديل/تصليح المنزل ١",e_homeRepair2:"تعديل/تصليح المنزل ٢",e_homeRepair3:"تعديل/تصليح المنزل ٣",
+    e_carRepair1:"تصليح السيارة",e_carRepair2:"تصليح السيارة ٢",e_carRepair3:"تصليح السيارة ٣",
+    e_homeRepair1:"تعديل/تصليح المنزل",e_homeRepair2:"تعديل/تصليح المنزل ٢",e_homeRepair3:"تعديل/تصليح المنزل ٣",
     e_birthday:"عيد ميلاد",e_kids_group:"🎒 احتياجات الأطفال",
     e_kidsSchool:"↳ المدرسة",e_kidsClothes:"↳ الملابس",e_kidsEid:"↳ العيد",
     e_privateSchool:"مدرسة خاصة",e_kindergarten:"روضة",e_university:"جامعة",
@@ -1274,6 +1297,10 @@ const I18N = {
     pyr_negative_hint:"Negative — not counted in total",
     inst_title:"📖 Financial Safety Pyramid Instructions",
     close_btn:"Close",
+    add_extra_title:"Add new item",
+    remove_extra_title:"Delete this item",
+    collapse_title:"Collapse item",
+    expand_title:"Expand item",
     months:["January","February","March","April","May","June","July","August","September","October","November","December"],
     print_title:"Capital Manager",print_subtitle:"Financial Report",print_meta:"Generated on",
     f_salary:"Salary (BHD)",f_costOfLiving:"Cost of Living (BHD)",
@@ -1286,10 +1313,10 @@ const I18N = {
     e_rent:"Rent",e_houseMaintenance:"House Maintenance",
     e_internet:"Internet & Phone",e_electricity:"Electricity & Water",
     e_misc:"Miscellaneous",e_treatment:"Treatment",
-    e_visaCard1:"Visa Card 1",e_visaCard2:"Visa Card 2",e_visaCard3:"Visa Card 3",
+    e_visaCard1:"Visa Card",e_visaCard2:"Visa Card 2",e_visaCard3:"Visa Card 3",
     e_fuel:"Fuel",e_carCleaning:"Car Cleaning",
-    e_carRepair1:"Car Repair 1",e_carRepair2:"Car Repair 2",e_carRepair3:"Car Repair 3",
-    e_homeRepair1:"Home Repair 1",e_homeRepair2:"Home Repair 2",e_homeRepair3:"Home Repair 3",
+    e_carRepair1:"Car Repair",e_carRepair2:"Car Repair 2",e_carRepair3:"Car Repair 3",
+    e_homeRepair1:"Home Repair",e_homeRepair2:"Home Repair 2",e_homeRepair3:"Home Repair 3",
     e_birthday:"Birthday",e_kids_group:"🎒 Kids Needs",
     e_kidsSchool:"↳ School",e_kidsClothes:"↳ Clothes",e_kidsEid:"↳ Eid",
     e_privateSchool:"Private School",e_kindergarten:"KG",e_university:"University",
@@ -1382,17 +1409,11 @@ const getExpenseRows = () => [
   {type:"simple",key:"electricity",label:t('e_electricity')},
   {type:"simple",key:"misc",label:t('e_misc')},
   {type:"simple",key:"treatment",label:t('e_treatment')},
-  {type:"simple",key:"visaCard1",label:t('e_visaCard1')},
-  {type:"simple",key:"visaCard2",label:t('e_visaCard2')},
-  {type:"simple",key:"visaCard3",label:t('e_visaCard3')},
+  {type:"repeatable",key:"visaCard1",extraKey:"visaCardExtra",label:t('e_visaCard1')},
   {type:"simple",key:"fuel",label:t('e_fuel')},
   {type:"simple",key:"carCleaning",label:t('e_carCleaning')},
-  {type:"simple",key:"carRepair1",label:t('e_carRepair1')},
-  {type:"simple",key:"carRepair2",label:t('e_carRepair2')},
-  {type:"simple",key:"carRepair3",label:t('e_carRepair3')},
-  {type:"simple",key:"homeRepair1",label:t('e_homeRepair1')},
-  {type:"simple",key:"homeRepair2",label:t('e_homeRepair2')},
-  {type:"simple",key:"homeRepair3",label:t('e_homeRepair3')},
+  {type:"repeatable",key:"carRepair1",extraKey:"carRepairExtra",label:t('e_carRepair1')},
+  {type:"repeatable",key:"homeRepair1",extraKey:"homeRepairExtra",label:t('e_homeRepair1')},
   {type:"birthday",key:"birthday",label:t('e_birthday')},
   {type:"group",label:t('e_kids_group')},
   {type:"simple",key:"kidsSchool",label:t('e_kidsSchool')},
@@ -1445,8 +1466,10 @@ const EMPTY_MONTH = () => ({
   charity:0,freelance:0,eidType:"no",eidAmount:0,
   wifeSalary:0,familyExpenses:0,rent:0,houseMaintenance:0,
   internet:0,electricity:0,misc:0,treatment:0,
-  visaCard1:0,visaCard2:0,visaCard3:0,fuel:0,carCleaning:0,
-  carRepair1:0,carRepair2:0,carRepair3:0,homeRepair1:0,homeRepair2:0,homeRepair3:0,
+  visaCard1:0,visaCardExtra:[],
+  fuel:0,carCleaning:0,
+  carRepair1:0,carRepairExtra:[],
+  homeRepair1:0,homeRepairExtra:[],
   birthday:0,birthdayPerson:"none",
   kidsSchool:0,kidsClothes:0,kidsEid:0,
   privateSchool:0,kindergarten:0,university:0,transport:0,tutoring:0,
@@ -1474,6 +1497,81 @@ let state = {
   pyramidWithdrawals: {}
 };
 
+/* ===================== REPEATABLE EXPENSE HELPERS ===================== */
+function getRepeatableExtras(m, extraKey){
+  if(!Array.isArray(m[extraKey])) m[extraKey] = [];
+  return m[extraKey];
+}
+function sumRepeatableExtras(m, extraKey){
+  return getRepeatableExtras(m, extraKey).reduce((s,x)=>s+(+x.amount||0),0);
+}
+function sumRepeatableExtrasCounted(m, extraKey){
+  return getRepeatableExtras(m, extraKey).filter(x => x.bank !== EXCLUDED_BANK)
+    .reduce((s,x)=>s+(+x.amount||0),0);
+}
+function sumRepeatableExtrasExcluded(m, extraKey){
+  return getRepeatableExtras(m, extraKey).filter(x => x.bank === EXCLUDED_BANK)
+    .reduce((s,x)=>s+(+x.amount||0),0);
+}
+function getExpenseRowValue(m, row){
+  let v = +m[row.key]||0;
+  if(row.type === "repeatable") v += sumRepeatableExtras(m, row.extraKey);
+  return v;
+}
+
+function addRepeatableExtra(extraKey){
+  const m = M()[state.activeMonth];
+  const arr = getRepeatableExtras(m, extraKey);
+  arr.push({ id: Date.now() + Math.floor(Math.random()*1000), amount: 0, bank: "بطاقة صراف الالي", note: "", ref: "", collapsed: false });
+  m.lastModified = new Date().toISOString();
+  save();
+  renderExpenseFields();
+  renderExpenseSummary();
+  renderMonthResults();
+  renderMonthPills();
+  renderDashboard();
+}
+function removeRepeatableExtra(extraKey, id){
+  const m = M()[state.activeMonth];
+  const arr = getRepeatableExtras(m, extraKey);
+  const idx = arr.findIndex(x => x.id === id);
+  if(idx === -1) return;
+  arr.splice(idx, 1);
+  m.lastModified = new Date().toISOString();
+  save();
+  renderExpenseFields();
+  renderExpenseSummary();
+  renderMonthResults();
+  renderMonthPills();
+  renderDashboard();
+}
+function updExtraField(extraKey, id, field, val){
+  const m = M()[state.activeMonth];
+  const arr = getRepeatableExtras(m, extraKey);
+  const item = arr.find(x => x.id === id);
+  if(!item) return;
+  if(field === "amount") item.amount = Math.max(0, parseFloat(val) || 0);
+  else item[field] = val;
+  m.lastModified = new Date().toISOString();
+  save();
+  if(field === "amount"){
+    renderExpenseSummary();
+    renderMonthResults();
+    renderMonthPills();
+    renderDashboard();
+  }
+}
+function toggleExtraCollapse(extraKey, id){
+  const m = M()[state.activeMonth];
+  const arr = getRepeatableExtras(m, extraKey);
+  const item = arr.find(x => x.id === id);
+  if(!item) return;
+  item.collapsed = !item.collapsed;
+  save();
+  renderExpenseFields();
+}
+
+/* ===================== MAIN STATE HELPERS ===================== */
 function getCarInsurance(m){
   if(!m.carInsurance) m.carInsurance = DEFAULT_EXTRA();
   return m.carInsurance;
@@ -1751,6 +1849,14 @@ function load(){
       delete state.obligations;
     }
     state.yearList = state.yearList || [];
+    
+    // Migration config: old numbered fields -> new extra arrays
+    const migrationConfig = [
+      { base:"visaCard1", extra:"visaCardExtra", oldKeys:["visaCard2","visaCard3"] },
+      { base:"carRepair1", extra:"carRepairExtra", oldKeys:["carRepair2","carRepair3"] },
+      { base:"homeRepair1", extra:"homeRepairExtra", oldKeys:["homeRepair2","homeRepair3"] },
+    ];
+    
     Object.keys(state.years||{}).forEach(y => {
       state.years[y] = (state.years[y]||[]).map(m => {
         const merged = {...EMPTY_MONTH(), ...m};
@@ -1763,8 +1869,32 @@ function load(){
         if(!merged.zakat) merged.zakat = DEFAULT_EXTRA();
         if(typeof merged.eidClothes !== 'number') merged.eidClothes = 0;
         if(typeof merged.hajj !== 'number') merged.hajj = 0;
-        if(typeof merged.carRepair3 !== 'number') merged.carRepair3 = 0;
-        if(typeof merged.homeRepair3 !== 'number') merged.homeRepair3 = 0;
+        if(typeof merged.visaCard1 !== 'number') merged.visaCard1 = 0;
+        if(typeof merged.carRepair1 !== 'number') merged.carRepair1 = 0;
+        if(typeof merged.homeRepair1 !== 'number') merged.homeRepair1 = 0;
+        
+        // Migrate numbered duplicates into arrays
+        migrationConfig.forEach(cfg => {
+          if(!Array.isArray(merged[cfg.extra])) merged[cfg.extra] = [];
+          cfg.oldKeys.forEach(oldKey => {
+            const amt = +merged[oldKey] || 0;
+            if(amt > 0){
+              const meta = merged.expenseMeta?.[oldKey] || {};
+              merged[cfg.extra].push({
+                id: Date.now() + Math.random(),
+                amount: amt,
+                bank: meta.bank || "بطاقة صراف الالي",
+                note: meta.note || "",
+                ref: (merged.refMeta?.[oldKey]) || "",
+                collapsed: false
+              });
+            }
+            delete merged[oldKey];
+            if(merged.expenseMeta) delete merged.expenseMeta[oldKey];
+            if(merged.refMeta) delete merged.refMeta[oldKey];
+          });
+        });
+        
         return merged;
       });
       while(state.years[y].length < 12) state.years[y].push(EMPTY_MONTH());
@@ -1918,13 +2048,38 @@ function totalIncome(m, mi, year){
   return sum;
 }
 function totalExpenses(m){
-  let s=0; getExpenseRows().forEach(r=>{ if(r.type==="group") return; if(!isExcluded(m,r.key)) s+=(+m[r.key]||0); }); return s;
+  let s=0;
+  getExpenseRows().forEach(r=>{
+    if(r.type==="group") return;
+    if(r.type==="repeatable"){
+      if(!isExcluded(m,r.key)) s+=(+m[r.key]||0);
+      s += sumRepeatableExtrasCounted(m, r.extraKey);
+      return;
+    }
+    if(!isExcluded(m,r.key)) s+=(+m[r.key]||0);
+  });
+  return s;
 }
 function totalExcludedExpenses(m){
-  let s=0; getExpenseRows().forEach(r=>{ if(r.type==="group") return; if(isExcluded(m,r.key)) s+=(+m[r.key]||0); }); return s;
+  let s=0;
+  getExpenseRows().forEach(r=>{
+    if(r.type==="group") return;
+    if(r.type==="repeatable"){
+      if(isExcluded(m,r.key)) s+=(+m[r.key]||0);
+      s += sumRepeatableExtrasExcluded(m, r.extraKey);
+      return;
+    }
+    if(isExcluded(m,r.key)) s+=(+m[r.key]||0);
+  });
+  return s;
 }
 function totalExpensesRaw(m){
-  let s=0; getExpenseRows().forEach(r=>{ if(r.type==="group") return; s+=(+m[r.key]||0); }); return s;
+  let s=0;
+  getExpenseRows().forEach(r=>{
+    if(r.type==="group") return;
+    s += getExpenseRowValue(m, r);
+  });
+  return s;
 }
 function totalSavings(m){
   return getSavingFields().reduce((s,[k])=>s+(isSavingExcluded(m,k)?0:(+m[k]||0)),0);
@@ -2718,7 +2873,7 @@ function renderExpenseFields(){
   const rows = getExpenseRows();
   const refOptsFor = val => REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${val===o.v?'selected':''}>${o.l}</option>`).join('');
   const html = rows.map(row => {
-    if(row.type === "group") return `<tr class="group-header"><td colspan="5">${row.label}</td></tr>`;
+    if(row.type === "group") return `<tr class="group-header"><td colspan="6">${row.label}</td></tr>`;
     if(row.type === "birthday"){
       const meta = getMeta(m, row.key);
       const excluded = isExcludedBank(meta.bank);
@@ -2737,7 +2892,11 @@ function renderExpenseFields(){
         <td><select class="${excluded?'bank-excluded':''}" onchange="updExpenseBank('birthday', this.value)">${bankOpts}</select></td>
         <td><input type="text" value="${esc(meta.note)}" oninput="updExpenseNote('birthday', this.value)" placeholder="..."></td>
         <td><select onchange="updRef('birthday', this.value)">${refOptsFor(refVal)}</select></td>
+        <td class="noprint extra-actions-cell"></td>
       </tr>`;
+    }
+    if(row.type === "repeatable"){
+      return renderRepeatableRow(m, row, refOptsFor);
     }
     const meta = getMeta(m, row.key);
     const excluded = isExcludedBank(meta.bank);
@@ -2749,10 +2908,67 @@ function renderExpenseFields(){
       <td><select class="${excluded?'bank-excluded':''}" onchange="updExpenseBank('${row.key}', this.value)">${bankOpts}</select></td>
       <td><input type="text" value="${esc(meta.note)}" oninput="updExpenseNote('${row.key}', this.value)" placeholder="..."></td>
       <td><select onchange="updRef('${row.key}', this.value)">${refOptsFor(refVal)}</select></td>
+      <td class="noprint extra-actions-cell"></td>
     </tr>`;
   }).join("");
   document.getElementById("expenseFields").innerHTML = html;
   renderExpenseSummary();
+}
+
+function renderRepeatableRow(m, row, refOptsFor){
+  const mainMeta = getMeta(m, row.key);
+  const mainExcluded = isExcludedBank(mainMeta.bank);
+  const mainBankOpts = BANKS.map(b => `<option value="${b}" ${mainMeta.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
+  const mainRef = getRefMeta(m, row.key);
+  
+  let out = `<tr class="${mainExcluded?'excluded':''}">
+    <td>${row.label}</td>
+    <td><input type="number" value="${inVal(m[row.key])}" oninput="updExpenseAmount('${row.key}', this.value)" step="0.001"></td>
+    <td><select class="${mainExcluded?'bank-excluded':''}" onchange="updExpenseBank('${row.key}', this.value)">${mainBankOpts}</select></td>
+    <td><input type="text" value="${esc(mainMeta.note)}" oninput="updExpenseNote('${row.key}', this.value)" placeholder="..."></td>
+    <td><select onchange="updRef('${row.key}', this.value)">${refOptsFor(mainRef)}</select></td>
+    <td class="noprint extra-actions-cell">
+      <button class="icon-btn add-btn" onclick="addRepeatableExtra('${row.extraKey}')" title="${t('add_extra_title')}">+</button>
+    </td>
+  </tr>`;
+  
+  const extras = getRepeatableExtras(m, row.extraKey);
+  extras.forEach((ex, idx) => {
+    const exExcluded = ex.bank === EXCLUDED_BANK;
+    const exBankOpts = BANKS.map(b => `<option value="${b}" ${ex.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
+    const exRefOpts = REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${ex.ref===o.v?'selected':''}>${o.l}</option>`).join('');
+    const suffix = ` #${idx+2}`;
+    
+    if(ex.collapsed){
+      out += `<tr class="${exExcluded?'excluded':''} extra-collapsed" onclick="if(event.target.tagName!=='BUTTON' && event.target.tagName!=='SELECT' && event.target.tagName!=='INPUT') toggleExtraCollapse('${row.extraKey}', ${ex.id})">
+        <td>
+          <button class="icon-btn noprint" onclick="event.stopPropagation();toggleExtraCollapse('${row.extraKey}', ${ex.id})" title="${t('expand_title')}" style="margin-inline-end:6px">▶</button>
+          <span class="extra-name">${row.label}${suffix}</span>
+        </td>
+        <td class="num" style="font-family:monospace">${money(ex.amount)}</td>
+        <td colspan="3" style="color:var(--muted);font-size:11px">${esc(ex.note) || '—'}</td>
+        <td class="noprint extra-actions-cell">
+          <button class="icon-btn" onclick="event.stopPropagation();removeRepeatableExtra('${row.extraKey}', ${ex.id})" title="${t('remove_extra_title')}">✕</button>
+        </td>
+      </tr>`;
+    } else {
+      out += `<tr class="${exExcluded?'excluded':''} extra-expanded">
+        <td>
+          <button class="icon-btn noprint" onclick="toggleExtraCollapse('${row.extraKey}', ${ex.id})" title="${t('collapse_title')}" style="margin-inline-end:6px">▼</button>
+          <span class="extra-name">${row.label}${suffix}</span>
+        </td>
+        <td><input type="number" value="${inVal(ex.amount)}" oninput="updExtraField('${row.extraKey}', ${ex.id}, 'amount', this.value)" step="0.001"></td>
+        <td><select class="${exExcluded?'bank-excluded':''}" onchange="updExtraField('${row.extraKey}', ${ex.id}, 'bank', this.value)">${exBankOpts}</select></td>
+        <td><input type="text" value="${esc(ex.note)}" oninput="updExtraField('${row.extraKey}', ${ex.id}, 'note', this.value)" placeholder="..."></td>
+        <td><select onchange="updExtraField('${row.extraKey}', ${ex.id}, 'ref', this.value)">${exRefOpts}</select></td>
+        <td class="noprint extra-actions-cell">
+          <button class="icon-btn" onclick="removeRepeatableExtra('${row.extraKey}', ${ex.id})" title="${t('remove_extra_title')}">✕</button>
+        </td>
+      </tr>`;
+    }
+  });
+  
+  return out;
 }
 
 function renderExpenseSummary(){
@@ -2764,6 +2980,15 @@ function renderExpenseSummary(){
   BANKS.forEach(b => bankTotals[b] = 0);
   getExpenseRows().forEach(row => {
     if(row.type === "group") return;
+    if(row.type === "repeatable"){
+      const meta = getMeta(m, row.key);
+      const amt = +m[row.key] || 0;
+      if(amt > 0) bankTotals[meta.bank] = (bankTotals[meta.bank] || 0) + amt;
+      getRepeatableExtras(m, row.extraKey).forEach(ex => {
+        if((+ex.amount||0) > 0) bankTotals[ex.bank] = (bankTotals[ex.bank] || 0) + (+ex.amount||0);
+      });
+      return;
+    }
     const meta = getMeta(m, row.key);
     const amt = +m[row.key] || 0;
     if(amt > 0) bankTotals[meta.bank] = (bankTotals[meta.bank] || 0) + amt;
@@ -3104,6 +3329,7 @@ function updExpenseAmount(key, val){
   renderMonthResults();
   renderMonthDate();
   renderMonthPills();
+  renderDashboard();
 }
 function updExpenseBank(key, val){
   const m = M()[state.activeMonth];
@@ -3114,6 +3340,7 @@ function updExpenseBank(key, val){
   renderMonthResults();
   renderMonthDate();
   renderMonthPills();
+  renderDashboard();
 }
 function updExpenseNote(key, val){ const m = M()[state.activeMonth]; getMeta(m, key).note = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 function updBirthdayPerson(val){ const m = M()[state.activeMonth]; m.birthdayPerson = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
@@ -4205,18 +4432,33 @@ function renderAnnual(){
   const months = getMonths(); const y = state.activeYear;
   const monthsData = M();
   const sections = [
-    [t('lbl_income'), getIncomeFields().map(([k,l])=>({key:k, label:l}))],
-    [t('lbl_expenses').replace('💸 ',''), getExpenseRows().filter(r=>r.type!=="group").map(r=>({key:r.key, label:r.label}))],
-    [t('lbl_savings').replace('💰 ',''), getSavingFields().map(([k,l])=>({key:k, label:l}))],
+    [t('lbl_income'), getIncomeFields().map(([k,l])=>({key:k, label:l, type:"simple"}))],
+    [t('lbl_expenses').replace('💸 ',''), getExpenseRows().filter(r=>r.type!=="group").map(r=>({key:r.key, label:r.label, type:r.type, extraKey:r.extraKey}))],
+    [t('lbl_savings').replace('💰 ',''), getSavingFields().map(([k,l])=>({key:k, label:l, type:"simple"}))],
   ];
   let html = `<thead><tr><th>${t('th_item')}</th>${months.map(m=>`<th>${m}</th>`).join("")}<th>${t('th_total')}</th></tr></thead><tbody>`;
   sections.forEach(([title, items])=>{
     html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--accent);font-weight:700">${title}</td></tr>`;
-    items.forEach(({key, label})=>{
-      const values = monthsData.map(m=>+m[key]||0);
+    items.forEach(({key, label, type, extraKey})=>{
+      const values = monthsData.map(m => {
+        let v = +m[key]||0;
+        if(type === "repeatable") v += sumRepeatableExtras(m, extraKey);
+        return v;
+      });
       const counted = monthsData.map(m => {
-        if(title.includes('المصاريف')||title.includes('Expenses')){ if(isExcluded(m, key)) return 0; }
-        if(title.includes('الادخار')||title.includes('Savings')){ if(isSavingExcluded(m, key)) return 0; }
+        const isExp = title.includes('المصاريف')||title.includes('Expenses');
+        const isSav = title.includes('الادخار')||title.includes('Savings');
+        if(type === "repeatable"){
+          let v = +m[key]||0;
+          if(isExp && isExcluded(m, key)) v = 0;
+          v += getRepeatableExtras(m, extraKey).reduce((s,x)=>{
+            if(isExp && x.bank === EXCLUDED_BANK) return s;
+            return s + (+x.amount||0);
+          }, 0);
+          return v;
+        }
+        if(isExp && isExcluded(m, key)) return 0;
+        if(isSav && isSavingExcluded(m, key)) return 0;
         return +m[key]||0;
       });
       const sum = counted.reduce((a,b)=>a+b,0);
@@ -4225,7 +4467,12 @@ function renderAnnual(){
           const mm = monthsData[i];
           const isExp = title.includes('المصاريف')||title.includes('Expenses');
           const isSav = title.includes('الادخار')||title.includes('Savings');
-          const ex = (isExp && isExcluded(mm, key)) || (isSav && isSavingExcluded(mm, key));
+          let ex = false;
+          if(type === "repeatable"){
+            ex = isExp && isExcluded(mm, key);
+          } else {
+            ex = (isExp && isExcluded(mm, key)) || (isSav && isSavingExcluded(mm, key));
+          }
           if(!v) return `<td class="num">—</td>`;
           return `<td class="num ${ex?'excluded-cell':''}">${money(v)}${ex?' ⛔':''}</td>`;
         }).join("") +
