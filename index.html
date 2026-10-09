@@ -863,6 +863,7 @@
           <tr><td><strong>🚨 الطوارئ</strong></td><td><strong class="hl">30% - 50%</strong></td><td>أولوية قصوى - 3-6 أشهر من المصاريف.</td></tr>
           <tr><td><strong>💳 القروض</strong></td><td>تلقائي</td><td>يُحسب من الأقساط — سلبي.</td></tr>
           <tr><td><strong>📋 الالتزامات</strong></td><td>تلقائي</td><td>يُحسب من الالتزامات — سلبي.</td></tr>
+          <tr><td><strong>🕋 الحج</strong></td><td><strong class="hl">حسب القدرة</strong></td><td>مبلغ يُدَّخر لأداء فريضة الحج.</td></tr>
           <tr><td><strong>🛡️ تأمين وتسجيل</strong></td><td><strong class="hl">5% - 10%</strong></td><td>مبلغ سنوي يُقسم على 12.</td></tr>
           <tr><td><strong>👕 ثياب العيد</strong></td><td><strong class="hl">2% - 5%</strong></td><td>مبلغ موسمي.</td></tr>
           <tr><td><strong>📈 الاستثمار</strong></td><td><strong class="hl">10% - 20%</strong></td><td>بعد الوصول لـ 3 أشهر طوارئ.</td></tr>
@@ -1082,10 +1083,12 @@ const I18N = {
     s_eidClothes:"👕 ثياب العيد (د.ب)",
     s_insuranceSaving:"🛡️ تأمين وتسجيل لجميع السيارات (د.ب)",
     s_travelSaving:"✈️ ادخار للسفر (د.ب)",s_emergencyFund:"🚨 مبلغ الطوارئ (د.ب)",
+    s_hajj:"🕋 الحج (د.ب)",
     s_loans:"💳 قروض",
     eid_fitar:"🎉 عيد الفطر",eid_adha:"🐑 عيد الأضحى",
     p_emergencyFund:"مبلغ الطوارئ",p_eidMoneySaving:"عيادي العيد",
     p_eidClothes:"ثياب العيد",
+    p_hajj:"الحج",
     p_insuranceSaving:"تأمين وتسجيل لجميع السيارات",p_assembly:"جمعية",
     p_obligationsSaving:"التزامات أخرى",p_travelSaving:"ادخار للسفر",p_investment:"الاستثمار",
     p_loans:"قروض",
@@ -1297,10 +1300,12 @@ const I18N = {
     s_eidClothes:"👕 Eid Clothes (BHD)",
     s_insuranceSaving:"🛡️ Car Insurance + Registration (BHD)",
     s_travelSaving:"✈️ Travel",s_emergencyFund:"🚨 Emergency",
+    s_hajj:"🕋 Hajj (BHD)",
     s_loans:"💳 Loans",
     eid_fitar:"🎉 Eid Al-Fitr",eid_adha:"🐑 Eid Al-Adha",
     p_emergencyFund:"Emergency",p_eidMoneySaving:"Eid Money",
     p_eidClothes:"Eid Clothes",
+    p_hajj:"Hajj",
     p_insuranceSaving:"Car Insurance + Registration",p_assembly:"Assembly",
     p_obligationsSaving:"Other Obligations",p_travelSaving:"Travel",p_investment:"Investment",
     p_loans:"Loans",
@@ -1401,6 +1406,7 @@ const getExpenseRows = () => [
 
 const getSavingFields = () => [
   ["emergencyFund", t('s_emergencyFund')],
+  ["hajj", t('s_hajj')],
   ["insuranceSaving", t('s_insuranceSaving')],
   ["eidClothes", t('s_eidClothes')],
   ["investment", t('s_investment')],
@@ -1413,6 +1419,7 @@ const getPyramidLevels = () => [
   {key:"emergencyFund",label:t('p_emergencyFund'),color:"#ef4444",subtitle:"🚨"},
   {key:"loans",label:t('p_loans'),color:"#64748b",subtitle:"💳",auto:true,negative:true},
   {key:"obligationsSaving",label:t('p_obligationsSaving'),color:"#3b82f6",subtitle:"📋",auto:true,negative:true},
+  {key:"hajj",label:t('p_hajj'),color:"#0284c7",subtitle:"🕋"},
   {key:"insuranceSaving",label:t('p_insuranceSaving'),color:"#eab308",subtitle:"🛡️"},
   {key:"eidClothes",label:t('p_eidClothes'),color:"#ec4899",subtitle:"👕"},
   {key:"investment",label:t('p_investment'),color:"#22c55e",subtitle:"📈",investment:true},
@@ -1444,7 +1451,7 @@ const EMPTY_MONTH = () => ({
   humanitarianAid:0,expenseMeta:{},refMeta:{},savingRefMeta:{},
   incomeNotes:{salary:"",costOfLiving:"",housing:"",charity:"",freelance:"",meat:""},
   assembly:0,investment:0,eidMoneySaving:0,eidMoneyType:"fitar",
-  eidClothes:0,
+  eidClothes:0,hajj:0,
   insuranceSaving:0,travelSaving:0,emergencyFund:0,
   savingMeta:{},
   carInsurance: DEFAULT_EXTRA(),
@@ -1753,6 +1760,7 @@ function load(){
         if(!merged.carInsurance) merged.carInsurance = DEFAULT_EXTRA();
         if(!merged.zakat) merged.zakat = DEFAULT_EXTRA();
         if(typeof merged.eidClothes !== 'number') merged.eidClothes = 0;
+        if(typeof merged.hajj !== 'number') merged.hajj = 0;
         return merged;
       });
       while(state.years[y].length < 12) state.years[y].push(EMPTY_MONTH());
