@@ -134,6 +134,7 @@
   .expense-table tr.extra-row{background:rgba(59,130,246,.04);border-left:3px solid var(--accent2)}
   html[dir="rtl"] .expense-table tr.extra-row{border-left:none;border-right:3px solid var(--accent2)}
   .expense-table tr.extra-row:hover{background:rgba(59,130,246,.09)}
+  .expense-table tr.extra-row.excluded{background:rgba(239,68,68,.06)}
   .expense-table tr.extra-row td:first-child{padding-right:20px;font-weight:500;font-size:12px}
   html[dir="ltr"] .expense-table tr.extra-row td:first-child{padding-right:8px;padding-left:20px}
   .extra-name{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--accent2);font-weight:700}
@@ -1580,6 +1581,7 @@ function removeRepeatableExtra(extraKey, id){
   renderDashboard();
   renderMonthDate();
 }
+/* ⭐ FIXED: now recalculates and refreshes UI on bank/amount change ⭐ */
 function updExtraField(extraKey, id, field, val){
   const m = M()[state.activeMonth];
   const arr = getRepeatableExtras(m, extraKey);
@@ -1589,11 +1591,19 @@ function updExtraField(extraKey, id, field, val){
   else item[field] = val;
   m.lastModified = new Date().toISOString();
   save();
-  if(field === "amount"){
+  if(field === "amount" || field === "bank"){
     renderExpenseSummary();
     renderMonthResults();
     renderMonthPills();
     renderDashboard();
+    renderYears();
+    if(field === "bank"){
+      renderExpenseFields();
+    }
+    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
+      renderPyramidSvg();
+      renderPyramidLegend();
+    }
   }
   renderMonthDate();
 }
@@ -2702,7 +2712,6 @@ function renderRepeatableRow(m, row, refOptsFor){
   const extras = getRepeatableExtras(m, row.extraKey);
   const isCollapsed = isGroupCollapsed(m, row.extraKey);
   
-  // Build name cell with + button and collapse toggle
   let nameHtml = '';
   if(row.birthday){
     const person = m.birthdayPerson || "none";
@@ -3014,11 +3023,12 @@ function updZakatRef(v){ getZakat(M()[state.activeMonth]).ref = v; save(); }
 function updEidMoneyType(val){ const m = M()[state.activeMonth]; m.eidMoneyType = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 function updExpenseAmount(key, val){
   const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save();
-  renderExpenseSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills(); renderDashboard();
+  renderExpenseSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills(); renderDashboard(); renderYears();
 }
+/* ⭐ FIXED: added renderYears() at the end ⭐ */
 function updExpenseBank(key, val){
   const m = M()[state.activeMonth]; getMeta(m, key).bank = val; m.lastModified = new Date().toISOString(); save();
-  renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); renderDashboard();
+  renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); renderDashboard(); renderYears();
 }
 function updExpenseNote(key, val){ const m = M()[state.activeMonth]; getMeta(m, key).note = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 function updBirthdayPerson(val){ const m = M()[state.activeMonth]; m.birthdayPerson = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
