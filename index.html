@@ -24,6 +24,8 @@
   .btn.primary:hover{background:var(--accent2);border-color:var(--accent2)}
   .btn.share{background:linear-gradient(180deg,#8b5cf6,#6d28d9);color:#fff;border-color:#8b5cf6;font-weight:700}
   .btn.share:hover{background:linear-gradient(180deg,#7c3aed,#5b21b6);border-color:#7c3aed;transform:translateY(-2px)}
+  .btn.excel{background:linear-gradient(180deg,#16a34a,#15803d);color:#fff;border-color:#16a34a;font-weight:700}
+  .btn.excel:hover{background:linear-gradient(180deg,#15803d,#166534);border-color:#15803d;transform:translateY(-2px)}
   .btn.success{background:linear-gradient(180deg,var(--ok),#15803d);color:#fff;border-color:var(--ok);font-weight:700;box-shadow:0 0 0 3px rgba(34,197,94,.15);animation:pulseGlow 2s infinite}
   @keyframes pulseGlow{0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.15)}50%{box-shadow:0 0 0 6px rgba(34,197,94,.25)}}
   .btn.danger{background:transparent;color:var(--danger);border-color:var(--danger)}
@@ -82,7 +84,7 @@
   .toast.success{background:linear-gradient(180deg,var(--ok),#15803d)}
   .toast.error{background:linear-gradient(180deg,var(--danger),#991b1b)}
   .toast.warn{background:linear-gradient(180deg,var(--gold),#92400e);color:#fff}
-  .icon-btn{background:transparent;border:1px solid var(--line);color:var(--muted);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:13px;transition:.2s;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;padding:0}
+  .icon-btn{background:transparent;border:1px solid var(--line);color:var(--muted);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:13px;transition:.2s;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;padding:0;margin:0 1px}
   .icon-btn:hover{border-color:var(--danger);color:var(--danger)}
   .icon-btn.add-btn{color:var(--accent);border-color:rgba(34,193,164,.5);font-weight:900;font-size:15px;line-height:1}
   .icon-btn.add-btn:hover{border-color:var(--accent);color:#fff;background:var(--accent)}
@@ -92,8 +94,12 @@
   .icon-btn.remove-btn:hover{border-color:var(--danger);color:#fff;background:var(--danger)}
   .icon-btn.withdraw:hover{border-color:var(--gold);color:var(--gold);background:rgba(234,179,8,.1)}
   .icon-btn.history:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(59,130,246,.1)}
-  .icon-btn.print-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(34,193,164,.1)}
-  .icon-btn.share-btn:hover{border-color:#8b5cf6;color:#8b5cf6;background:rgba(139,92,246,.1)}
+  .icon-btn.print-btn{color:var(--accent);border-color:rgba(34,193,164,.5)}
+  .icon-btn.print-btn:hover{border-color:var(--accent);color:#fff;background:var(--accent)}
+  .icon-btn.share-btn{color:#a78bfa;border-color:rgba(139,92,246,.5)}
+  .icon-btn.share-btn:hover{border-color:#8b5cf6;color:#fff;background:#8b5cf6}
+  .icon-btn.excel-btn{color:var(--ok);border-color:rgba(34,197,94,.5)}
+  .icon-btn.excel-btn:hover{border-color:var(--ok);color:#fff;background:var(--ok)}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
   .badge.green{background:rgba(34,197,94,.15);color:var(--ok)}
   .badge.red{background:rgba(239,68,68,.15);color:var(--danger)}
@@ -178,7 +184,7 @@
   .debts-month-card{border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.08),transparent)}
   .debts-month-card h2{color:var(--accent2)}
   .debts-month-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
-  .debts-month-table{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}
+  .debts-month-table{width:100%;border-collapse:collapse;font-size:13px;min-width:920px}
   .debts-month-table thead{background:var(--panel2)}
   .debts-month-table th{padding:9px 10px;text-align:right;color:var(--accent2);font-size:11px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
   html[dir="ltr"] .debts-month-table th{text-align:left}
@@ -201,7 +207,7 @@
   .debts-month-table .debt-name{font-weight:700;white-space:nowrap}
   .debts-month-table tfoot td{background:rgba(59,130,246,.1);font-weight:700;border-top:2px solid var(--accent2);padding:10px}
   .debts-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
-  .debts-table{width:100%;border-collapse:collapse;font-size:12px;min-width:1600px}
+  .debts-table{width:100%;border-collapse:collapse;font-size:12px;min-width:1700px}
   .debts-table thead{background:var(--panel2);position:sticky;top:0;z-index:2}
   .debts-table th{padding:8px 6px;text-align:center;color:var(--accent);font-size:10px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
   .debts-table td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}
@@ -227,6 +233,7 @@
   .debts-table .inline-select:hover{border-color:var(--line);background:var(--panel2)}
   .debts-table .inline-select:focus{border-color:var(--accent);background:var(--bg);box-shadow:0 0 0 2px rgba(34,193,164,.2)}
   .debts-table .inline-select.type-sel{color:var(--accent);text-align:center}
+  .debts-table .row-actions{white-space:nowrap;display:flex;gap:2px;justify-content:center}
   .fully-paid-badge-wrap{text-align:center;margin-top:2px;min-height:14px}
   .fully-paid-info{display:flex;flex-direction:column;gap:3px;align-items:center;margin-top:4px}
   .last-pay-date{font-size:10px;color:var(--ok);font-family:inherit;font-weight:700;background:rgba(34,197,94,.12);padding:3px 8px;border-radius:8px;border:1px solid rgba(34,197,94,.4);white-space:nowrap;direction:rtl;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.2s;-webkit-tap-highlight-color:transparent;user-select:none;outline:none}
@@ -624,7 +631,6 @@
     </div>
   </div>
 
-  <!-- ⭐ NEW SALARY SECTION ⭐ -->
   <div class="card salary-card">
     <h2><span id="lblSalarySection"></span> — <span id="monthTitle" style="color:var(--gold)"></span></h2>
     <div class="expense-table-wrap">
@@ -692,7 +698,13 @@
   </div>
 
   <div class="card debts-month-card">
-    <h2><span id="lblDebtsMonth"></span> — <span id="debtsMonthTitle" style="color:var(--accent2)"></span></h2>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
+      <h2 style="margin-bottom:0;padding-bottom:0;border-bottom:none"><span id="lblDebtsMonth"></span> — <span id="debtsMonthTitle" style="color:var(--accent2)"></span></h2>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn excel" onclick="exportDebtsMonthExcel()" id="btnDebtsMonthExcel">📊 Excel</button>
+        <button class="btn share" onclick="shareDebtsMonthPDF()" id="btnDebtsMonthShare">📤 مشاركة PDF</button>
+      </div>
+    </div>
     <p class="muted" style="margin-bottom:12px" id="debtsMonthHelp"></p>
     <div class="debts-month-wrap">
       <table class="debts-month-table">
@@ -701,6 +713,7 @@
           <th id="thDebtRemBefore"></th><th id="thDebtThisMonth"></th>
           <th id="thDebtBank"></th>
           <th id="thDebtRemAfter"></th><th id="thDebtNote"></th><th id="thDebtRef"></th>
+          <th class="noprint" style="width:50px">📤</th>
         </tr></thead>
         <tbody id="debtsMonthBody"></tbody>
         <tfoot id="debtsMonthFoot"></tfoot>
@@ -793,6 +806,7 @@
   </div>
   <div class="print-section">
     <button class="btn primary" onclick="printDebtsTable()" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn excel" onclick="exportDebtsTableExcel()">📊 Excel الكل</button>
     <button class="btn share" onclick="shareDebtsTablePDF()" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
   </div>
 </section>
@@ -952,6 +966,7 @@ const I18N = {
     share_not_supported:"⚠️ المشاركة غير مدعومة — تم تنزيل الملف",
     share_failed:"⚠️ فشل إنشاء PDF",
     share_cancelled:"تم إلغاء المشاركة",
+    excel_exported:"📊 تم تصدير ملف Excel",
     save_manual_ok:"💾 تم حفظ البيانات بنجاح",
     save_pending:"📝 جاري الحفظ...",
     save_saved:"✓ محفوظ ",
@@ -1039,7 +1054,7 @@ const I18N = {
     dbt_obligation:"📋 التزامات أخرى (أدفع)",
     dbt_visa:"بطاقة فيزا",dbt_bank:"بنك",dbt_misc:"متنوع",
     debts_table:"📋 جدول الديون والأقساط والالتزامات — عرض السنة النشطة",
-    debts_table_hint:"✏️ كل الخلايا قابلة للتعديل مباشرة. اضغط على 📅 آخر دفعة للانتقال إلى الشهر والسنة. الالتزامات تُدفع شهرياً مثل الأقساط وتُجمع تلقائياً في الهرم.",
+    debts_table_hint:"✏️ كل الخلايا قابلة للتعديل مباشرة. اضغط على 📅 آخر دفعة للانتقال إلى الشهر والسنة. الأزرار 📤 📊 🖨️ تُظهر سجل الدفع الكامل لكل السنوات.",
     lbl_annual:"الملخص السنوي التفصيلي (د.ب)",
     kpi_recv_year_d:"💰 سأستلم هذه السنة (مدينون)",kpi_pay_year_d:"💸 سأدفع هذه السنة (دائن + أقساط + التزامات)",
     kpi_net_year_d:"📊 صافي السنة",kpi_rem_to_me:"📌 متبقي لي (مدينون)",
@@ -1104,6 +1119,22 @@ const I18N = {
     remove_extra_title:"حذف البند الفرعي",
     collapse_all_title:"طي كل البنود الفرعية",
     expand_all_title:"توسيع كل البنود الفرعية",
+    debt_report_title:"تقرير الدين / السلفة",
+    debt_report_info:"معلومات البند",
+    debt_report_history:"سجل الدفعات الكامل (جميع السنوات)",
+    debt_report_no_history:"لا توجد دفعات مسجّلة لهذا البند",
+    debt_report_total_paid:"إجمالي المسدّد",
+    debt_report_total_received:"إجمالي المستلم",
+    debt_report_remaining:"المتبقي",
+    debt_report_paid_before:"المدفوع قبل التسجيل",
+    debt_report_fully_paid:"✅ مسدد بالكامل",
+    debt_report_still_active:"🔄 جاري",
+    debt_report_total_deposits_year:"إجمالي السنة",
+    debt_report_verb_pay:"دفع",
+    debt_report_verb_receive:"استلام",
+    debt_report_cat:"الفئة",
+    debt_report_notes:"ملاحظات",
+    share_section_pdf:"📤 مشاركة القسم PDF",
     months:["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"],
     print_title:"نظام إدارة رأس المال",print_subtitle:"Capital Manager — تقرير مالي",print_meta:"تم الإنشاء في",
     f_salary:"الراتب الشهري (د.ب)",f_costOfLiving:"غلاء المعيشة (د.ب)",
@@ -1179,6 +1210,7 @@ const I18N = {
     share_not_supported:"⚠️ Sharing not supported — file downloaded",
     share_failed:"⚠️ Failed to create PDF",
     share_cancelled:"Share cancelled",
+    excel_exported:"📊 Excel exported",
     save_manual_ok:"💾 Data saved successfully",
     save_pending:"📝 Saving...",
     save_saved:"✓ Saved ",
@@ -1262,7 +1294,7 @@ const I18N = {
     dbt_credit:"🔴 Creditor",dbt_debit:"🟢 Debtor",dbt_inst:"🏦 Installment",
     dbt_obligation:"📋 Other Obligations (pay)",
     dbt_visa:"Visa",dbt_bank:"Bank",dbt_misc:"Misc",
-    debts_table:"📋 Debts, Installments & Obligations Table",debts_table_hint:"✏️ Every cell is editable. Obligations are paid monthly like installments and auto-summed in the pyramid.",
+    debts_table:"📋 Debts, Installments & Obligations Table",debts_table_hint:"✏️ Every cell is editable. Click 📅 last payment to jump to it. Buttons 📤 📊 🖨️ show full payment history across all years.",
     lbl_annual:"Detailed Annual Summary (BHD)",
     kpi_recv_year_d:"💰 To receive this year",kpi_pay_year_d:"💸 To pay this year (credit + installments + obligations)",
     kpi_net_year_d:"📊 Net year",kpi_rem_to_me:"📌 Remaining to me",
@@ -1327,6 +1359,22 @@ const I18N = {
     remove_extra_title:"Delete sub-item",
     collapse_all_title:"Collapse all sub-items",
     expand_all_title:"Expand all sub-items",
+    debt_report_title:"Debt / Loan Report",
+    debt_report_info:"Item Info",
+    debt_report_history:"Full Payment History (All Years)",
+    debt_report_no_history:"No payments recorded for this item",
+    debt_report_total_paid:"Total Paid",
+    debt_report_total_received:"Total Received",
+    debt_report_remaining:"Remaining",
+    debt_report_paid_before:"Paid Before Logging",
+    debt_report_fully_paid:"✅ Fully Paid",
+    debt_report_still_active:"🔄 Active",
+    debt_report_total_deposits_year:"Year Total",
+    debt_report_verb_pay:"Payment",
+    debt_report_verb_receive:"Receipt",
+    debt_report_cat:"Category",
+    debt_report_notes:"Notes",
+    share_section_pdf:"📤 Share Section PDF",
     months:["January","February","March","April","May","June","July","August","September","October","November","December"],
     print_title:"Capital Manager",print_subtitle:"Financial Report",print_meta:"Generated on",
     f_salary:"Salary (BHD)",f_costOfLiving:"Cost of Living (BHD)",
@@ -1423,13 +1471,11 @@ const getMonths = () => I18N[LANG].months;
 const bankLabel = b => LANG === 'en' ? (BANKS_EN[BANKS.indexOf(b)] || b) : b;
 const isExcludedBank = bank => bank === EXCLUDED_BANK;
 
-/* Income fields — salary moved out to its own section */
 const getIncomeFields = () => [
   ["costOfLiving", t('f_costOfLiving')],
   ["housing", t('f_housing')],["charity", t('f_charity')],["freelance", t('f_freelance')],
 ];
 
-/* EVERY expense row is now repeatable */
 const EXPENSE_BASE_ROWS = [
   {key:"wifeSalary",label:"e_wifeSalary"},
   {key:"familyExpenses",label:"e_familyExpenses"},
@@ -1603,7 +1649,6 @@ function removeRepeatableExtra(extraKey, id){
   renderDashboard();
   renderMonthDate();
 }
-/* FIXED: recalcs and refreshes UI on bank/amount change */
 function updExtraField(extraKey, id, field, val){
   const m = M()[state.activeMonth];
   const arr = getRepeatableExtras(m, extraKey);
@@ -1619,9 +1664,7 @@ function updExtraField(extraKey, id, field, val){
     renderMonthPills();
     renderDashboard();
     renderYears();
-    if(field === "bank"){
-      renderExpenseFields();
-    }
+    if(field === "bank"){ renderExpenseFields(); }
     if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){
       renderPyramidSvg();
       renderPyramidLegend();
@@ -2047,19 +2090,35 @@ function debtRemainingBefore(d, year, mi){
 }
 function isDebtFullyPaid(d){ return debtRemaining(d) === 0; }
 
-function lastPaymentInfo(d){
-  if(!d.monthlyByYear) return null;
-  const years = Object.keys(d.monthlyByYear).map(Number).sort((a,b)=>b-a);
-  for(const y of years){
+/* ⭐ NEW: Collect all payments of a debt across all years ⭐ */
+function getAllDebtPayments(d){
+  const payments = [];
+  if(!d.monthlyByYear) return payments;
+  Object.keys(d.monthlyByYear).forEach(y => {
     const arr = d.monthlyByYear[y] || [];
-    for(let i=11; i>=0; i--){
-      if(+arr[i] > 0){
-        const monthName = getMonths()[i];
-        return { year:y, month:i, amount:+arr[i], monthName, shortLabel: `${monthName} ${y}` };
+    arr.forEach((v, mi) => {
+      const amt = +v || 0;
+      if(amt > 0){
+        payments.push({
+          year: parseInt(y),
+          month: mi,
+          amount: amt,
+          ref: getDebtRef(d, parseInt(y), mi) || '',
+          bank: d.bank || "بطاقة صراف الالي"
+        });
       }
-    }
-  }
-  return null;
+    });
+  });
+  payments.sort((a,b) => (a.year - b.year) || (a.month - b.month));
+  return payments;
+}
+
+function lastPaymentInfo(d){
+  const payments = getAllDebtPayments(d);
+  if(!payments.length) return null;
+  const last = payments[payments.length - 1];
+  const monthName = getMonths()[last.month];
+  return { year:last.year, month:last.month, amount:last.amount, monthName, shortLabel: `${monthName} ${last.year}` };
 }
 
 function shouldShowDebtInMonthlyEntry(d, year, mi){ if(debtRemaining(d) > 0) return true; return dm(d, year, mi) > 0; }
@@ -2079,7 +2138,6 @@ function totalDebtPaymentsExcluded(year, mi){
   return state.debts.filter(d=>(d.type==="credit"||d.type==="installment"||d.type==="obligation") && isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0);
 }
 
-/* ⭐ salary now added explicitly since it's no longer in getIncomeFields ⭐ */
 function totalIncomeCore(m, mi){
   let sum = +m.salary || 0;
   sum += getIncomeFields().reduce((s,[k])=>s+(+m[k]||0),0);
@@ -2339,6 +2397,584 @@ function setPrintOrientation(orientation){
   } else {
     document.documentElement.classList.remove('print-landscape');
     styleEl.textContent = '@media print { @page { size: A4 portrait !important; margin: 8mm 6mm !important; } }';
+  }
+}
+
+/* ===================== DEBT REPORT GENERATOR (Full history across all years) ===================== */
+function generateDebtReportHTML(debtId){
+  const d = state.debts.find(x=>x.id===debtId);
+  if(!d) return '';
+  const L = LANG === 'ar';
+  const cur = L ? 'د.ب' : 'BHD';
+  const monthNames = getMonths();
+  
+  const isReceive = d.type === "debit";
+  const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦", obligation:"📋"};
+  const typeLabel = {credit:t('dt_credit_label'), debit:t('dt_debit_label'), installment:t('dt_inst_label'), obligation:t('dt_obligation_label')};
+  
+  const payments = getAllDebtPayments(d);
+  const totalPaid = payments.reduce((s,p)=>s+p.amount, 0);
+  const paidBefore = +d.paidBefore || 0;
+  const totalPaidAll = paidBefore + totalPaid;
+  const remaining = Math.max(0, (+d.total||0) - totalPaidAll);
+  const fullyPaid = remaining === 0;
+  
+  // Group by year
+  const byYear = {};
+  payments.forEach(p => {
+    if(!byYear[p.year]) byYear[p.year] = [];
+    byYear[p.year].push(p);
+  });
+  const sortedYears = Object.keys(byYear).map(Number).sort((a,b)=>a-b);
+  
+  const now = new Date();
+  const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
+  const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+  
+  const verb = isReceive ? t('debt_report_verb_receive') : t('debt_report_verb_pay');
+  const statusLabel = fullyPaid ? t('debt_report_fully_paid') : t('debt_report_still_active');
+  const statusColor = fullyPaid ? '#16a34a' : '#d97706';
+  
+  let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('debt_report_title')}: ${esc(d.name)}</title>`;
+  html += `<style>
+    @page{size:A4;margin:15mm}
+    *{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
+    body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:20px;line-height:1.7;margin:0}
+    .header{text-align:center;margin-bottom:24px;padding-bottom:12px;border-bottom:3px double #333}
+    .header .logo{display:inline-block;width:54px;height:54px;line-height:54px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#3b82f6);color:#fff;font-weight:900;font-size:24px;text-align:center}
+    .header h2{margin:10px 0 4px;color:#0e7490;font-size:22px}
+    .header .meta{color:#666;font-size:12px}
+    .header .badge-status{display:inline-block;padding:4px 14px;border-radius:16px;font-size:12px;font-weight:700;margin-top:6px;background:${fullyPaid?'#dcfce7':'#fef3c7'};color:${statusColor};border:1px solid ${statusColor}}
+    .info-box{background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:14px 18px;margin:0 0 20px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px 20px;font-size:13px}
+    .info-box .lbl{color:#64748b;font-weight:600;font-size:11px}
+    .info-box .val{color:#0f172a;font-weight:700;font-size:14px;margin-top:2px}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 24px}
+    .kpi{border:2px solid #ccc;border-radius:8px;padding:12px 8px;text-align:center;background:#f9fafb}
+    .kpi .lbl{font-size:11px;color:#666;margin-bottom:6px;font-weight:600}
+    .kpi .val{font-size:16px;font-weight:800;font-family:monospace;direction:ltr}
+    .kpi.green{border-color:#16a34a;background:#f0fdf4}.kpi.green .val{color:#16a34a}
+    .kpi.red{border-color:#dc2626;background:#fef2f2}.kpi.red .val{color:#dc2626}
+    .kpi.gold{border-color:#d97706;background:#fffbeb}.kpi.gold .val{color:#d97706}
+    .kpi.gray{border-color:#64748b;background:#f8fafc}.kpi.gray .val{color:#334155}
+    .kpi.blue{border-color:#2563eb;background:#eff6ff}.kpi.blue .val{color:#2563eb}
+    .section-title{background:#f0f4f8;padding:10px 14px;border-right:5px solid #0e7490;font-weight:700;margin:22px 0 10px;font-size:14px;color:#1e293b;border-radius:4px}
+    .year-block{margin-bottom:18px;page-break-inside:avoid}
+    .year-header{background:#e0f2fe;border-right:5px solid #0891b2;padding:8px 14px;font-weight:800;font-size:14px;color:#0e7490;border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+    .year-header .year-total{font-family:monospace;font-size:13px;color:#16a34a;background:#f0fdf4;padding:3px 12px;border-radius:20px;border:1px solid #16a34a}
+    table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}
+    th{background:#e5e7eb;color:#111;padding:9px 10px;text-align:${L?'right':'left'};border:1px solid #999;font-size:11px;font-weight:700}
+    td{padding:8px 10px;border:1px solid #ccc;text-align:${L?'right':'left'}}
+    td.num{font-family:monospace;direction:ltr;text-align:center;font-weight:700}
+    td.date{font-family:monospace;direction:ltr;text-align:center;color:#0e7490;font-weight:800;font-size:13px}
+    td.month-name{font-weight:700;color:#1e293b}
+    tbody tr:nth-child(even){background:#f9fafb}
+    .total-row{background:#e0f2fe !important;font-weight:700}
+    .total-row td{border-top:2px solid #0891b2;font-family:monospace}
+    .empty{color:#999;font-style:italic;text-align:center;padding:24px;background:#f9fafb;border:1px dashed #ccc;border-radius:6px}
+    .grand-total{background:#fef3c7 !important;font-weight:800;font-size:14px}
+    .grand-total td{border:2px solid #d97706;font-family:monospace}
+    .footer{text-align:center;margin-top:36px;padding-top:12px;border-top:2px solid #999;color:#666;font-size:11px;line-height:1.8}
+    .footer strong{color:#0e7490}
+    .notes-box{background:#fffbeb;border:1px solid #fde68a;padding:10px 14px;border-radius:6px;margin:10px 0 16px;font-size:12px;color:#78350f}
+    @media print{body{padding:0}.noprint{display:none}}
+  </style></head><body>`;
+  
+  html += `<div class="header">
+    <div class="logo">M</div>
+    <h2>${typeIcon[d.type]||''} ${t('debt_report_title')}: ${esc(d.name)}</h2>
+    <div class="meta">${t('print_generated')}: ${dateStr} — ${timeStr}</div>
+    <div><span class="badge-status">${statusLabel}</span></div>
+  </div>`;
+  
+  // Info box
+  html += `<div class="info-box">
+    <div><div class="lbl">${t('th_debt_name')}</div><div class="val">${esc(d.name)}</div></div>
+    <div><div class="lbl">${t('th_debt_type')}</div><div class="val">${typeIcon[d.type]} ${typeLabel[d.type]}</div></div>
+    <div><div class="lbl">${t('debt_report_cat')}</div><div class="val">${esc(d.category) || '—'}</div></div>
+    <div><div class="lbl">${t('th_debt_total')}</div><div class="val">${money(+d.total||0)}</div></div>
+    <div><div class="lbl">${t('debt_report_paid_before')}</div><div class="val">${money(paidBefore)}</div></div>
+    <div><div class="lbl">${t('debt_report_remaining')}</div><div class="val" style="color:${remaining>0?'#dc2626':'#16a34a'}">${money(remaining)}</div></div>
+  </div>`;
+  
+  // KPIs
+  html += `<div class="kpis">
+    <div class="kpi blue"><div class="lbl">💵 ${t('th_debt_total')}</div><div class="val">${fmt(+d.total||0)} ${cur}</div></div>
+    <div class="kpi gold"><div class="lbl">${t('debt_report_paid_before')}</div><div class="val">${fmt(paidBefore)} ${cur}</div></div>
+    <div class="kpi green"><div class="lbl">${isReceive?'💰':'💸'} ${isReceive?t('debt_report_total_received'):t('debt_report_total_paid')}</div><div class="val">${fmt(totalPaid)} ${cur}</div></div>
+    <div class="kpi ${remaining===0?'green':'red'}"><div class="lbl">📌 ${t('debt_report_remaining')}</div><div class="val">${fmt(remaining)} ${cur}</div></div>
+  </div>`;
+  
+  if(d.notes){
+    html += `<div class="notes-box"><strong>📝 ${t('debt_report_notes')}:</strong> ${esc(d.notes)}</div>`;
+  }
+  
+  // Full history
+  html += `<div class="section-title">📜 ${t('debt_report_history')} — ${verb}</div>`;
+  
+  if(!payments.length){
+    html += `<div class="empty">${t('debt_report_no_history')}</div>`;
+  } else {
+    sortedYears.forEach(y => {
+      const rows = byYear[y];
+      const yearTotal = rows.reduce((s,r)=>s+r.amount, 0);
+      html += `<div class="year-block">`;
+      html += `<div class="year-header"><span>📅 ${t('print_year')} ${y}</span><span class="year-total">${fmt(yearTotal)} ${cur}</span></div>`;
+      html += `<table><thead><tr>
+        <th style="width:40px">${t('print_index')}</th>
+        <th style="width:80px">${t('print_day_month')}</th>
+        <th style="width:110px">${t('print_month')}</th>
+        <th style="width:130px">${t('print_amount')} (${cur})</th>
+        <th style="width:100px">${t('th_debt_bank')}</th>
+        <th>${t('th_ref')}</th>
+      </tr></thead><tbody>`;
+      rows.forEach((p, idx) => {
+        html += `<tr>
+          <td class="num">${idx+1}</td>
+          <td class="date">${p.month+1}</td>
+          <td class="month-name">${monthNames[p.month]}</td>
+          <td class="num">${fmt(p.amount)}</td>
+          <td style="text-align:center">${esc(p.bank)}</td>
+          <td style="text-align:center">${esc(p.ref) || '—'}</td>
+        </tr>`;
+      });
+      html += `<tr class="total-row"><td colspan="3"><strong>${t('print_year_total')} ${y}</strong></td><td class="num">${fmt(yearTotal)}</td><td colspan="2"></td></tr>`;
+      html += `</tbody></table>`;
+      html += `</div>`;
+    });
+    
+    // Grand total
+    html += `<table><tbody><tr class="grand-total">
+      <td colspan="3"><strong>⚖️ ${t('debt_report_total_received')}</strong></td>
+      <td class="num" style="font-size:16px">${fmt(totalPaid)} ${cur}</td>
+      <td colspan="2"></td>
+    </tr></tbody></table>`;
+  }
+  
+  html += `<div class="footer">
+    <div><strong>Muharraqi</strong> — ${t('print_title')}</div>
+    <div>© 2025 Muharraqi. All Rights Reserved.</div>
+    <div style="margin-top:6px;font-size:10px;color:#999">${t('print_generated')}: ${dateStr} ${timeStr}</div>
+  </div>`;
+  
+  html += `</body></html>`;
+  return html;
+}
+
+function printDebtReport(debtId){
+  const html = generateDebtReportHTML(debtId);
+  if(!html) return;
+  const w = window.open('', '_blank', 'width=900,height=900');
+  if(w){
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    setTimeout(() => { try { w.focus(); w.print(); } catch(e){ console.error(e); } }, 500);
+  } else {
+    toast(t('print_error_popup'), 'error');
+  }
+}
+
+async function shareDebtReportPDF(debtId){
+  try {
+    const d = state.debts.find(x=>x.id===debtId);
+    if(!d){ toast(t('share_failed'), 'error'); return; }
+    toast(t('creating_pdf'));
+    await loadHtml2Pdf();
+    const htmlStr = generateDebtReportHTML(debtId);
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.left = '-99999px';
+    container.style.top = '0';
+    container.style.width = '190mm';
+    container.style.background = '#ffffff';
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlStr;
+    const bodyContent = tempDiv.querySelector('body');
+    if(bodyContent) container.innerHTML = bodyContent.innerHTML;
+    else container.innerHTML = htmlStr;
+    document.body.appendChild(container);
+    const safeName = d.name.replace(/[^\w\u0600-\u06FF]/g, '_');
+    const filename = `debt_${safeName}_${new Date().toISOString().slice(0,10)}.pdf`;
+    const opt = {
+      margin: [8,8,8,8], filename,
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 900 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
+    const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
+    document.body.removeChild(container);
+    await sharePdfBlob(pdfBlob, filename);
+  } catch(err){
+    console.error('shareDebtReportPDF error:', err);
+    if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
+    toast(t('share_failed'), 'error');
+  }
+}
+
+/* ⭐ EXCEL EXPORT for a single debt ⭐ */
+function exportDebtExcel(debtId){
+  const d = state.debts.find(x=>x.id===debtId);
+  if(!d){ toast(t('share_failed'), 'error'); return; }
+  const L = LANG === 'ar';
+  const cur = L ? 'د.ب' : 'BHD';
+  const monthNames = getMonths();
+  const isReceive = d.type === "debit";
+  const typeLabel = {credit:t('dt_credit_label'), debit:t('dt_debit_label'), installment:t('dt_inst_label'), obligation:t('dt_obligation_label')};
+  
+  const payments = getAllDebtPayments(d);
+  const totalPaid = payments.reduce((s,p)=>s+p.amount, 0);
+  const paidBefore = +d.paidBefore || 0;
+  const remaining = Math.max(0, (+d.total||0) - paidBefore - totalPaid);
+  
+  const byYear = {};
+  payments.forEach(p => {
+    if(!byYear[p.year]) byYear[p.year] = [];
+    byYear[p.year].push(p);
+  });
+  const sortedYears = Object.keys(byYear).map(Number).sort((a,b)=>a-b);
+  
+  let html = `<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Debt_Report</x:Name><x:WorksheetOptions><x:DisplayRightToLeft/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+  <style>
+    body{font-family:'Segoe UI',Tahoma,sans-serif;direction:${L?'rtl':'ltr'}}
+    table{border-collapse:collapse;font-size:12px}
+    th{background:#0e7490;color:#fff;padding:8px;border:1px solid #333;font-weight:700}
+    td{padding:6px 8px;border:1px solid #999}
+    .title{background:#e0f2fe;font-weight:800;font-size:16px;padding:10px;text-align:center}
+    .section{background:#f0f4f8;font-weight:700;font-size:13px;padding:8px;border-right:4px solid #0891b2}
+    .info-lbl{background:#f1f5f9;font-weight:700;color:#334155}
+    .year-hdr{background:#e0f2fe;font-weight:800;color:#0e7490;font-size:13px}
+    .total-row{background:#e0f2fe;font-weight:700}
+    .grand-total{background:#fef3c7;font-weight:800;font-size:14px}
+  </style></head><body>`;
+  
+  html += `<table>`;
+  // Title
+  html += `<tr><td colspan="6" class="title">📋 ${t('debt_report_title')}: ${esc(d.name)} — ${isReceive?'💰':'💸'} ${isReceive?t('debt_report_total_received'):t('debt_report_total_paid')}</td></tr>`;
+  
+  // Info
+  html += `<tr><td class="info-lbl">${t('th_debt_name')}</td><td colspan="2">${esc(d.name)}</td><td class="info-lbl">${t('th_debt_type')}</td><td colspan="2">${typeLabel[d.type]||d.type}</td></tr>`;
+  html += `<tr><td class="info-lbl">${t('debt_report_cat')}</td><td colspan="2">${esc(d.category)||'—'}</td><td class="info-lbl">${t('th_debt_bank')}</td><td colspan="2">${esc(d.bank)||'—'}</td></tr>`;
+  html += `<tr><td class="info-lbl">${t('th_debt_total')}</td><td>${(+d.total||0).toFixed(3)} ${cur}</td><td class="info-lbl">${t('debt_report_paid_before')}</td><td>${paidBefore.toFixed(3)} ${cur}</td><td class="info-lbl">${t('debt_report_remaining')}</td><td>${remaining.toFixed(3)} ${cur}</td></tr>`;
+  if(d.notes){ html += `<tr><td class="info-lbl">${t('debt_report_notes')}</td><td colspan="5">${esc(d.notes)}</td></tr>`; }
+  html += `<tr><td colspan="6"></td></tr>`;
+  
+  // History header
+  html += `<tr><td colspan="6" class="section">📜 ${t('debt_report_history')}</td></tr>`;
+  html += `<tr><th>#</th><th>${t('print_year')}</th><th>${t('print_month')}</th><th>${t('print_amount')} (${cur})</th><th>${t('th_debt_bank')}</th><th>${t('th_ref')}</th></tr>`;
+  
+  if(!payments.length){
+    html += `<tr><td colspan="6" style="text-align:center;padding:20px;color:#888">${t('debt_report_no_history')}</td></tr>`;
+  } else {
+    let counter = 0;
+    sortedYears.forEach(y => {
+      const rows = byYear[y];
+      const yearTotal = rows.reduce((s,r)=>s+r.amount, 0);
+      html += `<tr><td colspan="6" class="year-hdr">📅 ${t('print_year')} ${y} — ${t('print_year_total')}: ${yearTotal.toFixed(3)} ${cur}</td></tr>`;
+      rows.forEach(p => {
+        counter++;
+        html += `<tr>
+          <td>${counter}</td>
+          <td>${p.year}</td>
+          <td>${monthNames[p.month]}</td>
+          <td>${p.amount.toFixed(3)}</td>
+          <td>${esc(p.bank)}</td>
+          <td>${esc(p.ref)||'—'}</td>
+        </tr>`;
+      });
+      html += `<tr class="total-row"><td colspan="3">${t('print_year_total')} ${y}</td><td>${yearTotal.toFixed(3)} ${cur}</td><td colspan="2"></td></tr>`;
+    });
+    html += `<tr class="grand-total"><td colspan="3">⚖️ ${isReceive?t('debt_report_total_received'):t('debt_report_total_paid')}</td><td>${totalPaid.toFixed(3)} ${cur}</td><td colspan="2"></td></tr>`;
+  }
+  
+  html += `</table></body></html>`;
+  
+  const blob = new Blob(['\ufeff' + html], {type:'application/vnd.ms-excel;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const safeName = d.name.replace(/[^\w\u0600-\u06FF]/g, '_');
+  a.download = `debt_${safeName}_${new Date().toISOString().slice(0,10)}.xls`;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 200);
+  toast(t('excel_exported'), 'success');
+}
+
+/* ⭐ EXCEL export for the full debts table (all debts, current year) ⭐ */
+function exportDebtsTableExcel(){
+  const L = LANG === 'ar';
+  const cur = L ? 'د.ب' : 'BHD';
+  const months = getMonths();
+  const y = state.activeYear;
+  const typeLabel = {credit:t('dt_credit_label'), debit:t('dt_debit_label'), installment:t('dt_inst_label'), obligation:t('dt_obligation_label')};
+  
+  let html = `<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Debts_${y}</x:Name><x:WorksheetOptions><x:DisplayRightToLeft/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+  <style>
+    body{font-family:'Segoe UI',Tahoma,sans-serif;direction:${L?'rtl':'ltr'}}
+    table{border-collapse:collapse;font-size:11px}
+    th{background:#0e7490;color:#fff;padding:6px 4px;border:1px solid #333;font-weight:700;text-align:center}
+    td{padding:5px 4px;border:1px solid #999;text-align:center}
+    .title{background:#e0f2fe;font-weight:800;font-size:16px;padding:10px;text-align:center}
+    .name-cell{font-weight:700;text-align:${L?'right':'left'}}
+  </style></head><body>`;
+  
+  html += `<table>`;
+  html += `<tr><td colspan="${6+12+2}" class="title">📋 ${t('debts_table')} — ${y}</td></tr>`;
+  html += `<tr>
+    <th>#</th><th>${t('th_debt_name')}</th><th>${t('th_debt_type')}</th><th>${t('lbl_debt_cat')}</th>
+    <th>${t('th_debt_total')}</th><th>${t('lbl_debt_paidbefore')}</th>`;
+  months.forEach(m => { html += `<th>${m}</th>`; });
+  html += `<th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th></tr>`;
+  
+  state.debts.forEach((d, idx) => {
+    const paid = debtPaidInYear(d, y), rem = debtRemaining(d);
+    html += `<tr>
+      <td>${idx+1}</td>
+      <td class="name-cell">${esc(d.name)}</td>
+      <td>${typeLabel[d.type]||d.type}</td>
+      <td>${esc(d.category)||'—'}</td>
+      <td>${(+d.total||0).toFixed(3)}</td>
+      <td>${(+d.paidBefore||0).toFixed(3)}</td>`;
+    for(let i=0;i<12;i++){
+      const v = dm(d, y, i);
+      html += `<td>${v > 0 ? (+v).toFixed(3) : '—'}</td>`;
+    }
+    html += `<td>${paid.toFixed(3)}</td><td>${rem.toFixed(3)}</td></tr>`;
+  });
+  
+  const mTotals = Array(12).fill(0); let tp = 0, tr = 0;
+  state.debts.forEach(d=>{ for(let i=0;i<12;i++) mTotals[i] += dm(d, y, i); tp += debtPaidInYear(d, y); tr += debtRemaining(d); });
+  html += `<tr style="background:#e0f2fe;font-weight:700">
+    <td colspan="6">${t('dms_total')}</td>`;
+  mTotals.forEach(v => { html += `<td>${v > 0 ? v.toFixed(3) : '—'}</td>`; });
+  html += `<td>${tp.toFixed(3)}</td><td>${tr.toFixed(3)}</td></tr>`;
+  
+  html += `</table></body></html>`;
+  
+  const blob = new Blob(['\ufeff' + html], {type:'application/vnd.ms-excel;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `debts_table_${y}_${new Date().toISOString().slice(0,10)}.xls`;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 200);
+  toast(t('excel_exported'), 'success');
+}
+
+/* ⭐ EXCEL for debts-month section (current active month) ⭐ */
+function exportDebtsMonthExcel(){
+  const L = LANG === 'ar';
+  const cur = L ? 'د.ب' : 'BHD';
+  const mi = state.activeMonth;
+  const y = state.activeYear;
+  const monthName = getMonths()[mi];
+  const typeLabel = {credit:t('dt_credit_label'), debit:t('dt_debit_label'), installment:t('dt_inst_label'), obligation:t('dt_obligation_label')};
+  
+  const visibleDebts = state.debts.filter(d => shouldShowDebtInMonthlyEntry(d, y, mi));
+  
+  let html = `<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Debts_Month</x:Name><x:WorksheetOptions><x:DisplayRightToLeft/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+  <style>
+    body{font-family:'Segoe UI',Tahoma,sans-serif;direction:${L?'rtl':'ltr'}}
+    table{border-collapse:collapse;font-size:12px}
+    th{background:#2563eb;color:#fff;padding:8px;border:1px solid #333;font-weight:700}
+    td{padding:6px 8px;border:1px solid #999}
+    .title{background:#dbeafe;font-weight:800;font-size:16px;padding:10px;text-align:center}
+    .name-cell{font-weight:700;text-align:${L?'right':'left'}}
+    .total{background:#e0f2fe;font-weight:700}
+  </style></head><body>`;
+  
+  html += `<table>`;
+  html += `<tr><td colspan="9" class="title">🤝 ${t('lbl_debts_month')} — ${monthName} ${y}</td></tr>`;
+  html += `<tr>
+    <th>#</th><th>${t('th_debt_name')}</th><th>${t('th_debt_type')}</th>
+    <th>${t('th_debt_total')}</th><th>${t('th_debt_rem_before')}</th>
+    <th>${t('th_debt_this_month')}</th><th>${t('th_debt_bank')}</th>
+    <th>${t('th_debt_rem_after')}</th><th>${t('th_debt_note')}</th>
+  </tr>`;
+  
+  if(!visibleDebts.length){
+    html += `<tr><td colspan="9" style="text-align:center;padding:20px;color:#888">${t('dms_empty')}</td></tr>`;
+  } else {
+    visibleDebts.forEach((d, idx) => {
+      const remBefore = debtRemainingBefore(d, y, mi);
+      const thisMonth = dm(d, y, mi);
+      const remAfter = Math.max(0, remBefore - thisMonth);
+      html += `<tr>
+        <td>${idx+1}</td>
+        <td class="name-cell">${esc(d.name)}</td>
+        <td>${typeLabel[d.type]||d.type}</td>
+        <td>${(+d.total||0).toFixed(3)}</td>
+        <td>${remBefore.toFixed(3)}</td>
+        <td>${thisMonth.toFixed(3)}</td>
+        <td>${esc(d.bank)||'—'}</td>
+        <td>${remAfter.toFixed(3)}</td>
+        <td>${esc(d.notes)||'—'}</td>
+      </tr>`;
+    });
+  }
+  
+  html += `</table></body></html>`;
+  
+  const blob = new Blob(['\ufeff' + html], {type:'application/vnd.ms-excel;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `debts_month_${y}_${mi+1}_${new Date().toISOString().slice(0,10)}.xls`;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 200);
+  toast(t('excel_exported'), 'success');
+}
+
+/* ⭐ SHARE the debts-month section as PDF ⭐ */
+async function shareDebtsMonthPDF(){
+  try {
+    toast(t('creating_pdf'));
+    await loadHtml2Pdf();
+    const mi = state.activeMonth;
+    const y = state.activeYear;
+    const monthName = getMonths()[mi];
+    const L = LANG === 'ar';
+    const cur = L ? 'د.ب' : 'BHD';
+    const typeLabel = {credit:t('dt_credit_label'), debit:t('dt_debit_label'), installment:t('dt_inst_label'), obligation:t('dt_obligation_label')};
+    const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦", obligation:"📋"};
+    
+    const visibleDebts = state.debts.filter(d => shouldShowDebtInMonthlyEntry(d, y, mi));
+    
+    let recv = 0, pay = 0;
+    visibleDebts.forEach(d => {
+      const v = dm(d, y, mi);
+      if(d.type === "debit") recv += v; else pay += v;
+    });
+    const net = recv - pay;
+    
+    const now = new Date();
+    const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
+    const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+    
+    let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('lbl_debts_month')} — ${monthName} ${y}</title>`;
+    html += `<style>
+      @page{size:A4 landscape;margin:10mm}
+      *{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+      body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:16px;margin:0}
+      .header{text-align:center;margin-bottom:16px;padding-bottom:10px;border-bottom:3px double #333}
+      .header .logo{display:inline-block;width:50px;height:50px;line-height:50px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;font-weight:900;font-size:22px;text-align:center}
+      .header h2{margin:8px 0 4px;color:#2563eb;font-size:20px}
+      .header .meta{color:#666;font-size:11px}
+      .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 20px}
+      .kpi{border:2px solid #ccc;border-radius:8px;padding:10px 8px;text-align:center;background:#f9fafb}
+      .kpi .lbl{font-size:11px;color:#666;margin-bottom:6px;font-weight:600}
+      .kpi .val{font-size:15px;font-weight:800;font-family:monospace;direction:ltr}
+      .kpi.green{border-color:#16a34a;background:#f0fdf4}.kpi.green .val{color:#16a34a}
+      .kpi.red{border-color:#dc2626;background:#fef2f2}.kpi.red .val{color:#dc2626}
+      .kpi.blue{border-color:#2563eb;background:#eff6ff}.kpi.blue .val{color:#2563eb}
+      table{width:100%;border-collapse:collapse;font-size:11px}
+      th{background:#2563eb;color:#fff;padding:7px 6px;border:1px solid #333;font-size:10px;font-weight:700}
+      td{padding:6px;border:1px solid #999;text-align:center}
+      td.name-cell{text-align:${L?'right':'left'};font-weight:700;font-size:11px}
+      td.num{font-family:monospace;direction:ltr;font-weight:700}
+      tfoot td{background:#dbeafe;font-weight:700;font-size:12px}
+      tr.row-debit td{background:#f0fdf4}
+      tr.row-credit td{background:#fef2f2}
+      tr.row-installment td{background:#eff6ff}
+      tr.row-obligation td{background:#faf5ff}
+      .footer{text-align:center;margin-top:24px;padding-top:10px;border-top:1px solid #999;color:#666;font-size:10px}
+      .footer strong{color:#2563eb}
+      .empty{color:#999;font-style:italic;text-align:center;padding:30px;background:#f9fafb;border:1px dashed #ccc;border-radius:6px;margin:20px 0}
+      @media print{body{padding:0}}
+    </style></head><body>`;
+    
+    html += `<div class="header">
+      <div class="logo">M</div>
+      <h2>🤝 ${t('lbl_debts_month')}</h2>
+      <div class="meta">${monthName} ${y} — ${t('print_generated')}: ${dateStr} — ${timeStr}</div>
+    </div>`;
+    
+    html += `<div class="kpis">
+      <div class="kpi green"><div class="lbl">${t('dms_recv')}</div><div class="val">${fmt(recv)} ${cur}</div></div>
+      <div class="kpi red"><div class="lbl">${t('dms_pay')}</div><div class="val">${fmt(pay)} ${cur}</div></div>
+      <div class="kpi ${net>=0?'green':'red'}"><div class="lbl">${t('dms_net')}</div><div class="val">${fmt(net)} ${cur}</div></div>
+    </div>`;
+    
+    if(!visibleDebts.length){
+      html += `<div class="empty">${t('dms_empty')}</div>`;
+    } else {
+      html += `<table><thead><tr>
+        <th style="width:30px">#</th>
+        <th style="width:15%">${t('th_debt_name')}</th>
+        <th style="width:8%">${t('th_debt_type')}</th>
+        <th style="width:9%">${t('th_debt_total')}</th>
+        <th style="width:10%">${t('th_debt_rem_before')}</th>
+        <th style="width:10%">${t('th_debt_this_month')}</th>
+        <th style="width:10%">${t('th_debt_bank')}</th>
+        <th style="width:10%">${t('th_debt_rem_after')}</th>
+        <th>${t('th_debt_note')}</th>
+      </tr></thead><tbody>`;
+      
+      visibleDebts.forEach((d, idx) => {
+        const remBefore = debtRemainingBefore(d, y, mi);
+        const thisMonth = dm(d, y, mi);
+        const remAfter = Math.max(0, remBefore - thisMonth);
+        const rowCls = d.type === "debit" ? "row-debit" : d.type === "obligation" ? "row-obligation" : d.type === "installment" ? "row-installment" : "row-credit";
+        html += `<tr class="${rowCls}">
+          <td class="num">${idx+1}</td>
+          <td class="name-cell">${typeIcon[d.type]||''} ${esc(d.name)}</td>
+          <td>${typeLabel[d.type]||d.type}</td>
+          <td class="num">${fmt(d.total)}</td>
+          <td class="num">${fmt(remBefore)}</td>
+          <td class="num" style="font-weight:800;color:${d.type==='debit'?'#16a34a':'#dc2626'}">${fmt(thisMonth)}</td>
+          <td>${esc(d.bank)||'—'}</td>
+          <td class="num">${fmt(remAfter)}</td>
+          <td style="font-size:10px;color:#666">${esc(d.notes)||'—'}</td>
+        </tr>`;
+      });
+      
+      html += `</tbody><tfoot><tr>
+        <td colspan="5">${t('dms_total')}</td>
+        <td class="num" style="color:#16a34a">+ ${fmt(recv)}</td>
+        <td></td>
+        <td class="num" style="color:#dc2626">- ${fmt(pay)}</td>
+        <td></td>
+      </tr></tfoot></table>`;
+    }
+    
+    html += `<div class="footer">
+      <div><strong>Muharraqi</strong> — ${t('print_title')}</div>
+      <div>© 2025 Muharraqi. All Rights Reserved.</div>
+    </div>`;
+    
+    html += `</body></html>`;
+    
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.left = '-99999px';
+    container.style.top = '0';
+    container.style.width = '277mm';
+    container.style.background = '#ffffff';
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    const bodyContent = tempDiv.querySelector('body');
+    if(bodyContent) container.innerHTML = bodyContent.innerHTML;
+    else container.innerHTML = html;
+    document.body.appendChild(container);
+    
+    const filename = `debts_month_${y}_${mi+1}_${new Date().toISOString().slice(0,10)}.pdf`;
+    const opt = {
+      margin: [6,6,6,6], filename,
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 1400 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape', compress: true },
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
+    const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
+    document.body.removeChild(container);
+    await sharePdfBlob(pdfBlob, filename);
+  } catch(err){
+    console.error('shareDebtsMonthPDF error:', err);
+    if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
+    toast(t('share_failed'), 'error');
   }
 }
 
@@ -2690,7 +3326,6 @@ function renderMonthPills(){
 }
 function selectMonth(i){ state.activeMonth=i; renderMonthPills(); renderMonth(); updateMonthPrintBtn(); save(); }
 
-/* ⭐ NEW: Salary section render ⭐ */
 function renderSalaryFields(){
   const m = M()[state.activeMonth];
   const incN = ensureIncomeNotes(m);
@@ -2921,6 +3556,7 @@ function updSavingBank(key, val){
 function updSavingRef(key, val){ const m = M()[state.activeMonth]; ensureSavingRefMeta(m)[key] = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 function updRef(key, val){ const m = M()[state.activeMonth]; ensureRefMeta(m)[key] = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 
+/* ⭐ UPDATED: debts-month with share button per row ⭐ */
 function renderDebtsMonthSection(){
   const mi = state.activeMonth; const y = state.activeYear;
   const tbody = document.getElementById("debtsMonthBody");
@@ -2931,7 +3567,7 @@ function renderDebtsMonthSection(){
   if(titleEl) titleEl.textContent = getMonths()[mi] + " " + y;
   const visibleDebts = state.debts.filter(d => shouldShowDebtInMonthlyEntry(d, y, mi));
   if(!visibleDebts.length){
-    tbody.innerHTML = `<tr><td colspan="9" style="padding:20px;text-align:center;color:var(--muted)">${t('dms_empty')}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" style="padding:20px;text-align:center;color:var(--muted)">${t('dms_empty')}</td></tr>`;
     tfoot.innerHTML = ""; summary.innerHTML = ""; return;
   }
   const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦", obligation:"📋"};
@@ -2961,12 +3597,15 @@ function renderDebtsMonthSection(){
       <td class="num debt-rem-after" style="font-family:monospace;font-weight:700;color:${remAfter===0?'var(--ok)':'var(--txt)'};direction:ltr">${money(remAfter)}</td>
       <td><input type="text" value="${esc(d.notes)}" oninput="updDebtNoteInline(${d.id}, this.value)" placeholder="ملاحظة..."></td>
       <td><select onchange="updDebtRef(${d.id}, this.value)">${refOptsFor(refVal)}</select></td>
+      <td class="noprint" style="text-align:center">
+        <button class="icon-btn share-btn" onclick="shareDebtReportPDF(${d.id})" title="${t('btn_share_pdf_row')}">📤</button>
+      </td>
     </tr>`;
   }).join("");
   const totalAll = recv + pay;
   const totalExcl = recvExcl + payExcl;
-  tfoot.innerHTML = `<tr><td colspan="5">${t('dms_total')} (${t('es_counted')})</td><td class="num" style="color:var(--accent2);font-weight:700">${money(totalAll)}</td><td colspan="3"></td></tr>` +
-    (totalExcl > 0 ? `<tr><td colspan="5" style="color:var(--danger)">${t('es_excluded')}</td><td class="num" style="color:var(--danger);font-weight:700">${money(totalExcl)}</td><td colspan="3"></td></tr>` : "");
+  tfoot.innerHTML = `<tr><td colspan="5">${t('dms_total')} (${t('es_counted')})</td><td class="num" style="color:var(--accent2);font-weight:700">${money(totalAll)}</td><td colspan="4"></td></tr>` +
+    (totalExcl > 0 ? `<tr><td colspan="5" style="color:var(--danger)">${t('es_excluded')}</td><td class="num" style="color:var(--danger);font-weight:700">${money(totalExcl)}</td><td colspan="4"></td></tr>` : "");
   summary.innerHTML = `
     ${kpi(t('dms_recv'), money(recv), "pos")}
     ${kpi(t('dms_pay'), money(pay), "neg")}
@@ -3008,8 +3647,8 @@ function refreshDebtsMonthCells(){
   });
   const tf = document.getElementById("debtsMonthFoot");
   const totalAll = recv + pay, totalExcl = recvExcl + payExcl;
-  if(tf) tf.innerHTML = `<tr><td colspan="5">${t('dms_total')} (${t('es_counted')})</td><td class="num" style="color:var(--accent2);font-weight:700">${money(totalAll)}</td><td colspan="3"></td></tr>` +
-    (totalExcl > 0 ? `<tr><td colspan="5" style="color:var(--danger)">${t('es_excluded')}</td><td class="num" style="color:var(--danger);font-weight:700">${money(totalExcl)}</td><td colspan="3"></td></tr>` : "");
+  if(tf) tf.innerHTML = `<tr><td colspan="5">${t('dms_total')} (${t('es_counted')})</td><td class="num" style="color:var(--accent2);font-weight:700">${money(totalAll)}</td><td colspan="4"></td></tr>` +
+    (totalExcl > 0 ? `<tr><td colspan="5" style="color:var(--danger)">${t('es_excluded')}</td><td class="num" style="color:var(--danger);font-weight:700">${money(totalExcl)}</td><td colspan="4"></td></tr>` : "");
   const sm = document.getElementById("debtsMonthSummary");
   if(sm) sm.innerHTML = `
     ${kpi(t('dms_recv'), money(recv), "pos")}
@@ -3617,7 +4256,8 @@ function buildPaidInfoHtml(d){
   const fullyPaid = isDebtFullyPaid(d);
   const lp = lastPaymentInfo(d);
   const hasPaidBefore = +d.paidBefore > 0;
-  if(!fullyPaid && !lp && !hasPaidBefore) return '';
+  const hasAnyPayments = getAllDebtPayments(d).length > 0;
+  if(!fullyPaid && !lp && !hasPaidBefore && !hasAnyPayments) return '';
   let html = '<div class="fully-paid-info">';
   if(fullyPaid){ html += `<span class="badge fully-paid">✅ ${t('debt_paid')}</span>`; }
   if(lp){
@@ -3694,6 +4334,7 @@ function renderDebtsSummary(){
     ${kpi(t('kpi_count'), state.debts.length.toString(), "acc")}
   `;
 }
+/* ⭐ UPDATED: renderDebts with 3 buttons per row ⭐ */
 function renderDebts(){
   renderDebtsSummary();
   const el = document.getElementById("debtsTable");
@@ -3704,7 +4345,7 @@ function renderDebts(){
     <th style="min-width:80px">${t('lbl_debt_cat')}</th><th style="min-width:85px">${t('th_debt_total')}</th>
     <th style="min-width:85px">${t('lbl_debt_paidbefore')}</th><th style="min-width:120px">${t('lbl_debt_notes')}</th>`;
   months.forEach(m => { head += `<th style="width:80px">${m}</th>`; });
-  head += `<th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th><th></th></tr></thead>`;
+  head += `<th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th><th class="noprint" style="min-width:120px">⚙️</th></tr></thead>`;
   let body = `<tbody>`;
   state.debts.forEach(d => {
     const rc = d.type === "credit" ? "row-credit" : d.type === "debit" ? "row-debit" : d.type === "obligation" ? "row-obligation" : "row-installment";
@@ -3730,14 +4371,23 @@ function renderDebts(){
       <td><input type="number" class="inline-input num paid-before" value="${inVal(d.paidBefore)}" min="0" step="0.001" oninput="updDebtPaidBefore(${d.id}, this.value)"></td>
       <td><input type="text" class="inline-input notes" value="${esc(d.notes)}" placeholder="..." onchange="updDebtNotes(${d.id}, this.value)"></td>`;
     for(let i=0;i<12;i++){ body += `<td><input type="number" value="${inVal(dm(d,y,i))}" min="0" step="0.001" oninput="updDebtMonth(${d.id}, ${i}, this.value)" onblur="onDebtMonthBlur()"></td>`; }
-    body += `<td class="paid-cell">${fmt(paid)}</td><td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td><td><button class="icon-btn" onclick="delDebt(${d.id})">✕</button></td></tr>`;
+    body += `<td class="paid-cell">${fmt(paid)}</td>
+      <td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td>
+      <td class="noprint">
+        <div class="row-actions">
+          <button class="icon-btn print-btn" onclick="printDebtReport(${d.id})" title="🖨️ ${t('btn_print_row')}">🖨️</button>
+          <button class="icon-btn excel-btn" onclick="exportDebtExcel(${d.id})" title="📊 Excel">📊</button>
+          <button class="icon-btn share-btn" onclick="shareDebtReportPDF(${d.id})" title="${t('btn_share_pdf_row')}">📤</button>
+          <button class="icon-btn" onclick="delDebt(${d.id})" title="${t('confirm_delete')}">✕</button>
+        </div>
+      </td></tr>`;
   });
   body += `</tbody>`;
   const mTotals = Array(12).fill(0); let tp = 0, tr = 0;
   state.debts.forEach(d=>{ for(let i=0;i<12;i++) mTotals[i] += dm(d,y,i); tp += debtPaidInYear(d,y); tr += debtRemaining(d); });
   let foot = `<tfoot><tr><td colspan="6">${t('dms_total')}</td>`;
   for(let i=0;i<12;i++) foot += `<td>${mTotals[i] > 0 ? fmt(mTotals[i]) : "—"}</td>`;
-  foot += `<td class="paid-cell">${fmt(tp)}</td><td class="remain-cell">${fmt(tr)}</td><td></td></tr></tfoot>`;
+  foot += `<td class="paid-cell">${fmt(tp)}</td><td class="remain-cell">${fmt(tr)}</td><td class="noprint"></td></tr></tfoot>`;
   el.innerHTML = head + body + foot;
 }
 
