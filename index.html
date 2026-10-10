@@ -2090,7 +2090,6 @@ function debtRemainingBefore(d, year, mi){
 }
 function isDebtFullyPaid(d){ return debtRemaining(d) === 0; }
 
-/* ⭐ NEW: Collect all payments of a debt across all years ⭐ */
 function getAllDebtPayments(d){
   const payments = [];
   if(!d.monthlyByYear) return payments;
@@ -2400,37 +2399,28 @@ function setPrintOrientation(orientation){
   }
 }
 
-/* ===================== DEBT REPORT GENERATOR (Full history across all years) ===================== */
+/* ===================== DEBT REPORT GENERATOR ===================== */
 function generateDebtReportHTML(debtId){
   const d = state.debts.find(x=>x.id===debtId);
   if(!d) return '';
   const L = LANG === 'ar';
   const cur = L ? 'د.ب' : 'BHD';
   const monthNames = getMonths();
-  
   const isReceive = d.type === "debit";
   const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦", obligation:"📋"};
   const typeLabel = {credit:t('dt_credit_label'), debit:t('dt_debit_label'), installment:t('dt_inst_label'), obligation:t('dt_obligation_label')};
-  
   const payments = getAllDebtPayments(d);
   const totalPaid = payments.reduce((s,p)=>s+p.amount, 0);
   const paidBefore = +d.paidBefore || 0;
   const totalPaidAll = paidBefore + totalPaid;
   const remaining = Math.max(0, (+d.total||0) - totalPaidAll);
   const fullyPaid = remaining === 0;
-  
-  // Group by year
   const byYear = {};
-  payments.forEach(p => {
-    if(!byYear[p.year]) byYear[p.year] = [];
-    byYear[p.year].push(p);
-  });
+  payments.forEach(p => { if(!byYear[p.year]) byYear[p.year] = []; byYear[p.year].push(p); });
   const sortedYears = Object.keys(byYear).map(Number).sort((a,b)=>a-b);
-  
   const now = new Date();
   const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
   const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-  
   const verb = isReceive ? t('debt_report_verb_receive') : t('debt_report_verb_pay');
   const statusLabel = fullyPaid ? t('debt_report_fully_paid') : t('debt_report_still_active');
   const statusColor = fullyPaid ? '#16a34a' : '#d97706';
@@ -2476,7 +2466,6 @@ function generateDebtReportHTML(debtId){
     .footer{text-align:center;margin-top:36px;padding-top:12px;border-top:2px solid #999;color:#666;font-size:11px;line-height:1.8}
     .footer strong{color:#0e7490}
     .notes-box{background:#fffbeb;border:1px solid #fde68a;padding:10px 14px;border-radius:6px;margin:10px 0 16px;font-size:12px;color:#78350f}
-    @media print{body{padding:0}.noprint{display:none}}
   </style></head><body>`;
   
   html += `<div class="header">
@@ -2486,7 +2475,6 @@ function generateDebtReportHTML(debtId){
     <div><span class="badge-status">${statusLabel}</span></div>
   </div>`;
   
-  // Info box
   html += `<div class="info-box">
     <div><div class="lbl">${t('th_debt_name')}</div><div class="val">${esc(d.name)}</div></div>
     <div><div class="lbl">${t('th_debt_type')}</div><div class="val">${typeIcon[d.type]} ${typeLabel[d.type]}</div></div>
@@ -2496,7 +2484,6 @@ function generateDebtReportHTML(debtId){
     <div><div class="lbl">${t('debt_report_remaining')}</div><div class="val" style="color:${remaining>0?'#dc2626':'#16a34a'}">${money(remaining)}</div></div>
   </div>`;
   
-  // KPIs
   html += `<div class="kpis">
     <div class="kpi blue"><div class="lbl">💵 ${t('th_debt_total')}</div><div class="val">${fmt(+d.total||0)} ${cur}</div></div>
     <div class="kpi gold"><div class="lbl">${t('debt_report_paid_before')}</div><div class="val">${fmt(paidBefore)} ${cur}</div></div>
@@ -2508,7 +2495,6 @@ function generateDebtReportHTML(debtId){
     html += `<div class="notes-box"><strong>📝 ${t('debt_report_notes')}:</strong> ${esc(d.notes)}</div>`;
   }
   
-  // Full history
   html += `<div class="section-title">📜 ${t('debt_report_history')} — ${verb}</div>`;
   
   if(!payments.length){
@@ -2542,7 +2528,6 @@ function generateDebtReportHTML(debtId){
       html += `</div>`;
     });
     
-    // Grand total
     html += `<table><tbody><tr class="grand-total">
       <td colspan="3"><strong>⚖️ ${t('debt_report_total_received')}</strong></td>
       <td class="num" style="font-size:16px">${fmt(totalPaid)} ${cur}</td>
@@ -2554,9 +2539,7 @@ function generateDebtReportHTML(debtId){
     <div><strong>Muharraqi</strong> — ${t('print_title')}</div>
     <div>© 2025 Muharraqi. All Rights Reserved.</div>
     <div style="margin-top:6px;font-size:10px;color:#999">${t('print_generated')}: ${dateStr} ${timeStr}</div>
-  </div>`;
-  
-  html += `</body></html>`;
+  </div></body></html>`;
   return html;
 }
 
@@ -2574,6 +2557,7 @@ function printDebtReport(debtId){
   }
 }
 
+/* ⭐ FIXED: shareDebtReportPDF with proper positioning ⭐ */
 async function shareDebtReportPDF(debtId){
   try {
     const d = state.debts.find(x=>x.id===debtId);
@@ -2582,23 +2566,19 @@ async function shareDebtReportPDF(debtId){
     await loadHtml2Pdf();
     const htmlStr = generateDebtReportHTML(debtId);
     const container = document.createElement('div');
-    container.style.position = 'fixed';
-    container.style.left = '-99999px';
-    container.style.top = '0';
-    container.style.width = '190mm';
-    container.style.background = '#ffffff';
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlStr;
-    const bodyContent = tempDiv.querySelector('body');
-    if(bodyContent) container.innerHTML = bodyContent.innerHTML;
-    else container.innerHTML = htmlStr;
+    container.style.cssText = 'position:absolute;left:0;top:0;width:210mm;background:#ffffff;z-index:-99999;pointer-events:none;';
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlStr, 'text/html');
+    const styleContent = Array.from(doc.head.querySelectorAll('style')).map(s => s.outerHTML).join('\n');
+    container.innerHTML = styleContent + doc.body.innerHTML;
     document.body.appendChild(container);
+    await new Promise(r => setTimeout(r, 100));
     const safeName = d.name.replace(/[^\w\u0600-\u06FF]/g, '_');
     const filename = `debt_${safeName}_${new Date().toISOString().slice(0,10)}.pdf`;
     const opt = {
       margin: [8,8,8,8], filename,
       image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 900 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 900, scrollX: 0, scrollY: 0 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
       pagebreak: { mode: ['css', 'legacy'] }
     };
@@ -2612,7 +2592,7 @@ async function shareDebtReportPDF(debtId){
   }
 }
 
-/* ⭐ EXCEL EXPORT for a single debt ⭐ */
+/* ⭐ EXCEL for a single debt ⭐ */
 function exportDebtExcel(debtId){
   const d = state.debts.find(x=>x.id===debtId);
   if(!d){ toast(t('share_failed'), 'error'); return; }
@@ -2621,17 +2601,12 @@ function exportDebtExcel(debtId){
   const monthNames = getMonths();
   const isReceive = d.type === "debit";
   const typeLabel = {credit:t('dt_credit_label'), debit:t('dt_debit_label'), installment:t('dt_inst_label'), obligation:t('dt_obligation_label')};
-  
   const payments = getAllDebtPayments(d);
   const totalPaid = payments.reduce((s,p)=>s+p.amount, 0);
   const paidBefore = +d.paidBefore || 0;
   const remaining = Math.max(0, (+d.total||0) - paidBefore - totalPaid);
-  
   const byYear = {};
-  payments.forEach(p => {
-    if(!byYear[p.year]) byYear[p.year] = [];
-    byYear[p.year].push(p);
-  });
+  payments.forEach(p => { if(!byYear[p.year]) byYear[p.year] = []; byYear[p.year].push(p); });
   const sortedYears = Object.keys(byYear).map(Number).sort((a,b)=>a-b);
   
   let html = `<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Debt_Report</x:Name><x:WorksheetOptions><x:DisplayRightToLeft/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
@@ -2646,20 +2621,14 @@ function exportDebtExcel(debtId){
     .year-hdr{background:#e0f2fe;font-weight:800;color:#0e7490;font-size:13px}
     .total-row{background:#e0f2fe;font-weight:700}
     .grand-total{background:#fef3c7;font-weight:800;font-size:14px}
-  </style></head><body>`;
+  </style></head><body><table>`;
   
-  html += `<table>`;
-  // Title
   html += `<tr><td colspan="6" class="title">📋 ${t('debt_report_title')}: ${esc(d.name)} — ${isReceive?'💰':'💸'} ${isReceive?t('debt_report_total_received'):t('debt_report_total_paid')}</td></tr>`;
-  
-  // Info
   html += `<tr><td class="info-lbl">${t('th_debt_name')}</td><td colspan="2">${esc(d.name)}</td><td class="info-lbl">${t('th_debt_type')}</td><td colspan="2">${typeLabel[d.type]||d.type}</td></tr>`;
   html += `<tr><td class="info-lbl">${t('debt_report_cat')}</td><td colspan="2">${esc(d.category)||'—'}</td><td class="info-lbl">${t('th_debt_bank')}</td><td colspan="2">${esc(d.bank)||'—'}</td></tr>`;
   html += `<tr><td class="info-lbl">${t('th_debt_total')}</td><td>${(+d.total||0).toFixed(3)} ${cur}</td><td class="info-lbl">${t('debt_report_paid_before')}</td><td>${paidBefore.toFixed(3)} ${cur}</td><td class="info-lbl">${t('debt_report_remaining')}</td><td>${remaining.toFixed(3)} ${cur}</td></tr>`;
   if(d.notes){ html += `<tr><td class="info-lbl">${t('debt_report_notes')}</td><td colspan="5">${esc(d.notes)}</td></tr>`; }
   html += `<tr><td colspan="6"></td></tr>`;
-  
-  // History header
   html += `<tr><td colspan="6" class="section">📜 ${t('debt_report_history')}</td></tr>`;
   html += `<tr><th>#</th><th>${t('print_year')}</th><th>${t('print_month')}</th><th>${t('print_amount')} (${cur})</th><th>${t('th_debt_bank')}</th><th>${t('th_ref')}</th></tr>`;
   
@@ -2673,20 +2642,12 @@ function exportDebtExcel(debtId){
       html += `<tr><td colspan="6" class="year-hdr">📅 ${t('print_year')} ${y} — ${t('print_year_total')}: ${yearTotal.toFixed(3)} ${cur}</td></tr>`;
       rows.forEach(p => {
         counter++;
-        html += `<tr>
-          <td>${counter}</td>
-          <td>${p.year}</td>
-          <td>${monthNames[p.month]}</td>
-          <td>${p.amount.toFixed(3)}</td>
-          <td>${esc(p.bank)}</td>
-          <td>${esc(p.ref)||'—'}</td>
-        </tr>`;
+        html += `<tr><td>${counter}</td><td>${p.year}</td><td>${monthNames[p.month]}</td><td>${p.amount.toFixed(3)}</td><td>${esc(p.bank)}</td><td>${esc(p.ref)||'—'}</td></tr>`;
       });
       html += `<tr class="total-row"><td colspan="3">${t('print_year_total')} ${y}</td><td>${yearTotal.toFixed(3)} ${cur}</td><td colspan="2"></td></tr>`;
     });
     html += `<tr class="grand-total"><td colspan="3">⚖️ ${isReceive?t('debt_report_total_received'):t('debt_report_total_paid')}</td><td>${totalPaid.toFixed(3)} ${cur}</td><td colspan="2"></td></tr>`;
   }
-  
   html += `</table></body></html>`;
   
   const blob = new Blob(['\ufeff' + html], {type:'application/vnd.ms-excel;charset=utf-8'});
@@ -2701,14 +2662,12 @@ function exportDebtExcel(debtId){
   toast(t('excel_exported'), 'success');
 }
 
-/* ⭐ EXCEL export for the full debts table (all debts, current year) ⭐ */
 function exportDebtsTableExcel(){
   const L = LANG === 'ar';
   const cur = L ? 'د.ب' : 'BHD';
   const months = getMonths();
   const y = state.activeYear;
   const typeLabel = {credit:t('dt_credit_label'), debit:t('dt_debit_label'), installment:t('dt_inst_label'), obligation:t('dt_obligation_label')};
-  
   let html = `<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Debts_${y}</x:Name><x:WorksheetOptions><x:DisplayRightToLeft/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
   <style>
     body{font-family:'Segoe UI',Tahoma,sans-serif;direction:${L?'rtl':'ltr'}}
@@ -2717,41 +2676,22 @@ function exportDebtsTableExcel(){
     td{padding:5px 4px;border:1px solid #999;text-align:center}
     .title{background:#e0f2fe;font-weight:800;font-size:16px;padding:10px;text-align:center}
     .name-cell{font-weight:700;text-align:${L?'right':'left'}}
-  </style></head><body>`;
-  
-  html += `<table>`;
+  </style></head><body><table>`;
   html += `<tr><td colspan="${6+12+2}" class="title">📋 ${t('debts_table')} — ${y}</td></tr>`;
-  html += `<tr>
-    <th>#</th><th>${t('th_debt_name')}</th><th>${t('th_debt_type')}</th><th>${t('lbl_debt_cat')}</th>
-    <th>${t('th_debt_total')}</th><th>${t('lbl_debt_paidbefore')}</th>`;
+  html += `<tr><th>#</th><th>${t('th_debt_name')}</th><th>${t('th_debt_type')}</th><th>${t('lbl_debt_cat')}</th><th>${t('th_debt_total')}</th><th>${t('lbl_debt_paidbefore')}</th>`;
   months.forEach(m => { html += `<th>${m}</th>`; });
   html += `<th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th></tr>`;
-  
   state.debts.forEach((d, idx) => {
     const paid = debtPaidInYear(d, y), rem = debtRemaining(d);
-    html += `<tr>
-      <td>${idx+1}</td>
-      <td class="name-cell">${esc(d.name)}</td>
-      <td>${typeLabel[d.type]||d.type}</td>
-      <td>${esc(d.category)||'—'}</td>
-      <td>${(+d.total||0).toFixed(3)}</td>
-      <td>${(+d.paidBefore||0).toFixed(3)}</td>`;
-    for(let i=0;i<12;i++){
-      const v = dm(d, y, i);
-      html += `<td>${v > 0 ? (+v).toFixed(3) : '—'}</td>`;
-    }
+    html += `<tr><td>${idx+1}</td><td class="name-cell">${esc(d.name)}</td><td>${typeLabel[d.type]||d.type}</td><td>${esc(d.category)||'—'}</td><td>${(+d.total||0).toFixed(3)}</td><td>${(+d.paidBefore||0).toFixed(3)}</td>`;
+    for(let i=0;i<12;i++){ const v = dm(d, y, i); html += `<td>${v > 0 ? (+v).toFixed(3) : '—'}</td>`; }
     html += `<td>${paid.toFixed(3)}</td><td>${rem.toFixed(3)}</td></tr>`;
   });
-  
   const mTotals = Array(12).fill(0); let tp = 0, tr = 0;
   state.debts.forEach(d=>{ for(let i=0;i<12;i++) mTotals[i] += dm(d, y, i); tp += debtPaidInYear(d, y); tr += debtRemaining(d); });
-  html += `<tr style="background:#e0f2fe;font-weight:700">
-    <td colspan="6">${t('dms_total')}</td>`;
+  html += `<tr style="background:#e0f2fe;font-weight:700"><td colspan="6">${t('dms_total')}</td>`;
   mTotals.forEach(v => { html += `<td>${v > 0 ? v.toFixed(3) : '—'}</td>`; });
-  html += `<td>${tp.toFixed(3)}</td><td>${tr.toFixed(3)}</td></tr>`;
-  
-  html += `</table></body></html>`;
-  
+  html += `<td>${tp.toFixed(3)}</td><td>${tr.toFixed(3)}</td></tr></table></body></html>`;
   const blob = new Blob(['\ufeff' + html], {type:'application/vnd.ms-excel;charset=utf-8'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -2763,7 +2703,6 @@ function exportDebtsTableExcel(){
   toast(t('excel_exported'), 'success');
 }
 
-/* ⭐ EXCEL for debts-month section (current active month) ⭐ */
 function exportDebtsMonthExcel(){
   const L = LANG === 'ar';
   const cur = L ? 'د.ب' : 'BHD';
@@ -2771,9 +2710,7 @@ function exportDebtsMonthExcel(){
   const y = state.activeYear;
   const monthName = getMonths()[mi];
   const typeLabel = {credit:t('dt_credit_label'), debit:t('dt_debit_label'), installment:t('dt_inst_label'), obligation:t('dt_obligation_label')};
-  
   const visibleDebts = state.debts.filter(d => shouldShowDebtInMonthlyEntry(d, y, mi));
-  
   let html = `<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Debts_Month</x:Name><x:WorksheetOptions><x:DisplayRightToLeft/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
   <style>
     body{font-family:'Segoe UI',Tahoma,sans-serif;direction:${L?'rtl':'ltr'}}
@@ -2783,17 +2720,9 @@ function exportDebtsMonthExcel(){
     .title{background:#dbeafe;font-weight:800;font-size:16px;padding:10px;text-align:center}
     .name-cell{font-weight:700;text-align:${L?'right':'left'}}
     .total{background:#e0f2fe;font-weight:700}
-  </style></head><body>`;
-  
-  html += `<table>`;
+  </style></head><body><table>`;
   html += `<tr><td colspan="9" class="title">🤝 ${t('lbl_debts_month')} — ${monthName} ${y}</td></tr>`;
-  html += `<tr>
-    <th>#</th><th>${t('th_debt_name')}</th><th>${t('th_debt_type')}</th>
-    <th>${t('th_debt_total')}</th><th>${t('th_debt_rem_before')}</th>
-    <th>${t('th_debt_this_month')}</th><th>${t('th_debt_bank')}</th>
-    <th>${t('th_debt_rem_after')}</th><th>${t('th_debt_note')}</th>
-  </tr>`;
-  
+  html += `<tr><th>#</th><th>${t('th_debt_name')}</th><th>${t('th_debt_type')}</th><th>${t('th_debt_total')}</th><th>${t('th_debt_rem_before')}</th><th>${t('th_debt_this_month')}</th><th>${t('th_debt_bank')}</th><th>${t('th_debt_rem_after')}</th><th>${t('th_debt_note')}</th></tr>`;
   if(!visibleDebts.length){
     html += `<tr><td colspan="9" style="text-align:center;padding:20px;color:#888">${t('dms_empty')}</td></tr>`;
   } else {
@@ -2801,22 +2730,10 @@ function exportDebtsMonthExcel(){
       const remBefore = debtRemainingBefore(d, y, mi);
       const thisMonth = dm(d, y, mi);
       const remAfter = Math.max(0, remBefore - thisMonth);
-      html += `<tr>
-        <td>${idx+1}</td>
-        <td class="name-cell">${esc(d.name)}</td>
-        <td>${typeLabel[d.type]||d.type}</td>
-        <td>${(+d.total||0).toFixed(3)}</td>
-        <td>${remBefore.toFixed(3)}</td>
-        <td>${thisMonth.toFixed(3)}</td>
-        <td>${esc(d.bank)||'—'}</td>
-        <td>${remAfter.toFixed(3)}</td>
-        <td>${esc(d.notes)||'—'}</td>
-      </tr>`;
+      html += `<tr><td>${idx+1}</td><td class="name-cell">${esc(d.name)}</td><td>${typeLabel[d.type]||d.type}</td><td>${(+d.total||0).toFixed(3)}</td><td>${remBefore.toFixed(3)}</td><td>${thisMonth.toFixed(3)}</td><td>${esc(d.bank)||'—'}</td><td>${remAfter.toFixed(3)}</td><td>${esc(d.notes)||'—'}</td></tr>`;
     });
   }
-  
   html += `</table></body></html>`;
-  
   const blob = new Blob(['\ufeff' + html], {type:'application/vnd.ms-excel;charset=utf-8'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -2828,7 +2745,7 @@ function exportDebtsMonthExcel(){
   toast(t('excel_exported'), 'success');
 }
 
-/* ⭐ SHARE the debts-month section as PDF ⭐ */
+/* ⭐ FIXED: shareDebtsMonthPDF with proper positioning ⭐ */
 async function shareDebtsMonthPDF(){
   try {
     toast(t('creating_pdf'));
@@ -2840,16 +2757,10 @@ async function shareDebtsMonthPDF(){
     const cur = L ? 'د.ب' : 'BHD';
     const typeLabel = {credit:t('dt_credit_label'), debit:t('dt_debit_label'), installment:t('dt_inst_label'), obligation:t('dt_obligation_label')};
     const typeIcon = {credit:"🔴", debit:"🟢", installment:"🏦", obligation:"📋"};
-    
     const visibleDebts = state.debts.filter(d => shouldShowDebtInMonthlyEntry(d, y, mi));
-    
     let recv = 0, pay = 0;
-    visibleDebts.forEach(d => {
-      const v = dm(d, y, mi);
-      if(d.type === "debit") recv += v; else pay += v;
-    });
+    visibleDebts.forEach(d => { const v = dm(d, y, mi); if(d.type === "debit") recv += v; else pay += v; });
     const net = recv - pay;
-    
     const now = new Date();
     const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
     const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
@@ -2883,21 +2794,13 @@ async function shareDebtsMonthPDF(){
       .footer{text-align:center;margin-top:24px;padding-top:10px;border-top:1px solid #999;color:#666;font-size:10px}
       .footer strong{color:#2563eb}
       .empty{color:#999;font-style:italic;text-align:center;padding:30px;background:#f9fafb;border:1px dashed #ccc;border-radius:6px;margin:20px 0}
-      @media print{body{padding:0}}
     </style></head><body>`;
-    
-    html += `<div class="header">
-      <div class="logo">M</div>
-      <h2>🤝 ${t('lbl_debts_month')}</h2>
-      <div class="meta">${monthName} ${y} — ${t('print_generated')}: ${dateStr} — ${timeStr}</div>
-    </div>`;
-    
+    html += `<div class="header"><div class="logo">M</div><h2>🤝 ${t('lbl_debts_month')}</h2><div class="meta">${monthName} ${y} — ${t('print_generated')}: ${dateStr} — ${timeStr}</div></div>`;
     html += `<div class="kpis">
       <div class="kpi green"><div class="lbl">${t('dms_recv')}</div><div class="val">${fmt(recv)} ${cur}</div></div>
       <div class="kpi red"><div class="lbl">${t('dms_pay')}</div><div class="val">${fmt(pay)} ${cur}</div></div>
       <div class="kpi ${net>=0?'green':'red'}"><div class="lbl">${t('dms_net')}</div><div class="val">${fmt(net)} ${cur}</div></div>
     </div>`;
-    
     if(!visibleDebts.length){
       html += `<div class="empty">${t('dms_empty')}</div>`;
     } else {
@@ -2912,7 +2815,6 @@ async function shareDebtsMonthPDF(){
         <th style="width:10%">${t('th_debt_rem_after')}</th>
         <th>${t('th_debt_note')}</th>
       </tr></thead><tbody>`;
-      
       visibleDebts.forEach((d, idx) => {
         const remBefore = debtRemainingBefore(d, y, mi);
         const thisMonth = dm(d, y, mi);
@@ -2930,7 +2832,6 @@ async function shareDebtsMonthPDF(){
           <td style="font-size:10px;color:#666">${esc(d.notes)||'—'}</td>
         </tr>`;
       });
-      
       html += `</tbody><tfoot><tr>
         <td colspan="5">${t('dms_total')}</td>
         <td class="num" style="color:#16a34a">+ ${fmt(recv)}</td>
@@ -2939,32 +2840,21 @@ async function shareDebtsMonthPDF(){
         <td></td>
       </tr></tfoot></table>`;
     }
-    
-    html += `<div class="footer">
-      <div><strong>Muharraqi</strong> — ${t('print_title')}</div>
-      <div>© 2025 Muharraqi. All Rights Reserved.</div>
-    </div>`;
-    
-    html += `</body></html>`;
+    html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div></body></html>`;
     
     const container = document.createElement('div');
-    container.style.position = 'fixed';
-    container.style.left = '-99999px';
-    container.style.top = '0';
-    container.style.width = '277mm';
-    container.style.background = '#ffffff';
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
-    const bodyContent = tempDiv.querySelector('body');
-    if(bodyContent) container.innerHTML = bodyContent.innerHTML;
-    else container.innerHTML = html;
+    container.style.cssText = 'position:absolute;left:0;top:0;width:277mm;background:#ffffff;z-index:-99999;pointer-events:none;';
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const styleContent = Array.from(doc.head.querySelectorAll('style')).map(s => s.outerHTML).join('\n');
+    container.innerHTML = styleContent + doc.body.innerHTML;
     document.body.appendChild(container);
-    
+    await new Promise(r => setTimeout(r, 100));
     const filename = `debts_month_${y}_${mi+1}_${new Date().toISOString().slice(0,10)}.pdf`;
     const opt = {
       margin: [6,6,6,6], filename,
       image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 1400 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 1400, scrollX: 0, scrollY: 0 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape', compress: true },
       pagebreak: { mode: ['css', 'legacy'] }
     };
@@ -3065,8 +2955,7 @@ function generateDebtsTablePrintHTML(){
       ${mTotals.map(v => `<td class="num">${v > 0 ? v.toFixed(3) : '—'}</td>`).join('')}
       <td class="num">${tp.toFixed(3)}</td><td class="num">${tr.toFixed(3)}</td></tr></tfoot></table>`;
   }
-  html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div>`;
-  html += `</body></html>`;
+  html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div></body></html>`;
   return html;
 }
 
@@ -3077,23 +2966,29 @@ function printDebtsTable(){
   else { toast(t('print_error_popup'), 'error'); }
 }
 
+/* ⭐ FIXED: shareDebtsTablePDF with proper positioning ⭐ */
 async function shareDebtsTablePDF(){
   try {
     toast(t('creating_pdf'));
     await loadHtml2Pdf();
     const htmlStr = generateDebtsTablePrintHTML();
     const container = document.createElement('div');
-    container.style.position = 'fixed'; container.style.left = '-99999px'; container.style.top = '0';
-    container.style.width = '277mm'; container.style.background = '#ffffff';
-    const tempDiv = document.createElement('div'); tempDiv.innerHTML = htmlStr;
-    const bodyContent = tempDiv.querySelector('body');
-    if(bodyContent) container.innerHTML = bodyContent.innerHTML; else container.innerHTML = htmlStr;
+    container.style.cssText = 'position:absolute;left:0;top:0;width:297mm;background:#ffffff;z-index:-99999;pointer-events:none;';
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlStr, 'text/html');
+    const styleContent = Array.from(doc.head.querySelectorAll('style')).map(s => s.outerHTML).join('\n');
+    container.innerHTML = styleContent + doc.body.innerHTML;
     document.body.appendChild(container);
+    await new Promise(r => setTimeout(r, 100));
     const filename = `debts_table_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = { margin: [4,4,4,4], filename, image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 1400 },
+    const opt = {
+      margin: [4, 4, 4, 4],
+      filename,
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 1400, scrollX: 0, scrollY: 0 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape', compress: true },
-      pagebreak: { mode: ['css', 'legacy'] } };
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
     const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
     document.body.removeChild(container);
     await sharePdfBlob(pdfBlob, filename);
@@ -3151,6 +3046,7 @@ function prepareCloneForPdf(clone){
   });
 }
 
+/* ⭐ FIXED: shareViewPDF with proper positioning ⭐ */
 async function shareViewPDF(viewId, includeMonthName, orientation){
   if(viewId === 'debts'){ await shareDebtsTablePDF(); return; }
   try {
@@ -3158,38 +3054,84 @@ async function shareViewPDF(viewId, includeMonthName, orientation){
     await loadHtml2Pdf();
     const viewEl = document.getElementById(viewId);
     if(!viewEl){ toast(t('share_failed'), 'error'); return; }
+    
     const clone = viewEl.cloneNode(true);
     clone.querySelectorAll('.print-section').forEach(el => el.remove());
     clone.querySelectorAll('button').forEach(el => el.remove());
+    clone.querySelectorAll('.icon-btn').forEach(el => el.remove());
     clone.classList.add('active');
-    clone.style.display = 'block'; clone.style.background = '#ffffff'; clone.style.color = '#000000';
-    clone.style.padding = '15px'; clone.style.fontFamily = 'Segoe UI, Tahoma, sans-serif';
+    clone.style.display = 'block';
+    clone.style.animation = 'none';
+    clone.style.background = '#ffffff';
+    clone.style.color = '#000000';
+    clone.style.padding = '15px';
+    clone.style.fontFamily = 'Segoe UI, Tahoma, sans-serif';
     clone.style.direction = LANG === 'ar' ? 'rtl' : 'ltr';
     clone.style.width = orientation === 'landscape' ? '277mm' : '190mm';
+    clone.style.boxSizing = 'border-box';
+    
     prepareCloneForPdf(clone);
+    
     clone.querySelectorAll('.card, .kpi, table, th, td, .expense-table, .debts-table, .debts-month-table, .target-table').forEach(el => {
-      el.style.background = '#ffffff'; el.style.color = '#000000';
+      el.style.background = '#ffffff';
+      el.style.color = '#000000';
     });
-    clone.querySelectorAll('.card').forEach(el => { el.style.border = '1px solid #999'; el.style.marginBottom = '10px'; el.style.padding = '10px'; });
-    clone.querySelectorAll('th').forEach(el => { el.style.background = '#e5e7eb'; el.style.color = '#000'; el.style.border = '1px solid #999'; });
-    clone.querySelectorAll('td').forEach(el => { el.style.border = '1px solid #ccc'; el.style.color = '#000'; });
-    clone.querySelectorAll('.kpi').forEach(el => { el.style.background = '#f5f5f5'; el.style.border = '1px solid #999'; });
+    clone.querySelectorAll('.card').forEach(el => {
+      el.style.border = '1px solid #999';
+      el.style.marginBottom = '10px';
+      el.style.padding = '10px';
+    });
+    clone.querySelectorAll('th').forEach(el => {
+      el.style.background = '#e5e7eb';
+      el.style.color = '#000';
+      el.style.border = '1px solid #999';
+    });
+    clone.querySelectorAll('td').forEach(el => {
+      el.style.border = '1px solid #ccc';
+      el.style.color = '#000';
+    });
+    clone.querySelectorAll('.kpi').forEach(el => {
+      el.style.background = '#f5f5f5';
+      el.style.border = '1px solid #999';
+    });
     clone.querySelectorAll('.kpi .val').forEach(el => el.style.color = '#000');
     clone.querySelectorAll('.kpi .val.pos').forEach(el => el.style.color = '#166534');
     clone.querySelectorAll('.kpi .val.neg').forEach(el => el.style.color = '#991b1b');
     clone.querySelectorAll('.kpi .val.gold').forEach(el => el.style.color = '#78350f');
     clone.querySelectorAll('.kpi .val.acc').forEach(el => el.style.color = '#0e7490');
-    clone.querySelectorAll('.card h2').forEach(el => { el.style.color = '#000'; el.style.borderBottom = '1.5px solid #333'; });
+    clone.querySelectorAll('.card h2').forEach(el => {
+      el.style.color = '#000';
+      el.style.borderBottom = '1.5px solid #333';
+    });
+    
     const wrapper = document.createElement('div');
-    wrapper.style.position = 'fixed'; wrapper.style.left = '-99999px'; wrapper.style.top = '0';
-    wrapper.style.background = '#ffffff'; wrapper.appendChild(clone);
+    wrapper.style.cssText = `position:absolute;left:0;top:0;width:${orientation === 'landscape' ? '297mm' : '210mm'};background:#ffffff;z-index:-99999;pointer-events:none;`;
+    wrapper.appendChild(clone);
     document.body.appendChild(wrapper);
+    await new Promise(r => setTimeout(r, 100));
+    
     const filename = `capital_manager_${viewId}_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = { margin: [6,6,6,6], filename,
+    const opt = {
+      margin: [6, 6, 6, 6],
+      filename: filename,
       image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: orientation === 'landscape' ? 1400 : 900 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: orientation || 'portrait', compress: true },
-      pagebreak: { mode: ['css', 'legacy'] } };
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        windowWidth: orientation === 'landscape' ? 1400 : 900,
+        scrollX: 0,
+        scrollY: 0
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: orientation || 'portrait',
+        compress: true
+      },
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
     const pdfBlob = await html2pdf().set(opt).from(clone).outputPdf('blob');
     document.body.removeChild(wrapper);
     await sharePdfBlob(pdfBlob, filename);
@@ -3216,6 +3158,7 @@ async function sharePdfBlob(blob, filename){
   toast(t('pdf_downloaded'), 'success');
 }
 
+/* ⭐ FIXED: sharePyramidLevelPDF with proper positioning ⭐ */
 async function sharePyramidLevelPDF(key){
   try {
     const lvl = getPyramidLevels().find(l => l.key === key);
@@ -3224,18 +3167,22 @@ async function sharePyramidLevelPDF(key){
     await loadHtml2Pdf();
     const htmlStr = generatePyramidLevelReportHTML(key);
     const container = document.createElement('div');
-    container.style.position = 'fixed'; container.style.left = '-99999px'; container.style.top = '0';
-    container.style.width = '190mm'; container.style.background = '#ffffff';
-    const tempDiv = document.createElement('div'); tempDiv.innerHTML = htmlStr;
-    const bodyContent = tempDiv.querySelector('body');
-    if(bodyContent){ container.innerHTML = bodyContent.innerHTML; } else { container.innerHTML = htmlStr; }
+    container.style.cssText = 'position:absolute;left:0;top:0;width:210mm;background:#ffffff;z-index:-99999;pointer-events:none;';
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlStr, 'text/html');
+    const styleContent = Array.from(doc.head.querySelectorAll('style')).map(s => s.outerHTML).join('\n');
+    container.innerHTML = styleContent + doc.body.innerHTML;
     document.body.appendChild(container);
+    await new Promise(r => setTimeout(r, 100));
     const safeName = lvl.label.replace(/[^\w\u0600-\u06FF]/g, '_');
     const filename = `pyramid_${safeName}_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = { margin: [8,8,8,8], filename, image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 900 },
+    const opt = {
+      margin: [8,8,8,8], filename,
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 900, scrollX: 0, scrollY: 0 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-      pagebreak: { mode: ['css', 'legacy'] } };
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
     const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
     document.body.removeChild(container);
     await sharePdfBlob(pdfBlob, filename);
@@ -3556,7 +3503,6 @@ function updSavingBank(key, val){
 function updSavingRef(key, val){ const m = M()[state.activeMonth]; ensureSavingRefMeta(m)[key] = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 function updRef(key, val){ const m = M()[state.activeMonth]; ensureRefMeta(m)[key] = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 
-/* ⭐ UPDATED: debts-month with share button per row ⭐ */
 function renderDebtsMonthSection(){
   const mi = state.activeMonth; const y = state.activeYear;
   const tbody = document.getElementById("debtsMonthBody");
@@ -4016,7 +3962,6 @@ function generatePyramidLevelReportHTML(key){
     .badge{display:inline-block;padding:3px 10px;border-radius:14px;font-size:11px;font-weight:700;margin-inline-start:8px}
     .badge.green{background:#dcfce7;color:#166534;border:1px solid #16a34a}
     .source-line{font-size:11px;color:#64748b;font-style:italic;text-align:center;margin-bottom:12px}
-    @media print{body{padding:0}.noprint{display:none}}
   </style></head><body>`;
   html += `<div class="header"><div class="logo">M</div><h2>${lvl.subtitle} ${lvl.label}</h2>
     <div class="meta">${t('print_report_title')} — ${t('print_generated')}: ${dateStr} ${timeStr}</div>
@@ -4068,8 +4013,7 @@ function generatePyramidLevelReportHTML(key){
     });
     html += `<tr class="total-row"><td colspan="2"><strong>${t('print_total_withdrawn')}</strong></td><td class="num">${fmt(withdrawn)}</td><td></td></tr></tbody></table>`;
   } else { html += `<div class="empty">${t('print_no_withdrawals')}</div>`; }
-  html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div>`;
-  html += `</body></html>`;
+  html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div></body></html>`;
   return html;
 }
 
@@ -4317,7 +4261,7 @@ function updateDebtsFooter(){
   state.debts.forEach(d=>{ for(let i=0;i<12;i++) mTotals[i] += dm(d, state.activeYear, i); tp += debtPaidInYear(d, state.activeYear); tr += debtRemaining(d); });
   let html = `<tr><td colspan="6">${t('dms_total')}</td>`;
   for(let i=0;i<12;i++) html += `<td>${mTotals[i] > 0 ? fmt(mTotals[i]) : "—"}</td>`;
-  html += `<td class="paid-cell">${fmt(tp)}</td><td class="remain-cell">${fmt(tr)}</td><td></td></tr>`;
+  html += `<td class="paid-cell">${fmt(tp)}</td><td class="remain-cell">${fmt(tr)}</td><td class="noprint"></td></tr>`;
   foot.innerHTML = html;
 }
 function renderDebtsSummary(){
@@ -4334,7 +4278,6 @@ function renderDebtsSummary(){
     ${kpi(t('kpi_count'), state.debts.length.toString(), "acc")}
   `;
 }
-/* ⭐ UPDATED: renderDebts with 3 buttons per row ⭐ */
 function renderDebts(){
   renderDebtsSummary();
   const el = document.getElementById("debtsTable");
@@ -4345,7 +4288,7 @@ function renderDebts(){
     <th style="min-width:80px">${t('lbl_debt_cat')}</th><th style="min-width:85px">${t('th_debt_total')}</th>
     <th style="min-width:85px">${t('lbl_debt_paidbefore')}</th><th style="min-width:120px">${t('lbl_debt_notes')}</th>`;
   months.forEach(m => { head += `<th style="width:80px">${m}</th>`; });
-  head += `<th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th><th class="noprint" style="min-width:120px">⚙️</th></tr></thead>`;
+  head += `<th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th><th class="noprint" style="min-width:130px">⚙️</th></tr></thead>`;
   let body = `<tbody>`;
   state.debts.forEach(d => {
     const rc = d.type === "credit" ? "row-credit" : d.type === "debit" ? "row-debit" : d.type === "obligation" ? "row-obligation" : "row-installment";
