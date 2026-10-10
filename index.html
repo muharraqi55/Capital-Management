@@ -2399,82 +2399,106 @@ function setPrintOrientation(orientation){
   }
 }
 
-/* ============================================================
-   ⭐⭐⭐ PDF GENERATION IN A NEW WINDOW ⭐⭐⭐
-   This is the KEY FIX: we open the SAME window as the print
-   function (which is known to work perfectly), load html2pdf
-   inside it, and generate the PDF from there.
-   ============================================================ */
+
+/* ⭐ FIXED: PDF generation using visible container hidden behind overlay ⭐ */
 async function generatePdfInWindow(htmlStr, filename, orientation){
-  const w = window.open('', '_blank', 'width=' + (orientation === 'landscape' ? '1400' : '900') + ',height=900');
-  if(!w){
-    toast(t('print_error_popup'), 'error');
-    return null;
-  }
-  
-  w.document.open();
-  w.document.write(htmlStr);
-  w.document.close();
-  
-  // Wait for content + fonts to load
-  await new Promise(r => setTimeout(r, 700));
-  
-  // Inject html2pdf into the new window
+  // Remove any previous leftover containers
+  const oldC = document.getElementById('pdf-print-container');
+  if(oldC) oldC.remove();
+  const oldO = document.getElementById('pdf-overlay');
+  if(oldO) oldO.remove();
+
+  // Parse the HTML to extract <style> + <body>
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlStr, 'text/html');
+  const styles = Array.from(doc.head.querySelectorAll('style')).map(s => s.textContent).join('\n');
+  const bodyContent = doc.body.innerHTML;
+
+  const containerWidth = orientation === 'landscape' ? '297mm' : '210mm';
+
+  // 1) Printable container (visible to html2canvas, covered by overlay)
+  const printContainer = document.createElement('div');
+  printContainer.id = 'pdf-print-container';
+  printContainer.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: ${containerWidth};
+    min-width: ${containerWidth};
+    background: #ffffff;
+    color: #000000;
+    z-index: 999998;
+    padding: 10mm;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    direction: ${LANG === 'ar' ? 'rtl' : 'ltr'};
+  `;
+  printContainer.innerHTML = `<style>${styles}</style>${bodyContent}`;
+
+  // 2) Dark overlay covering the printable content
+  const overlay = document.createElement('div');
+  overlay.id = 'pdf-overlay';
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    color: #fff;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    letter-spacing: .5px;
+    backdrop-filter: blur(2px);
+  `;
+  overlay.innerHTML = `
+    <div style="text-align:center;line-height:1.6">
+      <div style="font-size:44px;margin-bottom:14px">⏳</div>
+      <div>${LANG === 'ar' ? 'جاري إنشاء ملف PDF...' : 'Generating PDF...'}</div>
+      <div style="font-size:13px;color:#aaa;margin-top:10px">${LANG === 'ar' ? 'الرجاء الانتظار قليلاً' : 'Please wait a moment'}</div>
+    </div>
+  `;
+
+  document.body.appendChild(printContainer);
+  document.body.appendChild(overlay);
+
+  // Let the browser render (apply styles, load fonts)
+  await new Promise(r => setTimeout(r, 500));
+
   try {
-    const script = w.document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-    w.document.head.appendChild(script);
-    
-    await new Promise((resolve) => {
-      script.onload = resolve;
-      script.onerror = resolve;
-      setTimeout(resolve, 4000);
-    });
-  } catch(e){ console.warn('script injection', e); }
-  
-  // Wait for html2pdf to be available
-  await new Promise((resolve) => {
-    const start = Date.now();
-    const check = () => {
-      if(w.html2pdf || Date.now() - start > 4000){ resolve(); }
-      else { setTimeout(check, 100); }
+    await loadHtml2Pdf();
+
+    const opt = {
+      margin: orientation === 'landscape' ? [4, 4, 4, 4] : [8, 8, 8, 8],
+      filename: filename,
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: orientation === 'landscape' ? 1400 : 900
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: orientation, compress: true },
+      pagebreak: { mode: ['css', 'legacy'] }
     };
-    check();
-  });
-  
-  if(!w.html2pdf){
-    console.error('html2pdf not available in new window');
-    try { w.close(); } catch(e){}
-    return null;
-  }
-  
-  // Small extra delay
-  await new Promise(r => setTimeout(r, 300));
-  
-  const opt = {
-    margin: orientation === 'landscape' ? [4, 4, 4, 4] : [8, 8, 8, 8],
-    filename: filename,
-    image: { type: 'jpeg', quality: 0.95 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: '#ffffff',
-      logging: false,
-      windowWidth: orientation === 'landscape' ? 1400 : 900,
-      scrollX: 0,
-      scrollY: 0
-    },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: orientation, compress: true },
-    pagebreak: { mode: ['css', 'legacy'] }
-  };
-  
-  try {
-    const pdfBlob = await w.html2pdf().set(opt).from(w.document.body).outputPdf('blob');
-    try { w.close(); } catch(e){}
+
+    // Generate PDF from the printable container (html2canvas ignores the overlay on top)
+    const pdfBlob = await html2pdf().set(opt).from(printContainer).outputPdf('blob');
+
+    // Cleanup
+    try { printContainer.remove(); } catch(e){}
+    try { overlay.remove(); } catch(e){}
+
     return pdfBlob;
   } catch(err){
     console.error('PDF generation error:', err);
-    try { w.close(); } catch(e){}
+    try { printContainer.remove(); } catch(e){}
+    try { overlay.remove(); } catch(e){}
     return null;
   }
 }
