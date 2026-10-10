@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -1465,7 +1464,7 @@ let SAVE_TIMER = null;
 let SAVE_PENDING = false;
 let _pyramidNoteTimer = null;
 let _debtMonthRefreshTimer = null;
-let _html2pdfLoading = null;
+let _pdfLibsPromise = null;
 
 const t = key => (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key;
 const getMonths = () => I18N[LANG].months;
@@ -2400,6 +2399,186 @@ function setPrintOrientation(orientation){
   }
 }
 
+/* ================================================================
+   ⭐⭐⭐ ROBUST PDF GENERATION (html2canvas + jsPDF) ⭐⭐⭐
+   ================================================================ */
+
+/* Load libraries with multiple CDN fallbacks */
+function ensurePdfLibs(){
+  if(window.html2canvas && window.jspdf) return Promise.resolve();
+  if(_pdfLibsPromise) return _pdfLibsPromise;
+
+  const loadScript = (src) => new Promise((resolve, reject) => {
+    const existing = document.querySelector(`script[data-pdf-lib="${src}"]`);
+    if(existing){
+      const check = () => {
+        if((src.includes('html2canvas') && window.html2canvas) || (src.includes('jspdf') && window.jspdf)) resolve();
+        else setTimeout(check, 100);
+      };
+      setTimeout(check, 200);
+      return;
+    }
+    const s = document.createElement('script');
+    s.src = src;
+    s.async = true;
+    s.setAttribute('data-pdf-lib', src);
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error('Failed to load: ' + src));
+    document.head.appendChild(s);
+  });
+
+  const CDNS = [
+    {
+      h: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+      j: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
+    },
+    {
+      h: 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
+      j: 'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js'
+    },
+    {
+      h: 'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js',
+      j: 'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js'
+    }
+  ];
+
+  _pdfLibsPromise = (async () => {
+    let lastErr = null;
+    for(const cdn of CDNS){
+      try {
+        if(!window.html2canvas) await loadScript(cdn.h);
+        if(!window.jspdf) await loadScript(cdn.j);
+        if(window.html2canvas && window.jspdf) return;
+      } catch(e){ lastErr = e; console.warn('CDN failed:', cdn.h, e && e.message); }
+    }
+    _pdfLibsPromise = null;
+    throw lastErr || new Error('All PDF CDNs failed');
+  })();
+
+  return _pdfLibsPromise;
+}
+
+function loadHtml2Pdf(){ return ensurePdfLibs(); }
+
+/* Generate PDF from an HTML string using html2canvas + jsPDF */
+async function generatePdfInWindow(htmlStr, filename, orientation){
+  // Cleanup any previous leftovers
+  const old1 = document.getElementById('pdf-print-container'); if(old1) old1.remove();
+  const old2 = document.getElementById('pdf-overlay'); if(old2) old2.remove();
+
+  // Parse HTML
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlStr, 'text/html');
+  const styles = Array.from(doc.head.querySelectorAll('style')).map(s => s.textContent).join('\n');
+  const bodyContent = doc.body.innerHTML;
+
+  const containerWidth = orientation === 'landscape' ? '277mm' : '190mm';
+
+  // Printable container (visible in DOM, fixed to viewport top-left)
+  const pc = document.createElement('div');
+  pc.id = 'pdf-print-container';
+  pc.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: ${containerWidth};
+    background: #ffffff;
+    color: #000000;
+    z-index: 2147483646;
+    padding: 6mm;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    direction: ${LANG === 'ar' ? 'rtl' : 'ltr'};
+    overflow: visible;
+  `;
+  pc.innerHTML = `<style>${styles}</style>${bodyContent}`;
+
+  // Opaque overlay covering the container
+  const ov = document.createElement('div');
+  ov.id = 'pdf-overlay';
+  ov.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    color: #ffffff;
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    text-align: center;
+  `;
+  ov.innerHTML = `
+    <div>
+      <div style="font-size:46px;margin-bottom:16px">⏳</div>
+      <div style="font-size:20px;font-weight:700">${LANG === 'ar' ? 'جاري إنشاء ملف PDF...' : 'Generating PDF...'}</div>
+      <div style="font-size:13px;color:#999;margin-top:10px">${LANG === 'ar' ? 'قد يستغرق بضع ثوان' : 'May take a few seconds'}</div>
+    </div>
+  `;
+
+  document.body.appendChild(pc);
+  document.body.appendChild(ov);
+
+  try {
+    // Ensure libraries are loaded
+    await ensurePdfLibs();
+
+    // Let the browser render + apply styles
+    await new Promise(r => setTimeout(r, 500));
+
+    // Compute adaptive scale
+    const targetPx = orientation === 'landscape' ? 2000 : 1400;
+    const scale = Math.min(2, Math.max(0.8, targetPx / Math.max(1, pc.scrollWidth)));
+
+    const canvas = await html2canvas(pc, {
+      scale: scale,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      scrollX: 0,
+      scrollY: 0,
+      windowWidth: orientation === 'landscape' ? 1600 : 1000
+    });
+
+    // Build PDF
+    const imgData = canvas.toDataURL('image/jpeg', 0.92);
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: orientation, compress: true });
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 1) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    const blob = pdf.output('blob');
+
+    // Cleanup
+    try { pc.remove(); } catch(e){}
+    try { ov.remove(); } catch(e){}
+
+    return blob;
+  } catch(err){
+    console.error('PDF generation failed:', err);
+    try { pc.remove(); } catch(e){}
+    try { ov.remove(); } catch(e){}
+    throw err;
+  }
+}
+
 /* ===================== DEBT REPORT GENERATOR ===================== */
 function generateDebtReportHTML(debtId){
   const d = state.debts.find(x=>x.id===debtId);
@@ -2430,43 +2609,43 @@ function generateDebtReportHTML(debtId){
   html += `<style>
     @page{size:A4;margin:15mm}
     *{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
-    body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:20px;line-height:1.7;margin:0}
-    .header{text-align:center;margin-bottom:24px;padding-bottom:12px;border-bottom:3px double #333}
+    body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:10px;line-height:1.6;margin:0}
+    .header{text-align:center;margin-bottom:20px;padding-bottom:10px;border-bottom:3px double #333}
     .header .logo{display:inline-block;width:54px;height:54px;line-height:54px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#3b82f6);color:#fff;font-weight:900;font-size:24px;text-align:center}
-    .header h2{margin:10px 0 4px;color:#0e7490;font-size:22px}
+    .header h2{margin:10px 0 4px;color:#0e7490;font-size:20px}
     .header .meta{color:#666;font-size:12px}
     .header .badge-status{display:inline-block;padding:4px 14px;border-radius:16px;font-size:12px;font-weight:700;margin-top:6px;background:${fullyPaid?'#dcfce7':'#fef3c7'};color:${statusColor};border:1px solid ${statusColor}}
-    .info-box{background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:14px 18px;margin:0 0 20px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px 20px;font-size:13px}
-    .info-box .lbl{color:#64748b;font-weight:600;font-size:11px}
-    .info-box .val{color:#0f172a;font-weight:700;font-size:14px;margin-top:2px}
-    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 24px}
-    .kpi{border:2px solid #ccc;border-radius:8px;padding:12px 8px;text-align:center;background:#f9fafb}
-    .kpi .lbl{font-size:11px;color:#666;margin-bottom:6px;font-weight:600}
-    .kpi .val{font-size:16px;font-weight:800;font-family:monospace;direction:ltr}
+    .info-box{background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;margin:0 0 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px 16px;font-size:12px}
+    .info-box .lbl{color:#64748b;font-weight:600;font-size:10px}
+    .info-box .val{color:#0f172a;font-weight:700;font-size:13px;margin-top:2px}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 20px}
+    .kpi{border:2px solid #ccc;border-radius:8px;padding:10px 6px;text-align:center;background:#f9fafb}
+    .kpi .lbl{font-size:10px;color:#666;margin-bottom:5px;font-weight:600}
+    .kpi .val{font-size:14px;font-weight:800;font-family:monospace;direction:ltr}
     .kpi.green{border-color:#16a34a;background:#f0fdf4}.kpi.green .val{color:#16a34a}
     .kpi.red{border-color:#dc2626;background:#fef2f2}.kpi.red .val{color:#dc2626}
     .kpi.gold{border-color:#d97706;background:#fffbeb}.kpi.gold .val{color:#d97706}
     .kpi.gray{border-color:#64748b;background:#f8fafc}.kpi.gray .val{color:#334155}
     .kpi.blue{border-color:#2563eb;background:#eff6ff}.kpi.blue .val{color:#2563eb}
-    .section-title{background:#f0f4f8;padding:10px 14px;border-right:5px solid #0e7490;font-weight:700;margin:22px 0 10px;font-size:14px;color:#1e293b;border-radius:4px}
-    .year-block{margin-bottom:18px;page-break-inside:avoid}
-    .year-header{background:#e0f2fe;border-right:5px solid #0891b2;padding:8px 14px;font-weight:800;font-size:14px;color:#0e7490;border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-    .year-header .year-total{font-family:monospace;font-size:13px;color:#16a34a;background:#f0fdf4;padding:3px 12px;border-radius:20px;border:1px solid #16a34a}
-    table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}
-    th{background:#e5e7eb;color:#111;padding:9px 10px;text-align:${L?'right':'left'};border:1px solid #999;font-size:11px;font-weight:700}
-    td{padding:8px 10px;border:1px solid #ccc;text-align:${L?'right':'left'}}
+    .section-title{background:#f0f4f8;padding:8px 12px;border-right:5px solid #0e7490;font-weight:700;margin:18px 0 8px;font-size:13px;color:#1e293b;border-radius:4px}
+    .year-block{margin-bottom:14px;page-break-inside:avoid}
+    .year-header{background:#e0f2fe;border-right:5px solid #0891b2;padding:6px 12px;font-weight:800;font-size:13px;color:#0e7490;border-radius:6px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+    .year-header .year-total{font-family:monospace;font-size:12px;color:#16a34a;background:#f0fdf4;padding:3px 10px;border-radius:20px;border:1px solid #16a34a}
+    table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px}
+    th{background:#e5e7eb;color:#111;padding:7px 8px;text-align:${L?'right':'left'};border:1px solid #999;font-size:10px;font-weight:700}
+    td{padding:6px 8px;border:1px solid #ccc;text-align:${L?'right':'left'}}
     td.num{font-family:monospace;direction:ltr;text-align:center;font-weight:700}
-    td.date{font-family:monospace;direction:ltr;text-align:center;color:#0e7490;font-weight:800;font-size:13px}
+    td.date{font-family:monospace;direction:ltr;text-align:center;color:#0e7490;font-weight:800;font-size:12px}
     td.month-name{font-weight:700;color:#1e293b}
     tbody tr:nth-child(even){background:#f9fafb}
     .total-row{background:#e0f2fe !important;font-weight:700}
     .total-row td{border-top:2px solid #0891b2;font-family:monospace}
-    .empty{color:#999;font-style:italic;text-align:center;padding:24px;background:#f9fafb;border:1px dashed #ccc;border-radius:6px}
-    .grand-total{background:#fef3c7 !important;font-weight:800;font-size:14px}
+    .empty{color:#999;font-style:italic;text-align:center;padding:20px;background:#f9fafb;border:1px dashed #ccc;border-radius:6px}
+    .grand-total{background:#fef3c7 !important;font-weight:800;font-size:13px}
     .grand-total td{border:2px solid #d97706;font-family:monospace}
-    .footer{text-align:center;margin-top:36px;padding-top:12px;border-top:2px solid #999;color:#666;font-size:11px;line-height:1.8}
+    .footer{text-align:center;margin-top:28px;padding-top:10px;border-top:2px solid #999;color:#666;font-size:10px;line-height:1.6}
     .footer strong{color:#0e7490}
-    .notes-box{background:#fffbeb;border:1px solid #fde68a;padding:10px 14px;border-radius:6px;margin:10px 0 16px;font-size:12px;color:#78350f}
+    .notes-box{background:#fffbeb;border:1px solid #fde68a;padding:8px 12px;border-radius:6px;margin:8px 0 14px;font-size:11px;color:#78350f}
   </style></head><body>`;
   
   html += `<div class="header">
@@ -2507,11 +2686,11 @@ function generateDebtReportHTML(debtId){
       html += `<div class="year-block">`;
       html += `<div class="year-header"><span>📅 ${t('print_year')} ${y}</span><span class="year-total">${fmt(yearTotal)} ${cur}</span></div>`;
       html += `<table><thead><tr>
-        <th style="width:40px">${t('print_index')}</th>
-        <th style="width:80px">${t('print_day_month')}</th>
-        <th style="width:110px">${t('print_month')}</th>
-        <th style="width:130px">${t('print_amount')} (${cur})</th>
-        <th style="width:100px">${t('th_debt_bank')}</th>
+        <th style="width:36px">${t('print_index')}</th>
+        <th style="width:70px">${t('print_day_month')}</th>
+        <th style="width:100px">${t('print_month')}</th>
+        <th style="width:120px">${t('print_amount')} (${cur})</th>
+        <th style="width:90px">${t('th_debt_bank')}</th>
         <th>${t('th_ref')}</th>
       </tr></thead><tbody>`;
       rows.forEach((p, idx) => {
@@ -2531,7 +2710,7 @@ function generateDebtReportHTML(debtId){
     
     html += `<table><tbody><tr class="grand-total">
       <td colspan="3"><strong>⚖️ ${t('debt_report_total_received')}</strong></td>
-      <td class="num" style="font-size:16px">${fmt(totalPaid)} ${cur}</td>
+      <td class="num" style="font-size:14px">${fmt(totalPaid)} ${cur}</td>
       <td colspan="2"></td>
     </tr></tbody></table>`;
   }
@@ -2539,7 +2718,7 @@ function generateDebtReportHTML(debtId){
   html += `<div class="footer">
     <div><strong>Muharraqi</strong> — ${t('print_title')}</div>
     <div>© 2025 Muharraqi. All Rights Reserved.</div>
-    <div style="margin-top:6px;font-size:10px;color:#999">${t('print_generated')}: ${dateStr} ${timeStr}</div>
+    <div style="margin-top:4px;font-size:9px;color:#999">${t('print_generated')}: ${dateStr} ${timeStr}</div>
   </div></body></html>`;
   return html;
 }
@@ -2558,34 +2737,17 @@ function printDebtReport(debtId){
   }
 }
 
-/* ⭐ FIXED: shareDebtReportPDF with proper positioning ⭐ */
 async function shareDebtReportPDF(debtId){
   try {
     const d = state.debts.find(x=>x.id===debtId);
     if(!d){ toast(t('share_failed'), 'error'); return; }
     toast(t('creating_pdf'));
-    await loadHtml2Pdf();
     const htmlStr = generateDebtReportHTML(debtId);
-    const container = document.createElement('div');
-    container.style.cssText = 'position:absolute;left:0;top:0;width:210mm;background:#ffffff;z-index:99999;pointer-events:none;';
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlStr, 'text/html');
-    const styleContent = Array.from(doc.head.querySelectorAll('style')).map(s => s.outerHTML).join('\n');
-    container.innerHTML = styleContent + doc.body.innerHTML;
-    document.body.appendChild(container);
-    await new Promise(r => setTimeout(r, 100));
     const safeName = d.name.replace(/[^\w\u0600-\u06FF]/g, '_');
     const filename = `debt_${safeName}_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = {
-      margin: [8,8,8,8], filename,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 900, scrollX: 0, scrollY: 0 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
-    const pdfBlob = await html2pdf().set(opt).from(container).toPdf().get('pdf').then(pdf => pdf.output('blob'));
-    document.body.removeChild(container);
-    await sharePdfBlob(pdfBlob, filename);
+    const blob = await generatePdfInWindow(htmlStr, filename, 'portrait');
+    if(!blob){ toast(t('share_failed'), 'error'); return; }
+    await sharePdfBlob(blob, filename);
   } catch(err){
     console.error('shareDebtReportPDF error:', err);
     if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
@@ -2746,11 +2908,9 @@ function exportDebtsMonthExcel(){
   toast(t('excel_exported'), 'success');
 }
 
-/* ⭐ FIXED: shareDebtsMonthPDF with proper positioning ⭐ */
 async function shareDebtsMonthPDF(){
   try {
     toast(t('creating_pdf'));
-    await loadHtml2Pdf();
     const mi = state.activeMonth;
     const y = state.activeYear;
     const monthName = getMonths()[mi];
@@ -2768,31 +2928,31 @@ async function shareDebtsMonthPDF(){
     
     let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('lbl_debts_month')} — ${monthName} ${y}</title>`;
     html += `<style>
-      @page{size:A4 landscape;margin:10mm}
-      *{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
-      body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:16px;margin:0}
-      .header{text-align:center;margin-bottom:16px;padding-bottom:10px;border-bottom:3px double #333}
+      @page{size:A4 landscape;margin:8mm}
+      *{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
+      body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:10px;margin:0}
+      .header{text-align:center;margin-bottom:14px;padding-bottom:8px;border-bottom:3px double #333}
       .header .logo{display:inline-block;width:50px;height:50px;line-height:50px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;font-weight:900;font-size:22px;text-align:center}
-      .header h2{margin:8px 0 4px;color:#2563eb;font-size:20px}
+      .header h2{margin:8px 0 4px;color:#2563eb;font-size:18px}
       .header .meta{color:#666;font-size:11px}
-      .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 20px}
+      .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 16px}
       .kpi{border:2px solid #ccc;border-radius:8px;padding:10px 8px;text-align:center;background:#f9fafb}
-      .kpi .lbl{font-size:11px;color:#666;margin-bottom:6px;font-weight:600}
-      .kpi .val{font-size:15px;font-weight:800;font-family:monospace;direction:ltr}
+      .kpi .lbl{font-size:11px;color:#666;margin-bottom:5px;font-weight:600}
+      .kpi .val{font-size:14px;font-weight:800;font-family:monospace;direction:ltr}
       .kpi.green{border-color:#16a34a;background:#f0fdf4}.kpi.green .val{color:#16a34a}
       .kpi.red{border-color:#dc2626;background:#fef2f2}.kpi.red .val{color:#dc2626}
       .kpi.blue{border-color:#2563eb;background:#eff6ff}.kpi.blue .val{color:#2563eb}
-      table{width:100%;border-collapse:collapse;font-size:11px}
-      th{background:#2563eb;color:#fff;padding:7px 6px;border:1px solid #333;font-size:10px;font-weight:700}
-      td{padding:6px;border:1px solid #999;text-align:center}
-      td.name-cell{text-align:${L?'right':'left'};font-weight:700;font-size:11px}
+      table{width:100%;border-collapse:collapse;font-size:10.5px}
+      th{background:#2563eb;color:#fff;padding:7px 5px;border:1px solid #333;font-size:10px;font-weight:700}
+      td{padding:6px 5px;border:1px solid #999;text-align:center}
+      td.name-cell{text-align:${L?'right':'left'};font-weight:700;font-size:10.5px}
       td.num{font-family:monospace;direction:ltr;font-weight:700}
-      tfoot td{background:#dbeafe;font-weight:700;font-size:12px}
+      tfoot td{background:#dbeafe;font-weight:700;font-size:11px}
       tr.row-debit td{background:#f0fdf4}
       tr.row-credit td{background:#fef2f2}
       tr.row-installment td{background:#eff6ff}
       tr.row-obligation td{background:#faf5ff}
-      .footer{text-align:center;margin-top:24px;padding-top:10px;border-top:1px solid #999;color:#666;font-size:10px}
+      .footer{text-align:center;margin-top:20px;padding-top:8px;border-top:1px solid #999;color:#666;font-size:10px}
       .footer strong{color:#2563eb}
       .empty{color:#999;font-style:italic;text-align:center;padding:30px;background:#f9fafb;border:1px dashed #ccc;border-radius:6px;margin:20px 0}
     </style></head><body>`;
@@ -2806,7 +2966,7 @@ async function shareDebtsMonthPDF(){
       html += `<div class="empty">${t('dms_empty')}</div>`;
     } else {
       html += `<table><thead><tr>
-        <th style="width:30px">#</th>
+        <th style="width:28px">#</th>
         <th style="width:15%">${t('th_debt_name')}</th>
         <th style="width:8%">${t('th_debt_type')}</th>
         <th style="width:9%">${t('th_debt_total')}</th>
@@ -2843,25 +3003,10 @@ async function shareDebtsMonthPDF(){
     }
     html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div></body></html>`;
     
-    const container = document.createElement('div');
-    container.style.cssText = 'position:absolute;left:0;top:0;width:277mm;background:#ffffff;z-index:99999;pointer-events:none;';
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const styleContent = Array.from(doc.head.querySelectorAll('style')).map(s => s.outerHTML).join('\n');
-    container.innerHTML = styleContent + doc.body.innerHTML;
-    document.body.appendChild(container);
-    await new Promise(r => setTimeout(r, 100));
     const filename = `debts_month_${y}_${mi+1}_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = {
-      margin: [6,6,6,6], filename,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 1400, scrollX: 0, scrollY: 0 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape', compress: true },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
-    const pdfBlob = await html2pdf().set(opt).from(container).toPdf().get('pdf').then(pdf => pdf.output('blob'));
-    document.body.removeChild(container);
-    await sharePdfBlob(pdfBlob, filename);
+    const blob = await generatePdfInWindow(html, filename, 'landscape');
+    if(!blob){ toast(t('share_failed'), 'error'); return; }
+    await sharePdfBlob(blob, filename);
   } catch(err){
     console.error('shareDebtsMonthPDF error:', err);
     if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
@@ -2967,32 +3112,14 @@ function printDebtsTable(){
   else { toast(t('print_error_popup'), 'error'); }
 }
 
-/* ⭐ FIXED: shareDebtsTablePDF with proper positioning ⭐ */
 async function shareDebtsTablePDF(){
   try {
     toast(t('creating_pdf'));
-    await loadHtml2Pdf();
     const htmlStr = generateDebtsTablePrintHTML();
-    const container = document.createElement('div');
-    container.style.cssText = 'position:absolute;left:0;top:0;width:297mm;background:#ffffff;z-index:99999;pointer-events:none;';
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlStr, 'text/html');
-    const styleContent = Array.from(doc.head.querySelectorAll('style')).map(s => s.outerHTML).join('\n');
-    container.innerHTML = styleContent + doc.body.innerHTML;
-    document.body.appendChild(container);
-    await new Promise(r => setTimeout(r, 100));
     const filename = `debts_table_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = {
-      margin: [4, 4, 4, 4],
-      filename,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 1400, scrollX: 0, scrollY: 0 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape', compress: true },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
-    const pdfBlob = await html2pdf().set(opt).from(container).toPdf().get('pdf').then(pdf => pdf.output('blob'));
-    document.body.removeChild(container);
-    await sharePdfBlob(pdfBlob, filename);
+    const blob = await generatePdfInWindow(htmlStr, filename, 'landscape');
+    if(!blob){ toast(t('share_failed'), 'error'); return; }
+    await sharePdfBlob(blob, filename);
   } catch(err){
     console.error('shareDebtsTablePDF error:', err);
     if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
@@ -3023,119 +3150,148 @@ function printPage(){
   printCurrentView(view === 'month', orientation);
 }
 
-function loadHtml2Pdf(){
-  if(window.html2pdf) return Promise.resolve();
-  if(_html2pdfLoading) return _html2pdfLoading;
-  _html2pdfLoading = new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-    script.onload = () => resolve();
-    script.onerror = () => { _html2pdfLoading = null; reject(new Error('Failed to load html2pdf.js')); };
-    document.head.appendChild(script);
-  });
-  return _html2pdfLoading;
-}
-
-function prepareCloneForPdf(clone){
+/* Build standalone HTML for the current view (used for sharing) */
+function generateViewHTML(viewId, includeMonthName, orientation){
+  const viewEl = document.getElementById(viewId);
+  if(!viewEl) return '';
+  const L = LANG === 'ar';
+  const now = new Date();
+  const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
+  const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+  let metaExtra = `${state.activeYear}`;
+  if(includeMonthName){ metaExtra = `${getMonths()[state.activeMonth]} ${state.activeYear}`; }
+  const activeTabBtn = document.querySelector('nav.tabs button.active');
+  const activeTabName = activeTabBtn ? activeTabBtn.textContent.trim() : '';
+  
+  const clone = viewEl.cloneNode(true);
   clone.querySelectorAll('.print-section').forEach(el => el.remove());
   clone.querySelectorAll('button').forEach(el => el.remove());
   clone.querySelectorAll('.icon-btn').forEach(el => el.remove());
-  clone.querySelectorAll('input,select,textarea').forEach(el => {
-    el.style.border = 'none'; el.style.background = 'transparent'; el.style.color = '#000';
-    el.style.fontWeight = '700'; el.style.textAlign = 'center';
-    if(el.tagName === 'INPUT' && el.type === 'number'){ el.style.fontFamily = 'monospace'; }
-  });
+  clone.classList.add('active');
+  clone.style.display = 'block';
+  clone.style.animation = 'none';
+  
+  const printStyles = `
+    *{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
+    body{font-family:'Segoe UI',Tahoma,sans-serif;background:#fff;color:#000;padding:10px;margin:0;font-size:10pt;direction:${L?'rtl':'ltr'}}
+    .view{display:block !important}
+    .card{background:#fff;border:1px solid #999;border-radius:8px;padding:10px;margin-bottom:10px;page-break-inside:avoid}
+    .card h2{color:#0e7490;border-bottom:1.5px solid #333;padding-bottom:5px;margin-bottom:8px;font-size:12pt;display:flex;align-items:center;gap:6px}
+    .card h2::before{content:"●";color:#0e7490;font-size:9px}
+    .salary-card{border:2px solid #78350f;background:#fffbeb}
+    .salary-card h2{color:#78350f}
+    .salary-card h2::before{content:"💰";color:#78350f;font-size:12px}
+    .kpi{background:#f5f5f5;border:1px solid #999;border-radius:6px;padding:8px;text-align:center}
+    .kpi .lbl{color:#444;font-size:8.5pt;margin-bottom:4px}
+    .kpi .val{color:#000;font-size:11pt;font-weight:700;font-family:monospace;direction:ltr}
+    .kpi .val.pos{color:#166534}.kpi .val.neg{color:#991b1b}
+    .kpi .val.gold{color:#78350f}.kpi .val.acc{color:#0e7490}
+    table{width:100%;border-collapse:collapse;font-size:9pt}
+    th,td{padding:5px 6px;text-align:${L?'right':'left'};border-bottom:1px solid #ccc}
+    th{background:#e5e7eb;color:#000;font-weight:700;font-size:8.5pt}
+    td.num{direction:ltr;text-align:left;font-family:monospace}
+    tr.excluded td:first-child{color:#dc2626;text-decoration:underline;opacity:.75}
+    .grid{display:grid;gap:8px}
+    .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:repeat(4,1fr)}
+    .badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:8.5pt;font-weight:600;background:#e5e7eb;color:#333}
+    .badge.green{background:#dcfce7;color:#166534}
+    .badge.red{background:#fee2e2;color:#991b1b}
+    .badge.blue{background:#dbeafe;color:#1e40af}
+    .badge.gold{background:#fef3c7;color:#78350f}
+    .badge.purple{background:#f3e8ff;color:#6b21a8}
+    .badge.fully-paid{background:#dcfce7;color:#166534;border:1px solid #16a34a;font-size:8pt;padding:1px 6px;font-weight:700}
+    .badge.excluded-badge{background:#fee2e2;color:#991b1b;border:1px solid #dc2626;font-size:8pt;padding:1px 6px;font-weight:700}
+    .badge.auto{background:#e5e7eb;color:#333;border:1px solid #64748b;font-size:8pt;padding:1px 6px;font-weight:700}
+    .badge.negative{background:#fee2e2;color:#991b1b;border:1px solid #dc2626;font-size:8pt;padding:1px 6px;font-weight:700}
+    .badge.investment{background:#dcfce7;color:#166534;border:1px solid #16a34a;font-size:8pt;padding:1px 6px;font-weight:700}
+    .badge.muted{background:#e5e7eb;color:#666}
+    .notice-bhd,.notice-int{background:#f8f8f8;color:#444;border:1px solid #bbb;border-radius:6px;padding:6px 10px;margin-bottom:8px;font-size:9pt;font-weight:600}
+    .excluded-cell{color:#dc2626 !important;text-decoration:underline;opacity:.65}
+    .muted{color:#666}
+    .monthPills{display:none}
+    .expense-table-wrap,.debts-table-wrap,.debts-month-wrap,.target-table-wrap{overflow:visible !important;border:none}
+    .expense-table td:first-child{font-weight:600}
+    .expense-table th{background:#e5e7eb !important;color:#000 !important;font-size:8.5pt;padding:4px 5px}
+    .expense-table input,.expense-table select,.debts-table input,.debts-table select,.debts-month-table input,.debts-month-table select,.target-table input,.target-table textarea{border:none !important;background:transparent !important;color:#000 !important;padding:1px !important;font-size:9pt !important;font-weight:700 !important}
+    .expense-table td,.debts-table td,.debts-month-table td,.target-table td{border-bottom:1px solid #ccc !important;padding:3px 5px !important;color:#000 !important}
+    .expense-table th,.debts-table th,.debts-month-table th,.target-table th{background:#e5e7eb !important;color:#000 !important;border-bottom:1px solid #999 !important}
+    .debts-table thead{position:static !important}
+    .debts-table .paid-cell,.debts-table .remain-cell{color:#0e7490 !important;font-family:monospace;font-weight:700}
+    .debts-table .remain-cell.pos{color:#166534 !important}
+    .debts-table .remain-cell.neg{color:#991b1b !important}
+    .debts-table tr.fully-paid-row{opacity:.72;background:#f0fdf4}
+    .debts-table tr.row-credit{background:#fef2f2}
+    .debts-table tr.row-debit{background:#f0fdf4}
+    .debts-table tr.row-installment{background:#eff6ff}
+    .debts-table tr.row-obligation{background:#faf5ff}
+    .last-pay-date{color:#166534 !important;background:#e0f2e9 !important;border:1px solid #166534 !important;font-size:8pt !important;padding:2px 6px;border-radius:6px;display:inline-flex;gap:4px;font-weight:700}
+    .last-pay-amount{background:#166534 !important;color:#fff !important;font-size:8pt !important;padding:1px 4px;border-radius:4px}
+    .last-pay-prior{font-size:8pt !important;color:#666}
+    .fully-paid-info{margin-top:3px}
+    .exp-sum-item{background:#f9fafb;border:1px solid #ccc;border-radius:6px;padding:5px 10px;font-size:9pt;display:inline-flex;gap:6px;align-items:center;margin:2px}
+    .exp-sum-item b{color:#0e7490;font-family:monospace}
+    .exp-sum-item.green{border-color:#16a34a}
+    .exp-sum-item.green b{color:#166534}
+    .exp-sum-item.red{border-color:#dc2626}
+    .exp-sum-item.red b{color:#991b1b}
+    .expense-summary{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;background:#f5f5f5;border:1px solid #ccc;border-radius:6px;padding:8px}
+    .exp-sum-divider{width:100%;height:1px;background:#ccc;margin:4px 0}
+    .exp-sum-title{font-size:9pt;font-weight:700;color:#444;width:100%;margin-bottom:2px}
+    .bank-item{background:#f9fafb;border:1px solid #ccc;border-radius:6px;padding:5px 10px;font-size:9pt;display:inline-flex;gap:6px;align-items:center;margin:2px}
+    .bank-item b{color:#0e7490;font-family:monospace}
+    .progress-bar{background:#eee;border:1px solid #999;border-radius:6px;height:12px;overflow:hidden;position:relative;min-width:100px}
+    .progress-fill{height:100%}
+    .progress-text{font-size:8pt;color:#666;margin-top:2px;font-family:monospace}
+    .target-name{display:flex;align-items:center;gap:6px;font-weight:700;font-size:9pt}
+    .target-dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+    .target-note{border:1px solid #ccc !important;background:#fff !important;padding:3px 6px !important;border-radius:4px;width:100%}
+    .target-input{background:#fff !important;border:1px solid #999 !important;font-family:monospace !important;font-weight:700 !important;color:#78350f !important;text-align:center}
+    .target-input.auto-input{background:#f5f5f5 !important;color:#666 !important;cursor:not-allowed}
+    .saving-target-hint{font-size:8pt;padding:1px 5px;border-radius:6px;background:#dcfce7;color:#166534;font-weight:700}
+    .pyr-legend-item,.pyramid-legend{background:#f9fafb;border:1px solid #ccc;border-radius:6px;padding:6px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:4px 0}
+    .pyr-color{width:14px;height:14px;border-radius:3px;display:inline-block}
+    .pyr-val{font-family:monospace;font-weight:700;color:#0e7490}
+    .pyr-note{font-size:8pt;color:#78350f;width:100%;background:#fffbeb;padding:3px 6px;border-radius:4px;margin-top:3px}
+    .pyramid-wrap{text-align:center;padding:8px;background:#f9fafb;border:1px solid #ccc;border-radius:6px}
+    .pyramid-svg{max-width:520px}
+    .print-section{display:none}
+    .noprint{display:none}
+    input[type=number]{text-align:center}
+    .debts-month-table tr.row-debit td{background:#f0fdf4}
+    .debts-month-table tr.row-credit td{background:#fef2f2}
+    .debts-month-table tr.row-installment td{background:#eff6ff}
+    .debts-month-table tr.row-obligation td{background:#faf5ff}
+    tfoot td{background:#e0f2fe !important;font-weight:700;border-top:1.5px solid #0891b2}
+    @page{size:A4 ${orientation};margin:8mm}
+  `;
+  
+  let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${activeTabName} — ${metaExtra}</title>`;
+  html += `<style>${printStyles}</style></head><body>`;
+  html += `<div style="text-align:center;padding:8px 0 10px;margin-bottom:10px;border-bottom:3px double #333">
+    <div style="display:inline-block;width:42px;height:42px;line-height:42px;border-radius:50%;background:#0e7490;color:#fff;font-weight:900;font-size:20px;text-align:center;margin-bottom:6px">M</div>
+    <h1 style="color:#000;font-size:15pt;margin:0 0 4px;font-weight:700">${t('print_title')}</h1>
+    <div style="color:#444;font-size:10pt;margin-bottom:3px">${activeTabName} — ${metaExtra}</div>
+    <div style="color:#666;font-size:9pt">${t('print_generated')}: ${dateStr} — ${timeStr}</div>
+  </div>`;
+  html += clone.outerHTML;
+  html += `<div style="text-align:center;padding-top:8px;margin-top:12px;border-top:1px solid #999;color:#444;font-size:9pt;line-height:1.7">
+    <div><strong style="color:#0e7490">Muharraqi</strong> — ${t('print_title')} / Capital Manager</div>
+    <div>© 2025 Muharraqi. All Rights Reserved.</div>
+  </div>`;
+  html += `</body></html>`;
+  return html;
 }
 
-/* ⭐ FIXED: shareViewPDF with proper positioning ⭐ */
 async function shareViewPDF(viewId, includeMonthName, orientation){
   if(viewId === 'debts'){ await shareDebtsTablePDF(); return; }
   try {
     toast(t('creating_pdf'));
-    await loadHtml2Pdf();
-    const viewEl = document.getElementById(viewId);
-    if(!viewEl){ toast(t('share_failed'), 'error'); return; }
-    
-    const clone = viewEl.cloneNode(true);
-    clone.querySelectorAll('.print-section').forEach(el => el.remove());
-    clone.querySelectorAll('button').forEach(el => el.remove());
-    clone.querySelectorAll('.icon-btn').forEach(el => el.remove());
-    clone.classList.add('active');
-    clone.style.display = 'block';
-    clone.style.animation = 'none';
-    clone.style.background = '#ffffff';
-    clone.style.color = '#000000';
-    clone.style.padding = '15px';
-    clone.style.fontFamily = 'Segoe UI, Tahoma, sans-serif';
-    clone.style.direction = LANG === 'ar' ? 'rtl' : 'ltr';
-    clone.style.width = orientation === 'landscape' ? '277mm' : '190mm';
-    clone.style.boxSizing = 'border-box';
-    
-    prepareCloneForPdf(clone);
-    
-    clone.querySelectorAll('.card, .kpi, table, th, td, .expense-table, .debts-table, .debts-month-table, .target-table').forEach(el => {
-      el.style.background = '#ffffff';
-      el.style.color = '#000000';
-    });
-    clone.querySelectorAll('.card').forEach(el => {
-      el.style.border = '1px solid #999';
-      el.style.marginBottom = '10px';
-      el.style.padding = '10px';
-    });
-    clone.querySelectorAll('th').forEach(el => {
-      el.style.background = '#e5e7eb';
-      el.style.color = '#000';
-      el.style.border = '1px solid #999';
-    });
-    clone.querySelectorAll('td').forEach(el => {
-      el.style.border = '1px solid #ccc';
-      el.style.color = '#000';
-    });
-    clone.querySelectorAll('.kpi').forEach(el => {
-      el.style.background = '#f5f5f5';
-      el.style.border = '1px solid #999';
-    });
-    clone.querySelectorAll('.kpi .val').forEach(el => el.style.color = '#000');
-    clone.querySelectorAll('.kpi .val.pos').forEach(el => el.style.color = '#166534');
-    clone.querySelectorAll('.kpi .val.neg').forEach(el => el.style.color = '#991b1b');
-    clone.querySelectorAll('.kpi .val.gold').forEach(el => el.style.color = '#78350f');
-    clone.querySelectorAll('.kpi .val.acc').forEach(el => el.style.color = '#0e7490');
-    clone.querySelectorAll('.card h2').forEach(el => {
-      el.style.color = '#000';
-      el.style.borderBottom = '1.5px solid #333';
-    });
-    
-    const wrapper = document.createElement('div');
-    wrapper.style.cssText = `position:absolute;left:0;top:0;width:${orientation === 'landscape' ? '297mm' : '210mm'};background:#ffffff;z-index:99999;pointer-events:none;`;
-    wrapper.appendChild(clone);
-    document.body.appendChild(wrapper);
-    await new Promise(r => setTimeout(r, 100));
-    
+    const htmlStr = generateViewHTML(viewId, includeMonthName, orientation);
+    if(!htmlStr){ toast(t('share_failed'), 'error'); return; }
     const filename = `capital_manager_${viewId}_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = {
-      margin: [6, 6, 6, 6],
-      filename: filename,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-        windowWidth: orientation === 'landscape' ? 1400 : 900,
-        scrollX: 0,
-        scrollY: 0
-      },
-      jsPDF: {
-        unit: 'mm',
-        format: 'a4',
-        orientation: orientation || 'portrait',
-        compress: true
-      },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
-    const pdfBlob = await html2pdf().set(opt).from(clone).toPdf().get('pdf').then(pdf => pdf.output('blob'));
-    document.body.removeChild(wrapper);
-    await sharePdfBlob(pdfBlob, filename);
+    const blob = await generatePdfInWindow(htmlStr, filename, orientation || 'portrait');
+    if(!blob){ toast(t('share_failed'), 'error'); return; }
+    await sharePdfBlob(blob, filename);
   } catch(err){
     console.error('shareViewPDF error:', err);
     if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
@@ -3159,34 +3315,17 @@ async function sharePdfBlob(blob, filename){
   toast(t('pdf_downloaded'), 'success');
 }
 
-/* ⭐ FIXED: sharePyramidLevelPDF with proper positioning ⭐ */
 async function sharePyramidLevelPDF(key){
   try {
     const lvl = getPyramidLevels().find(l => l.key === key);
     if(!lvl){ toast(t('share_failed'), 'error'); return; }
     toast(t('creating_pdf'));
-    await loadHtml2Pdf();
     const htmlStr = generatePyramidLevelReportHTML(key);
-    const container = document.createElement('div');
-    container.style.cssText = 'position:absolute;left:0;top:0;width:210mm;background:#ffffff;z-index:99999;pointer-events:none;';
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlStr, 'text/html');
-    const styleContent = Array.from(doc.head.querySelectorAll('style')).map(s => s.outerHTML).join('\n');
-    container.innerHTML = styleContent + doc.body.innerHTML;
-    document.body.appendChild(container);
-    await new Promise(r => setTimeout(r, 100));
     const safeName = lvl.label.replace(/[^\w\u0600-\u06FF]/g, '_');
     const filename = `pyramid_${safeName}_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = {
-      margin: [8,8,8,8], filename,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 900, scrollX: 0, scrollY: 0 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
-    const pdfBlob = await html2pdf().set(opt).from(container).toPdf().get('pdf').then(pdf => pdf.output('blob'));
-    document.body.removeChild(container);
-    await sharePdfBlob(pdfBlob, filename);
+    const blob = await generatePdfInWindow(htmlStr, filename, 'portrait');
+    if(!blob){ toast(t('share_failed'), 'error'); return; }
+    await sharePdfBlob(blob, filename);
   } catch(err){
     console.error('sharePyramidLevelPDF error:', err);
     if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
@@ -3924,45 +4063,45 @@ function generatePyramidLevelReportHTML(key){
   const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
   let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('print_report_title')}: ${lvl.label}</title>`;
   html += `<style>
-    @page{size:A4;margin:15mm}
-    *{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
-    body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:20px;line-height:1.7;margin:0}
-    .header{text-align:center;margin-bottom:24px;padding-bottom:12px;border-bottom:3px double #333}
+    @page{size:A4;margin:12mm}
+    *{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
+    body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:10px;line-height:1.6;margin:0}
+    .header{text-align:center;margin-bottom:20px;padding-bottom:10px;border-bottom:3px double #333}
     .header .logo{display:inline-block;width:54px;height:54px;line-height:54px;border-radius:50%;background:#0e7490;color:#fff;font-weight:900;font-size:24px;text-align:center}
-    .header h2{margin:10px 0 4px;color:${lvl.color};font-size:22px}
+    .header h2{margin:10px 0 4px;color:${lvl.color};font-size:20px}
     .header .meta{color:#666;font-size:12px}
-    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 24px}
-    .kpi{border:2px solid #ccc;border-radius:8px;padding:12px 8px;text-align:center;background:#f9fafb}
-    .kpi .lbl{font-size:11px;color:#666;margin-bottom:6px;font-weight:600}
-    .kpi .val{font-size:17px;font-weight:800;font-family:monospace;direction:ltr}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 20px}
+    .kpi{border:2px solid #ccc;border-radius:8px;padding:10px 8px;text-align:center;background:#f9fafb}
+    .kpi .lbl{font-size:11px;color:#666;margin-bottom:5px;font-weight:600}
+    .kpi .val{font-size:15px;font-weight:800;font-family:monospace;direction:ltr}
     .kpi.green{border-color:#16a34a;background:#f0fdf4}.kpi.green .val{color:#16a34a}
     .kpi.red{border-color:#dc2626;background:#fef2f2}.kpi.red .val{color:#dc2626}
     .kpi.gold{border-color:#d97706;background:#fffbeb}.kpi.gold .val{color:#d97706}
     .kpi.gray{border-color:#64748b;background:#f8fafc}.kpi.gray .val{color:#334155}
-    .section-title{background:#f0f4f8;padding:10px 14px;border-right:5px solid ${lvl.color};font-weight:700;margin:22px 0 10px;font-size:14px;color:#1e293b}
-    .year-block{margin-bottom:20px;page-break-inside:avoid}
-    .year-header{background:${lvl.color}22;border-right:5px solid ${lvl.color};padding:10px 14px;font-weight:800;font-size:15px;color:${lvl.color};border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-    .year-header .year-total{font-family:monospace;font-size:14px;color:#16a34a;background:#f0fdf4;padding:4px 12px;border-radius:20px;border:1px solid #16a34a}
-    table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}
-    th{background:#e5e7eb;color:#111;padding:9px 10px;text-align:${L?'right':'left'};border:1px solid #999;font-size:11px;font-weight:700}
-    td{padding:8px 10px;border:1px solid #ccc;text-align:${L?'right':'left'}}
+    .section-title{background:#f0f4f8;padding:8px 12px;border-right:5px solid ${lvl.color};font-weight:700;margin:18px 0 8px;font-size:13px;color:#1e293b}
+    .year-block{margin-bottom:16px;page-break-inside:avoid}
+    .year-header{background:${lvl.color}22;border-right:5px solid ${lvl.color};padding:8px 12px;font-weight:800;font-size:14px;color:${lvl.color};border-radius:6px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+    .year-header .year-total{font-family:monospace;font-size:13px;color:#16a34a;background:#f0fdf4;padding:4px 10px;border-radius:20px;border:1px solid #16a34a}
+    table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px}
+    th{background:#e5e7eb;color:#111;padding:7px 8px;text-align:${L?'right':'left'};border:1px solid #999;font-size:10px;font-weight:700}
+    td{padding:6px 8px;border:1px solid #ccc;text-align:${L?'right':'left'}}
     td.num{font-family:monospace;direction:ltr;text-align:center;font-weight:700}
-    td.date{font-family:monospace;direction:ltr;text-align:center;color:${lvl.color};font-weight:800;font-size:13px}
+    td.date{font-family:monospace;direction:ltr;text-align:center;color:${lvl.color};font-weight:800;font-size:12px}
     td.month-name{font-weight:700;color:#1e293b}
-    td.note{color:#475569;font-size:11px;font-style:italic}
+    td.note{color:#475569;font-size:10px;font-style:italic}
     tbody tr:nth-child(even){background:#f9fafb}
     .total-row{background:#e0f2fe !important;font-weight:700}
     .total-row td{border-top:2px solid #0891b2;font-family:monospace}
-    .sub-row td{border-top:none;border-bottom:1px dashed #cbd5e1;background:#fafbfc;font-size:11px;color:#64748b}
+    .sub-row td{border-top:none;border-bottom:1px dashed #cbd5e1;background:#fafbfc;font-size:10px;color:#64748b}
     .sub-row td:first-child{padding-right:30px}
-    .note-box{background:#fffbeb;border:1px solid #fde68a;padding:12px 16px;border-radius:8px;margin:14px 0;font-size:13px;color:#78350f}
+    .note-box{background:#fffbeb;border:1px solid #fde68a;padding:10px 14px;border-radius:8px;margin:12px 0;font-size:12px;color:#78350f}
     .note-box strong{color:#92400e}
-    .empty{color:#999;font-style:italic;text-align:center;padding:24px;background:#f9fafb;border:1px dashed #ccc;border-radius:6px}
-    .footer{text-align:center;margin-top:36px;padding-top:12px;border-top:2px solid #999;color:#666;font-size:11px;line-height:1.8}
+    .empty{color:#999;font-style:italic;text-align:center;padding:20px;background:#f9fafb;border:1px dashed #ccc;border-radius:6px}
+    .footer{text-align:center;margin-top:28px;padding-top:10px;border-top:2px solid #999;color:#666;font-size:10px;line-height:1.6}
     .footer strong{color:#0e7490}
-    .badge{display:inline-block;padding:3px 10px;border-radius:14px;font-size:11px;font-weight:700;margin-inline-start:8px}
+    .badge{display:inline-block;padding:3px 8px;border-radius:14px;font-size:10px;font-weight:700;margin-inline-start:6px}
     .badge.green{background:#dcfce7;color:#166534;border:1px solid #16a34a}
-    .source-line{font-size:11px;color:#64748b;font-style:italic;text-align:center;margin-bottom:12px}
+    .source-line{font-size:10px;color:#64748b;font-style:italic;text-align:center;margin-bottom:10px}
   </style></head><body>`;
   html += `<div class="header"><div class="logo">M</div><h2>${lvl.subtitle} ${lvl.label}</h2>
     <div class="meta">${t('print_report_title')} — ${t('print_generated')}: ${dateStr} ${timeStr}</div>
@@ -3984,7 +4123,7 @@ function generatePyramidLevelReportHTML(key){
       html += `<div class="year-header"><span>📅 ${t('print_year')} ${yb.year}</span><span class="year-total">${fmt(yb.total)} ${cur}</span></div>`;
       const isDebtType = (key === "loans" || key === "obligationsSaving");
       if(isDebtType){
-        html += `<table><thead><tr><th style="width:40px">${t('print_index')}</th><th style="width:80px">${t('print_day_month')}</th><th style="width:100px">${t('print_month')}</th><th>${t('print_debt_name')}</th><th style="width:110px">${t('print_amount')} (${cur})</th><th style="width:80px">${t('th_ref')}</th></tr></thead><tbody>`;
+        html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th style="width:70px">${t('print_day_month')}</th><th style="width:90px">${t('print_month')}</th><th>${t('print_debt_name')}</th><th style="width:100px">${t('print_amount')} (${cur})</th><th style="width:70px">${t('th_ref')}</th></tr></thead><tbody>`;
         let counter = 0;
         yb.months.forEach(mr => {
           mr.entries.forEach((en, idx) => {
@@ -3995,7 +4134,7 @@ function generatePyramidLevelReportHTML(key){
         });
         html += `<tr class="total-row"><td colspan="4"><strong>${t('print_year_total')} ${yb.year}</strong></td><td class="num">${fmt(yb.total)}</td><td></td></tr></tbody></table>`;
       } else {
-        html += `<table><thead><tr><th style="width:40px">${t('print_index')}</th><th style="width:80px">${t('print_day_month')}</th><th style="width:110px">${t('print_month')}</th><th style="width:130px">${t('print_amount')} (${cur})</th><th>${t('print_notes_label')}</th><th style="width:70px">${t('th_ref')}</th></tr></thead><tbody>`;
+        html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th style="width:70px">${t('print_day_month')}</th><th style="width:100px">${t('print_month')}</th><th style="width:120px">${t('print_amount')} (${cur})</th><th>${t('print_notes_label')}</th><th style="width:60px">${t('th_ref')}</th></tr></thead><tbody>`;
         yb.months.forEach((mr, idx) => {
           html += `<tr><td class="num">${idx + 1}</td><td class="date">${mr.dateDisplay}</td><td class="month-name">${mr.monthName}</td><td class="num">${fmt(mr.amount)}</td><td class="note">${esc(mr.note) || '—'}</td><td style="text-align:center">${esc(mr.ref || '') || '—'}</td></tr>`;
         });
@@ -4006,7 +4145,7 @@ function generatePyramidLevelReportHTML(key){
   } else { html += `<div class="empty">${t('print_no_data')}</div>`; }
   html += `<div class="section-title">${t('print_withdrawals_history')}</div>`;
   if(ws.length){
-    html += `<table><thead><tr><th style="width:40px">${t('print_index')}</th><th>${t('print_date')}</th><th>${t('print_amount')} (${cur})</th><th>${t('print_reason')}</th></tr></thead><tbody>`;
+    html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th>${t('print_date')}</th><th>${t('print_amount')} (${cur})</th><th>${t('print_reason')}</th></tr></thead><tbody>`;
     ws.forEach((w, idx) => {
       const d = new Date(w.date);
       const wdateStr = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
