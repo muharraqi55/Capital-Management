@@ -42,6 +42,9 @@
   .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
   .card h2{font-size:16px;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--line)}
   .card h2::before{content:"●";color:var(--accent);font-size:10px}
+  .salary-card{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.10),transparent)}
+  .salary-card h2{color:var(--gold)}
+  .salary-card h2::before{content:"💰";color:var(--gold);font-size:12px}
   .grid{display:grid;gap:12px}
   .g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
   @media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
@@ -162,6 +165,7 @@
   .bank-item.bank-bbk{border-color:rgba(249,115,22,.4)}.bank-item.bank-bbk b{color:#fb923c}
   .bank-item.bank-meem{border-color:rgba(20,184,166,.4)}.bank-item.bank-meem b{color:#2dd4bf}
   .bank-item.bank-nbb{border-color:rgba(234,179,8,.4)}.bank-item.bank-nbb b{color:var(--gold)}
+  .bank-item.bank-credimax{border-color:rgba(139,92,246,.45)}.bank-item.bank-credimax b{color:#a78bfa}
   .bank-item.bank-excl{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.08)}.bank-item.bank-excl b{color:var(--danger)}
   .saving-card{border:2px solid var(--accent);background:linear-gradient(180deg,rgba(34,193,164,.1),transparent)}
   .saving-card h2{color:var(--accent)}
@@ -350,6 +354,8 @@
     .card{break-inside:avoid;page-break-inside:avoid;border:1px solid #999 !important;background:#fff !important;box-shadow:none !important;padding:8pt !important;margin-bottom:6pt !important;border-radius:4pt}
     .card h2{color:#000 !important;border-bottom:1.5px solid #333 !important;padding-bottom:3pt;margin-bottom:6pt;font-size:11pt}
     .card h2::before{color:#000 !important}
+    .salary-card{border:2px solid #78350f !important;background:#fffbeb !important}
+    .salary-card h2{color:#78350f !important}
     .kpi{background:#f5f5f5 !important;border:1px solid #999 !important;padding:5pt !important;border-radius:3pt}
     .kpi .lbl{color:#333 !important;font-size:7pt}.kpi .val{color:#000 !important;font-size:11pt}
     .kpi .val.pos{color:#166534 !important}.kpi .val.neg{color:#991b1b !important}
@@ -618,8 +624,19 @@
     </div>
   </div>
 
+  <!-- ⭐ NEW SALARY SECTION ⭐ -->
+  <div class="card salary-card">
+    <h2><span id="lblSalarySection"></span> — <span id="monthTitle" style="color:var(--gold)"></span></h2>
+    <div class="expense-table-wrap">
+      <table class="expense-table">
+        <thead><tr><th id="thSalItem"></th><th id="thSalAmount"></th><th id="thSalNote"></th></tr></thead>
+        <tbody id="salaryFields"></tbody>
+      </table>
+    </div>
+  </div>
+
   <div class="card">
-    <h2><span id="lblIncome"></span> — <span id="monthTitle" style="color:var(--gold)"></span></h2>
+    <h2><span id="lblIncome"></span></h2>
     <div class="expense-table-wrap">
       <table class="expense-table">
         <thead><tr><th id="thIncItem"></th><th id="thIncAmount"></th><th id="thIncNote"></th></tr></thead>
@@ -955,7 +972,8 @@ const I18N = {
     notice_bhd:"💵 جميع المبالغ بالدينار البحريني (د.ب)",
     date_title:"📅 متى تم تعديل هذا الشهر؟",lbl_date:"📌 التاريخ اليدوي (يُحفظ فوراً)",
     lbl_time:"⏰ الوقت (اختياري)",lbl_lastmod:"🔄 آخر تعديل تلقائي (للقراءة فقط)",
-    lbl_income:"💰 الدخل",eid_title:"ركز اهني هل يوجد عيد في ذي الشهر حق لثياب او العيادي",
+    lbl_salary_section:"💰 راتب الشهري",
+    lbl_income:"💰 دخل الاضافي",eid_title:"ركز اهني هل يوجد عيد في ذي الشهر حق لثياب او العيادي",
     lbl_eid_state:"اختر الحالة",
     eid_opt1:"عيادي+ عيادي عيالي",eid_opt2:"ثياب العيد",
     eid_opt3:"عيادي ، عيادي عيالي + ثياب العيد",eid_opt4:"لا",
@@ -1106,6 +1124,7 @@ const I18N = {
     e_kidsSchool:"↳ المدرسة",e_kidsClothes:"↳ الملابس",e_kidsEid:"↳ العيد",
     e_privateSchool:"مدرسة خاصة",e_kindergarten:"روضة",e_university:"جامعة",
     e_transport:"مواصلات",e_tutoring:"دروس تقوية",e_humanitarianAid:"🤲 مساعدات انسانية",
+    e_eidEidi:"عيادي العيد",
     bd_none:"— لا أحد —",bd_wife:"زوجة",bd_husband:"الزوج",bd_kids:"العيال",
     s_assembly:"👥 جمعية (د.ب)",s_investment:"📈 الاستثمار (د.ب)",
     s_eidMoneySaving:"🎉 عيادي العيد (د.ب)",
@@ -1180,7 +1199,8 @@ const I18N = {
     notice_bhd:"💵 All amounts in Bahraini Dinar (BHD)",
     date_title:"📅 When was this month modified?",lbl_date:"📌 Manual Date",
     lbl_time:"⏰ Time",lbl_lastmod:"🔄 Auto last modified",
-    lbl_income:"💰 Income",eid_title:"Is there an Eid this month?",
+    lbl_salary_section:"💰 Monthly Salary",
+    lbl_income:"💰 Additional Income",eid_title:"Is there an Eid this month?",
     lbl_eid_state:"Choose state",
     eid_opt1:"Eidi + Kids Eidi",eid_opt2:"Eid Clothes",
     eid_opt3:"Eidi, Kids Eidi + Eid Clothes",eid_opt4:"No",
@@ -1327,6 +1347,7 @@ const I18N = {
     e_kidsSchool:"↳ School",e_kidsClothes:"↳ Clothes",e_kidsEid:"↳ Eid",
     e_privateSchool:"Private School",e_kindergarten:"KG",e_university:"University",
     e_transport:"Transport",e_tutoring:"Tutoring",e_humanitarianAid:"🤲 Aid",
+    e_eidEidi:"Eid Eidi",
     bd_none:"— None —",bd_wife:"Wife",bd_husband:"Husband",bd_kids:"Kids",
     s_assembly:"👥 Assembly",s_investment:"📈 Investment",
     s_eidMoneySaving:"🎉 Eid Money",
@@ -1365,9 +1386,9 @@ const I18N = {
   }
 };
 
-const BANKS = ["بطاقة صراف الالي","NBK","ILA","BBK","MEEM","NBB","غير محسوب ذي الشهر"];
+const BANKS = ["بطاقة صراف الالي","NBK","ILA","BBK","MEEM","NBB","Credimax","غير محسوب ذي الشهر"];
 const EXCLUDED_BANK = "غير محسوب ذي الشهر";
-const BANKS_EN = ["ATM Card","NBK","ILA","BBK","MEEM","NBB","Not Counted"];
+const BANKS_EN = ["ATM Card","NBK","ILA","BBK","MEEM","NBB","Credimax","Not Counted"];
 const REF_OPTIONS = [
   {v:"", l:"-"},
   {v:"NBK", l:"NBK"},
@@ -1375,6 +1396,7 @@ const REF_OPTIONS = [
   {v:"BBK", l:"BBK"},
   {v:"MEEM", l:"MEEM"},
   {v:"NBB", l:"NBB"},
+  {v:"Credimax", l:"Credimax"},
 ];
 const DEFAULT_EXTRA = () => ({ amount:0, bank:"بطاقة صراف الالي", note:"", ref:"" });
 const MEAT_MONTHS = [0, 3, 6, 9];
@@ -1401,8 +1423,9 @@ const getMonths = () => I18N[LANG].months;
 const bankLabel = b => LANG === 'en' ? (BANKS_EN[BANKS.indexOf(b)] || b) : b;
 const isExcludedBank = bank => bank === EXCLUDED_BANK;
 
+/* Income fields — salary moved out to its own section */
 const getIncomeFields = () => [
-  ["salary", t('f_salary')],["costOfLiving", t('f_costOfLiving')],
+  ["costOfLiving", t('f_costOfLiving')],
   ["housing", t('f_housing')],["charity", t('f_charity')],["freelance", t('f_freelance')],
 ];
 
@@ -1422,6 +1445,7 @@ const EXPENSE_BASE_ROWS = [
   {key:"carRepair1",label:"e_carRepair1"},
   {key:"homeRepair1",label:"e_homeRepair1"},
   {key:"birthday",label:"e_birthday",birthday:true},
+  {key:"eidEidi",label:"e_eidEidi"},
   {type:"group",label:"e_kids_group"},
   {key:"kidsSchool",label:"e_kidsSchool"},
   {key:"kidsClothes",label:"e_kidsClothes"},
@@ -1439,7 +1463,6 @@ const getExpenseRows = () => EXPENSE_BASE_ROWS.map(r => {
   return { type:"repeatable", key:r.key, extraKey: r.key+"Extra", label: t(r.label), birthday: !!r.birthday };
 });
 
-// Collect all extra keys for EMPTY_MONTH
 const EXPENSE_EXTRA_KEYS = EXPENSE_BASE_ROWS.filter(r => r.key).map(r => r.key + "Extra");
 
 const getSavingFields = () => [
@@ -1554,7 +1577,6 @@ function addRepeatableExtra(extraKey, isBirthday){
   };
   if(isBirthday) newEx.person = "none";
   arr.push(newEx);
-  // auto-expand the group
   if(!m.extraCollapsedMap) m.extraCollapsedMap = {};
   m.extraCollapsedMap[extraKey] = false;
   m.lastModified = new Date().toISOString();
@@ -1581,7 +1603,7 @@ function removeRepeatableExtra(extraKey, id){
   renderDashboard();
   renderMonthDate();
 }
-/* ⭐ FIXED: now recalculates and refreshes UI on bank/amount change ⭐ */
+/* FIXED: recalcs and refreshes UI on bank/amount change */
 function updExtraField(extraKey, id, field, val){
   const m = M()[state.activeMonth];
   const arr = getRepeatableExtras(m, extraKey);
@@ -1878,7 +1900,6 @@ function load(){
     }
     state.yearList = state.yearList || [];
     
-    // Migration config: old numbered fields -> new extra arrays
     const migrationConfig = [
       { base:"visaCard1", extra:"visaCard1Extra", oldKeys:["visaCard2","visaCard3"] },
       { base:"carRepair1", extra:"carRepair1Extra", oldKeys:["carRepair2","carRepair3"] },
@@ -1897,12 +1918,11 @@ function load(){
         if(!merged.zakat) merged.zakat = DEFAULT_EXTRA();
         if(typeof merged.eidClothes !== 'number') merged.eidClothes = 0;
         if(typeof merged.hajj !== 'number') merged.hajj = 0;
+        if(typeof merged.salary !== 'number') merged.salary = 0;
         if(!merged.extraCollapsedMap) merged.extraCollapsedMap = {};
         
-        // Ensure all extra arrays exist
         EXPENSE_EXTRA_KEYS.forEach(k => { if(!Array.isArray(merged[k])) merged[k] = []; });
         
-        // Migrate numbered duplicates into arrays
         migrationConfig.forEach(cfg => {
           cfg.oldKeys.forEach(oldKey => {
             const amt = +merged[oldKey] || 0;
@@ -2059,8 +2079,10 @@ function totalDebtPaymentsExcluded(year, mi){
   return state.debts.filter(d=>(d.type==="credit"||d.type==="installment"||d.type==="obligation") && isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0);
 }
 
+/* ⭐ salary now added explicitly since it's no longer in getIncomeFields ⭐ */
 function totalIncomeCore(m, mi){
-  let sum = getIncomeFields().reduce((s,[k])=>s+(+m[k]||0),0);
+  let sum = +m.salary || 0;
+  sum += getIncomeFields().reduce((s,[k])=>s+(+m[k]||0),0);
   const hasMeat = (mi !== undefined) ? isMeatMonth(mi) : !!m.hasMeatSupport;
   if(hasMeat) sum += (+m.meat||0);
   return sum;
@@ -2213,6 +2235,10 @@ function applyLang(){
   document.getElementById('lblDate').textContent = t('lbl_date');
   document.getElementById('lblTime').textContent = t('lbl_time');
   document.getElementById('lblLastMod').textContent = t('lbl_lastmod');
+  document.getElementById('lblSalarySection').textContent = t('lbl_salary_section');
+  document.getElementById('thSalItem').textContent = t('th_income_item');
+  document.getElementById('thSalAmount').textContent = t('th_income_amount');
+  document.getElementById('thSalNote').textContent = t('th_income_note');
   document.getElementById('lblIncome').textContent = t('lbl_income');
   document.getElementById('eidTitle').textContent = t('eid_title');
   document.getElementById('lblEidState').textContent = t('lbl_eid_state');
@@ -2664,6 +2690,19 @@ function renderMonthPills(){
 }
 function selectMonth(i){ state.activeMonth=i; renderMonthPills(); renderMonth(); updateMonthPrintBtn(); save(); }
 
+/* ⭐ NEW: Salary section render ⭐ */
+function renderSalaryFields(){
+  const m = M()[state.activeMonth];
+  const incN = ensureIncomeNotes(m);
+  document.getElementById("salaryFields").innerHTML = `
+    <tr>
+      <td>${t('f_salary')}</td>
+      <td><input type="number" value="${inVal(m.salary)}" oninput="upd('salary',this.value)" step="0.001"></td>
+      <td><input type="text" value="${esc(incN.salary||'')}" oninput="updIncomeNote('salary', this.value)" placeholder="ملاحظة..."></td>
+    </tr>
+  `;
+}
+
 function renderIncomeFields(){
   const m = M()[state.activeMonth];
   const mi = state.activeMonth;
@@ -2803,8 +2842,8 @@ function renderExpenseSummary(){
     const amt = +m[row.key] || 0;
     if(amt > 0) bankTotals[meta.bank] = (bankTotals[meta.bank] || 0) + amt;
   });
-  const bankIcons = {"بطاقة صراف الالي":"🏧","NBK":"🏦","ILA":"🏛️","BBK":"🏢","MEEM":"💠","NBB":"🏛️","غير محسوب ذي الشهر":"⛔"};
-  const bankColors = {"بطاقة صراف الالي":"bank-card","NBK":"bank-nbk","ILA":"bank-ila","BBK":"bank-bbk","MEEM":"bank-meem","NBB":"bank-nbb","غير محسوب ذي الشهر":"bank-excl"};
+  const bankIcons = {"بطاقة صراف الالي":"🏧","NBK":"🏦","ILA":"🏛️","BBK":"🏢","MEEM":"💠","NBB":"🏛️","Credimax":"💳","غير محسوب ذي الشهر":"⛔"};
+  const bankColors = {"بطاقة صراف الالي":"bank-card","NBK":"bank-nbk","ILA":"bank-ila","BBK":"bank-bbk","MEEM":"bank-meem","NBB":"bank-nbb","Credimax":"bank-credimax","غير محسوب ذي الشهر":"bank-excl"};
   const bankHtml = BANKS.map(b => {
     const amt = bankTotals[b] || 0;
     return `<div class="exp-sum-item bank-item ${bankColors[b]}"><span>${bankIcons[b]} ${bankLabel(b)}:</span><b>${money(amt)}</b></div>`;
@@ -3025,7 +3064,6 @@ function updExpenseAmount(key, val){
   const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save();
   renderExpenseSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills(); renderDashboard(); renderYears();
 }
-/* ⭐ FIXED: added renderYears() at the end ⭐ */
 function updExpenseBank(key, val){
   const m = M()[state.activeMonth]; getMeta(m, key).bank = val; m.lastModified = new Date().toISOString(); save();
   renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); renderDashboard(); renderYears();
@@ -3044,6 +3082,7 @@ function updSaving(key, val){
 function renderMonth(){
   const m = M()[state.activeMonth];
   document.getElementById("monthTitle").textContent = getMonths()[state.activeMonth] + " " + state.activeYear;
+  renderSalaryFields();
   renderIncomeFields(); renderExpenseFields(); renderDebtsMonthSection(); renderSavingFields(); renderCarInsuranceOT(); renderZakatOT();
   document.getElementById("eidSelect").value = m.eidType || "no";
   const showAmt = ["eid_money","clothes","both"].includes(m.eidType);
@@ -3780,6 +3819,7 @@ function renderAnnual(){
   const months = getMonths(); const y = state.activeYear;
   const monthsData = M();
   const sections = [
+    [t('lbl_salary_section'), [{key:"salary", label:t('f_salary'), type:"simple"}]],
     [t('lbl_income'), getIncomeFields().map(([k,l])=>({key:k, label:l, type:"simple"}))],
     [t('lbl_expenses').replace('💸 ',''), getExpenseRows().filter(r=>r.type!=="group").map(r=>({key:r.key, label:r.label, type:r.type, extraKey:r.extraKey}))],
     [t('lbl_savings').replace('💰 ',''), getSavingFields().map(([k,l])=>({key:k, label:l, type:"simple"}))],
