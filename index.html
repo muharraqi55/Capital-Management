@@ -2399,6 +2399,86 @@ function setPrintOrientation(orientation){
   }
 }
 
+/* ============================================================
+   ⭐⭐⭐ PDF GENERATION IN A NEW WINDOW ⭐⭐⭐
+   This is the KEY FIX: we open the SAME window as the print
+   function (which is known to work perfectly), load html2pdf
+   inside it, and generate the PDF from there.
+   ============================================================ */
+async function generatePdfInWindow(htmlStr, filename, orientation){
+  const w = window.open('', '_blank', 'width=' + (orientation === 'landscape' ? '1400' : '900') + ',height=900');
+  if(!w){
+    toast(t('print_error_popup'), 'error');
+    return null;
+  }
+  
+  w.document.open();
+  w.document.write(htmlStr);
+  w.document.close();
+  
+  // Wait for content + fonts to load
+  await new Promise(r => setTimeout(r, 700));
+  
+  // Inject html2pdf into the new window
+  try {
+    const script = w.document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+    w.document.head.appendChild(script);
+    
+    await new Promise((resolve) => {
+      script.onload = resolve;
+      script.onerror = resolve;
+      setTimeout(resolve, 4000);
+    });
+  } catch(e){ console.warn('script injection', e); }
+  
+  // Wait for html2pdf to be available
+  await new Promise((resolve) => {
+    const start = Date.now();
+    const check = () => {
+      if(w.html2pdf || Date.now() - start > 4000){ resolve(); }
+      else { setTimeout(check, 100); }
+    };
+    check();
+  });
+  
+  if(!w.html2pdf){
+    console.error('html2pdf not available in new window');
+    try { w.close(); } catch(e){}
+    return null;
+  }
+  
+  // Small extra delay
+  await new Promise(r => setTimeout(r, 300));
+  
+  const opt = {
+    margin: orientation === 'landscape' ? [4, 4, 4, 4] : [8, 8, 8, 8],
+    filename: filename,
+    image: { type: 'jpeg', quality: 0.95 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      windowWidth: orientation === 'landscape' ? 1400 : 900,
+      scrollX: 0,
+      scrollY: 0
+    },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: orientation, compress: true },
+    pagebreak: { mode: ['css', 'legacy'] }
+  };
+  
+  try {
+    const pdfBlob = await w.html2pdf().set(opt).from(w.document.body).outputPdf('blob');
+    try { w.close(); } catch(e){}
+    return pdfBlob;
+  } catch(err){
+    console.error('PDF generation error:', err);
+    try { w.close(); } catch(e){}
+    return null;
+  }
+}
+
 /* ===================== DEBT REPORT GENERATOR ===================== */
 function generateDebtReportHTML(debtId){
   const d = state.debts.find(x=>x.id===debtId);
@@ -2557,34 +2637,18 @@ function printDebtReport(debtId){
   }
 }
 
-/* ⭐ FIXED: shareDebtReportPDF with proper positioning ⭐ */
+/* ⭐ FIXED: shareDebtReportPDF uses new window approach ⭐ */
 async function shareDebtReportPDF(debtId){
   try {
     const d = state.debts.find(x=>x.id===debtId);
     if(!d){ toast(t('share_failed'), 'error'); return; }
     toast(t('creating_pdf'));
-    await loadHtml2Pdf();
     const htmlStr = generateDebtReportHTML(debtId);
-    const container = document.createElement('div');
-    container.style.cssText = 'position:absolute;left:0;top:0;width:210mm;background:#ffffff;z-index:-99999;pointer-events:none;';
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlStr, 'text/html');
-    const styleContent = Array.from(doc.head.querySelectorAll('style')).map(s => s.outerHTML).join('\n');
-    container.innerHTML = styleContent + doc.body.innerHTML;
-    document.body.appendChild(container);
-    await new Promise(r => setTimeout(r, 100));
     const safeName = d.name.replace(/[^\w\u0600-\u06FF]/g, '_');
     const filename = `debt_${safeName}_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = {
-      margin: [8,8,8,8], filename,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 900, scrollX: 0, scrollY: 0 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
-    const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
-    document.body.removeChild(container);
-    await sharePdfBlob(pdfBlob, filename);
+    const blob = await generatePdfInWindow(htmlStr, filename, 'portrait');
+    if(!blob){ toast(t('share_failed'), 'error'); return; }
+    await sharePdfBlob(blob, filename);
   } catch(err){
     console.error('shareDebtReportPDF error:', err);
     if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
@@ -2745,11 +2809,10 @@ function exportDebtsMonthExcel(){
   toast(t('excel_exported'), 'success');
 }
 
-/* ⭐ FIXED: shareDebtsMonthPDF with proper positioning ⭐ */
+/* ⭐ FIXED: shareDebtsMonthPDF uses new window approach ⭐ */
 async function shareDebtsMonthPDF(){
   try {
     toast(t('creating_pdf'));
-    await loadHtml2Pdf();
     const mi = state.activeMonth;
     const y = state.activeYear;
     const monthName = getMonths()[mi];
@@ -2768,7 +2831,7 @@ async function shareDebtsMonthPDF(){
     let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('lbl_debts_month')} — ${monthName} ${y}</title>`;
     html += `<style>
       @page{size:A4 landscape;margin:10mm}
-      *{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+      *{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
       body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:16px;margin:0}
       .header{text-align:center;margin-bottom:16px;padding-bottom:10px;border-bottom:3px double #333}
       .header .logo{display:inline-block;width:50px;height:50px;line-height:50px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;font-weight:900;font-size:22px;text-align:center}
@@ -2842,25 +2905,10 @@ async function shareDebtsMonthPDF(){
     }
     html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div></body></html>`;
     
-    const container = document.createElement('div');
-    container.style.cssText = 'position:absolute;left:0;top:0;width:277mm;background:#ffffff;z-index:-99999;pointer-events:none;';
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const styleContent = Array.from(doc.head.querySelectorAll('style')).map(s => s.outerHTML).join('\n');
-    container.innerHTML = styleContent + doc.body.innerHTML;
-    document.body.appendChild(container);
-    await new Promise(r => setTimeout(r, 100));
     const filename = `debts_month_${y}_${mi+1}_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = {
-      margin: [6,6,6,6], filename,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 1400, scrollX: 0, scrollY: 0 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape', compress: true },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
-    const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
-    document.body.removeChild(container);
-    await sharePdfBlob(pdfBlob, filename);
+    const blob = await generatePdfInWindow(html, filename, 'landscape');
+    if(!blob){ toast(t('share_failed'), 'error'); return; }
+    await sharePdfBlob(blob, filename);
   } catch(err){
     console.error('shareDebtsMonthPDF error:', err);
     if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
@@ -2966,32 +3014,15 @@ function printDebtsTable(){
   else { toast(t('print_error_popup'), 'error'); }
 }
 
-/* ⭐ FIXED: shareDebtsTablePDF with proper positioning ⭐ */
+/* ⭐ FIXED: shareDebtsTablePDF uses new window approach ⭐ */
 async function shareDebtsTablePDF(){
   try {
     toast(t('creating_pdf'));
-    await loadHtml2Pdf();
     const htmlStr = generateDebtsTablePrintHTML();
-    const container = document.createElement('div');
-    container.style.cssText = 'position:absolute;left:0;top:0;width:297mm;background:#ffffff;z-index:-99999;pointer-events:none;';
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlStr, 'text/html');
-    const styleContent = Array.from(doc.head.querySelectorAll('style')).map(s => s.outerHTML).join('\n');
-    container.innerHTML = styleContent + doc.body.innerHTML;
-    document.body.appendChild(container);
-    await new Promise(r => setTimeout(r, 100));
     const filename = `debts_table_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = {
-      margin: [4, 4, 4, 4],
-      filename,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 1400, scrollX: 0, scrollY: 0 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape', compress: true },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
-    const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
-    document.body.removeChild(container);
-    await sharePdfBlob(pdfBlob, filename);
+    const blob = await generatePdfInWindow(htmlStr, filename, 'landscape');
+    if(!blob){ toast(t('share_failed'), 'error'); return; }
+    await sharePdfBlob(blob, filename);
   } catch(err){
     console.error('shareDebtsTablePDF error:', err);
     if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
@@ -3022,119 +3053,150 @@ function printPage(){
   printCurrentView(view === 'month', orientation);
 }
 
-function loadHtml2Pdf(){
-  if(window.html2pdf) return Promise.resolve();
-  if(_html2pdfLoading) return _html2pdfLoading;
-  _html2pdfLoading = new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-    script.onload = () => resolve();
-    script.onerror = () => { _html2pdfLoading = null; reject(new Error('Failed to load html2pdf.js')); };
-    document.head.appendChild(script);
-  });
-  return _html2pdfLoading;
-}
-
-function prepareCloneForPdf(clone){
+/* ⭐ Generates the FULL standalone HTML of a view (with header + styles) for the PDF window ⭐ */
+function generateViewHTML(viewId, includeMonthName, orientation){
+  const viewEl = document.getElementById(viewId);
+  if(!viewEl) return '';
+  const L = LANG === 'ar';
+  const now = new Date();
+  const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
+  const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+  let metaExtra = `${state.activeYear}`;
+  if(includeMonthName){ metaExtra = `${getMonths()[state.activeMonth]} ${state.activeYear}`; }
+  const activeTabBtn = document.querySelector('nav.tabs button.active');
+  const activeTabName = activeTabBtn ? activeTabBtn.textContent.trim() : '';
+  
+  const clone = viewEl.cloneNode(true);
   clone.querySelectorAll('.print-section').forEach(el => el.remove());
   clone.querySelectorAll('button').forEach(el => el.remove());
   clone.querySelectorAll('.icon-btn').forEach(el => el.remove());
-  clone.querySelectorAll('input,select,textarea').forEach(el => {
-    el.style.border = 'none'; el.style.background = 'transparent'; el.style.color = '#000';
-    el.style.fontWeight = '700'; el.style.textAlign = 'center';
-    if(el.tagName === 'INPUT' && el.type === 'number'){ el.style.fontFamily = 'monospace'; }
-  });
+  clone.classList.add('active');
+  clone.style.display = 'block';
+  clone.style.animation = 'none';
+  
+  const printStyles = `
+    *{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
+    body{font-family:'Segoe UI',Tahoma,sans-serif;background:#fff;color:#000;padding:15px;margin:0;font-size:11pt;direction:${L?'rtl':'ltr'}}
+    .view{display:block !important}
+    .card{background:#fff;border:1px solid #999;border-radius:8px;padding:12px;margin-bottom:12px;page-break-inside:avoid}
+    .card h2{color:#0e7490;border-bottom:1.5px solid #333;padding-bottom:6px;margin-bottom:10px;font-size:13pt;display:flex;align-items:center;gap:6px}
+    .card h2::before{content:"●";color:#0e7490;font-size:9px}
+    .salary-card{border:2px solid #78350f;background:#fffbeb}
+    .salary-card h2{color:#78350f}
+    .salary-card h2::before{content:"💰";color:#78350f;font-size:13px}
+    .kpi{background:#f5f5f5;border:1px solid #999;border-radius:6px;padding:10px;text-align:center}
+    .kpi .lbl{color:#444;font-size:9pt;margin-bottom:4px}
+    .kpi .val{color:#000;font-size:12pt;font-weight:700;font-family:monospace;direction:ltr}
+    .kpi .val.pos{color:#166534}.kpi .val.neg{color:#991b1b}
+    .kpi .val.gold{color:#78350f}.kpi .val.acc{color:#0e7490}
+    table{width:100%;border-collapse:collapse;font-size:9.5pt}
+    th,td{padding:6px 8px;text-align:${L?'right':'left'};border-bottom:1px solid #ccc}
+    th{background:#e5e7eb;color:#000;font-weight:700;font-size:9pt}
+    td.num{direction:ltr;text-align:left;font-family:monospace}
+    tr.excluded td:first-child{color:#dc2626;text-decoration:underline;opacity:.75}
+    .grid{display:grid;gap:10px}
+    .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:repeat(4,1fr)}
+    .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:9pt;font-weight:600;background:#e5e7eb;color:#333}
+    .badge.green{background:#dcfce7;color:#166534}
+    .badge.red{background:#fee2e2;color:#991b1b}
+    .badge.blue{background:#dbeafe;color:#1e40af}
+    .badge.gold{background:#fef3c7;color:#78350f}
+    .badge.purple{background:#f3e8ff;color:#6b21a8}
+    .badge.fully-paid{background:#dcfce7;color:#166534;border:1px solid #16a34a;font-size:8pt;padding:1px 6px;font-weight:700}
+    .badge.excluded-badge{background:#fee2e2;color:#991b1b;border:1px solid #dc2626;font-size:8pt;padding:1px 6px;font-weight:700}
+    .badge.auto{background:#e5e7eb;color:#333;border:1px solid #64748b;font-size:8pt;padding:1px 6px;font-weight:700}
+    .badge.negative{background:#fee2e2;color:#991b1b;border:1px solid #dc2626;font-size:8pt;padding:1px 6px;font-weight:700}
+    .badge.investment{background:#dcfce7;color:#166534;border:1px solid #16a34a;font-size:8pt;padding:1px 6px;font-weight:700}
+    .badge.muted{background:#e5e7eb;color:#666}
+    .notice-bhd,.notice-int{background:#f8f8f8;color:#444;border:1px solid #bbb;border-radius:6px;padding:8px;margin-bottom:10px;font-size:9pt;font-weight:600}
+    .excluded-cell{color:#dc2626 !important;text-decoration:underline;opacity:.65}
+    .muted{color:#666}
+    .monthPills{display:none}
+    .expense-table-wrap,.debts-table-wrap,.debts-month-wrap,.target-table-wrap{overflow:visible !important;border:none}
+    .expense-table td:first-child{font-weight:600}
+    .expense-table th{background:#e5e7eb !important;color:#000 !important;font-size:9pt;padding:5px 6px}
+    .expense-table input,.expense-table select,.debts-table input,.debts-table select,.debts-month-table input,.debts-month-table select,.target-table input,.target-table textarea{border:none !important;background:transparent !important;color:#000 !important;padding:2px !important;font-size:9.5pt !important;font-weight:700 !important}
+    .expense-table td,.debts-table td,.debts-month-table td,.target-table td{border-bottom:1px solid #ccc !important;padding:4px 6px !important;color:#000 !important}
+    .expense-table th,.debts-table th,.debts-month-table th,.target-table th{background:#e5e7eb !important;color:#000 !important;border-bottom:1px solid #999 !important}
+    .debts-table thead{position:static !important}
+    .debts-table .paid-cell,.debts-table .remain-cell{color:#0e7490 !important;font-family:monospace;font-weight:700}
+    .debts-table .remain-cell.pos{color:#166534 !important}
+    .debts-table .remain-cell.neg{color:#991b1b !important}
+    .debts-table tr.fully-paid-row{opacity:.72;background:#f0fdf4}
+    .debts-table tr.row-credit{background:#fef2f2}
+    .debts-table tr.row-debit{background:#f0fdf4}
+    .debts-table tr.row-installment{background:#eff6ff}
+    .debts-table tr.row-obligation{background:#faf5ff}
+    .last-pay-date{color:#166534 !important;background:#e0f2e9 !important;border:1px solid #166534 !important;font-size:8pt !important;padding:2px 6px;border-radius:6px;display:inline-flex;gap:4px;font-weight:700}
+    .last-pay-amount{background:#166534 !important;color:#fff !important;font-size:8pt !important;padding:1px 4px;border-radius:4px}
+    .last-pay-prior{font-size:8pt !important;color:#666}
+    .fully-paid-info{margin-top:3px}
+    .exp-sum-item{background:#f9fafb;border:1px solid #ccc;border-radius:6px;padding:5px 10px;font-size:9pt;display:inline-flex;gap:6px;align-items:center;margin:2px}
+    .exp-sum-item b{color:#0e7490;font-family:monospace}
+    .exp-sum-item.green{border-color:#16a34a}
+    .exp-sum-item.green b{color:#166534}
+    .exp-sum-item.red{border-color:#dc2626}
+    .exp-sum-item.red b{color:#991b1b}
+    .expense-summary{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;background:#f5f5f5;border:1px solid #ccc;border-radius:6px;padding:8px}
+    .exp-sum-divider{width:100%;height:1px;background:#ccc;margin:4px 0}
+    .exp-sum-title{font-size:9pt;font-weight:700;color:#444;width:100%;margin-bottom:2px}
+    .bank-item{background:#f9fafb;border:1px solid #ccc;border-radius:6px;padding:5px 10px;font-size:9pt;display:inline-flex;gap:6px;align-items:center;margin:2px}
+    .bank-item b{color:#0e7490;font-family:monospace}
+    .progress-bar{background:#eee;border:1px solid #999;border-radius:6px;height:12px;overflow:hidden;position:relative;min-width:100px}
+    .progress-fill{height:100%}
+    .progress-text{font-size:8pt;color:#666;margin-top:2px;font-family:monospace}
+    .target-name{display:flex;align-items:center;gap:6px;font-weight:700;font-size:9.5pt}
+    .target-dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+    .target-note{border:1px solid #ccc !important;background:#fff !important;padding:3px 6px !important;border-radius:4px;width:100%}
+    .target-input{background:#fff !important;border:1px solid #999 !important;font-family:monospace !important;font-weight:700 !important;color:#78350f !important;text-align:center}
+    .target-input.auto-input{background:#f5f5f5 !important;color:#666 !important;cursor:not-allowed}
+    .saving-target-hint{font-size:8pt;padding:1px 5px;border-radius:6px;background:#dcfce7;color:#166534;font-weight:700}
+    .pyr-legend-item,.pyramid-legend{background:#f9fafb;border:1px solid #ccc;border-radius:6px;padding:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:4px 0}
+    .pyr-color{width:14px;height:14px;border-radius:3px;display:inline-block}
+    .pyr-val{font-family:monospace;font-weight:700;color:#0e7490}
+    .pyr-note{font-size:8pt;color:#78350f;width:100%;background:#fffbeb;padding:3px 6px;border-radius:4px;margin-top:3px}
+    .pyramid-wrap{text-align:center;padding:10px;background:#f9fafb;border:1px solid #ccc;border-radius:6px}
+    .pyramid-svg{max-width:600px}
+    .monthPills{display:none}
+    .print-section{display:none}
+    .noprint{display:none}
+    input[type=number]{text-align:center}
+    .debts-month-table tr.row-debit td{background:#f0fdf4}
+    .debts-month-table tr.row-credit td{background:#fef2f2}
+    .debts-month-table tr.row-installment td{background:#eff6ff}
+    .debts-month-table tr.row-obligation td{background:#faf5ff}
+    tfoot td{background:#e0f2fe !important;font-weight:700;border-top:1.5px solid #0891b2}
+    @page{size:A4 ${orientation};margin:8mm}
+  `;
+  
+  let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${activeTabName} — ${metaExtra}</title>`;
+  html += `<style>${printStyles}</style></head><body>`;
+  html += `<div style="text-align:center;padding:8px 0 12px;margin-bottom:12px;border-bottom:3px double #333">
+    <div style="display:inline-block;width:44px;height:44px;line-height:44px;border-radius:50%;background:#0e7490;color:#fff;font-weight:900;font-size:20px;text-align:center;margin-bottom:6px">M</div>
+    <h1 style="color:#000;font-size:16pt;margin:0 0 4px;font-weight:700">${t('print_title')}</h1>
+    <div style="color:#444;font-size:10pt;margin-bottom:3px">${activeTabName} — ${metaExtra}</div>
+    <div style="color:#666;font-size:9pt">${t('print_generated')}: ${dateStr} — ${timeStr}</div>
+  </div>`;
+  html += clone.outerHTML;
+  html += `<div style="text-align:center;padding-top:8px;margin-top:14px;border-top:1px solid #999;color:#444;font-size:9pt;line-height:1.7">
+    <div><strong style="color:#0e7490">Muharraqi</strong> — ${t('print_title')} / Capital Manager</div>
+    <div>© 2025 Muharraqi. All Rights Reserved.</div>
+  </div>`;
+  html += `</body></html>`;
+  return html;
 }
 
-/* ⭐ FIXED: shareViewPDF with proper positioning ⭐ */
+/* ⭐ FIXED: shareViewPDF uses new window approach ⭐ */
 async function shareViewPDF(viewId, includeMonthName, orientation){
   if(viewId === 'debts'){ await shareDebtsTablePDF(); return; }
   try {
     toast(t('creating_pdf'));
-    await loadHtml2Pdf();
-    const viewEl = document.getElementById(viewId);
-    if(!viewEl){ toast(t('share_failed'), 'error'); return; }
-    
-    const clone = viewEl.cloneNode(true);
-    clone.querySelectorAll('.print-section').forEach(el => el.remove());
-    clone.querySelectorAll('button').forEach(el => el.remove());
-    clone.querySelectorAll('.icon-btn').forEach(el => el.remove());
-    clone.classList.add('active');
-    clone.style.display = 'block';
-    clone.style.animation = 'none';
-    clone.style.background = '#ffffff';
-    clone.style.color = '#000000';
-    clone.style.padding = '15px';
-    clone.style.fontFamily = 'Segoe UI, Tahoma, sans-serif';
-    clone.style.direction = LANG === 'ar' ? 'rtl' : 'ltr';
-    clone.style.width = orientation === 'landscape' ? '277mm' : '190mm';
-    clone.style.boxSizing = 'border-box';
-    
-    prepareCloneForPdf(clone);
-    
-    clone.querySelectorAll('.card, .kpi, table, th, td, .expense-table, .debts-table, .debts-month-table, .target-table').forEach(el => {
-      el.style.background = '#ffffff';
-      el.style.color = '#000000';
-    });
-    clone.querySelectorAll('.card').forEach(el => {
-      el.style.border = '1px solid #999';
-      el.style.marginBottom = '10px';
-      el.style.padding = '10px';
-    });
-    clone.querySelectorAll('th').forEach(el => {
-      el.style.background = '#e5e7eb';
-      el.style.color = '#000';
-      el.style.border = '1px solid #999';
-    });
-    clone.querySelectorAll('td').forEach(el => {
-      el.style.border = '1px solid #ccc';
-      el.style.color = '#000';
-    });
-    clone.querySelectorAll('.kpi').forEach(el => {
-      el.style.background = '#f5f5f5';
-      el.style.border = '1px solid #999';
-    });
-    clone.querySelectorAll('.kpi .val').forEach(el => el.style.color = '#000');
-    clone.querySelectorAll('.kpi .val.pos').forEach(el => el.style.color = '#166534');
-    clone.querySelectorAll('.kpi .val.neg').forEach(el => el.style.color = '#991b1b');
-    clone.querySelectorAll('.kpi .val.gold').forEach(el => el.style.color = '#78350f');
-    clone.querySelectorAll('.kpi .val.acc').forEach(el => el.style.color = '#0e7490');
-    clone.querySelectorAll('.card h2').forEach(el => {
-      el.style.color = '#000';
-      el.style.borderBottom = '1.5px solid #333';
-    });
-    
-    const wrapper = document.createElement('div');
-    wrapper.style.cssText = `position:absolute;left:0;top:0;width:${orientation === 'landscape' ? '297mm' : '210mm'};background:#ffffff;z-index:-99999;pointer-events:none;`;
-    wrapper.appendChild(clone);
-    document.body.appendChild(wrapper);
-    await new Promise(r => setTimeout(r, 100));
-    
+    const htmlStr = generateViewHTML(viewId, includeMonthName, orientation);
+    if(!htmlStr){ toast(t('share_failed'), 'error'); return; }
     const filename = `capital_manager_${viewId}_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = {
-      margin: [6, 6, 6, 6],
-      filename: filename,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-        windowWidth: orientation === 'landscape' ? 1400 : 900,
-        scrollX: 0,
-        scrollY: 0
-      },
-      jsPDF: {
-        unit: 'mm',
-        format: 'a4',
-        orientation: orientation || 'portrait',
-        compress: true
-      },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
-    const pdfBlob = await html2pdf().set(opt).from(clone).outputPdf('blob');
-    document.body.removeChild(wrapper);
-    await sharePdfBlob(pdfBlob, filename);
+    const blob = await generatePdfInWindow(htmlStr, filename, orientation || 'portrait');
+    if(!blob){ toast(t('share_failed'), 'error'); return; }
+    await sharePdfBlob(blob, filename);
   } catch(err){
     console.error('shareViewPDF error:', err);
     if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
@@ -3158,34 +3220,18 @@ async function sharePdfBlob(blob, filename){
   toast(t('pdf_downloaded'), 'success');
 }
 
-/* ⭐ FIXED: sharePyramidLevelPDF with proper positioning ⭐ */
+/* ⭐ FIXED: sharePyramidLevelPDF uses new window approach ⭐ */
 async function sharePyramidLevelPDF(key){
   try {
     const lvl = getPyramidLevels().find(l => l.key === key);
     if(!lvl){ toast(t('share_failed'), 'error'); return; }
     toast(t('creating_pdf'));
-    await loadHtml2Pdf();
     const htmlStr = generatePyramidLevelReportHTML(key);
-    const container = document.createElement('div');
-    container.style.cssText = 'position:absolute;left:0;top:0;width:210mm;background:#ffffff;z-index:-99999;pointer-events:none;';
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlStr, 'text/html');
-    const styleContent = Array.from(doc.head.querySelectorAll('style')).map(s => s.outerHTML).join('\n');
-    container.innerHTML = styleContent + doc.body.innerHTML;
-    document.body.appendChild(container);
-    await new Promise(r => setTimeout(r, 100));
     const safeName = lvl.label.replace(/[^\w\u0600-\u06FF]/g, '_');
     const filename = `pyramid_${safeName}_${new Date().toISOString().slice(0,10)}.pdf`;
-    const opt = {
-      margin: [8,8,8,8], filename,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 900, scrollX: 0, scrollY: 0 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
-    const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
-    document.body.removeChild(container);
-    await sharePdfBlob(pdfBlob, filename);
+    const blob = await generatePdfInWindow(htmlStr, filename, 'portrait');
+    if(!blob){ toast(t('share_failed'), 'error'); return; }
+    await sharePdfBlob(blob, filename);
   } catch(err){
     console.error('sharePyramidLevelPDF error:', err);
     if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
@@ -3924,7 +3970,7 @@ function generatePyramidLevelReportHTML(key){
   let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('print_report_title')}: ${lvl.label}</title>`;
   html += `<style>
     @page{size:A4;margin:15mm}
-    *{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+    *{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
     body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:20px;line-height:1.7;margin:0}
     .header{text-align:center;margin-bottom:24px;padding-bottom:12px;border-bottom:3px double #333}
     .header .logo{display:inline-block;width:54px;height:54px;line-height:54px;border-radius:50%;background:#0e7490;color:#fff;font-weight:900;font-size:24px;text-align:center}
