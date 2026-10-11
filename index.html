@@ -823,7 +823,7 @@ const I18N = {
     th_debt_name:"الاسم",th_debt_type:"النوع",th_debt_total:"الكلي",th_debt_rem_before:"المتبقي قبل الشهر",
     th_debt_this_month:"هذا الشهر",th_debt_rem_after:"المتبقي بعده",th_debt_note:"ملاحظة",th_debt_bank:"البنك / الجهة",th_debt_ref:"مرجع",
     lbl_savings:"💰 مبالغ الادخار (د.ب)",
-    savings_hint:"🔢 يدعم حتى 3 أرقام عشرية — \"غير محسوب ذي الشهر\" يستثني المبلغ من جميع الحسابات والهرم. القروض والالتزامات تُحسب تلقائياً من تبويب السلف والديون.",
+    savings_hint:"🔢 يدعم حتى 3 أرقام عشرية — \"غير محسوب ذي الشهر\" يستثني المبلغ من جميع الحسابات والهرم. القروض والالتزامات تُحسب تلقائياً من تبويب السلف والديون. استخدم زر ➕ لإضافة صفوف فرعية لكل بند ادخار.",
     lbl_month_result:"النتيجة الشهرية",lbl_month_notes:"ملاحظات على الشهر",
     th_sav_item:"بند الادخار",th_sav_amount:"المبلغ (د.ب)",th_sav_bank:"البنك / الجهة",th_sav_note:"ملاحظة",th_sav_ref:"مرجع",
     pyr_title:"🔺 هرم الأمان المالي",pyr_desc:"ترتيب الأولويات المالية من القاعدة إلى القمة. الأرقام تتراكم من جميع السنوات. القروض والالتزامات تُحسب تلقائياً ولا يمكن تعديلها.",
@@ -934,7 +934,8 @@ const I18N = {
     lbl_debts_month:"Debts, Installments & Obligations Payments",debts_month_help:"Only active items shown.",
     th_debt_name:"Name",th_debt_type:"Type",th_debt_total:"Total",th_debt_rem_before:"Remaining Before",th_debt_this_month:"This Month",
     th_debt_rem_after:"Remaining After",th_debt_note:"Note",th_debt_bank:"Bank",th_debt_ref:"Reference",
-    lbl_savings:"💰 Savings Amounts (BHD)",savings_hint:"🔢 Supports 3 decimals.",lbl_month_result:"Monthly Result",lbl_month_notes:"Month Notes",
+    lbl_savings:"💰 Savings Amounts (BHD)",savings_hint:"🔢 Supports 3 decimals. Use ➕ to add sub-rows per saving item.",
+    lbl_month_result:"Monthly Result",lbl_month_notes:"Month Notes",
     th_sav_item:"Savings Item",th_sav_amount:"Amount (BHD)",th_sav_bank:"Bank",th_sav_note:"Note",th_sav_ref:"Reference",
     pyr_title:"🔺 Financial Safety Pyramid",pyr_desc:"Priorities from base to top.",pyr_detail:"Pyramid Details",th_level:"Level",th_item_name:"Item",
     th_year_total:"Cumulative Total (BHD)",th_pct:"%",th_total:"Total",th_total_bank_savings:"Total Bank Savings (Positive)",th_total_investment:"Total Investment (Positive)",
@@ -1068,6 +1069,9 @@ const getSavingFields = () => [
   ["travelSaving", t('s_travelSaving')],["eidMoneySaving", t('s_eidMoneySaving'), "eidDropdown"],
 ];
 
+/* ⭐⭐ [إضافة] مفاتيح الصفوف الفرعية للادخار ⭐⭐ */
+const getSavingExtraKeys = () => getSavingFields().map(f => f[0] + "Extra");
+
 const getPyramidLevels = () => [
   {key:"emergencyFund",label:t('p_emergencyFund'),color:"#ef4444",subtitle:"🚨"},
   {key:"loans",label:t('p_loans'),color:"#64748b",subtitle:"💳",auto:true,negative:true},
@@ -1091,9 +1095,13 @@ function makeEmptyMonth(){
     birthdayPerson:"none",expenseMeta:{},refMeta:{},savingRefMeta:{},
     incomeNotes:{salary:"",costOfLiving:"",housing:"",charity:"",freelance:"",meat:""},
     eidMoneyType:"fitar",savingMeta:{},carInsurance: DEFAULT_EXTRA(),zakat: DEFAULT_EXTRA(),
-    notes:"",customDate:"",customTime:"",lastModified:"",extraCollapsedMap:{}
+    notes:"",customDate:"",customTime:"",lastModified:"",extraCollapsedMap:{},
+    /* ⭐⭐ [إضافة] خريطة طي صفوف الادخار الفرعية ⭐⭐ */
+    savingExtraCollapsedMap:{}
   };
   EXPENSE_EXTRA_KEYS.forEach(k => base[k] = []);
+  /* ⭐⭐ [إضافة] تهيئة مصفوفات الصفوف الفرعية للادخار ⭐⭐ */
+  getSavingFields().forEach(f => base[f[0] + "Extra"] = []);
   return base;
 }
 const EMPTY_MONTH = makeEmptyMonth;
@@ -1155,6 +1163,62 @@ function updExtraField(extraKey, id, field, val){
   renderMonthDate();
 }
 
+/* ===================== ⭐⭐ [إضافة] REPEATABLE SAVING HELPERS ⭐⭐ ===================== */
+function getSavingExtras(m, extraKey){ if(!Array.isArray(m[extraKey])) m[extraKey] = []; return m[extraKey]; }
+function sumSavingExtras(m, extraKey){ return getSavingExtras(m, extraKey).reduce((s,x)=>s+(+x.amount||0),0); }
+function sumSavingExtrasCounted(m, extraKey){ return getSavingExtras(m, extraKey).filter(x => x.bank !== EXCLUDED_BANK).reduce((s,x)=>s+(+x.amount||0),0); }
+function sumSavingExtrasExcluded(m, extraKey){ return getSavingExtras(m, extraKey).filter(x => x.bank === EXCLUDED_BANK).reduce((s,x)=>s+(+x.amount||0),0); }
+function isSavingGroupCollapsed(m, extraKey){ if(!m.savingExtraCollapsedMap) m.savingExtraCollapsedMap = {}; return !!m.savingExtraCollapsedMap[extraKey]; }
+function toggleAllSavingExtras(extraKey){
+  const m = M()[state.activeMonth];
+  if(!m.savingExtraCollapsedMap) m.savingExtraCollapsedMap = {};
+  m.savingExtraCollapsedMap[extraKey] = !m.savingExtraCollapsedMap[extraKey];
+  m.lastModified = new Date().toISOString();
+  save(); renderSavingFields(); renderMonthDate();
+}
+function addSavingExtra(extraKey){
+  const m = M()[state.activeMonth];
+  const arr = getSavingExtras(m, extraKey);
+  arr.push({ id: Date.now() + Math.floor(Math.random()*10000), amount: 0, bank: "بطاقة صراف الالي", note: "", ref: "" });
+  if(!m.savingExtraCollapsedMap) m.savingExtraCollapsedMap = {};
+  m.savingExtraCollapsedMap[extraKey] = false;
+  m.lastModified = new Date().toISOString();
+  save(); renderSavingFields(); renderSavingSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderMonthDate();
+  const baseKey = extraKey.replace(/Extra$/, "");
+  if(document.getElementById("pyramidTargetsBody")) updatePyramidTargetRow(baseKey);
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
+}
+function removeSavingExtra(extraKey, id){
+  const m = M()[state.activeMonth];
+  const arr = getSavingExtras(m, extraKey);
+  const idx = arr.findIndex(x => x.id === id);
+  if(idx === -1) return;
+  arr.splice(idx, 1);
+  m.lastModified = new Date().toISOString();
+  save(); renderSavingFields(); renderSavingSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderMonthDate();
+  const baseKey = extraKey.replace(/Extra$/, "");
+  if(document.getElementById("pyramidTargetsBody")) updatePyramidTargetRow(baseKey);
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
+}
+function updSavingExtraField(extraKey, id, field, val){
+  const m = M()[state.activeMonth];
+  const arr = getSavingExtras(m, extraKey);
+  const item = arr.find(x => x.id === id);
+  if(!item) return;
+  if(field === "amount") item.amount = Math.max(0, parseFloat(val) || 0);
+  else item[field] = val;
+  m.lastModified = new Date().toISOString();
+  save();
+  if(field === "amount" || field === "bank"){
+    renderSavingSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderYears();
+    if(field === "bank"){ renderSavingFields(); }
+    const baseKey = extraKey.replace(/Extra$/, "");
+    if(document.getElementById("pyramidTargetsBody")) updatePyramidTargetRow(baseKey);
+    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
+  }
+  renderMonthDate();
+}
+
 /* ===================== MAIN STATE HELPERS ===================== */
 function getCarInsurance(m){ if(!m.carInsurance) m.carInsurance = DEFAULT_EXTRA(); return m.carInsurance; }
 function getZakat(m){ if(!m.zakat) m.zakat = DEFAULT_EXTRA(); return m.zakat; }
@@ -1201,18 +1265,22 @@ function setPyramidNote(key, val){ ensurePyramidNotes()[key] = String(val || "")
 function ensurePyramidWithdrawals(){ if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {}; return state.pyramidWithdrawals; }
 function getWithdrawals(key){ const w = ensurePyramidWithdrawals(); if(!w[key]) w[key] = []; return w[key]; }
 function getWithdrawnTotal(key){ return getWithdrawals(key).reduce((s,x)=>s+(+x.amount||0),0); }
+
+/* ⭐⭐ [تعديل] getCumulativeSaved أصبحت تشمل الصفوف الفرعية للادخار ⭐⭐ */
 function getCumulativeSaved(key){
   if(key === "loans") return getLoansCumulativePaid();
   if(key === "obligationsSaving") return getObligationsCumulativePaid();
+  const extraKey = key + "Extra";
   let total = 0;
   Object.keys(state.years || {}).forEach(y => {
     (state.years[y] || []).forEach(m => {
-      if(isSavingExcluded(m, key)) return;
-      total += (+m[key] || 0);
+      if(!isSavingExcluded(m, key)) total += (+m[key] || 0);
+      total += sumSavingExtrasCounted(m, extraKey);
     });
   });
   return total;
 }
+/* ⭐⭐ [تعديل] getCumulativeSavedExcluding أصبحت تشمل الصفوف الفرعية للادخار ⭐⭐ */
 function getCumulativeSavedExcluding(key, excludeYear, excludeMonth){
   if(key === "loans"){
     let total = 0;
@@ -1238,12 +1306,13 @@ function getCumulativeSavedExcluding(key, excludeYear, excludeMonth){
     });
     return total;
   }
+  const extraKey = key + "Extra";
   let total = 0;
   Object.keys(state.years || {}).forEach(y => {
     (state.years[y] || []).forEach((m, i) => {
       if(parseInt(y) === excludeYear && i === excludeMonth) return;
-      if(isSavingExcluded(m, key)) return;
-      total += (+m[key] || 0);
+      if(!isSavingExcluded(m, key)) total += (+m[key] || 0);
+      total += sumSavingExtrasCounted(m, extraKey);
     });
   });
   return total;
@@ -1365,7 +1434,11 @@ function load(){
         if(typeof merged.hajj !== 'number') merged.hajj = 0;
         if(typeof merged.salary !== 'number') merged.salary = 0;
         if(!merged.extraCollapsedMap) merged.extraCollapsedMap = {};
+        /* ⭐⭐ [إضافة] تهيئة خريطة طي صفوف الادخار الفرعية ⭐⭐ */
+        if(!merged.savingExtraCollapsedMap) merged.savingExtraCollapsedMap = {};
         EXPENSE_EXTRA_KEYS.forEach(k => { if(!Array.isArray(merged[k])) merged[k] = []; });
+        /* ⭐⭐ [إضافة] تهيئة مصفوفات الصفوف الفرعية للادخار ⭐⭐ */
+        getSavingFields().forEach(f => { if(!Array.isArray(merged[f[0] + "Extra"])) merged[f[0] + "Extra"] = []; });
         migrationConfig.forEach(cfg => {
           cfg.oldKeys.forEach(oldKey => {
             const amt = +merged[oldKey] || 0;
@@ -1533,9 +1606,23 @@ function totalExpensesRaw(m){
   });
   return s;
 }
-function totalSavings(m){ return getSavingFields().reduce((s,[k])=>s+(isSavingExcluded(m,k)?0:(+m[k]||0)),0); }
-function totalExcludedSavings(m){ return getSavingFields().reduce((s,[k])=>s+(isSavingExcluded(m,k)?(+m[k]||0):0),0); }
-function totalSavingsRaw(m){ return getSavingFields().reduce((s,[k])=>s+(+m[k]||0),0); }
+
+/* ⭐⭐ [تعديل] totalSavings / totalExcludedSavings / totalSavingsRaw تشمل الصفوف الفرعية ⭐⭐ */
+function totalSavings(m){
+  let s = getSavingFields().reduce((sum,[k])=>sum+(isSavingExcluded(m,k)?0:(+m[k]||0)),0);
+  getSavingFields().forEach(([k]) => { s += sumSavingExtrasCounted(m, k + "Extra"); });
+  return s;
+}
+function totalExcludedSavings(m){
+  let s = getSavingFields().reduce((sum,[k])=>sum+(isSavingExcluded(m,k)?(+m[k]||0):0),0);
+  getSavingFields().forEach(([k]) => { s += sumSavingExtrasExcluded(m, k + "Extra"); });
+  return s;
+}
+function totalSavingsRaw(m){
+  let s = getSavingFields().reduce((sum,[k])=>sum+(+m[k]||0),0);
+  getSavingFields().forEach(([k]) => { s += sumSavingExtras(m, k + "Extra"); });
+  return s;
+}
 function totalOneTimeMonthly(m){
   let s = 0;
   if(!isExtraExcludedM(m, "carInsurance")) s += (+getCarInsurance(m).amount||0);
@@ -1820,7 +1907,8 @@ function exportDashboardExcel(){
     r++;
     xlSectionRow(ws, r, cols, '💰 توزيع الادخار السنوي', XL.inputHdr); r++;
     xlHeaderRow(ws, r, ['البند','القيمة ('+cur+')','','','','','',''], XL.inputHdr); r++;
-    const sum = k => months.reduce((s,m)=>s+(+m[k]||0),0);
+    /* ⭐⭐ [تعديل] يشمل الصفوف الفرعية ⭐⭐ */
+    const sum = k => months.reduce((s,m)=>s+(+m[k]||0)+sumSavingExtrasCounted(m, k + "Extra"),0);
     [['🚨 طوارئ', sum('emergencyFund'), XL.redBg],['📈 استثمار', sum('investment'), XL.greenBg],
      ['👥 جمعية', sum('assembly'), XL.purpleBg],['✈️ سفر', sum('travelSaving'), XL.tealBg]
     ].forEach(x => { xlDataRow(ws, r, [x[0], x[1], '', '', '', '', '', ''], cols, { fill: x[2], numFmt: '#,##0.00', align: {horizontal:'right',vertical:'center'} }); r++; });
@@ -1923,13 +2011,19 @@ function exportMonthExcel(){
       });
       r++;
     }
-    /* Savings */
+    /* ⭐⭐ [تعديل] Savings تشمل الصفوف الفرعية ⭐⭐ */
     xlSectionRow(ws, r, cols, '💰 ' + t('lbl_savings'), XL.ok); r++;
     xlHeaderRow(ws, r, ['البند','المبلغ ('+cur+')','البنك','ملاحظة','مرجع'], XL.header); r++;
     getSavingFields().forEach(f => {
       const [k, l] = f;
       const meta = getSavingMeta(m, k);
-      xlDataRow(ws, r, [l, +m[k]||0, bankLabel(meta.bank), meta.note||'', getSavingRefMeta(m, k)||''], cols, { fill: XL.greenBg, numFmt: '#,##0.00', align: {horizontal:'right',vertical:'center'} }); r++;
+      const extras = getSavingExtras(m, k + "Extra");
+      if(+m[k] > 0 || !extras.length){
+        xlDataRow(ws, r, [l, +m[k]||0, bankLabel(meta.bank), meta.note||'', getSavingRefMeta(m, k)||''], cols, { fill: XL.greenBg, numFmt: '#,##0.00', align: {horizontal:'right',vertical:'center'} }); r++;
+      }
+      extras.forEach((ex, idx) => {
+        xlDataRow(ws, r, [`   ${l} #${idx+2}`, +ex.amount||0, bankLabel(ex.bank), ex.note||'', ex.ref||''], cols, { fill: XL.tealBg, numFmt: '#,##0.00', align: {horizontal:'right',vertical:'center'} }); r++;
+      });
     });
     r++;
     /* One-time */
@@ -2053,18 +2147,21 @@ function exportAnnualExcel(){
     const hdr = ['البند'].concat(monthNames).concat(['الإجمالي']);
     xlHeaderRow(ws, r, hdr, XL.header);
     r++;
+    /* ⭐⭐ [تعديل] إضافة قسم الادخار مع الصفوف الفرعية ⭐⭐ */
+    const savingsItems = getSavingFields().map(([k,l])=>({key:k, label:l, type:"simple", section:"savings"}));
     const sections = [
       { title: t('lbl_salary_section'), fill: XL.goldBg, items: [{key:'salary', label:t('f_salary'), type:'simple'}] },
       { title: t('lbl_income'), fill: XL.cyanBg, items: getIncomeFields().map(([k,l])=>({key:k, label:l, type:'simple'})) },
       { title: t('lbl_expenses').replace('💸 ',''), fill: XL.redBg, items: getExpenseRows().filter(x=>x.type!=="group").map(x=>({key:x.key, label:x.label, type:x.type, extraKey:x.extraKey})) },
-      { title: t('lbl_savings').replace('💰 ',''), fill: XL.greenBg, items: getSavingFields().map(([k,l])=>({key:k, label:l, type:'simple'})) }
+      { title: t('lbl_savings').replace('💰 ',''), fill: XL.greenBg, items: savingsItems }
     ];
     sections.forEach(sec => {
       xlSectionRow(ws, r, cols, sec.title, XL.dark); r++;
-      sec.items.forEach(({key, label, type, extraKey}) => {
+      sec.items.forEach(({key, label, type, extraKey, section}) => {
         const values = monthsData.map(m => {
           let v = +m[key]||0;
           if(type === 'repeatable') v += sumRepeatableExtras(m, extraKey);
+          else if(section === 'savings') v += sumSavingExtras(m, key + "Extra");
           return v;
         });
         const row = [label].concat(values);
@@ -2144,7 +2241,12 @@ function exportYearsExcel(){
     const sFields = getSavingFields();
     sFields.forEach(f => {
       const [k, l] = f;
-      const vals = state.yearList.map(y => Mof(y).reduce((s,m)=>s+(isSavingExcluded(m,k)?0:(+m[k]||0)),0));
+      /* ⭐⭐ [تعديل] يشمل الصفوف الفرعية ⭐⭐ */
+      const vals = state.yearList.map(y => Mof(y).reduce((s,m)=>{
+        let v = isSavingExcluded(m,k) ? 0 : (+m[k]||0);
+        v += sumSavingExtrasCounted(m, k + "Extra");
+        return s + v;
+      },0));
       const sum = vals.reduce((a,b)=>a+b,0);
       const row = [l].concat(vals).concat([sum]);
       while(row.length < cols) row.push('');
@@ -2286,17 +2388,23 @@ function exportPyramidLevelExcel(key){
       });
     } else {
       xlHeaderRow(ws, r, ['السنة','الشهر','المبلغ ('+cur+')','ملاحظة','المرجع',''], XL.inputHdr); r++;
+      /* ⭐⭐ [تعديل] يشمل الصفوف الفرعية ⭐⭐ */
+      const extraKey = key + "Extra";
       state.yearList.slice().sort((a,b)=>a-b).forEach(y => {
         const arr = Mof(y);
         arr.forEach((m, mi) => {
-          if(isSavingExcluded(m, key)) return;
-          const amount = +m[key] || 0;
+          const mainExcluded = isSavingExcluded(m, key);
+          const mainAmt = mainExcluded ? 0 : (+m[key] || 0);
           const meta = m.savingMeta?.[key] || {};
           const refVal = m.savingRefMeta?.[key] || '';
-          if(amount > 0 || meta.note){
-            xlDataRow(ws, r, [y, monthNames[mi], amount, meta.note || '—', refVal || '—', ''], cols, { fill: XL.rowAlt, numFmt: '#,##0.00', align: {horizontal:'right',vertical:'center'} });
+          if(mainAmt > 0 || meta.note){
+            xlDataRow(ws, r, [y, monthNames[mi], mainAmt, meta.note || '—', refVal || '—', ''], cols, { fill: XL.rowAlt, numFmt: '#,##0.00', align: {horizontal:'right',vertical:'center'} });
             r++;
           }
+          getSavingExtras(m, extraKey).filter(x => x.bank !== EXCLUDED_BANK && (+x.amount||0) > 0).forEach((ex, idx) => {
+            xlDataRow(ws, r, [y, monthNames[mi] + ` #${idx+2}`, +ex.amount||0, ex.note || '—', ex.ref || '—', ''], cols, { fill: XL.tealBg, numFmt: '#,##0.00', align: {horizontal:'right',vertical:'center'} });
+            r++;
+          });
         });
       });
     }
@@ -2763,7 +2871,8 @@ function renderDashboard(){
     ${kpi(t('kpi_tot_debtrecv'), money(totRecv), "pos")}
     ${kpi(t('kpi_tot_rem'), money(totRem), totRem>=0?"pos":"neg")}
     ${kpi(t('kpi_net_debt'), money(totRecv - totPay), (totRecv - totPay)>=0?"pos":"neg")}`;
-  const sum = k => months.reduce((s,m)=>s+(+m[k]||0),0);
+  /* ⭐⭐ [تعديل] sum يشمل الصفوف الفرعية للادخار ⭐⭐ */
+  const sum = k => months.reduce((s,m)=>s+(+m[k]||0)+sumSavingExtrasCounted(m, k + "Extra"),0);
   document.getElementById("dashDist").innerHTML = `
     ${kpi(t('kpi_emergency'), money(sum("emergencyFund")), "neg")}
     ${kpi(t('kpi_invest'), money(sum("investment")), "pos")}
@@ -2881,10 +2990,12 @@ function renderExpenseSummary(){
   const bankHtml = BANKS.map(b => { const amt = bankTotals[b] || 0; return `<div class="exp-sum-item bank-item ${bankColors[b]}"><span>${bankIcons[b]} ${bankLabel(b)}:</span><b>${money(amt)}</b></div>`; }).join("");
   document.getElementById("expenseSummary").innerHTML = `<div class="exp-sum-item"><span>${t('es_total')}:</span><b>${money(total)}</b></div><div class="exp-sum-item green"><span>${t('es_counted')}:</span><b>${money(counted)}</b></div><div class="exp-sum-item red"><span>${t('es_excluded')}:</span><b>${money(excluded)}</b></div><div class="exp-sum-divider"></div><div class="exp-sum-title">${t('es_by_bank')}</div>${bankHtml}`;
 }
+/* ⭐⭐⭐ [تعديل رئيسي] renderSavingFields مع دعم الصفوف الفرعية ⭐⭐⭐ */
 function renderSavingFields(){
   const m = M()[state.activeMonth];
   const refOptsFor = val => REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${val===o.v?'selected':''}>${o.l}</option>`).join('');
-  document.getElementById("savingFields").innerHTML = getSavingFields().map(f => {
+  let html = "";
+  getSavingFields().forEach(f => {
     const [k, l, extra] = f;
     const meta = getSavingMeta(m, k);
     const excluded = isSavingExcluded(m, k);
@@ -2900,8 +3011,25 @@ function renderSavingFields(){
       if(disabled){ targetHint = `<span class="saving-target-hint">✅ ${LANG==='ar'?'الهدف مكتمل':'Target reached'} (${fmt(target)})</span>`; }
       else { targetHint = `<span class="saving-target-hint" style="background:rgba(234,179,8,.15);color:var(--gold);border-color:rgba(234,179,8,.4)">🎯 ${t('tgt_saving_target_hint')}${fmt(target)} • ${LANG==='ar'?'متبقي':'left'}: ${fmt(Math.max(0,target-net))}</span>`; }
     }
-    return `<tr class="${excluded?'excluded':''} ${disabled?'target-reached-row':''}"><td class="saving-field"><label style="display:block;font-weight:600;color:var(--accent);font-size:12px;margin-bottom:2px">${l}</label>${extraHtml}${targetHint}</td><td><input type="number" value="${inVal(m[k])}" oninput="updSaving('${k}',this.value)" min="0" step="0.001" ${disabled ? 'disabled' : ''} placeholder="${disabled ? t('tgt_saving_disabled') : ''}" style="font-weight:700;color:${disabled ? 'var(--ok)' : 'var(--accent)'};text-align:center;font-size:16px"></td><td><select class="${excluded?'bank-excluded':''}" onchange="updSavingBank('${k}', this.value)">${bankOpts}</select></td><td><input type="text" value="${esc(meta.note||'')}" oninput="updSavingNote('${k}', this.value)" placeholder="..."></td><td><select onchange="updSavingRef('${k}', this.value)">${refOptsFor(refVal)}</select></td></tr>`;
-  }).join("");
+    /* ⭐⭐ [إضافة] إعداد الصفوف الفرعية ⭐⭐ */
+    const extras = getSavingExtras(m, k + "Extra");
+    const isCollapsed = isSavingGroupCollapsed(m, k + "Extra");
+    let labelHtml = `<label style="display:block;font-weight:600;color:var(--accent);font-size:12px;margin-bottom:2px">${l}</label>${extraHtml}${targetHint}`;
+    labelHtml += `<button class="icon-btn add-btn add-btn-inline" onclick="addSavingExtra('${k}Extra')" title="${t('add_extra_title')}">+</button>`;
+    if(extras.length > 0){ labelHtml += `<button class="icon-btn collapse-btn add-btn-inline" onclick="toggleAllSavingExtras('${k}Extra')" title="${isCollapsed?t('expand_all_title'):t('collapse_all_title')}">${isCollapsed?'▶':'▼'} <span>${extras.length}</span></button>`; }
+    html += `<tr class="${excluded?'excluded':''} ${disabled?'target-reached-row':''} main-row"><td class="saving-field">${labelHtml}</td><td><input type="number" value="${inVal(m[k])}" oninput="updSaving('${k}',this.value)" min="0" step="0.001" ${disabled ? 'disabled' : ''} placeholder="${disabled ? t('tgt_saving_disabled') : ''}" style="font-weight:700;color:${disabled ? 'var(--ok)' : 'var(--accent)'};text-align:center;font-size:16px"></td><td><select class="${excluded?'bank-excluded':''}" onchange="updSavingBank('${k}', this.value)">${bankOpts}</select></td><td><input type="text" value="${esc(meta.note||'')}" oninput="updSavingNote('${k}', this.value)" placeholder="..."></td><td><select onchange="updSavingRef('${k}', this.value)">${refOptsFor(refVal)}</select></td></tr>`;
+    if(!isCollapsed && extras.length > 0){
+      extras.forEach((ex, idx) => {
+        const exExcluded = ex.bank === EXCLUDED_BANK;
+        const exBankOpts = BANKS.map(b => `<option value="${b}" ${ex.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
+        const exRefOpts = REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${ex.ref===o.v?'selected':''}>${o.l}</option>`).join('');
+        const suffix = `#${idx+2}`;
+        const exNameHtml = `<span class="extra-name">${l} <span class="extra-hash">${suffix}</span></span><button class="icon-btn remove-btn add-btn-inline" onclick="removeSavingExtra('${k}Extra', ${ex.id})" title="${t('remove_extra_title')}">✕</button>`;
+        html += `<tr class="${exExcluded?'excluded':''} extra-row"><td>${exNameHtml}</td><td><input type="number" value="${inVal(ex.amount)}" oninput="updSavingExtraField('${k}Extra', ${ex.id}, 'amount', this.value)" min="0" step="0.001" ${disabled ? 'disabled' : ''} style="font-weight:700;color:${disabled?'var(--ok)':'var(--accent)'};text-align:center"></td><td><select class="${exExcluded?'bank-excluded':''}" onchange="updSavingExtraField('${k}Extra', ${ex.id}, 'bank', this.value)">${exBankOpts}</select></td><td><input type="text" value="${esc(ex.note)}" oninput="updSavingExtraField('${k}Extra', ${ex.id}, 'note', this.value)" placeholder="..."></td><td><select onchange="updSavingExtraField('${k}Extra', ${ex.id}, 'ref', this.value)">${exRefOpts}</select></td></tr>`;
+      });
+    }
+  });
+  document.getElementById("savingFields").innerHTML = html;
   renderSavingSummary();
 }
 function renderSavingSummary(){
@@ -3148,7 +3276,21 @@ function generatePyramidLevelReportHTML(key){
       const relevantDebts = (state.debts || []).filter(d => d.type === filterType && !isDebtExcluded(d));
       monthsArr.forEach((m, mi) => { const entries = []; let monthTotal = 0; relevantDebts.forEach(d => { const v = dm(d, y, mi); if(v > 0){ monthTotal += v; entries.push({ name: d.name, amount: v, ref: getDebtRef(d, y, mi) || '', notes: d.notes || '' }); } }); if(monthTotal > 0) monthRows.push({ mi, dateDisplay: formatPrintDate(m, mi), monthName: monthNames[mi], amount: monthTotal, entries, note: '' }); });
     } else {
-      monthsArr.forEach((m, mi) => { if(isSavingExcluded(m, key)) return; const amount = +m[key] || 0; const meta = m.savingMeta?.[key] || {}; const monthNote = meta.note || ''; const refVal = m.savingRefMeta?.[key] || ''; if(amount > 0 || monthNote) monthRows.push({ mi, dateDisplay: formatPrintDate(m, mi), monthName: monthNames[mi], amount, entries: [], note: monthNote, ref: refVal }); });
+      /* ⭐⭐ [تعديل] يشمل الصفوف الفرعية ⭐⭐ */
+      monthsArr.forEach((m, mi) => {
+        const mainExcluded = isSavingExcluded(m, key);
+        const mainAmt = mainExcluded ? 0 : (+m[key] || 0);
+        const meta = m.savingMeta?.[key] || {};
+        const monthNote = meta.note || '';
+        const refVal = m.savingRefMeta?.[key] || '';
+        const extras = getSavingExtras(m, key + "Extra").filter(x => x.bank !== EXCLUDED_BANK && (+x.amount||0) > 0);
+        const extraTotal = extras.reduce((s,x)=>s+(+x.amount||0),0);
+        const totalAmt = mainAmt + extraTotal;
+        if(totalAmt > 0 || monthNote){
+          const entries = extras.map((ex, i) => ({ name: `${lvl.label} #${i+2}`, amount: +ex.amount||0, ref: ex.ref || '', notes: ex.note || '' }));
+          monthRows.push({ mi, dateDisplay: formatPrintDate(m, mi), monthName: monthNames[mi], amount: totalAmt, entries, note: monthNote, ref: refVal });
+        }
+      });
     }
     if(monthRows.length){ const yearTotal = monthRows.reduce((s, r) => s + r.amount, 0); detailedYears.push({ year: y, months: monthRows, total: yearTotal }); }
   });
@@ -3176,9 +3318,17 @@ function generatePyramidLevelReportHTML(key){
         yb.months.forEach(mr => { mr.entries.forEach((en, idx) => { counter++; html += `<tr><td class="num">${counter}</td><td class="date">${idx === 0 ? mr.dateDisplay : ''}</td><td class="month-name">${idx === 0 ? mr.monthName : ''}</td><td>${esc(en.name)}</td><td class="num">${fmt(en.amount)}</td><td style="text-align:center">${esc(en.ref) || '—'}</td></tr>`; if(en.notes && idx === 0){ html += `<tr class="sub-row"><td></td><td></td><td></td><td colspan="3">📝 ${esc(en.notes)}</td></tr>`; } }); });
         html += `<tr class="total-row"><td colspan="4"><strong>${t('print_year_total')} ${yb.year}</strong></td><td class="num">${fmt(yb.total)}</td><td></td></tr></tbody></table>`;
       } else {
-        html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th style="width:70px">${t('print_day_month')}</th><th style="width:100px">${t('print_month')}</th><th style="width:120px">${t('print_amount')} (${cur})</th><th>${t('print_notes_label')}</th><th style="width:60px">${t('th_ref')}</th></tr></thead><tbody>`;
-        yb.months.forEach((mr, idx) => { html += `<tr><td class="num">${idx + 1}</td><td class="date">${mr.dateDisplay}</td><td class="month-name">${mr.monthName}</td><td class="num">${fmt(mr.amount)}</td><td class="note">${esc(mr.note) || '—'}</td><td style="text-align:center">${esc(mr.ref || '') || '—'}</td></tr>`; });
-        html += `<tr class="total-row"><td colspan="3"><strong>${t('print_year_total')} ${yb.year}</strong></td><td class="num">${fmt(yb.total)}</td><td colspan="2"></td></tr></tbody></table>`;
+        /* ⭐⭐ [تعديل] عرض الصفوف الفرعية في التقرير ⭐⭐ */
+        html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th style="width:70px">${t('print_day_month')}</th><th style="width:100px">${t('print_month')}</th><th>${t('print_debt_name')}</th><th style="width:120px">${t('print_amount')} (${cur})</th><th style="width:60px">${t('th_ref')}</th></tr></thead><tbody>`;
+        let counter = 0;
+        yb.months.forEach(mr => {
+          const hasEntries = mr.entries && mr.entries.length > 0;
+          counter++;
+          html += `<tr><td class="num">${counter}</td><td class="date">${mr.dateDisplay}</td><td class="month-name">${mr.monthName}</td><td>${esc(lvl.label)}</td><td class="num">${fmt(mr.amount - mr.entries.reduce((s,x)=>s+x.amount,0))}</td><td style="text-align:center">${esc(mr.ref || '') || '—'}</td></tr>`;
+          if(mr.note){ html += `<tr class="sub-row"><td></td><td></td><td></td><td colspan="3">📝 ${esc(mr.note)}</td></tr>`; }
+          if(hasEntries){ mr.entries.forEach(en => { html += `<tr class="sub-row"><td></td><td></td><td></td><td>${esc(en.name)}</td><td class="num">${fmt(en.amount)}</td><td style="text-align:center">${esc(en.ref) || '—'}</td></tr>`; if(en.notes){ html += `<tr class="sub-row"><td></td><td></td><td></td><td colspan="3">📝 ${esc(en.notes)}</td></tr>`; } }); }
+        });
+        html += `<tr class="total-row"><td colspan="4"><strong>${t('print_year_total')} ${yb.year}</strong></td><td class="num">${fmt(yb.total)}</td><td></td></tr></tbody></table>`;
       }
       html += `</div>`;
     });
@@ -3420,34 +3570,50 @@ function renderYears(){
   let dhtml = `<thead><tr><th>${t('th_item_name')}</th>${state.yearList.map(y=>`<th>${y}</th>`).join('')}<th>${t('th_total')}</th></tr></thead><tbody>`;
   sFields.forEach(f => {
     const [k, l] = f;
-    const vals = state.yearList.map(y => Mof(y).reduce((s,m)=>s+(isSavingExcluded(m,k)?0:(+m[k]||0)),0));
+    /* ⭐⭐ [تعديل] يشمل الصفوف الفرعية ⭐⭐ */
+    const vals = state.yearList.map(y => Mof(y).reduce((s,m)=>{
+      let v = isSavingExcluded(m,k) ? 0 : (+m[k]||0);
+      v += sumSavingExtrasCounted(m, k + "Extra");
+      return s + v;
+    },0));
     const sum = vals.reduce((a,b)=>a+b,0);
     dhtml += `<tr><td>${l}</td>${vals.map(v=>`<td class="num">${v?money(v):"—"}</td>`).join('')}<td class="num" style="color:var(--accent);font-weight:700">${money(sum)}</td></tr>`;
   });
   dhtml += `</tbody>`;
   document.getElementById("yearsDistTable").innerHTML = dhtml;
 }
+/* ⭐⭐ [تعديل] renderAnnual يشمل الصفوف الفرعية للادخار ⭐⭐ */
 function renderAnnual(){
   const months = getMonths(); const y = state.activeYear;
   const monthsData = M();
   const sections = [
-    [t('lbl_salary_section'), [{key:"salary", label:t('f_salary'), type:"simple"}]],
-    [t('lbl_income'), getIncomeFields().map(([k,l])=>({key:k, label:l, type:"simple"}))],
-    [t('lbl_expenses').replace('💸 ',''), getExpenseRows().filter(r=>r.type!=="group").map(r=>({key:r.key, label:r.label, type:r.type, extraKey:r.extraKey}))],
-    [t('lbl_savings').replace('💰 ',''), getSavingFields().map(([k,l])=>({key:k, label:l, type:"simple"}))],
+    { title: t('lbl_salary_section'), items: [{key:"salary", label:t('f_salary'), type:"simple"}] },
+    { title: t('lbl_income'), items: getIncomeFields().map(([k,l])=>({key:k, label:l, type:"simple"})) },
+    { title: t('lbl_expenses').replace('💸 ',''), items: getExpenseRows().filter(r=>r.type!=="group").map(r=>({key:r.key, label:r.label, type:r.type, extraKey:r.extraKey})) },
+    { title: t('lbl_savings').replace('💰 ',''), items: getSavingFields().map(([k,l])=>({key:k, label:l, type:"simple", section:"savings"})) },
   ];
   let html = `<thead><tr><th>${t('th_item')}</th>${months.map(m=>`<th>${m}</th>`).join("")}<th>${t('th_total')}</th></tr></thead><tbody>`;
-  sections.forEach(([title, items])=>{
-    html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--accent);font-weight:700">${title}</td></tr>`;
-    items.forEach(({key, label, type, extraKey})=>{
-      const values = monthsData.map(m => { let v = +m[key]||0; if(type === "repeatable") v += sumRepeatableExtras(m, extraKey); return v; });
+  sections.forEach((sec)=>{
+    html += `<tr style="background:var(--panel2)"><td colspan="14" style="color:var(--accent);font-weight:700">${sec.title}</td></tr>`;
+    sec.items.forEach(({key, label, type, extraKey, section})=>{
+      const values = monthsData.map(m => {
+        let v = +m[key]||0;
+        if(type === "repeatable") v += sumRepeatableExtras(m, extraKey);
+        else if(section === "savings") v += sumSavingExtras(m, key + "Extra");
+        return v;
+      });
       const counted = monthsData.map(m => {
-        const isExp = title.includes('المصاريف')||title.includes('Expenses');
-        const isSav = title.includes('الادخار')||title.includes('Savings');
+        const isExp = sec.title.includes('المصاريف')||sec.title.includes('Expenses');
+        const isSav = sec.title.includes('الادخار')||sec.title.includes('Savings');
         if(type === "repeatable"){
           let v = +m[key]||0;
           if(isExp && isExcluded(m, key)) v = 0;
           v += getRepeatableExtras(m, extraKey).reduce((s,x)=>{ if(isExp && x.bank === EXCLUDED_BANK) return s; return s + (+x.amount||0); }, 0);
+          return v;
+        }
+        if(section === "savings"){
+          let v = isSavingExcluded(m, key) ? 0 : (+m[key]||0);
+          v += sumSavingExtrasCounted(m, key + "Extra");
           return v;
         }
         if(isExp && isExcluded(m, key)) return 0;
@@ -3457,10 +3623,11 @@ function renderAnnual(){
       const sum = counted.reduce((a,b)=>a+b,0);
       html += `<tr><td>${label}</td>` + values.map((v, i)=>{
         const mm = monthsData[i];
-        const isExp = title.includes('المصاريف')||title.includes('Expenses');
-        const isSav = title.includes('الادخار')||title.includes('Savings');
+        const isExp = sec.title.includes('المصاريف')||sec.title.includes('Expenses');
+        const isSav = sec.title.includes('الادخار')||sec.title.includes('Savings');
         let ex = false;
         if(type === "repeatable"){ ex = isExp && isExcluded(mm, key); }
+        else if(section === "savings"){ ex = isSavingExcluded(mm, key); }
         else { ex = (isExp && isExcluded(mm, key)) || (isSav && isSavingExcluded(mm, key)); }
         if(!v) return `<td class="num">—</td>`;
         return `<td class="num ${ex?'excluded-cell':''}">${money(v)}${ex?' ⛔':''}</td>`;
