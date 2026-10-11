@@ -834,7 +834,7 @@ const I18N = {
     print_reached:"✅ تم الوصول",print_notes_label:"ملاحظات",print_years_breakdown:"📅 تفصيل حسب السنة والشهر",
     print_withdrawals_history:"📜 سجل السحوبات",print_year:"السنة",print_amount:"المبلغ",print_date:"التاريخ",print_reason:"السبب",
     print_total:"الإجمالي",print_total_withdrawn:"إجمالي المسحوب",print_year_total:"إجمالي سنة",print_month:"الشهر",
-    print_day_month:"التاريخ (يوم/شهر)",print_no_data:"لا توجد بيانات مسجلة",print_no_withdrawals:"لا توجد سحوبات",
+    print_day_month:"تاريخ",print_no_data:"لا توجد بيانات مسجلة",print_no_withdrawals:"لا توجد سحوبات",
     print_auto_hint:"🔗 بند تلقائي يُحسب من تبويب السلف والديون",print_savings_source:"مصدر البيانات: تبويب «إدارة الشهور» — بند الادخار",
     print_debt_source_loans:"مصدر البيانات: تبويب «السلف والديون» — الأقساط",print_debt_source_obligations:"مصدر البيانات: تبويب «السلف والديون» — الالتزامات",
     print_error_popup:"⚠️ الرجاء السماح بالنوافذ المنبثقة للطباعة",print_index:"م",print_debt_name:"البند",print_no_deposits_year:"لا إيداعات هذه السنة",
@@ -943,7 +943,7 @@ const I18N = {
     print_target:"Target",print_cumulative:"Cumulative Saved",print_withdrawn:"Withdrawn",print_net:"Net",print_remaining_to_target:"Remaining to target",
     print_reached:"✅ Reached",print_notes_label:"Notes",print_years_breakdown:"📅 Breakdown by Year and Month",print_withdrawals_history:"📜 Withdrawal History",
     print_year:"Year",print_amount:"Amount",print_date:"Date",print_reason:"Reason",print_total:"Total",print_total_withdrawn:"Total Withdrawn",
-    print_year_total:"Total for year",print_month:"Month",print_day_month:"Date (day/month)",print_no_data:"No data recorded",print_no_withdrawals:"No withdrawals",
+    print_year_total:"Total for year",print_month:"Month",print_day_month:"Date",print_no_data:"No data recorded",print_no_withdrawals:"No withdrawals",
     print_auto_hint:"🔗 Auto-calculated",print_savings_source:"Source: Month Management — savings item",print_debt_source_loans:"Source: Debts — Installments",
     print_debt_source_obligations:"Source: Debts — Obligations",print_error_popup:"⚠️ Allow pop-ups",print_index:"#",print_debt_name:"Item",print_no_deposits_year:"No deposits this year",
     debts_summary:"📊 Debts Summary",add_debt:"➕ Add Debt",lbl_debt_name:"Name",lbl_debt_type:"Type",lbl_debt_cat:"Category",
@@ -1069,7 +1069,6 @@ const getSavingFields = () => [
   ["travelSaving", t('s_travelSaving')],["eidMoneySaving", t('s_eidMoneySaving'), "eidDropdown"],
 ];
 
-/* ⭐⭐ [إضافة] مفاتيح الصفوف الفرعية للادخار ⭐⭐ */
 const getSavingExtraKeys = () => getSavingFields().map(f => f[0] + "Extra");
 
 const getPyramidLevels = () => [
@@ -1096,11 +1095,9 @@ function makeEmptyMonth(){
     incomeNotes:{salary:"",costOfLiving:"",housing:"",charity:"",freelance:"",meat:""},
     eidMoneyType:"fitar",savingMeta:{},carInsurance: DEFAULT_EXTRA(),zakat: DEFAULT_EXTRA(),
     notes:"",customDate:"",customTime:"",lastModified:"",extraCollapsedMap:{},
-    /* ⭐⭐ [إضافة] خريطة طي صفوف الادخار الفرعية ⭐⭐ */
     savingExtraCollapsedMap:{}
   };
   EXPENSE_EXTRA_KEYS.forEach(k => base[k] = []);
-  /* ⭐⭐ [إضافة] تهيئة مصفوفات الصفوف الفرعية للادخار ⭐⭐ */
   getSavingFields().forEach(f => base[f[0] + "Extra"] = []);
   return base;
 }
@@ -1112,7 +1109,6 @@ let state = {
   debts: [], yearExtras: {}, pyramidTargets: {}, pyramidNotes: {}, pyramidWithdrawals: {}
 };
 
-/* ===================== REPEATABLE EXPENSE HELPERS ===================== */
 function getRepeatableExtras(m, extraKey){ if(!Array.isArray(m[extraKey])) m[extraKey] = []; return m[extraKey]; }
 function sumRepeatableExtras(m, extraKey){ return getRepeatableExtras(m, extraKey).reduce((s,x)=>s+(+x.amount||0),0); }
 function sumRepeatableExtrasCounted(m, extraKey){ return getRepeatableExtras(m, extraKey).filter(x => x.bank !== EXCLUDED_BANK).reduce((s,x)=>s+(+x.amount||0),0); }
@@ -1163,7 +1159,6 @@ function updExtraField(extraKey, id, field, val){
   renderMonthDate();
 }
 
-/* ===================== ⭐⭐ [إضافة] REPEATABLE SAVING HELPERS ⭐⭐ ===================== */
 function getSavingExtras(m, extraKey){ if(!Array.isArray(m[extraKey])) m[extraKey] = []; return m[extraKey]; }
 function sumSavingExtras(m, extraKey){ return getSavingExtras(m, extraKey).reduce((s,x)=>s+(+x.amount||0),0); }
 function sumSavingExtrasCounted(m, extraKey){ return getSavingExtras(m, extraKey).filter(x => x.bank !== EXCLUDED_BANK).reduce((s,x)=>s+(+x.amount||0),0); }
@@ -1219,7 +1214,6 @@ function updSavingExtraField(extraKey, id, field, val){
   renderMonthDate();
 }
 
-/* ===================== MAIN STATE HELPERS ===================== */
 function getCarInsurance(m){ if(!m.carInsurance) m.carInsurance = DEFAULT_EXTRA(); return m.carInsurance; }
 function getZakat(m){ if(!m.zakat) m.zakat = DEFAULT_EXTRA(); return m.zakat; }
 function isExtraExcludedM(m, key){ const data = key === "carInsurance" ? getCarInsurance(m) : getZakat(m); return data.bank === EXCLUDED_BANK; }
@@ -1266,7 +1260,6 @@ function ensurePyramidWithdrawals(){ if(!state.pyramidWithdrawals) state.pyramid
 function getWithdrawals(key){ const w = ensurePyramidWithdrawals(); if(!w[key]) w[key] = []; return w[key]; }
 function getWithdrawnTotal(key){ return getWithdrawals(key).reduce((s,x)=>s+(+x.amount||0),0); }
 
-/* ⭐⭐ [تعديل] getCumulativeSaved أصبحت تشمل الصفوف الفرعية للادخار ⭐⭐ */
 function getCumulativeSaved(key){
   if(key === "loans") return getLoansCumulativePaid();
   if(key === "obligationsSaving") return getObligationsCumulativePaid();
@@ -1280,7 +1273,6 @@ function getCumulativeSaved(key){
   });
   return total;
 }
-/* ⭐⭐ [تعديل] getCumulativeSavedExcluding أصبحت تشمل الصفوف الفرعية للادخار ⭐⭐ */
 function getCumulativeSavedExcluding(key, excludeYear, excludeMonth){
   if(key === "loans"){
     let total = 0;
@@ -1434,10 +1426,8 @@ function load(){
         if(typeof merged.hajj !== 'number') merged.hajj = 0;
         if(typeof merged.salary !== 'number') merged.salary = 0;
         if(!merged.extraCollapsedMap) merged.extraCollapsedMap = {};
-        /* ⭐⭐ [إضافة] تهيئة خريطة طي صفوف الادخار الفرعية ⭐⭐ */
         if(!merged.savingExtraCollapsedMap) merged.savingExtraCollapsedMap = {};
         EXPENSE_EXTRA_KEYS.forEach(k => { if(!Array.isArray(merged[k])) merged[k] = []; });
-        /* ⭐⭐ [إضافة] تهيئة مصفوفات الصفوف الفرعية للادخار ⭐⭐ */
         getSavingFields().forEach(f => { if(!Array.isArray(merged[f[0] + "Extra"])) merged[f[0] + "Extra"] = []; });
         migrationConfig.forEach(cfg => {
           cfg.oldKeys.forEach(oldKey => {
@@ -1607,7 +1597,6 @@ function totalExpensesRaw(m){
   return s;
 }
 
-/* ⭐⭐ [تعديل] totalSavings / totalExcludedSavings / totalSavingsRaw تشمل الصفوف الفرعية ⭐⭐ */
 function totalSavings(m){
   let s = getSavingFields().reduce((sum,[k])=>sum+(isSavingExcluded(m,k)?0:(+m[k]||0)),0);
   getSavingFields().forEach(([k]) => { s += sumSavingExtrasCounted(m, k + "Extra"); });
@@ -1747,10 +1736,6 @@ function setPrintOrientation(orientation){
   }
 }
 
-/* ============================================================
-   ⭐⭐⭐⭐⭐  EXCEL EXPORT — Per Tab  ⭐⭐⭐⭐⭐
-   ============================================================ */
-
 function syncFromDOM(){
   if(SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; }
   if(typeof saveNow === 'function') saveNow();
@@ -1874,7 +1859,6 @@ function finishXlsx(wb, ws, filename, sheetName){
   XLSX.writeFile(wb, filename, { bookType: 'xlsx', cellStyles: true });
 }
 
-/* ========== 1) Dashboard Excel ========== */
 function exportDashboardExcel(){
   try {
     if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
@@ -1907,7 +1891,6 @@ function exportDashboardExcel(){
     r++;
     xlSectionRow(ws, r, cols, '💰 توزيع الادخار السنوي', XL.inputHdr); r++;
     xlHeaderRow(ws, r, ['البند','القيمة ('+cur+')','','','','','',''], XL.inputHdr); r++;
-    /* ⭐⭐ [تعديل] يشمل الصفوف الفرعية ⭐⭐ */
     const sum = k => months.reduce((s,m)=>s+(+m[k]||0)+sumSavingExtrasCounted(m, k + "Extra"),0);
     [['🚨 طوارئ', sum('emergencyFund'), XL.redBg],['📈 استثمار', sum('investment'), XL.greenBg],
      ['👥 جمعية', sum('assembly'), XL.purpleBg],['✈️ سفر', sum('travelSaving'), XL.tealBg]
@@ -1946,7 +1929,6 @@ function exportDashboardExcel(){
   }
 }
 
-/* ========== 2) Month Excel ========== */
 function exportMonthExcel(){
   try {
     if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
@@ -1965,13 +1947,11 @@ function exportMonthExcel(){
     xlTitleRow(ws, r, cols, `📅 ${monthName} ${y}`, { sz: 16, h: 34 }); r++;
     xlTitleRow(ws, r, cols, 'Muharraqi — Capital Manager', { fill: XL.header, sz: 11, h: 22 }); r++;
     r++;
-    /* Salary */
     xlSectionRow(ws, r, cols, '💰 ' + t('lbl_salary_section'), XL.gold); r++;
     xlHeaderRow(ws, r, ['البند','المبلغ ('+cur+')','ملاحظة','',''], XL.header); r++;
     const incN = ensureIncomeNotes(m);
     xlDataRow(ws, r, [t('f_salary'), +m.salary||0, incN.salary||'', '', ''], cols, { fill: XL.goldBg, numFmt: '#,##0.00', align: {horizontal:'right',vertical:'center'} }); r++;
     r++;
-    /* Income */
     xlSectionRow(ws, r, cols, '💰 ' + t('lbl_income'), XL.inputHdr); r++;
     xlHeaderRow(ws, r, ['البند','المبلغ ('+cur+')','ملاحظة','',''], XL.inputHdr); r++;
     getIncomeFields().forEach(([k,l]) => {
@@ -1981,7 +1961,6 @@ function exportMonthExcel(){
       xlDataRow(ws, r, [t('f_meat_support'), +m.meat||0, incN.meat||'', '', ''], cols, { fill: XL.tealBg, numFmt: '#,##0.00', align: {horizontal:'right',vertical:'center'} }); r++;
     }
     r++;
-    /* Expenses */
     xlSectionRow(ws, r, cols, '💸 ' + t('lbl_expenses'), XL.danger); r++;
     xlHeaderRow(ws, r, ['البند','المبلغ ('+cur+')','البنك','ملاحظة','مرجع'], XL.header); r++;
     getExpenseRows().forEach(row => {
@@ -1996,7 +1975,6 @@ function exportMonthExcel(){
       });
     });
     r++;
-    /* Debts */
     const visibleDebts = state.debts.filter(d => shouldShowDebtInMonthlyEntry(d, y, mi));
     if(visibleDebts.length){
       xlSectionRow(ws, r, cols, '🤝 ' + t('lbl_debts_month'), XL.convHdr); r++;
@@ -2011,7 +1989,6 @@ function exportMonthExcel(){
       });
       r++;
     }
-    /* ⭐⭐ [تعديل] Savings تشمل الصفوف الفرعية ⭐⭐ */
     xlSectionRow(ws, r, cols, '💰 ' + t('lbl_savings'), XL.ok); r++;
     xlHeaderRow(ws, r, ['البند','المبلغ ('+cur+')','البنك','ملاحظة','مرجع'], XL.header); r++;
     getSavingFields().forEach(f => {
@@ -2026,14 +2003,12 @@ function exportMonthExcel(){
       });
     });
     r++;
-    /* One-time */
     const ci = getCarInsurance(m), zk = getZakat(m);
     xlSectionRow(ws, r, cols, '⭐ مصاريف سنوية (تأمين + زكاة)', XL.gold); r++;
     xlHeaderRow(ws, r, ['البند','المبلغ ('+cur+')','البنك','ملاحظة','مرجع'], XL.gold); r++;
     xlDataRow(ws, r, [t('ot_car_insurance'), +ci.amount||0, bankLabel(ci.bank), ci.note||'', ci.ref||''], cols, { fill: XL.goldBg, numFmt: '#,##0.00', align: {horizontal:'right',vertical:'center'} }); r++;
     xlDataRow(ws, r, [t('ot_zakat'), +zk.amount||0, bankLabel(zk.bank), zk.note||'', zk.ref||''], cols, { fill: XL.goldBg, numFmt: '#,##0.00', align: {horizontal:'right',vertical:'center'} }); r++;
     r++;
-    /* Results */
     const exp = totalExpenses(m);
     const sav = totalSavings(m);
     const debtPay = totalDebtPayments(y, mi);
@@ -2074,7 +2049,6 @@ function exportMonthExcel(){
   }
 }
 
-/* ========== 3) Debts Table Excel ========== */
 function exportDebtsTableExcel(){
   try {
     if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
@@ -2126,7 +2100,6 @@ function exportDebtsTableExcel(){
   }
 }
 
-/* ========== 4) Annual Excel ========== */
 function exportAnnualExcel(){
   try {
     if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
@@ -2147,7 +2120,6 @@ function exportAnnualExcel(){
     const hdr = ['البند'].concat(monthNames).concat(['الإجمالي']);
     xlHeaderRow(ws, r, hdr, XL.header);
     r++;
-    /* ⭐⭐ [تعديل] إضافة قسم الادخار مع الصفوف الفرعية ⭐⭐ */
     const savingsItems = getSavingFields().map(([k,l])=>({key:k, label:l, type:"simple", section:"savings"}));
     const sections = [
       { title: t('lbl_salary_section'), fill: XL.goldBg, items: [{key:'salary', label:t('f_salary'), type:'simple'}] },
@@ -2206,7 +2178,6 @@ function exportAnnualExcel(){
   }
 }
 
-/* ========== 5) Years Excel ========== */
 function exportYearsExcel(){
   try {
     if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
@@ -2241,7 +2212,6 @@ function exportYearsExcel(){
     const sFields = getSavingFields();
     sFields.forEach(f => {
       const [k, l] = f;
-      /* ⭐⭐ [تعديل] يشمل الصفوف الفرعية ⭐⭐ */
       const vals = state.yearList.map(y => Mof(y).reduce((s,m)=>{
         let v = isSavingExcluded(m,k) ? 0 : (+m[k]||0);
         v += sumSavingExtrasCounted(m, k + "Extra");
@@ -2265,7 +2235,6 @@ function exportYearsExcel(){
   }
 }
 
-/* ========== 6) Pyramid Excel (full tab) ========== */
 function exportPyramidExcel(){
   try {
     if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
@@ -2321,7 +2290,6 @@ function exportPyramidExcel(){
   }
 }
 
-/* ========== 7) Pyramid Single Level Excel ========== */
 function exportPyramidLevelExcel(key){
   try {
     if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
@@ -2365,7 +2333,6 @@ function exportPyramidLevelExcel(key){
       xlStyleRow(ws, r, cols, { fill: XL.goldBg, font: { sz: 10 }, align: {horizontal:'right',vertical:'center',wrapText:true}, border: xlBorders(XL.border) }); r++;
     }
     r++;
-    /* Yearly breakdown */
     xlSectionRow(ws, r, cols, '📅 تفصيل حسب السنة والشهر', XL.inputHdr); r++;
     const isDebtType = (key === "loans" || key === "obligationsSaving");
     if(isDebtType){
@@ -2388,7 +2355,6 @@ function exportPyramidLevelExcel(key){
       });
     } else {
       xlHeaderRow(ws, r, ['السنة','الشهر','المبلغ ('+cur+')','ملاحظة','المرجع',''], XL.inputHdr); r++;
-      /* ⭐⭐ [تعديل] يشمل الصفوف الفرعية ⭐⭐ */
       const extraKey = key + "Extra";
       state.yearList.slice().sort((a,b)=>a-b).forEach(y => {
         const arr = Mof(y);
@@ -2409,7 +2375,6 @@ function exportPyramidLevelExcel(key){
       });
     }
     r++;
-    /* Withdrawals */
     const ws_data = getWithdrawals(key).slice().sort((a,b) => new Date(a.date) - new Date(b.date));
     xlSectionRow(ws, r, cols, '📜 سجل السحوبات', XL.danger); r++;
     xlHeaderRow(ws, r, ['#','التاريخ','المبلغ ('+cur+')','السبب','',''], XL.danger); r++;
@@ -2441,7 +2406,6 @@ function exportPyramidLevelExcel(key){
   }
 }
 
-/* ========== 8) Debts Month Excel (from month tab card) ========== */
 function exportDebtsMonthExcel(){
   try {
     if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
@@ -2496,7 +2460,6 @@ function exportDebtsMonthExcel(){
   }
 }
 
-/* ===================== PDF ===================== */
 function ensurePdfLibs(){
   if(window.html2canvas && window.jspdf) return Promise.resolve();
   if(_pdfLibsPromise) return _pdfLibsPromise;
@@ -2579,6 +2542,24 @@ async function generatePdfInWindow(htmlStr, filename, orientation){
     throw err;
   }
 }
+/* ⭐⭐ [جديد] تحويل تاريخ السلفة (d.start) إلى صيغة YYYY/M/D ⭐⭐ */
+function formatDebtDate(d){
+  if(d && d.start && /^\d{4}-\d{2}-\d{2}$/.test(d.start)){
+    const parts = d.start.split('-');
+    const y = parts[0], m = parseInt(parts[1],10), day = parseInt(parts[2],10);
+    if(day > 0 && m > 0) return `${y}/${m}/${day}`;
+  }
+  return '—';
+}
+/* ⭐⭐ [تعديل] إرجاع التاريخ اليدوي الكامل (YYYY/M/D) للشهر ⭐⭐ */
+function formatPrintDate(m, mi){
+  if(m && m.customDate && /^\d{4}-\d{2}-\d{2}$/.test(m.customDate)){
+    const parts = m.customDate.split('-');
+    const y = parts[0], mo = parseInt(parts[1],10), day = parseInt(parts[2],10);
+    if(day > 0 && mo > 0) return `${y}/${mo}/${day}`;
+  }
+  return '—';
+}
 function generateDebtReportHTML(debtId){
   const d = state.debts.find(x=>x.id===debtId);
   if(!d) return '';
@@ -2597,6 +2578,7 @@ function generateDebtReportHTML(debtId){
   const byYear = {};
   payments.forEach(p => { if(!byYear[p.year]) byYear[p.year] = []; byYear[p.year].push(p); });
   const sortedYears = Object.keys(byYear).map(Number).sort((a,b)=>a-b);
+  const debtDateStr = formatDebtDate(d);
   const now = new Date();
   const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
   const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
@@ -2604,7 +2586,7 @@ function generateDebtReportHTML(debtId){
   const statusLabel = fullyPaid ? t('debt_report_fully_paid') : t('debt_report_still_active');
   const statusColor = fullyPaid ? '#16a34a' : '#d97706';
   let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('debt_report_title')}: ${esc(d.name)}</title>`;
-  html += `<style>@page{size:A4;margin:15mm}*{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:10px;line-height:1.6;margin:0}.header{text-align:center;margin-bottom:20px;padding-bottom:10px;border-bottom:3px double #333}.header .logo{display:inline-block;width:54px;height:54px;line-height:54px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#3b82f6);color:#fff;font-weight:900;font-size:24px;text-align:center}.header h2{margin:10px 0 4px;color:#0e7490;font-size:20px}.header .meta{color:#666;font-size:12px}.header .badge-status{display:inline-block;padding:4px 14px;border-radius:16px;font-size:12px;font-weight:700;margin-top:6px;background:${fullyPaid?'#dcfce7':'#fef3c7'};color:${statusColor};border:1px solid ${statusColor}}.info-box{background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;margin:0 0 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px 16px;font-size:12px}.info-box .lbl{color:#64748b;font-weight:600;font-size:10px}.info-box .val{color:#0f172a;font-weight:700;font-size:13px;margin-top:2px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 20px}.kpi{border:2px solid #ccc;border-radius:8px;padding:10px 6px;text-align:center;background:#f9fafb}.kpi .lbl{font-size:10px;color:#666;margin-bottom:5px;font-weight:600}.kpi .val{font-size:14px;font-weight:800;font-family:monospace;direction:ltr}.kpi.green{border-color:#16a34a;background:#f0fdf4}.kpi.green .val{color:#16a34a}.kpi.red{border-color:#dc2626;background:#fef2f2}.kpi.red .val{color:#dc2626}.kpi.gold{border-color:#d97706;background:#fffbeb}.kpi.gold .val{color:#d97706}.kpi.blue{border-color:#2563eb;background:#eff6ff}.kpi.blue .val{color:#2563eb}.section-title{background:#f0f4f8;padding:8px 12px;border-right:5px solid #0e7490;font-weight:700;margin:18px 0 8px;font-size:13px;color:#1e293b;border-radius:4px}.year-block{margin-bottom:14px;page-break-inside:avoid}.year-header{background:#e0f2fe;border-right:5px solid #0891b2;padding:6px 12px;font-weight:800;font-size:13px;color:#0e7490;border-radius:6px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}.year-header .year-total{font-family:monospace;font-size:12px;color:#16a34a;background:#f0fdf4;padding:3px 10px;border-radius:20px;border:1px solid #16a34a}table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px}th{background:#e5e7eb;color:#111;padding:7px 8px;text-align:${L?'right':'left'};border:1px solid #999;font-size:10px;font-weight:700}td{padding:6px 8px;border:1px solid #ccc;text-align:${L?'right':'left'}}td.num{font-family:monospace;direction:ltr;text-align:center;font-weight:700}td.date{font-family:monospace;direction:ltr;text-align:center;color:#0e7490;font-weight:800;font-size:12px}td.month-name{font-weight:700;color:#1e293b}tbody tr:nth-child(even){background:#f9fafb}.total-row{background:#e0f2fe !important;font-weight:700}.total-row td{border-top:2px solid #0891b2;font-family:monospace}.empty{color:#999;font-style:italic;text-align:center;padding:20px;background:#f9fafb;border:1px dashed #ccc;border-radius:6px}.grand-total{background:#fef3c7 !important;font-weight:800;font-size:13px}.grand-total td{border:2px solid #d97706;font-family:monospace}.footer{text-align:center;margin-top:28px;padding-top:10px;border-top:2px solid #999;color:#666;font-size:10px;line-height:1.6}.footer strong{color:#0e7490}.notes-box{background:#fffbeb;border:1px solid #fde68a;padding:8px 12px;border-radius:6px;margin:8px 0 14px;font-size:11px;color:#78350f}</style></head><body>`;
+  html += `<style>@page{size:A4;margin:15mm}*{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:10px;line-height:1.6;margin:0}.header{text-align:center;margin-bottom:20px;padding-bottom:10px;border-bottom:3px double #333}.header .logo{display:inline-block;width:54px;height:54px;line-height:54px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#3b82f6);color:#fff;font-weight:900;font-size:24px;text-align:center}.header h2{margin:10px 0 4px;color:#0e7490;font-size:20px}.header .meta{color:#666;font-size:12px}.header .badge-status{display:inline-block;padding:4px 14px;border-radius:16px;font-size:12px;font-weight:700;margin-top:6px;background:${fullyPaid?'#dcfce7':'#fef3c7'};color:${statusColor};border:1px solid ${statusColor}}.info-box{background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;margin:0 0 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px 16px;font-size:12px}.info-box .lbl{color:#64748b;font-weight:600;font-size:10px}.info-box .val{color:#0f172a;font-weight:700;font-size:13px;margin-top:2px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 20px}.kpi{border:2px solid #ccc;border-radius:8px;padding:10px 6px;text-align:center;background:#f9fafb}.kpi .lbl{font-size:10px;color:#666;margin-bottom:5px;font-weight:600}.kpi .val{font-size:14px;font-weight:800;font-family:monospace;direction:ltr}.kpi.green{border-color:#16a34a;background:#f0fdf4}.kpi.green .val{color:#16a34a}.kpi.red{border-color:#dc2626;background:#fef2f2}.kpi.red .val{color:#dc2626}.kpi.gold{border-color:#d97706;background:#fffbeb}.kpi.gold .val{color:#d97706}.kpi.blue{border-color:#2563eb;background:#eff6ff}.kpi.blue .val{color:#2563eb}.section-title{background:#f0f4f8;padding:8px 12px;border-right:5px solid #0e7490;font-weight:700;margin:18px 0 8px;font-size:13px;color:#1e293b;border-radius:4px}.year-block{margin-bottom:14px;page-break-inside:avoid}.year-header{background:#e0f2fe;border-right:5px solid #0891b2;padding:6px 12px;font-weight:800;font-size:13px;color:#0e7490;border-radius:6px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}.year-header .year-total{font-family:monospace;font-size:12px;color:#16a34a;background:#f0fdf4;padding:3px 10px;border-radius:20px;border:1px solid #16a34a}table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px}th{background:#e5e7eb;color:#111;padding:7px 8px;text-align:${L?'right':'left'};border:1px solid #999;font-size:10px;font-weight:700}td{padding:6px 8px;border:1px solid #ccc;text-align:${L?'right':'left'}}td.num{font-family:monospace;direction:ltr;text-align:center;font-weight:700}td.date{font-family:monospace;direction:ltr;unicode-bidi:isolate;text-align:center;color:#0e7490;font-weight:800;font-size:12px}td.month-name{font-weight:700;color:#1e293b}tbody tr:nth-child(even){background:#f9fafb}.total-row{background:#e0f2fe !important;font-weight:700}.total-row td{border-top:2px solid #0891b2;font-family:monospace}.empty{color:#999;font-style:italic;text-align:center;padding:20px;background:#f9fafb;border:1px dashed #ccc;border-radius:6px}.grand-total{background:#fef3c7 !important;font-weight:800;font-size:13px}.grand-total td{border:2px solid #d97706;font-family:monospace}.footer{text-align:center;margin-top:28px;padding-top:10px;border-top:2px solid #999;color:#666;font-size:10px;line-height:1.6}.footer strong{color:#0e7490}.notes-box{background:#fffbeb;border:1px solid #fde68a;padding:8px 12px;border-radius:6px;margin:8px 0 14px;font-size:11px;color:#78350f}</style></head><body>`;
   html += `<div class="header"><div class="logo">M</div><h2>${typeIcon[d.type]||''} ${t('debt_report_title')}: ${esc(d.name)}</h2><div class="meta">${t('print_generated')}: ${dateStr} — ${timeStr}</div><div><span class="badge-status">${statusLabel}</span></div></div>`;
   html += `<div class="info-box"><div><div class="lbl">${t('th_debt_name')}</div><div class="val">${esc(d.name)}</div></div><div><div class="lbl">${t('th_debt_type')}</div><div class="val">${typeIcon[d.type]} ${typeLabel[d.type]}</div></div><div><div class="lbl">${t('debt_report_cat')}</div><div class="val">${esc(d.category) || '—'}</div></div><div><div class="lbl">${t('th_debt_total')}</div><div class="val">${money(+d.total||0)}</div></div><div><div class="lbl">${t('debt_report_paid_before')}</div><div class="val">${money(paidBefore)}</div></div><div><div class="lbl">${t('debt_report_remaining')}</div><div class="val" style="color:${remaining>0?'#dc2626':'#16a34a'}">${money(remaining)}</div></div></div>`;
   html += `<div class="kpis"><div class="kpi blue"><div class="lbl">💵 ${t('th_debt_total')}</div><div class="val">${fmt(+d.total||0)} ${cur}</div></div><div class="kpi gold"><div class="lbl">${t('debt_report_paid_before')}</div><div class="val">${fmt(paidBefore)} ${cur}</div></div><div class="kpi green"><div class="lbl">${isReceive?'💰':'💸'} ${isReceive?t('debt_report_total_received'):t('debt_report_total_paid')}</div><div class="val">${fmt(totalPaid)} ${cur}</div></div><div class="kpi ${remaining===0?'green':'red'}"><div class="lbl">📌 ${t('debt_report_remaining')}</div><div class="val">${fmt(remaining)} ${cur}</div></div></div>`;
@@ -2616,9 +2598,9 @@ function generateDebtReportHTML(debtId){
       const rows = byYear[y];
       const yearTotal = rows.reduce((s,r)=>s+r.amount, 0);
       html += `<div class="year-block"><div class="year-header"><span>📅 ${t('print_year')} ${y}</span><span class="year-total">${fmt(yearTotal)} ${cur}</span></div>`;
-      html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th style="width:70px">${t('print_day_month')}</th><th style="width:100px">${t('print_month')}</th><th style="width:120px">${t('print_amount')} (${cur})</th><th style="width:90px">${t('th_debt_bank')}</th><th>${t('th_ref')}</th></tr></thead><tbody>`;
+      html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th style="width:110px">${t('print_day_month')}</th><th style="width:100px">${t('print_month')}</th><th style="width:120px">${t('print_amount')} (${cur})</th><th style="width:90px">${t('th_debt_bank')}</th><th>${t('th_ref')}</th></tr></thead><tbody>`;
       rows.forEach((p, idx) => {
-        html += `<tr><td class="num">${idx+1}</td><td class="date">${p.month+1}</td><td class="month-name">${monthNames[p.month]}</td><td class="num">${fmt(p.amount)}</td><td style="text-align:center">${esc(p.bank)}</td><td style="text-align:center">${esc(p.ref) || '—'}</td></tr>`;
+        html += `<tr><td class="num">${idx+1}</td><td class="date" dir="ltr">${debtDateStr}</td><td class="month-name">${monthNames[p.month]}</td><td class="num">${fmt(p.amount)}</td><td style="text-align:center">${esc(p.bank)}</td><td style="text-align:center">${esc(p.ref) || '—'}</td></tr>`;
       });
       html += `<tr class="total-row"><td colspan="3"><strong>${t('print_year_total')} ${y}</strong></td><td class="num">${fmt(yearTotal)}</td><td colspan="2"></td></tr></tbody></table></div>`;
     });
@@ -2871,7 +2853,6 @@ function renderDashboard(){
     ${kpi(t('kpi_tot_debtrecv'), money(totRecv), "pos")}
     ${kpi(t('kpi_tot_rem'), money(totRem), totRem>=0?"pos":"neg")}
     ${kpi(t('kpi_net_debt'), money(totRecv - totPay), (totRecv - totPay)>=0?"pos":"neg")}`;
-  /* ⭐⭐ [تعديل] sum يشمل الصفوف الفرعية للادخار ⭐⭐ */
   const sum = k => months.reduce((s,m)=>s+(+m[k]||0)+sumSavingExtrasCounted(m, k + "Extra"),0);
   document.getElementById("dashDist").innerHTML = `
     ${kpi(t('kpi_emergency'), money(sum("emergencyFund")), "neg")}
@@ -2892,7 +2873,7 @@ function renderDashboard(){
     const filled = inc>0||exp>0||sav>0||debtPay>0;
     let lastMod = "—";
     if(m.lastModified){ const d = new Date(m.lastModified); lastMod = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-    html += `<tr><td>${monthNames[i]}</td><td class="num">${money(inc)}</td><td class="num ${debtPay>0?'neg':''}">${debtPay>0?money(debtPay):"—"}</td><td class="num">${money(exp)}</td><td class="num">${money(sav)}</td><td class="num ${rem>=0?'pos':'neg'}">${money(rem)}</td><td class="muted">${lastMod}</td><td>${filled ? (rem>=0?`<span class="badge green">${t('status_good')}</span>`:`<span class="badge red">${t('status_bad')}</span>`) : `<span class="badge blue">${t('status_empty')}</span>`}</td></tr>`;
+    html += `<tr><td>${monthNames[i]}</td><td class="num">${money(inc)}</td><td class="num ${debtPay>0?'neg':''}">${debtPay>0?money(debtPay):"—"}</td><td class="num">${money(exp)}</td><td class="num">${money(sav)}</td><td class="num ${rem>=0?'pos':'neg'}">${money(rem)}</td><td class="muted" dir="ltr" style="direction:ltr;unicode-bidi:isolate;text-align:center">${lastMod}</td><td>${filled ? (rem>=0?`<span class="badge green">${t('status_good')}</span>`:`<span class="badge red">${t('status_bad')}</span>`) : `<span class="badge blue">${t('status_empty')}</span>`}</td></tr>`;
   });
   document.getElementById("dashTable").innerHTML = html + `</tbody>`;
 }
@@ -2990,7 +2971,6 @@ function renderExpenseSummary(){
   const bankHtml = BANKS.map(b => { const amt = bankTotals[b] || 0; return `<div class="exp-sum-item bank-item ${bankColors[b]}"><span>${bankIcons[b]} ${bankLabel(b)}:</span><b>${money(amt)}</b></div>`; }).join("");
   document.getElementById("expenseSummary").innerHTML = `<div class="exp-sum-item"><span>${t('es_total')}:</span><b>${money(total)}</b></div><div class="exp-sum-item green"><span>${t('es_counted')}:</span><b>${money(counted)}</b></div><div class="exp-sum-item red"><span>${t('es_excluded')}:</span><b>${money(excluded)}</b></div><div class="exp-sum-divider"></div><div class="exp-sum-title">${t('es_by_bank')}</div>${bankHtml}`;
 }
-/* ⭐⭐⭐ [تعديل رئيسي] renderSavingFields مع دعم الصفوف الفرعية ⭐⭐⭐ */
 function renderSavingFields(){
   const m = M()[state.activeMonth];
   const refOptsFor = val => REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${val===o.v?'selected':''}>${o.l}</option>`).join('');
@@ -3011,7 +2991,6 @@ function renderSavingFields(){
       if(disabled){ targetHint = `<span class="saving-target-hint">✅ ${LANG==='ar'?'الهدف مكتمل':'Target reached'} (${fmt(target)})</span>`; }
       else { targetHint = `<span class="saving-target-hint" style="background:rgba(234,179,8,.15);color:var(--gold);border-color:rgba(234,179,8,.4)">🎯 ${t('tgt_saving_target_hint')}${fmt(target)} • ${LANG==='ar'?'متبقي':'left'}: ${fmt(Math.max(0,target-net))}</span>`; }
     }
-    /* ⭐⭐ [إضافة] إعداد الصفوف الفرعية ⭐⭐ */
     const extras = getSavingExtras(m, k + "Extra");
     const isCollapsed = isSavingGroupCollapsed(m, k + "Extra");
     let labelHtml = `<label style="display:block;font-weight:600;color:var(--accent);font-size:12px;margin-bottom:2px">${l}</label>${extraHtml}${targetHint}`;
@@ -3254,10 +3233,6 @@ function showWithdrawHistory(key){
   const total = getWithdrawnTotal(key);
   alert(`${t('tgt_history_title')}${name}\n\n${lines.join('\n')}\n\n${t('tgt_history_total')}${fmt(total)} ${LANG==='ar'?'د.ب':'BHD'}`);
 }
-function formatPrintDate(m, mi){
-  if(m && m.customDate && /^\d{4}-\d{2}-\d{2}$/.test(m.customDate)){ const parts = m.customDate.split('-'); const day = parseInt(parts[2], 10), month = parseInt(parts[1], 10); if(day > 0 && month > 0) return `${day}/${month}`; }
-  return `${mi + 1}`;
-}
 function generatePyramidLevelReportHTML(key){
   const lvl = getPyramidLevels().find(l => l.key === key); if(!lvl) return '';
   const L = LANG === 'ar'; const cur = L ? 'د.ب' : 'BHD';
@@ -3274,9 +3249,12 @@ function generatePyramidLevelReportHTML(key){
     if(key === "loans" || key === "obligationsSaving"){
       const filterType = key === "loans" ? "installment" : "obligation";
       const relevantDebts = (state.debts || []).filter(d => d.type === filterType && !isDebtExcluded(d));
-      monthsArr.forEach((m, mi) => { const entries = []; let monthTotal = 0; relevantDebts.forEach(d => { const v = dm(d, y, mi); if(v > 0){ monthTotal += v; entries.push({ name: d.name, amount: v, ref: getDebtRef(d, y, mi) || '', notes: d.notes || '' }); } }); if(monthTotal > 0) monthRows.push({ mi, dateDisplay: formatPrintDate(m, mi), monthName: monthNames[mi], amount: monthTotal, entries, note: '' }); });
+      monthsArr.forEach((m, mi) => {
+        const entries = []; let monthTotal = 0;
+        relevantDebts.forEach(d => { const v = dm(d, y, mi); if(v > 0){ monthTotal += v; entries.push({ name: d.name, amount: v, ref: getDebtRef(d, y, mi) || '', notes: d.notes || '', dateDisplay: formatDebtDate(d) }); } });
+        if(monthTotal > 0) monthRows.push({ mi, dateDisplay: formatPrintDate(m, mi), monthName: monthNames[mi], amount: monthTotal, entries, note: '' });
+      });
     } else {
-      /* ⭐⭐ [تعديل] يشمل الصفوف الفرعية ⭐⭐ */
       monthsArr.forEach((m, mi) => {
         const mainExcluded = isSavingExcluded(m, key);
         const mainAmt = mainExcluded ? 0 : (+m[key] || 0);
@@ -3302,7 +3280,7 @@ function generatePyramidLevelReportHTML(key){
   const now = new Date();
   const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
   const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-  let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('print_report_title')}: ${lvl.label}</title><style>@page{size:A4;margin:12mm}*{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:10px;line-height:1.6;margin:0}.header{text-align:center;margin-bottom:20px;padding-bottom:10px;border-bottom:3px double #333}.header .logo{display:inline-block;width:54px;height:54px;line-height:54px;border-radius:50%;background:#0e7490;color:#fff;font-weight:900;font-size:24px;text-align:center}.header h2{margin:10px 0 4px;color:${lvl.color};font-size:20px}.header .meta{color:#666;font-size:12px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 20px}.kpi{border:2px solid #ccc;border-radius:8px;padding:10px 8px;text-align:center;background:#f9fafb}.kpi .lbl{font-size:11px;color:#666;margin-bottom:5px;font-weight:600}.kpi .val{font-size:15px;font-weight:800;font-family:monospace}.kpi.green{border-color:#16a34a;background:#f0fdf4}.kpi.green .val{color:#16a34a}.kpi.red{border-color:#dc2626;background:#fef2f2}.kpi.red .val{color:#dc2626}.kpi.gold{border-color:#d97706;background:#fffbeb}.kpi.gold .val{color:#d97706}.kpi.gray{border-color:#64748b;background:#f8fafc}.kpi.gray .val{color:#334155}.section-title{background:#f0f4f8;padding:8px 12px;border-right:5px solid ${lvl.color};font-weight:700;margin:18px 0 8px;font-size:13px;color:#1e293b}.year-block{margin-bottom:16px;page-break-inside:avoid}.year-header{background:${lvl.color}22;border-right:5px solid ${lvl.color};padding:8px 12px;font-weight:800;font-size:14px;color:${lvl.color};border-radius:6px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}.year-header .year-total{font-family:monospace;font-size:13px;color:#16a34a;background:#f0fdf4;padding:4px 10px;border-radius:20px;border:1px solid #16a34a}table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px}th{background:#e5e7eb;color:#111;padding:7px 8px;text-align:${L?'right':'left'};border:1px solid #999;font-size:10px;font-weight:700}td{padding:6px 8px;border:1px solid #ccc;text-align:${L?'right':'left'}}td.num{font-family:monospace;text-align:center;font-weight:700}td.date{font-family:monospace;text-align:center;color:${lvl.color};font-weight:800;font-size:12px}td.month-name{font-weight:700;color:#1e293b}td.note{color:#475569;font-size:10px;font-style:italic}tbody tr:nth-child(even){background:#f9fafb}.total-row{background:#e0f2fe !important;font-weight:700}.total-row td{border-top:2px solid #0891b2;font-family:monospace}.sub-row td{border-top:none;border-bottom:1px dashed #cbd5e1;background:#fafbfc;font-size:10px;color:#64748b}.sub-row td:first-child{padding-right:30px}.note-box{background:#fffbeb;border:1px solid #fde68a;padding:10px 14px;border-radius:8px;margin:12px 0;font-size:12px;color:#78350f}.note-box strong{color:#92400e}.empty{color:#999;font-style:italic;text-align:center;padding:20px;background:#f9fafb;border:1px dashed #ccc;border-radius:6px}.footer{text-align:center;margin-top:28px;padding-top:10px;border-top:2px solid #999;color:#666;font-size:10px;line-height:1.6}.footer strong{color:#0e7490}.badge{display:inline-block;padding:3px 8px;border-radius:14px;font-size:10px;font-weight:700;margin-inline-start:6px}.badge.green{background:#dcfce7;color:#166534;border:1px solid #16a34a}.source-line{font-size:10px;color:#64748b;font-style:italic;text-align:center;margin-bottom:10px}</style></head><body>`;
+  let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('print_report_title')}: ${lvl.label}</title><style>@page{size:A4;margin:12mm}*{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:10px;line-height:1.6;margin:0}.header{text-align:center;margin-bottom:20px;padding-bottom:10px;border-bottom:3px double #333}.header .logo{display:inline-block;width:54px;height:54px;line-height:54px;border-radius:50%;background:#0e7490;color:#fff;font-weight:900;font-size:24px;text-align:center}.header h2{margin:10px 0 4px;color:${lvl.color};font-size:20px}.header .meta{color:#666;font-size:12px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 20px}.kpi{border:2px solid #ccc;border-radius:8px;padding:10px 8px;text-align:center;background:#f9fafb}.kpi .lbl{font-size:11px;color:#666;margin-bottom:5px;font-weight:600}.kpi .val{font-size:15px;font-weight:800;font-family:monospace}.kpi.green{border-color:#16a34a;background:#f0fdf4}.kpi.green .val{color:#16a34a}.kpi.red{border-color:#dc2626;background:#fef2f2}.kpi.red .val{color:#dc2626}.kpi.gold{border-color:#d97706;background:#fffbeb}.kpi.gold .val{color:#d97706}.kpi.gray{border-color:#64748b;background:#f8fafc}.kpi.gray .val{color:#334155}.section-title{background:#f0f4f8;padding:8px 12px;border-right:5px solid ${lvl.color};font-weight:700;margin:18px 0 8px;font-size:13px;color:#1e293b}.year-block{margin-bottom:16px;page-break-inside:avoid}.year-header{background:${lvl.color}22;border-right:5px solid ${lvl.color};padding:8px 12px;font-weight:800;font-size:14px;color:${lvl.color};border-radius:6px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}.year-header .year-total{font-family:monospace;font-size:13px;color:#16a34a;background:#f0fdf4;padding:4px 10px;border-radius:20px;border:1px solid #16a34a}table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px}th{background:#e5e7eb;color:#111;padding:7px 8px;text-align:${L?'right':'left'};border:1px solid #999;font-size:10px;font-weight:700}td{padding:6px 8px;border:1px solid #ccc;text-align:${L?'right':'left'}}td.num{font-family:monospace;text-align:center;font-weight:700}td.date{font-family:monospace;text-align:center;color:${lvl.color};font-weight:800;font-size:12px;direction:ltr;unicode-bidi:isolate}td.month-name{font-weight:700;color:#1e293b}td.note{color:#475569;font-size:10px;font-style:italic}tbody tr:nth-child(even){background:#f9fafb}.total-row{background:#e0f2fe !important;font-weight:700}.total-row td{border-top:2px solid #0891b2;font-family:monospace}.sub-row td{border-top:none;border-bottom:1px dashed #cbd5e1;background:#fafbfc;font-size:10px;color:#64748b}.sub-row td:first-child{padding-right:30px}.note-box{background:#fffbeb;border:1px solid #fde68a;padding:10px 14px;border-radius:8px;margin:12px 0;font-size:12px;color:#78350f}.note-box strong{color:#92400e}.empty{color:#999;font-style:italic;text-align:center;padding:20px;background:#f9fafb;border:1px dashed #ccc;border-radius:6px}.footer{text-align:center;margin-top:28px;padding-top:10px;border-top:2px solid #999;color:#666;font-size:10px;line-height:1.6}.footer strong{color:#0e7490}.badge{display:inline-block;padding:3px 8px;border-radius:14px;font-size:10px;font-weight:700;margin-inline-start:6px}.badge.green{background:#dcfce7;color:#166534;border:1px solid #16a34a}.source-line{font-size:10px;color:#64748b;font-style:italic;text-align:center;margin-bottom:10px}</style></head><body>`;
   html += `<div class="header"><div class="logo">M</div><h2>${lvl.subtitle} ${lvl.label}</h2><div class="meta">${t('print_report_title')} — ${t('print_generated')}: ${dateStr} ${timeStr}</div><div class="source-line">${sourceText}</div></div>`;
   html += `<div class="kpis"><div class="kpi gold"><div class="lbl">🎯 ${t('print_target')}</div><div class="val">${target > 0 ? fmt(target) + ' ' + cur : '—'}</div></div><div class="kpi green"><div class="lbl">💰 ${t('print_cumulative')}</div><div class="val">${fmt(cumulativeSaved)} ${cur}</div></div><div class="kpi red"><div class="lbl">📤 ${t('print_withdrawn')}</div><div class="val">${fmt(withdrawn)} ${cur}</div></div><div class="kpi gray"><div class="lbl">📊 ${t('print_net')}</div><div class="val">${fmt(net)} ${cur}</div></div></div>`;
   if(remaining !== null){ html += `<div class="note-box">🎯 <strong>${t('print_remaining_to_target')}:</strong> ${fmt(remaining)} ${cur} ${reached ? `<span class="badge green">${t('print_reached')}</span>` : ''}</div>`; }
@@ -3313,18 +3291,23 @@ function generatePyramidLevelReportHTML(key){
       html += `<div class="year-block"><div class="year-header"><span>📅 ${t('print_year')} ${yb.year}</span><span class="year-total">${fmt(yb.total)} ${cur}</span></div>`;
       const isDebtType = (key === "loans" || key === "obligationsSaving");
       if(isDebtType){
-        html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th style="width:70px">${t('print_day_month')}</th><th style="width:90px">${t('print_month')}</th><th>${t('print_debt_name')}</th><th style="width:100px">${t('print_amount')} (${cur})</th><th style="width:70px">${t('th_ref')}</th></tr></thead><tbody>`;
+        html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th style="width:110px">${t('print_day_month')}</th><th style="width:90px">${t('print_month')}</th><th>${t('print_debt_name')}</th><th style="width:100px">${t('print_amount')} (${cur})</th><th style="width:70px">${t('th_ref')}</th></tr></thead><tbody>`;
         let counter = 0;
-        yb.months.forEach(mr => { mr.entries.forEach((en, idx) => { counter++; html += `<tr><td class="num">${counter}</td><td class="date">${idx === 0 ? mr.dateDisplay : ''}</td><td class="month-name">${idx === 0 ? mr.monthName : ''}</td><td>${esc(en.name)}</td><td class="num">${fmt(en.amount)}</td><td style="text-align:center">${esc(en.ref) || '—'}</td></tr>`; if(en.notes && idx === 0){ html += `<tr class="sub-row"><td></td><td></td><td></td><td colspan="3">📝 ${esc(en.notes)}</td></tr>`; } }); });
+        yb.months.forEach(mr => {
+          mr.entries.forEach((en, idx) => {
+            counter++;
+            html += `<tr><td class="num">${counter}</td><td class="date" dir="ltr">${idx === 0 ? en.dateDisplay : ''}</td><td class="month-name">${idx === 0 ? mr.monthName : ''}</td><td>${esc(en.name)}</td><td class="num">${fmt(en.amount)}</td><td style="text-align:center">${esc(en.ref) || '—'}</td></tr>`;
+            if(en.notes && idx === 0){ html += `<tr class="sub-row"><td></td><td></td><td></td><td colspan="3">📝 ${esc(en.notes)}</td></tr>`; }
+          });
+        });
         html += `<tr class="total-row"><td colspan="4"><strong>${t('print_year_total')} ${yb.year}</strong></td><td class="num">${fmt(yb.total)}</td><td></td></tr></tbody></table>`;
       } else {
-        /* ⭐⭐ [تعديل] عرض الصفوف الفرعية في التقرير ⭐⭐ */
-        html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th style="width:70px">${t('print_day_month')}</th><th style="width:100px">${t('print_month')}</th><th>${t('print_debt_name')}</th><th style="width:120px">${t('print_amount')} (${cur})</th><th style="width:60px">${t('th_ref')}</th></tr></thead><tbody>`;
+        html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th style="width:110px">${t('print_day_month')}</th><th style="width:100px">${t('print_month')}</th><th>${t('print_debt_name')}</th><th style="width:120px">${t('print_amount')} (${cur})</th><th style="width:60px">${t('th_ref')}</th></tr></thead><tbody>`;
         let counter = 0;
         yb.months.forEach(mr => {
           const hasEntries = mr.entries && mr.entries.length > 0;
           counter++;
-          html += `<tr><td class="num">${counter}</td><td class="date">${mr.dateDisplay}</td><td class="month-name">${mr.monthName}</td><td>${esc(lvl.label)}</td><td class="num">${fmt(mr.amount - mr.entries.reduce((s,x)=>s+x.amount,0))}</td><td style="text-align:center">${esc(mr.ref || '') || '—'}</td></tr>`;
+          html += `<tr><td class="num">${counter}</td><td class="date" dir="ltr">${mr.dateDisplay}</td><td class="month-name">${mr.monthName}</td><td>${esc(lvl.label)}</td><td class="num">${fmt(mr.amount - mr.entries.reduce((s,x)=>s+x.amount,0))}</td><td style="text-align:center">${esc(mr.ref || '') || '—'}</td></tr>`;
           if(mr.note){ html += `<tr class="sub-row"><td></td><td></td><td></td><td colspan="3">📝 ${esc(mr.note)}</td></tr>`; }
           if(hasEntries){ mr.entries.forEach(en => { html += `<tr class="sub-row"><td></td><td></td><td></td><td>${esc(en.name)}</td><td class="num">${fmt(en.amount)}</td><td style="text-align:center">${esc(en.ref) || '—'}</td></tr>`; if(en.notes){ html += `<tr class="sub-row"><td></td><td></td><td></td><td colspan="3">📝 ${esc(en.notes)}</td></tr>`; } }); }
         });
@@ -3336,7 +3319,7 @@ function generatePyramidLevelReportHTML(key){
   html += `<div class="section-title">${t('print_withdrawals_history')}</div>`;
   if(ws.length){
     html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th>${t('print_date')}</th><th>${t('print_amount')} (${cur})</th><th>${t('print_reason')}</th></tr></thead><tbody>`;
-    ws.forEach((w, idx) => { const d = new Date(w.date); const wdateStr = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; html += `<tr><td class="num">${idx + 1}</td><td class="date">${wdateStr}</td><td class="num">${fmt(+w.amount || 0)}</td><td>${esc(w.reason) || '—'}</td></tr>`; });
+    ws.forEach((w, idx) => { const d = new Date(w.date); const wdateStr = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; html += `<tr><td class="num">${idx + 1}</td><td class="date" dir="ltr">${wdateStr}</td><td class="num">${fmt(+w.amount || 0)}</td><td>${esc(w.reason) || '—'}</td></tr>`; });
     html += `<tr class="total-row"><td colspan="2"><strong>${t('print_total_withdrawn')}</strong></td><td class="num">${fmt(withdrawn)}</td><td></td></tr></tbody></table>`;
   } else { html += `<div class="empty">${t('print_no_withdrawals')}</div>`; }
   html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div></body></html>`;
@@ -3570,7 +3553,6 @@ function renderYears(){
   let dhtml = `<thead><tr><th>${t('th_item_name')}</th>${state.yearList.map(y=>`<th>${y}</th>`).join('')}<th>${t('th_total')}</th></tr></thead><tbody>`;
   sFields.forEach(f => {
     const [k, l] = f;
-    /* ⭐⭐ [تعديل] يشمل الصفوف الفرعية ⭐⭐ */
     const vals = state.yearList.map(y => Mof(y).reduce((s,m)=>{
       let v = isSavingExcluded(m,k) ? 0 : (+m[k]||0);
       v += sumSavingExtrasCounted(m, k + "Extra");
@@ -3582,7 +3564,6 @@ function renderYears(){
   dhtml += `</tbody>`;
   document.getElementById("yearsDistTable").innerHTML = dhtml;
 }
-/* ⭐⭐ [تعديل] renderAnnual يشمل الصفوف الفرعية للادخار ⭐⭐ */
 function renderAnnual(){
   const months = getMonths(); const y = state.activeYear;
   const monthsData = M();
