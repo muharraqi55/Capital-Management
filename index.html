@@ -262,6 +262,25 @@
   .debts-table .year-label-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--accent2);color:#fff;font-size:10px;font-weight:700;margin-inline-start:8px;font-family:monospace}
   .debts-table .active-year-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--ok);color:#fff;font-size:9px;font-weight:700;margin-inline-start:6px}
   .debts-table .expanded-empty-message{text-align:center;color:var(--muted);font-style:italic;padding:12px;font-size:12px;background:rgba(143,163,184,.06)}
+  /* ⭐⭐ [جديد] أنماط عرض السنوات في هرم الأمان المالي ⭐⭐ */
+  .pyramid-toggle-bar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .pyramid-toggle-bar .btn{font-size:12px;padding:6px 12px}
+  .pyramid-expanded-row{background:rgba(59,130,246,.04) !important}
+  .pyramid-expanded-row>td{padding:0 !important;background:rgba(59,130,246,.04) !important}
+  .pyramid-years-wrap{padding:10px 12px}
+  .pyramid-year-block{margin-bottom:10px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .pyramid-year-block:last-child{margin-bottom:0}
+  .pyramid-year-header{display:flex;gap:10px;align-items:center;padding:8px 12px;background:var(--panel2);border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .pyramid-year-table{width:100%;border-collapse:collapse;font-size:11px}
+  .pyramid-year-table th{background:var(--panel2);padding:6px 4px;font-size:10px;color:var(--muted);border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+  .pyramid-year-table td{padding:3px 2px;border-bottom:1px solid var(--line);text-align:center}
+  .pyramid-year-table tr:last-child td{border-bottom:none}
+  .pyramid-year-table input[type="number"]{width:100%;min-width:50px;background:transparent;border:1px solid transparent;color:var(--txt);padding:4px 2px;border-radius:4px;font-size:11px;font-family:monospace;font-weight:700;text-align:center;outline:none;transition:.15s}
+  .pyramid-year-table input[type="number"]:hover{border-color:var(--line);background:var(--panel2)}
+  .pyramid-year-table input[type="number"]:focus{border-color:var(--accent);background:var(--bg);box-shadow:0 0 0 2px rgba(34,193,164,.2)}
+  .pyramid-expanded-empty{padding:16px;text-align:center;color:var(--muted);font-style:italic;font-size:12px}
+  .pyramid-year-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--accent2);color:#fff;font-size:10px;font-weight:700;margin-inline-start:8px;font-family:monospace}
+  .pyramid-active-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--ok);color:#fff;font-size:9px;font-weight:700;margin-inline-start:6px}
   .pyramid-wrap{display:flex;justify-content:center;align-items:center;padding:20px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;margin-bottom:16px}
   .pyramid-svg{max-width:640px;width:100%;height:auto}
   .pyramid-svg text{font-family:"Segoe UI","Tahoma",sans-serif;pointer-events:none;user-select:none}
@@ -664,7 +683,6 @@
   <div class="card">
     <h2 id="lblDebtsTable"></h2>
     <p class="muted" style="margin-bottom:12px" id="lblDebtsTableHint"></p>
-    <!-- ⭐⭐ [جديد] شريط التبديل لعرض كل السنوات ⭐⭐ -->
     <div class="debts-toggle-bar noprint">
       <button class="btn" id="btnToggleAllDebtYears" onclick="toggleAllDebtsYears()">➕ عرض كل السنوات</button>
     </div>
@@ -737,7 +755,13 @@
       </table>
     </div>
   </div>
-  <div class="card"><h2 id="lblPyrDetail"></h2><div style="overflow-x:auto"><table id="pyramidTable"></table></div></div>
+  <div class="card">
+    <h2 id="lblPyrDetail"></h2>
+    <div class="pyramid-toggle-bar noprint">
+      <button class="btn" id="btnToggleAllPyramidYears" onclick="toggleAllPyramidLevels()">➕ عرض كل السنوات</button>
+    </div>
+    <div style="overflow-x:auto"><table id="pyramidTable"></table></div>
+  </div>
   <div class="print-section">
     <button class="btn primary" onclick="printCurrentView(false, 'landscape')" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
     <button class="btn share" onclick="shareViewPDF('pyramid', false, 'landscape')" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
@@ -932,7 +956,6 @@ const I18N = {
     lbl_car_insurance_ot:"⭐  تأمين + التسجيل السنوي لجميع السيارات",lbl_zakat_ot:"⭐  زكاة (المال أو الذهب أو الاستثمارات)",
     ot_car_insurance:"🚗 تأمين + التسجيل السنوي لجميع السيارات",ot_zakat:"🕌 زكاة (المال أو الذهب أو الاستثمارات)",
     th_income_item:"البند",th_income_amount:"المبلغ (د.ب)",th_income_note:"ملاحظة",
-    // ⭐⭐ [جديد] نصوص عرض السنوات ⭐⭐
     debts_show_all_years:"➕ عرض كل السنوات",
     debts_hide_all_years:"➖ طي كل السنوات",
     debts_show_year:"➕ عرض السنوات",
@@ -940,6 +963,11 @@ const I18N = {
     debts_active_year:"السنة النشطة",
     debts_no_other_years:"لا توجد دفعات مسجلة في أي سنة",
     debts_payments_summary:"📅 الدفعات موزعة على {N} سنة — إجمالي مسدد: {T} د.ب ⬇",
+    pyr_show_all_years:"➕ عرض كل السنوات",
+    pyr_hide_all_years:"➖ طي كل السنوات",
+    pyr_show_year:"➕ عرض السنوات",
+    pyr_hide_year:"➖ طي السنوات",
+    pyr_cumulative:"تراكمي",
   },
   en: {
     app_title:"Capital Manager",footer:"All rights reserved to Muharraqi",
@@ -1038,7 +1066,6 @@ const I18N = {
     lbl_car_insurance_ot:"⭐  Car Insurance",lbl_zakat_ot:"⭐  Zakat",
     ot_car_insurance:"🚗 Car Insurance",ot_zakat:"🕌 Zakat",
     th_income_item:"Item",th_income_amount:"Amount (BHD)",th_income_note:"Note",
-    // ⭐⭐ [جديد] نصوص عرض السنوات ⭐⭐
     debts_show_all_years:"➕ Show all years",
     debts_hide_all_years:"➖ Collapse all years",
     debts_show_year:"➕ Show years",
@@ -1046,6 +1073,11 @@ const I18N = {
     debts_active_year:"Active year",
     debts_no_other_years:"No payments recorded in any year",
     debts_payments_summary:"📅 Payments over {N} year(s) — total paid: {T} BHD ⬇",
+    pyr_show_all_years:"➕ Show all years",
+    pyr_hide_all_years:"➖ Collapse all years",
+    pyr_show_year:"➕ Show years",
+    pyr_hide_year:"➖ Collapse years",
+    pyr_cumulative:"Cumulative",
   }
 };
 
@@ -1072,8 +1104,8 @@ let SAVE_PENDING = false;
 let _pyramidNoteTimer = null;
 let _debtMonthRefreshTimer = null;
 let _pdfLibsPromise = null;
-// ⭐⭐ [جديد] مجموعة البنود الموسّعة لعرض كل سنواتها ⭐⭐
 let EXPANDED_DEBTS = new Set();
+let EXPANDED_PYRAMID = new Set();
 
 const t = key => (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key;
 const getMonths = () => I18N[LANG].months;
@@ -3415,6 +3447,161 @@ function renderPyramidLegend(){
     return `<div class="pyr-legend-item" ${isNegative ? 'style="border-color:rgba(239,68,68,.4)"' : ''}><div class="pyr-color" style="background:${lvl.color}"></div><div class="pyr-label">${lvl.subtitle} ${lvl.label} ${isNegative ? '⚠' : ''}</div><div class="pyr-val" style="${isNegative ? 'color:var(--danger)' : ''}">${fmt(totals[lvl.key])} ${LANG==='ar'?'د.ب':'BHD'}</div>${note ? `<div class="pyr-note">📝 ${esc(note)}</div>` : ''}</div>`;
   }).join("");
 }
+
+/* ⭐⭐ [جديد] دوال عرض كل السنوات في هرم الأمان المالي ⭐⭐ */
+function getAllPyramidYears(key){
+  const years = new Set();
+  const isAuto = (key === "loans" || key === "obligationsSaving");
+  if(isAuto){
+    const filterType = key === "loans" ? "installment" : "obligation";
+    const relevantDebts = (state.debts || []).filter(d => d.type === filterType && !isDebtExcluded(d));
+    relevantDebts.forEach(d => {
+      Object.keys(d.monthlyByYear || {}).forEach(y => {
+        const arr = d.monthlyByYear[y] || [];
+        if(arr.some(v => +v > 0)) years.add(parseInt(y));
+      });
+    });
+  } else {
+    Object.keys(state.years || {}).forEach(y => {
+      const months = state.years[y] || [];
+      const hasData = months.some(m => {
+        if(!isSavingExcluded(m, key) && +m[key] > 0) return true;
+        return getSavingExtras(m, key + "Extra").some(x => x.bank !== EXCLUDED_BANK && +x.amount > 0);
+      });
+      if(hasData) years.add(parseInt(y));
+    });
+  }
+  if(state.activeYear) years.add(state.activeYear);
+  return Array.from(years).sort((a,b)=>a-b);
+}
+
+function getPyramidLevelMonthValue(key, year, mi){
+  const isAuto = (key === "loans" || key === "obligationsSaving");
+  if(isAuto){
+    const filterType = key === "loans" ? "installment" : "obligation";
+    const relevantDebts = (state.debts || []).filter(d => d.type === filterType && !isDebtExcluded(d));
+    return relevantDebts.reduce((s, d) => s + dm(d, year, mi), 0);
+  }
+  const m = (state.years[year] || [])[mi];
+  if(!m) return 0;
+  let v = isSavingExcluded(m, key) ? 0 : (+m[key] || 0);
+  v += sumSavingExtrasCounted(m, key + "Extra");
+  return v;
+}
+
+function getPyramidLevelMainValue(key, year, mi){
+  const m = (state.years[year] || [])[mi];
+  if(!m) return 0;
+  return isSavingExcluded(m, key) ? 0 : (+m[key] || 0);
+}
+
+function getPyramidLevelYearTotal(key, year){
+  let total = 0;
+  for(let i = 0; i < 12; i++) total += getPyramidLevelMonthValue(key, year, i);
+  return total;
+}
+
+function getPyramidLevelCumulativeUpTo(key, uptoYear){
+  const isAuto = (key === "loans" || key === "obligationsSaving");
+  if(isAuto){
+    const filterType = key === "loans" ? "installment" : "obligation";
+    const relevantDebts = (state.debts || []).filter(d => d.type === filterType && !isDebtExcluded(d));
+    let total = 0;
+    relevantDebts.forEach(d => {
+      Object.keys(d.monthlyByYear || {}).forEach(y => {
+        if(parseInt(y) <= uptoYear){
+          total += (d.monthlyByYear[y] || []).reduce((a,b)=>a+(+b||0),0);
+        }
+      });
+    });
+    return total;
+  }
+  let total = 0;
+  Object.keys(state.years || {}).forEach(y => {
+    if(parseInt(y) > uptoYear) return;
+    (state.years[y] || []).forEach(m => {
+      if(!isSavingExcluded(m, key)) total += (+m[key] || 0);
+      total += sumSavingExtrasCounted(m, key + "Extra");
+    });
+  });
+  return total;
+}
+
+function updPyramidLevelMonthYear(key, year, mi, val){
+  const isAuto = (key === "loans" || key === "obligationsSaving");
+  if(isAuto){
+    toast(LANG==='ar'?'⚠️ هذا البند تلقائي — يُحرَّر من تبويب السلف والديون':'⚠️ Auto-calculated — edit in Debts tab', 'warn');
+    return;
+  }
+  if(!state.years[year]) state.years[year] = emptyYear();
+  if(!state.years[year][mi]) state.years[year][mi] = EMPTY_MONTH();
+  const m = state.years[year][mi];
+  m[key] = Math.max(0, parseFloat(val) || 0);
+  m.lastModified = new Date().toISOString();
+  save();
+  renderPyramid();
+  renderDashboard();
+  renderMonthPills();
+  if(state.activeYear === year && state.activeMonth === mi){
+    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'month'){
+      renderSavingFields();
+      renderMonthResults();
+    }
+  }
+}
+
+function togglePyramidLevelExpand(key){
+  if(EXPANDED_PYRAMID.has(key)) EXPANDED_PYRAMID.delete(key);
+  else EXPANDED_PYRAMID.add(key);
+  renderPyramid();
+}
+
+function toggleAllPyramidLevels(){
+  const levels = getPyramidLevels();
+  const allExpanded = levels.every(l => EXPANDED_PYRAMID.has(l.key));
+  if(allExpanded) EXPANDED_PYRAMID.clear();
+  else levels.forEach(l => EXPANDED_PYRAMID.add(l.key));
+  renderPyramid();
+}
+
+function renderPyramidLevelYearsHTML(lvl){
+  const isAuto = (lvl.auto === true);
+  const yearsWithData = getAllPyramidYears(lvl.key);
+  if(yearsWithData.length === 0){
+    return `<div class="pyramid-expanded-empty">${t('debts_no_other_years')}</div>`;
+  }
+  const monthNames = getMonths();
+  let html = `<div class="pyramid-years-wrap">`;
+  yearsWithData.forEach(yy => {
+    const yearTotal = getPyramidLevelYearTotal(lvl.key, yy);
+    const cumulative = getPyramidLevelCumulativeUpTo(lvl.key, yy);
+    const isActiveYear = (yy === state.activeYear);
+    const activeBadge = isActiveYear ? `<span class="pyramid-active-badge">${t('debts_active_year')}</span>` : '';
+    html += `<div class="pyramid-year-block">`;
+    html += `<div class="pyramid-year-header"><span style="font-family:monospace;font-weight:800;color:${lvl.color};font-size:14px">📅 ${yy}</span>${activeBadge}<span class="pyramid-year-badge" style="background:${lvl.color}">${t('print_year_total')}: ${fmt(yearTotal)}</span><span class="pyramid-year-badge" style="background:var(--accent2)">${t('pyr_cumulative')}: ${fmt(cumulative)}</span>${isAuto ? `<span class="pyramid-year-badge" style="background:var(--muted)">🔗 ${t('tgt_auto_badge')}</span>` : ''}</div>`;
+    html += `<table class="pyramid-year-table"><thead><tr>`;
+    for(let i = 0; i < 12; i++) html += `<th>${monthNames[i]}</th>`;
+    html += `<th>${t('th_total')}</th></tr></thead><tbody><tr>`;
+    for(let i = 0; i < 12; i++){
+      const total = getPyramidLevelMonthValue(lvl.key, yy, i);
+      if(isAuto){
+        html += `<td style="font-family:monospace;font-weight:700;color:var(--muted)">${total > 0 ? fmt(total) : '—'}</td>`;
+      } else {
+        const mainVal = getPyramidLevelMainValue(lvl.key, yy, i);
+        const extrasExist = Math.abs(total - mainVal) > 0.0001;
+        const tip = extrasExist ? ` title="${LANG==='ar'?'يشمل بنوداً فرعية — الإجمالي':'Includes sub-items — total'}: ${fmt(total)}"` : '';
+        const colorStyle = extrasExist ? ' style="color:var(--accent2)"' : '';
+        html += `<td${tip}><input type="number" value="${inVal(mainVal)}" min="0" step="0.001" oninput="updPyramidLevelMonthYear('${lvl.key}', ${yy}, ${i}, this.value)"${colorStyle}></td>`;
+      }
+    }
+    html += `<td style="font-family:monospace;font-weight:800;color:${lvl.color};background:rgba(0,0,0,.15)">${fmt(yearTotal)}</td>`;
+    html += `</tr></tbody></table>`;
+    html += `</div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
 function renderPyramid(){
   const levels = getPyramidLevels();
   const totals = {};
@@ -3423,8 +3610,13 @@ function renderPyramid(){
   const investmentTotal = totals["investment"] || 0;
   const negativeTotal = levels.filter(l => isPyramidNegativeLevel(l.key)).reduce((s,l)=>s+(totals[l.key]||0),0);
   const allPositiveTotal = bankSavingsTotal + investmentTotal;
+
+  const gBtn = document.getElementById("btnToggleAllPyramidYears");
+  const allExpanded = levels.every(l => EXPANDED_PYRAMID.has(l.key));
+  if(gBtn) gBtn.textContent = allExpanded ? t('pyr_hide_all_years') : t('pyr_show_all_years');
+
   renderPyramidSvg(); renderPyramidLegend();
-  let html = `<thead><tr><th>${t('th_level')}</th><th>${t('th_item_name')}</th><th>${t('th_year_total')}</th><th>${t('th_pct')}</th><th style="width:120px">${t('th_actions')}</th></tr></thead><tbody>`;
+  let html = `<thead><tr><th>${t('th_level')}</th><th>${t('th_item_name')}</th><th>${t('th_year_total')}</th><th>${t('th_pct')}</th><th style="width:180px">${t('th_actions')}</th></tr></thead><tbody>`;
   levels.forEach((lvl, idx) => {
     const level = idx + 1;
     const amt = totals[lvl.key] || 0;
@@ -3436,7 +3628,15 @@ function renderPyramid(){
     else if(isInvestment) negBadge = ` <span class="badge investment">📈 ${LANG==='ar'?'استثمار':'Investment'}</span>`;
     const amtDisplay = isNegative ? `<span style="color:var(--danger)">- ${money(amt)}</span>` : `<span style="color:${lvl.color};font-weight:700">${money(amt)}</span>`;
     const pctDisplay = pct === null ? `<span style="color:var(--muted)">—</span>` : `${fmtPct(pct)}%`;
-    html += `<tr${isNegative ? ' style="background:rgba(239,68,68,.05)"' : ''}><td style="color:${lvl.color};font-weight:700">${level}</td><td>${lvl.subtitle} ${lvl.label} ${negBadge}</td><td class="num">${amtDisplay}</td><td class="num">${pctDisplay}</td><td style="text-align:center"><div style="display:flex;gap:4px;justify-content:center"><button class="icon-btn print-btn" onclick="printPyramidLevelDetail('${lvl.key}')" title="${t('btn_print_row')}">🖨️</button><button class="icon-btn excel-btn" onclick="exportPyramidLevelExcel('${lvl.key}')" title="Excel">📊</button><button class="icon-btn share-btn" onclick="sharePyramidLevelPDF('${lvl.key}')" title="${t('btn_share_pdf_row')}">📤</button></div></td></tr>`;
+
+    const isExpanded = EXPANDED_PYRAMID.has(lvl.key);
+    const expandBtn = `<button class="icon-btn expand-btn ${isExpanded?'expanded':''}" onclick="togglePyramidLevelExpand('${lvl.key}')" title="${isExpanded ? t('pyr_hide_year') : t('pyr_show_year')}">${isExpanded ? '➖' : '➕'}</button>`;
+
+    html += `<tr${isNegative ? ' style="background:rgba(239,68,68,.05)"' : ''}><td style="color:${lvl.color};font-weight:700">${level}</td><td>${lvl.subtitle} ${lvl.label} ${negBadge}</td><td class="num">${amtDisplay}</td><td class="num">${pctDisplay}</td><td style="text-align:center"><div style="display:flex;gap:4px;justify-content:center">${expandBtn}<button class="icon-btn print-btn" onclick="printPyramidLevelDetail('${lvl.key}')" title="${t('btn_print_row')}">🖨️</button><button class="icon-btn excel-btn" onclick="exportPyramidLevelExcel('${lvl.key}')" title="Excel">📊</button><button class="icon-btn share-btn" onclick="sharePyramidLevelPDF('${lvl.key}')" title="${t('btn_share_pdf_row')}">📤</button></div></td></tr>`;
+
+    if(isExpanded){
+      html += `<tr class="pyramid-expanded-row"><td colspan="5">${renderPyramidLevelYearsHTML(lvl)}</td></tr>`;
+    }
   });
   html += `<tr style="background:rgba(34,193,164,.15);font-weight:700;border-top:2px solid var(--accent)"><td colspan="2" style="color:var(--accent)">✅ ${t('th_total_bank_savings')}</td><td class="num" style="color:var(--accent);font-weight:800;font-size:15px">${money(bankSavingsTotal)}</td><td class="num" style="color:var(--accent)">${allPositiveTotal > 0 ? fmtPct(bankSavingsTotal/allPositiveTotal*100) + '%' : '—'}</td><td></td></tr>`;
   html += `<tr style="background:rgba(34,197,94,.12);font-weight:700;border-top:2px solid var(--ok)"><td colspan="2" style="color:var(--ok)">📈 ${t('th_total_investment')}</td><td class="num" style="color:var(--ok);font-weight:800;font-size:15px">${money(investmentTotal)}</td><td class="num" style="color:var(--ok)">${allPositiveTotal > 0 ? fmtPct(investmentTotal/allPositiveTotal*100) + '%' : '—'}</td><td></td></tr>`;
@@ -3528,8 +3728,6 @@ function renderDebtsSummary(){
     ${kpi(t('kpi_obligations_total'), money(dt.obligationsTotal), "acc")}
     ${kpi(t('kpi_count'), state.debts.length.toString(), "acc")}`;
 }
-
-// ⭐⭐ [جديد] دوال عرض كل السنوات في جدول الديون ⭐⭐
 function getAllDebtYears(d){
   const years = new Set();
   if(d && d.monthlyByYear){
@@ -3538,7 +3736,6 @@ function getAllDebtYears(d){
       if(arr.some(v => +v > 0)) years.add(parseInt(yy));
     });
   }
-  // ضمان وجود السنة النشطة حتى لو لم يكن فيها دفعات (لعرضها)
   if(state.activeYear) years.add(state.activeYear);
   return Array.from(years).sort((a,b)=>a-b);
 }
@@ -3588,7 +3785,6 @@ function updDebtMonthYear(id, year, mi, val){
 function renderDebts(){
   renderDebtsSummary();
   const el = document.getElementById("debtsTable");
-  // ⭐⭐ [جديد] تحديث نص زر التبديل العام ⭐⭐
   const gBtn = document.getElementById("btnToggleAllDebtYears");
   const allExpanded = state.debts.length > 0 && state.debts.every(d => EXPANDED_DEBTS.has(d.id));
   if(gBtn){
@@ -3607,11 +3803,9 @@ function renderDebts(){
     const rowCls = fullyPaid ? rc + ' fully-paid-row' : rc;
     const paidBadge = buildPaidInfoHtml(d);
     const isExpanded = EXPANDED_DEBTS.has(d.id);
-    // ⭐⭐ [جديد] زر ➕/➖ لكل بند ⭐⭐
     const expandBtn = `<button class="icon-btn expand-btn ${isExpanded?'expanded':''}" onclick="toggleDebtYearsExpand(${d.id})" title="${isExpanded ? t('debts_hide_year') : t('debts_show_year')}">${isExpanded ? '➖' : '➕'}</button>`;
     body += `<tr class="${rowCls}" data-debt-id="${d.id}"><td><input type="text" class="inline-input name" value="${esc(d.name)}" onchange="updDebtName(${d.id}, this.value)"><div class="fully-paid-badge-wrap">${paidBadge}</div></td><td><select class="inline-select type-sel" onchange="updDebtType(${d.id}, this.value)"><option value="credit" ${d.type==='credit'?'selected':''}>🔴 ${t('dt_credit_label')}</option><option value="debit" ${d.type==='debit'?'selected':''}>🟢 ${t('dt_debit_label')}</option><option value="installment" ${d.type==='installment'?'selected':''}>🏦 ${t('dt_inst_label')}</option><option value="obligation" ${d.type==='obligation'?'selected':''}>📋 ${t('dt_obligation_label')}</option></select></td><td><select class="inline-select" onchange="updDebtCategory(${d.id}, this.value)"><option value="" ${!d.category?'selected':''}>—</option><option value="فيزا" ${d.category==='فيزا'?'selected':''}>${t('dbt_visa')}</option><option value="بنك" ${d.category==='بنك'?'selected':''}>${t('dbt_bank')}</option><option value="متنوع" ${d.category==='متنوع'?'selected':''}>${t('dbt_misc')}</option></select></td><td><input type="number" class="inline-input num" value="${inVal(d.total)}" min="0" step="0.001" oninput="updDebtTotal(${d.id}, this.value)"></td><td><input type="number" class="inline-input num paid-before" value="${inVal(d.paidBefore)}" min="0" step="0.001" oninput="updDebtPaidBefore(${d.id}, this.value)"></td><td><input type="text" class="inline-input notes" value="${esc(d.notes)}" placeholder="..." onchange="updDebtNotes(${d.id}, this.value)"></td>`;
     if(isExpanded){
-      // ⭐⭐ [جديد] عند التوسيع: عرض رسالة مكان 12 شهر ⭐⭐
       const yearsWithData = getAllDebtYears(d);
       const totalAllY = debtPaidAllYears(d);
       const msgTpl = t('debts_payments_summary').replace('{N}', yearsWithData.length).replace('{T}', fmt(totalAllY));
@@ -3620,7 +3814,6 @@ function renderDebts(){
       for(let i=0;i<12;i++){ body += `<td><input type="number" value="${inVal(dm(d,y,i))}" min="0" step="0.001" oninput="updDebtMonth(${d.id}, ${i}, this.value)" onblur="onDebtMonthBlur()"></td>`; }
     }
     body += `<td class="paid-cell">${fmt(paid)}</td><td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td><td class="noprint"><div class="row-actions">${expandBtn}<button class="icon-btn print-btn" onclick="printDebtReport(${d.id})" title="🖨️">🖨️</button><button class="icon-btn share-btn" onclick="shareDebtReportPDF(${d.id})" title="${t('btn_share_pdf_row')}">📤</button><button class="icon-btn" onclick="delDebt(${d.id})" title="${t('confirm_delete')}">✕</button></div></td></tr>`;
-    // ⭐⭐ [جديد] صفوف السنوات الفرعية عند التوسيع ⭐⭐
     if(isExpanded){
       const yearsWithData = getAllDebtYears(d);
       if(yearsWithData.length === 0){
