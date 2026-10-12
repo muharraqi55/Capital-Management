@@ -245,7 +245,6 @@
   .last-pay-prior{font-size:10px;color:var(--muted);font-family:inherit;font-weight:700;background:rgba(143,163,184,.15);padding:3px 8px;border-radius:8px;border:1px solid var(--muted);white-space:nowrap;direction:rtl;display:inline-flex;align-items:center;gap:5px}
   tr.highlight-jump{animation:highlightJump 2s ease-out}
   @keyframes highlightJump{0%{background:rgba(34,193,164,.5)!important}30%{background:rgba(34,193,164,.4)!important}100%{background:transparent}}
-  /* ⭐⭐ [جديد] أنماط عرض السنوات الموسّعة في جدول الديون ⭐⭐ */
   .debts-toggle-bar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:10px;flex-wrap:wrap}
   .debts-toggle-bar .btn{font-size:12px;padding:6px 12px}
   .icon-btn.expand-btn{color:var(--accent);border-color:rgba(34,193,164,.5);font-weight:900;font-size:14px;line-height:1;width:26px;height:26px}
@@ -262,7 +261,6 @@
   .debts-table .year-label-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--accent2);color:#fff;font-size:10px;font-weight:700;margin-inline-start:8px;font-family:monospace}
   .debts-table .active-year-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--ok);color:#fff;font-size:9px;font-weight:700;margin-inline-start:6px}
   .debts-table .expanded-empty-message{text-align:center;color:var(--muted);font-style:italic;padding:12px;font-size:12px;background:rgba(143,163,184,.06)}
-  /* ⭐⭐ [جديد] أنماط عرض السنوات في هرم الأمان المالي ⭐⭐ */
   .pyramid-toggle-bar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:10px;flex-wrap:wrap}
   .pyramid-toggle-bar .btn{font-size:12px;padding:6px 12px}
   .pyramid-expanded-row{background:rgba(59,130,246,.04) !important}
@@ -459,6 +457,11 @@
     .expense-table input,.expense-table select {font-size: 6pt !important;padding: 1pt !important;}
     #yearsTable, #annualTable, #dashTable, #yearsDistTable, #pyramidTable {min-width: 0 !important;width: 100% !important;table-layout: fixed !important;font-size: 6pt !important;}
     #yearsTable th, #yearsTable td, #annualTable th, #annualTable td, #dashTable th, #dashTable td, #yearsDistTable th, #yearsDistTable td, #pyramidTable th, #pyramidTable td {padding: 1.5pt 1pt !important;font-size: 6pt !important;white-space: normal !important;word-break: break-word;}
+    .pyramid-year-table{min-width:0 !important;width:100% !important;table-layout:fixed !important;font-size:5.5pt !important}
+    .pyramid-year-table th,.pyramid-year-table td{padding:1pt 0.5pt !important;font-size:5.5pt !important;white-space:normal !important}
+    #avgContainer .pyramid-year-block{page-break-inside:avoid}
+    #avgContainer .pyramid-year-table{min-width:0 !important;width:100% !important;table-layout:fixed !important;font-size:5.5pt !important}
+    #avgContainer .pyramid-year-table th,#avgContainer .pyramid-year-table td{padding:1pt 0.5pt !important;font-size:5pt !important;white-space:normal !important}
   }
 </style>
 </head>
@@ -503,6 +506,7 @@
   <button data-view="debts" data-i18n="t_debts">🤝 السلف والديون و الالتزامات</button>
   <button data-view="annual" data-i18n="t_annual">📈 الملخص السنوي</button>
   <button data-view="years" data-i18n="t_years">📆 مقارنة السنوات</button>
+  <button data-view="avg" data-i18n="t_avg">📊 المتوسط السعري</button>
   <button data-view="pyramid" data-i18n="t_pyr">🔺 هرم الأمان المالي</button>
 </nav>
 
@@ -725,6 +729,27 @@
   </div>
 </section>
 
+<section id="avg" class="view">
+  <div class="card">
+    <h2 id="avgAllTitle"></h2>
+    <p class="muted" style="margin-bottom:12px" id="avgAllHint"></p>
+    <div class="grid g4" id="avgAllKpis"></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
+      <h2 id="avgTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none"></h2>
+      <div class="pyramid-toggle-bar noprint" style="margin-bottom:0">
+        <button class="btn" id="btnToggleAllAvgYears" onclick="toggleAllAvgYears()">➕ عرض كل السنوات</button>
+      </div>
+    </div>
+    <div id="avgContainer"></div>
+  </div>
+  <div class="print-section">
+    <button class="btn primary" onclick="printCurrentView(false, 'landscape')" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn share" onclick="shareViewPDF('avg', false, 'landscape')" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
+  </div>
+</section>
+
 <section id="pyramid" class="view">
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
@@ -838,6 +863,7 @@ const I18N = {
   ar: {
     app_title:"نظام إدارة رأس المال",footer:"جميع الحقوق محفوظة لـ Muharraqi",
     t_dash:"📊 اللوحة الرئيسية",t_month:"📅 إدارة الشهور",t_years:"📆 مقارنة السنوات",
+    t_avg:"📊 المتوسط السعري",
     t_pyr:"🔺 هرم الأمان المالي",t_debts:"🤝 السلف والديون و الالتزامات",t_annual:"📈 الملخص السنوي",
     btn_export:"📤 تصدير",btn_import:"📥 استيراد",btn_reset:"🗑 تصفير",
     btn_save:"💾 حفظ",btn_print_page:"🖨️ طباعة هذه الصفحة",btn_print_month:"🖨️ طباعة هذا الشهر",
@@ -968,10 +994,42 @@ const I18N = {
     pyr_show_year:"➕ عرض السنوات",
     pyr_hide_year:"➖ طي السنوات",
     pyr_cumulative:"تراكمي",
+    avg_all_title:"📊 ملخص جميع السنوات — المتوسطات العامة",
+    avg_all_hint:"يُحسب المتوسط الشهري = الإجمالي ÷ عدد الأشهر (12 لكل سنة). المتوسط السنوي = الإجمالي ÷ عدد السنوات. جميع البنود محتسبة حتى وإن كانت محددة بـ «غير محسوب ذي الشهر».",
+    avg_title:"📅 تفصيل المتوسطات حسب السنة — كل البنود",
+    avg_month:"الشهر",
+    avg_salary:"الراتب",
+    avg_income:"دخل إضافي",
+    avg_meat:"دعم اللحوم",
+    avg_total_inc:"إجمالي الدخل",
+    avg_expenses:"المصاريف",
+    avg_onetime:"مصاريف سنوية",
+    avg_savings:"الادخار",
+    avg_remaining:"المتبقي",
+    avg_year_total:"إجمالي السنة",
+    avg_monthly_avg:"المتوسط الشهري",
+    avg_yearly_avg:"المتوسط السنوي",
+    avg_grand_total:"🌟 الإجمالي العام لكل السنوات",
+    avg_grand_monthly:"متوسط شهري عام",
+    avg_grand_yearly:"متوسط سنوي عام",
+    avg_show_all:"➕ عرض كل السنوات",
+    avg_hide_all:"➖ طي كل السنوات",
+    avg_show_year:"➕ عرض السنة",
+    avg_hide_year:"➖ طي السنة",
+    avg_years_count:"عدد السنوات",
+    avg_months_count:"عدد الأشهر",
+    avg_kpi_total_inc:"متوسط الدخل الشهري",
+    avg_kpi_total_exp:"متوسط المصاريف الشهرية",
+    avg_kpi_total_sav:"متوسط الادخار الشهري",
+    avg_kpi_total_rem:"متوسط المتبقي الشهري",
+    avg_kpi_yearly_inc:"متوسط الدخل السنوي",
+    avg_kpi_yearly_exp:"متوسط المصاريف السنوية",
+    avg_kpi_yearly_rem:"متوسط المتبقي السنوي",
   },
   en: {
     app_title:"Capital Manager",footer:"All rights reserved to Muharraqi",
     t_dash:"📊 Dashboard",t_month:"📅 Month Management",t_years:"📆 Years Comparison",
+    t_avg:"📊 Average Pricing",
     t_pyr:"🔺 Financial Safety Pyramid",t_debts:"🤝 Debts, Loans & Obligations",t_annual:"📈 Annual Summary",
     btn_export:"📤 Export",btn_import:"📥 Import",btn_reset:"🗑 Reset",btn_save:"💾 Save",
     btn_print_page:"🖨️ Print this page",btn_print_month:"🖨️ Print this month",btn_share_pdf:"📤 Share PDF",btn_share_pdf_row:"📤 Share PDF",
@@ -1078,6 +1136,37 @@ const I18N = {
     pyr_show_year:"➕ Show years",
     pyr_hide_year:"➖ Collapse years",
     pyr_cumulative:"Cumulative",
+    avg_all_title:"📊 All Years Summary — Grand Averages",
+    avg_all_hint:"Monthly average = Total ÷ Number of months (12 per year). Yearly average = Total ÷ Number of years. All items included even if marked «Not Counted».",
+    avg_title:"📅 Averages Breakdown by Year — All Items",
+    avg_month:"Month",
+    avg_salary:"Salary",
+    avg_income:"Extra Income",
+    avg_meat:"Meat Support",
+    avg_total_inc:"Total Income",
+    avg_expenses:"Expenses",
+    avg_onetime:"Yearly Expenses",
+    avg_savings:"Savings",
+    avg_remaining:"Remaining",
+    avg_year_total:"Year Total",
+    avg_monthly_avg:"Monthly Average",
+    avg_yearly_avg:"Yearly Average",
+    avg_grand_total:"🌟 Grand Total (All Years)",
+    avg_grand_monthly:"Grand Monthly Average",
+    avg_grand_yearly:"Grand Yearly Average",
+    avg_show_all:"➕ Show all years",
+    avg_hide_all:"➖ Collapse all years",
+    avg_show_year:"➕ Show year",
+    avg_hide_year:"➖ Collapse year",
+    avg_years_count:"Years Count",
+    avg_months_count:"Months Count",
+    avg_kpi_total_inc:"Avg Monthly Income",
+    avg_kpi_total_exp:"Avg Monthly Expenses",
+    avg_kpi_total_sav:"Avg Monthly Savings",
+    avg_kpi_total_rem:"Avg Monthly Remaining",
+    avg_kpi_yearly_inc:"Avg Yearly Income",
+    avg_kpi_yearly_exp:"Avg Yearly Expenses",
+    avg_kpi_yearly_rem:"Avg Yearly Remaining",
   }
 };
 
@@ -1106,6 +1195,7 @@ let _debtMonthRefreshTimer = null;
 let _pdfLibsPromise = null;
 let EXPANDED_DEBTS = new Set();
 let EXPANDED_PYRAMID = new Set();
+let EXPANDED_AVG = new Set();
 
 const t = key => (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key;
 const getMonths = () => I18N[LANG].months;
@@ -1787,7 +1877,8 @@ function applyLang(){
     lblYearsDist:'y_title_dist',footerLocalized:'footer',phTitle:'print_title',phSubtitle:'print_subtitle',lblCarInsuranceOT:'lbl_car_insurance_ot',
     lblZakatOT:'lbl_zakat_ot',thCIItem:'th_item',thCIAmount:'th_amount',thCIBank:'th_bank',thCINote:'th_note',thCIRef:'th_ref',
     thZKItem:'th_item',thZKAmount:'th_amount',thZKBank:'th_bank',thZKNote:'th_note',thZKRef:'th_ref',
-    thIncItem:'th_income_item',thIncAmount:'th_income_amount',thIncNote:'th_income_note',lblMeatSupport:'f_meat_support',lblMeatAmount:'f_meat_amount'
+    thIncItem:'th_income_item',thIncAmount:'th_income_amount',thIncNote:'th_income_note',lblMeatSupport:'f_meat_support',lblMeatAmount:'f_meat_amount',
+    avgAllTitle:'avg_all_title',avgAllHint:'avg_all_hint',avgTitle:'avg_title',
   };
   Object.keys(ids).forEach(id => { const el = document.getElementById(id); if(el) el.textContent = t(ids[id]); });
   renderAll();
@@ -2796,7 +2887,7 @@ function printCurrentView(includeMonthName, orientation){
 }
 function printPage(){
   const view = document.querySelector('nav.tabs button.active')?.dataset.view;
-  const landscapeViews = ['annual','years','pyramid'];
+  const landscapeViews = ['annual','years','pyramid','avg'];
   const orientation = landscapeViews.includes(view) ? 'landscape' : 'portrait';
   printCurrentView(view === 'month', orientation);
 }
@@ -2854,6 +2945,13 @@ function generateViewHTML(viewId, includeMonthName, orientation){
     .pyr-color{width:14px;height:14px;border-radius:3px;display:inline-block}.pyr-val{font-family:monospace;font-weight:700;color:#0e7490}
     .pyr-note{font-size:8pt;color:#78350f;width:100%;background:#fffbeb;padding:3px 6px;border-radius:4px;margin-top:3px}
     input[type=number]{text-align:center}
+    .pyramid-year-block{background:#fff;border:1px solid #999;border-radius:6px;margin-bottom:6px;page-break-inside:avoid}
+    .pyramid-year-header{background:#e0f2fe;padding:5px 8px;font-weight:800;font-size:10pt;color:#0e7490;border-bottom:1px solid #999}
+    .pyramid-year-table{width:100%;border-collapse:collapse;font-size:7.5pt}
+    .pyramid-year-table th{background:#e5e7eb;padding:2px;font-size:7pt;color:#000;border:1px solid #999}
+    .pyramid-year-table td{padding:2px;text-align:center;border:1px solid #ccc;font-family:monospace;font-size:7.5pt}
+    .pyramid-year-badge{display:inline-block;padding:2px 7px;border-radius:8px;font-size:8pt;font-weight:700;background:#0e7490;color:#fff;margin-inline-start:6px}
+    .pyramid-active-badge{display:inline-block;padding:2px 7px;border-radius:8px;font-size:7.5pt;font-weight:700;background:#16a34a;color:#fff;margin-inline-start:4px}
     @page{size:A4 ${orientation};margin:8mm}
   `;
   let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${activeTabName} — ${metaExtra}</title><style>${printStyles}</style></head><body>`;
@@ -2908,7 +3006,7 @@ function updateMonthPrintBtn(){
   if(btn) btn.textContent = `🖨️ ${t('btn_print_month')} — ${label}`;
   if(btnShare) btnShare.textContent = `📤 ${t('btn_share_pdf')} — ${label}`;
 }
-function renderAll(){ renderYearSelect(); renderMonthPills(); renderMonth(); renderDashboard(); renderDebts(); renderPyramid(); renderYears(); updateMonthPrintBtn(); }
+function renderAll(){ renderYearSelect(); renderMonthPills(); renderMonth(); renderDashboard(); renderDebts(); renderPyramid(); renderYears(); renderAverage(); updateMonthPrintBtn(); }
 function renderDashboard(){
   const months = M(); const y = state.activeYear;
   let totInc=0, totExp=0, totSav=0, totOneTime=0;
@@ -3447,8 +3545,6 @@ function renderPyramidLegend(){
     return `<div class="pyr-legend-item" ${isNegative ? 'style="border-color:rgba(239,68,68,.4)"' : ''}><div class="pyr-color" style="background:${lvl.color}"></div><div class="pyr-label">${lvl.subtitle} ${lvl.label} ${isNegative ? '⚠' : ''}</div><div class="pyr-val" style="${isNegative ? 'color:var(--danger)' : ''}">${fmt(totals[lvl.key])} ${LANG==='ar'?'د.ب':'BHD'}</div>${note ? `<div class="pyr-note">📝 ${esc(note)}</div>` : ''}</div>`;
   }).join("");
 }
-
-/* ⭐⭐ [جديد] دوال عرض كل السنوات في هرم الأمان المالي ⭐⭐ */
 function getAllPyramidYears(key){
   const years = new Set();
   const isAuto = (key === "loans" || key === "obligationsSaving");
@@ -3474,7 +3570,6 @@ function getAllPyramidYears(key){
   if(state.activeYear) years.add(state.activeYear);
   return Array.from(years).sort((a,b)=>a-b);
 }
-
 function getPyramidLevelMonthValue(key, year, mi){
   const isAuto = (key === "loans" || key === "obligationsSaving");
   if(isAuto){
@@ -3488,19 +3583,16 @@ function getPyramidLevelMonthValue(key, year, mi){
   v += sumSavingExtrasCounted(m, key + "Extra");
   return v;
 }
-
 function getPyramidLevelMainValue(key, year, mi){
   const m = (state.years[year] || [])[mi];
   if(!m) return 0;
   return isSavingExcluded(m, key) ? 0 : (+m[key] || 0);
 }
-
 function getPyramidLevelYearTotal(key, year){
   let total = 0;
   for(let i = 0; i < 12; i++) total += getPyramidLevelMonthValue(key, year, i);
   return total;
 }
-
 function getPyramidLevelCumulativeUpTo(key, uptoYear){
   const isAuto = (key === "loans" || key === "obligationsSaving");
   if(isAuto){
@@ -3526,7 +3618,6 @@ function getPyramidLevelCumulativeUpTo(key, uptoYear){
   });
   return total;
 }
-
 function updPyramidLevelMonthYear(key, year, mi, val){
   const isAuto = (key === "loans" || key === "obligationsSaving");
   if(isAuto){
@@ -3549,13 +3640,11 @@ function updPyramidLevelMonthYear(key, year, mi, val){
     }
   }
 }
-
 function togglePyramidLevelExpand(key){
   if(EXPANDED_PYRAMID.has(key)) EXPANDED_PYRAMID.delete(key);
   else EXPANDED_PYRAMID.add(key);
   renderPyramid();
 }
-
 function toggleAllPyramidLevels(){
   const levels = getPyramidLevels();
   const allExpanded = levels.every(l => EXPANDED_PYRAMID.has(l.key));
@@ -3563,7 +3652,6 @@ function toggleAllPyramidLevels(){
   else levels.forEach(l => EXPANDED_PYRAMID.add(l.key));
   renderPyramid();
 }
-
 function renderPyramidLevelYearsHTML(lvl){
   const isAuto = (lvl.auto === true);
   const yearsWithData = getAllPyramidYears(lvl.key);
@@ -3600,6 +3688,271 @@ function renderPyramidLevelYearsHTML(lvl){
   });
   html += `</div>`;
   return html;
+}
+
+/* ⭐⭐ [مُحدَّث] دوال تبويب المتوسط السعري — احتساب كل البنود حتى المستثناة ⭐⭐ */
+function getAvgMonthValue(m, mi, item){
+  // ⭐ ملاحظة: يتم احتساب كل المبالغ حتى لو كانت "غير محسوب ذي الشهر"
+  if(item.type === 'salary') return +m.salary || 0;
+  if(item.type === 'income') return +m[item.key] || 0;
+  if(item.type === 'meat') return isMeatMonth(mi) ? (+m.meat || 0) : 0;
+  if(item.type === 'expense'){
+    let v = +m[item.key] || 0;
+    v += sumRepeatableExtras(m, item.extraKey); // يشمل كل البنود الفرعية بغض النظر عن البنك
+    return v;
+  }
+  if(item.type === 'savings'){
+    let v = +m[item.key] || 0;
+    v += sumSavingExtras(m, item.key + "Extra"); // يشمل كل البنود الفرعية
+    return v;
+  }
+  if(item.type === 'carInsurance'){
+    return +getCarInsurance(m).amount || 0; // يُحسب دائماً
+  }
+  if(item.type === 'zakat'){
+    return +getZakat(m).amount || 0; // يُحسب دائماً
+  }
+  return 0;
+}
+
+/* ⭐⭐ دوال مساعدة لحساب الإجماليات العامة (بدون استثناءات) ⭐⭐ */
+function avgTotalIncome(m, mi){
+  let sum = +m.salary || 0;
+  sum += getIncomeFields().reduce((s,[k])=>s+(+m[k]||0),0);
+  if(isMeatMonth(mi)) sum += +m.meat || 0;
+  return sum;
+}
+function avgTotalExpenses(m){
+  let s = 0;
+  getExpenseRows().forEach(r => {
+    if(r.type === "group") return;
+    if(r.type === "repeatable"){
+      s += +m[r.key] || 0;
+      s += sumRepeatableExtras(m, r.extraKey);
+      return;
+    }
+    s += +m[r.key] || 0;
+  });
+  return s;
+}
+function avgTotalSavings(m){
+  let s = 0;
+  getSavingFields().forEach(([k]) => {
+    s += +m[k] || 0;
+    s += sumSavingExtras(m, k + "Extra");
+  });
+  return s;
+}
+function avgTotalOneTime(m){
+  return (+getCarInsurance(m).amount || 0) + (+getZakat(m).amount || 0);
+}
+
+function getAvgSections(){
+  const incomeItems = getIncomeFields().map(([k,l]) => ({key:k, label:l, type:'income'}));
+  incomeItems.push({key:'meat', label:t('f_meat_support'), type:'meat'});
+
+  return [
+    { title: t('lbl_salary_section'), color: 'var(--gold)', bg: 'rgba(234,179,8,.1)', items: [
+      {key:'salary', label:t('f_salary'), type:'salary'}
+    ]},
+    { title: t('lbl_income'), color: 'var(--accent)', bg: 'rgba(34,193,164,.08)', items: incomeItems },
+    { title: t('lbl_expenses').replace('💸 ','').replace('(د.ب)',''), color: 'var(--danger)', bg: 'rgba(239,68,68,.06)', items:
+      getExpenseRows().filter(r=>r.type!=="group").map(r => ({key:r.key, label:r.label, type:'expense', extraKey:r.extraKey}))
+    },
+    { title: t('lbl_savings').replace('💰 ','').replace('(د.ب)',''), color: 'var(--accent2)', bg: 'rgba(59,130,246,.06)', items:
+      getSavingFields().map(f => ({key:f[0], label:f[1], type:'savings'}))
+    },
+    { title: '⭐ ' + t('lbl_car_insurance_ot') + ' / ' + t('lbl_zakat_ot'), color: 'var(--gold)', bg: 'rgba(234,179,8,.06)', items: [
+      {key:'carInsurance', label:t('ot_car_insurance'), type:'carInsurance'},
+      {key:'zakat', label:t('ot_zakat'), type:'zakat'}
+    ]}
+  ];
+}
+
+function getYearAvgFieldTotal(year, item){
+  const monthsArr = Mof(year);
+  let total = 0;
+  monthsArr.forEach((m, mi) => { total += getAvgMonthValue(m, mi, item); });
+  return total;
+}
+
+function toggleAvgYear(y){
+  if(EXPANDED_AVG.has(y)) EXPANDED_AVG.delete(y);
+  else EXPANDED_AVG.add(y);
+  renderAverage();
+}
+function toggleAllAvgYears(){
+  const years = state.yearList.slice().sort((a,b)=>a-b);
+  const allExpanded = years.length > 0 && years.every(y => EXPANDED_AVG.has(y));
+  if(allExpanded) EXPANDED_AVG.clear();
+  else years.forEach(y => EXPANDED_AVG.add(y));
+  renderAverage();
+}
+
+function renderAverage(){
+  const months = getMonths();
+  const years = state.yearList.slice().sort((a,b)=>a-b);
+  const sections = getAvgSections();
+  const numCols = 1 + 12 + 2;
+
+  if(!years.length){
+    document.getElementById("avgAllKpis").innerHTML = "";
+    document.getElementById("avgContainer").innerHTML = `<div class="muted" style="text-align:center;padding:20px">${t('print_no_data')}</div>`;
+    return;
+  }
+
+  const grand = { totalInc:0, totalExp:0, totalSav:0, totalRem:0, totalOneTime:0 };
+  years.forEach(y => {
+    const monthsArr = Mof(y);
+    monthsArr.forEach((m, mi) => {
+      grand.totalInc += avgTotalIncome(m, mi);
+      grand.totalExp += avgTotalExpenses(m);
+      grand.totalOneTime += avgTotalOneTime(m);
+      grand.totalSav += avgTotalSavings(m);
+    });
+  });
+  grand.totalRem = grand.totalInc - grand.totalExp - grand.totalOneTime - grand.totalSav;
+  const totalMonths = years.length * 12;
+
+  document.getElementById("avgAllKpis").innerHTML = `
+    ${kpi(t('avg_years_count'), years.length.toString(), "acc")}
+    ${kpi(t('avg_months_count'), totalMonths.toString(), "acc")}
+    ${kpi(t('avg_kpi_total_inc'), money(grand.totalInc/totalMonths), "acc")}
+    ${kpi(t('avg_kpi_total_exp'), money((grand.totalExp+grand.totalOneTime)/totalMonths), "neg")}
+    ${kpi(t('avg_kpi_total_sav'), money(grand.totalSav/totalMonths), "gold")}
+    ${kpi(t('avg_kpi_total_rem'), money(grand.totalRem/totalMonths), grand.totalRem >= 0 ? "pos" : "neg")}
+    ${kpi(t('avg_kpi_yearly_inc'), money(grand.totalInc/years.length), "acc")}
+    ${kpi(t('avg_kpi_yearly_exp'), money((grand.totalExp+grand.totalOneTime)/years.length), "neg")}
+    ${kpi(t('avg_kpi_yearly_rem'), money(grand.totalRem/years.length), grand.totalRem >= 0 ? "pos" : "neg")}
+  `;
+
+  let html = '';
+  years.forEach(y => {
+    const isExpanded = EXPANDED_AVG.has(y);
+    const isActive = y === state.activeYear;
+    const monthsArr = Mof(y);
+
+    let yInc = 0, yExp = 0, yOne = 0, ySav = 0;
+    monthsArr.forEach((m, mi) => {
+      yInc += avgTotalIncome(m, mi);
+      yExp += avgTotalExpenses(m);
+      yOne += avgTotalOneTime(m);
+      ySav += avgTotalSavings(m);
+    });
+    const yRem = yInc - yExp - yOne - ySav;
+
+    html += `<div class="pyramid-year-block" style="margin-bottom:14px;border:1px solid ${isActive?'var(--accent)':'var(--line)'}">`;
+    html += `<div class="pyramid-year-header" style="cursor:pointer;justify-content:flex-start;gap:8px;${isActive?'background:linear-gradient(90deg,rgba(34,193,164,.12),transparent);':''}" onclick="toggleAvgYear(${y})">
+      <button class="icon-btn expand-btn ${isExpanded?'expanded':''}" style="pointer-events:none">${isExpanded ? '➖' : '➕'}</button>
+      <span style="font-family:monospace;font-weight:800;color:var(--accent);font-size:16px">📅 ${y}</span>
+      ${isActive ? `<span class="pyramid-active-badge">${t('debts_active_year')}</span>` : ''}
+      <span class="pyramid-year-badge" style="background:var(--accent2)">${t('avg_year_total')}: ${money(yRem)}</span>
+      <span class="pyramid-year-badge" style="background:var(--gold)">${t('avg_monthly_avg')}: ${money(yRem/12)}</span>
+    </div>`;
+
+    if (isExpanded) {
+      html += `<div style="overflow-x:auto;padding:8px">`;
+      html += `<table class="pyramid-year-table" style="font-size:11px;min-width:1100px">`;
+      html += `<thead><tr><th style="min-width:150px;text-align:${LANG==='ar'?'right':'left'}">${t('avg_month')}</th>`;
+      for (let i = 0; i < 12; i++) html += `<th style="padding:6px 3px;font-size:10px">${months[i]}</th>`;
+      html += `<th style="background:rgba(34,193,164,.2);color:var(--accent)">${t('avg_year_total')}</th>`;
+      html += `<th style="background:rgba(59,130,246,.2);color:var(--accent2)">${t('avg_monthly_avg')}</th>`;
+      html += `</tr></thead><tbody>`;
+
+      sections.forEach(sec => {
+        html += `<tr style="background:${sec.bg}"><td colspan="${numCols}" style="text-align:right;font-weight:800;color:${sec.color};font-size:12px;padding:6px 12px">${sec.title}</td></tr>`;
+        sec.items.forEach(item => {
+          let total = 0;
+          let rowHtml = `<tr><td style="text-align:${LANG==='ar'?'right':'left'};font-weight:600;padding:4px 8px;font-size:11px">${item.label}</td>`;
+          for (let i = 0; i < 12; i++) {
+            const v = getAvgMonthValue(monthsArr[i], i, item);
+            total += v;
+            rowHtml += `<td class="num" style="padding:3px 2px;font-size:10px">${v > 0 ? fmt(v) : '—'}</td>`;
+          }
+          rowHtml += `<td class="num" style="font-weight:800;background:rgba(34,193,164,.08)">${total > 0 ? fmt(total) : '—'}</td>`;
+          rowHtml += `<td class="num" style="color:var(--accent2);font-weight:700;background:rgba(59,130,246,.08)">${total > 0 ? fmt(total/12) : '—'}</td>`;
+          rowHtml += `</tr>`;
+          html += rowHtml;
+        });
+      });
+
+      html += `<tr style="background:rgba(34,193,164,.18);font-weight:800;border-top:2px solid var(--accent)"><td style="color:var(--accent);padding:6px 8px;text-align:${LANG==='ar'?'right':'left'}">📊 ${t('mr_inc_total')}</td>`;
+      monthsArr.forEach((m,i)=> { const v = avgTotalIncome(m, i); html += `<td class="num" style="font-size:10px">${v ? fmt(v) : '—'}</td>`; });
+      html += `<td class="num" style="font-weight:800">${fmt(yInc)}</td><td class="num" style="color:var(--accent2);font-weight:800">${fmt(yInc/12)}</td></tr>`;
+
+      html += `<tr style="background:rgba(239,68,68,.15);font-weight:800"><td style="color:var(--danger);padding:6px 8px;text-align:${LANG==='ar'?'right':'left'}">📊 ${t('mr_exp')}</td>`;
+      monthsArr.forEach((m) => { const v = avgTotalExpenses(m); html += `<td class="num" style="font-size:10px">${v ? fmt(v) : '—'}</td>`; });
+      html += `<td class="num" style="font-weight:800">${fmt(yExp)}</td><td class="num" style="color:var(--accent2);font-weight:800">${fmt(yExp/12)}</td></tr>`;
+
+      html += `<tr style="background:rgba(234,179,8,.15);font-weight:800"><td style="color:var(--gold);padding:6px 8px;text-align:${LANG==='ar'?'right':'left'}">📊 ${t('mr_once_yearly')}</td>`;
+      monthsArr.forEach((m) => { const v = avgTotalOneTime(m); html += `<td class="num" style="font-size:10px">${v ? fmt(v) : '—'}</td>`; });
+      html += `<td class="num" style="font-weight:800">${fmt(yOne)}</td><td class="num" style="color:var(--accent2);font-weight:800">${fmt(yOne/12)}</td></tr>`;
+
+      html += `<tr style="background:rgba(234,179,8,.15);font-weight:800"><td style="color:var(--gold);padding:6px 8px;text-align:${LANG==='ar'?'right':'left'}">📊 ${t('mr_saving')}</td>`;
+      monthsArr.forEach((m) => { const v = avgTotalSavings(m); html += `<td class="num" style="font-size:10px">${v ? fmt(v) : '—'}</td>`; });
+      html += `<td class="num" style="font-weight:800">${fmt(ySav)}</td><td class="num" style="color:var(--accent2);font-weight:800">${fmt(ySav/12)}</td></tr>`;
+
+      html += `<tr style="background:rgba(59,130,246,.18);font-weight:800;border-top:2px solid var(--accent2)"><td style="color:var(--accent2);padding:6px 8px;text-align:${LANG==='ar'?'right':'left'}">📊 ${t('avg_remaining')}</td>`;
+      monthsArr.forEach((m, i) => {
+        const v = avgTotalIncome(m, i) - avgTotalExpenses(m) - avgTotalOneTime(m) - avgTotalSavings(m);
+        html += `<td class="num" style="font-size:10px;color:${v>=0?'var(--ok)':'var(--danger)'}">${fmt(v)}</td>`;
+      });
+      html += `<td class="num" style="font-weight:800;color:${yRem>=0?'var(--ok)':'var(--danger)'}">${fmt(yRem)}</td>`;
+      html += `<td class="num" style="color:${(yRem/12)>=0?'var(--ok)':'var(--danger)'};font-weight:800">${fmt(yRem/12)}</td></tr>`;
+
+      html += `</tbody></table></div>`;
+    }
+    html += `</div>`;
+  });
+
+  if(years.length > 1){
+    html += `<div class="pyramid-year-block" style="margin-top:20px;border:2px solid var(--accent);background:linear-gradient(180deg,rgba(34,193,164,.06),transparent)">`;
+    html += `<div class="pyramid-year-header" style="background:linear-gradient(90deg,rgba(34,193,164,.25),rgba(59,130,246,.25));justify-content:center">`;
+    html += `<span style="font-size:18px">🌟</span><span style="font-weight:800;color:var(--accent);font-size:15px">${t('avg_grand_total')} — ${years.length} ${t('y_years')}</span></div>`;
+    html += `<div style="overflow-x:auto;padding:8px">`;
+    html += `<table class="pyramid-year-table" style="font-size:11px;min-width:750px">`;
+    html += `<thead><tr>
+      <th style="min-width:180px;text-align:${LANG==='ar'?'right':'left'}">${t('avg_month')}</th>
+      <th style="background:rgba(34,193,164,.2);color:var(--accent)">${t('avg_year_total')} × ${years.length}</th>
+      <th style="background:rgba(59,130,246,.2);color:var(--accent2)">${t('avg_grand_monthly')} (÷${totalMonths})</th>
+      <th style="background:rgba(234,179,8,.2);color:var(--gold)">${t('avg_grand_yearly')} (÷${years.length})</th>
+    </tr></thead><tbody>`;
+
+    sections.forEach(sec => {
+      html += `<tr style="background:${sec.bg}"><td colspan="4" style="text-align:right;font-weight:800;color:${sec.color};font-size:12px;padding:6px 12px">${sec.title}</td></tr>`;
+      sec.items.forEach(item => {
+        let gTotal = 0;
+        years.forEach(y => { gTotal += getYearAvgFieldTotal(y, item); });
+        html += `<tr>
+          <td style="text-align:${LANG==='ar'?'right':'left'};font-weight:600;padding:4px 8px;font-size:11px">${item.label}</td>
+          <td class="num" style="font-weight:800;background:rgba(34,193,164,.08)">${gTotal > 0 ? fmt(gTotal) : '—'}</td>
+          <td class="num" style="color:var(--accent2);font-weight:700;background:rgba(59,130,246,.08)">${gTotal > 0 ? fmt(gTotal/totalMonths) : '—'}</td>
+          <td class="num" style="color:var(--gold);font-weight:700;background:rgba(234,179,8,.08)">${gTotal > 0 ? fmt(gTotal/years.length) : '—'}</td>
+        </tr>`;
+      });
+    });
+
+    html += `<tr style="background:rgba(34,193,164,.18);font-weight:800;border-top:2px solid var(--accent)"><td style="color:var(--accent);padding:6px 8px;text-align:${LANG==='ar'?'right':'left'}">📊 ${t('mr_inc_total')}</td>
+      <td class="num">${fmt(grand.totalInc)}</td><td class="num" style="color:var(--accent2)">${fmt(grand.totalInc/totalMonths)}</td><td class="num" style="color:var(--gold)">${fmt(grand.totalInc/years.length)}</td></tr>`;
+    html += `<tr style="background:rgba(239,68,68,.15);font-weight:800"><td style="color:var(--danger);padding:6px 8px;text-align:${LANG==='ar'?'right':'left'}">📊 ${t('mr_exp')}</td>
+      <td class="num">${fmt(grand.totalExp)}</td><td class="num" style="color:var(--accent2)">${fmt(grand.totalExp/totalMonths)}</td><td class="num" style="color:var(--gold)">${fmt(grand.totalExp/years.length)}</td></tr>`;
+    html += `<tr style="background:rgba(234,179,8,.15);font-weight:800"><td style="color:var(--gold);padding:6px 8px;text-align:${LANG==='ar'?'right':'left'}">📊 ${t('mr_once_yearly')}</td>
+      <td class="num">${fmt(grand.totalOneTime)}</td><td class="num" style="color:var(--accent2)">${fmt(grand.totalOneTime/totalMonths)}</td><td class="num" style="color:var(--gold)">${fmt(grand.totalOneTime/years.length)}</td></tr>`;
+    html += `<tr style="background:rgba(234,179,8,.15);font-weight:800"><td style="color:var(--gold);padding:6px 8px;text-align:${LANG==='ar'?'right':'left'}">📊 ${t('mr_saving')}</td>
+      <td class="num">${fmt(grand.totalSav)}</td><td class="num" style="color:var(--accent2)">${fmt(grand.totalSav/totalMonths)}</td><td class="num" style="color:var(--gold)">${fmt(grand.totalSav/years.length)}</td></tr>`;
+    html += `<tr style="background:rgba(59,130,246,.18);font-weight:800;border-top:2px solid var(--accent2)"><td style="color:var(--accent2);padding:6px 8px;text-align:${LANG==='ar'?'right':'left'}">📊 ${t('avg_remaining')}</td>
+      <td class="num" style="color:${grand.totalRem>=0?'var(--ok)':'var(--danger)'}">${fmt(grand.totalRem)}</td>
+      <td class="num" style="color:${(grand.totalRem/totalMonths)>=0?'var(--ok)':'var(--danger)'}">${fmt(grand.totalRem/totalMonths)}</td>
+      <td class="num" style="color:${(grand.totalRem/years.length)>=0?'var(--ok)':'var(--danger)'}">${fmt(grand.totalRem/years.length)}</td></tr>`;
+
+    html += `</tbody></table></div></div>`;
+  }
+
+  document.getElementById("avgContainer").innerHTML = html;
+
+  const gBtn = document.getElementById("btnToggleAllAvgYears");
+  const allExpanded = years.every(y => EXPANDED_AVG.has(y));
+  if(gBtn) gBtn.textContent = allExpanded ? t('avg_hide_all') : t('avg_show_all');
 }
 
 function renderPyramid(){
@@ -3984,6 +4337,7 @@ document.querySelectorAll("nav.tabs button").forEach(btn=>{
     if(v==="dashboard") renderDashboard();
     if(v==="month"){ renderMonth(); updateMonthPrintBtn(); }
     if(v==="years") renderYears();
+    if(v==="avg") renderAverage();
     if(v==="pyramid") renderPyramid();
     if(v==="debts") renderDebts();
     if(v==="annual") renderAnnual();
@@ -4022,6 +4376,8 @@ applyLang();
 saveNow();
 if(LOADED_FROM_DATA){ setTimeout(function(){ toast(t('save_restored'), 'success'); }, 600); }
 else { setTimeout(function(){ if(!state.yearList.length) toast(t('save_no_data'), 'warn'); }, 1000); }
+
+if(state.activeYear) EXPANDED_AVG.add(state.activeYear);
 </script>
 </body>
 </html>
