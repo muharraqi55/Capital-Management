@@ -245,6 +245,23 @@
   .last-pay-prior{font-size:10px;color:var(--muted);font-family:inherit;font-weight:700;background:rgba(143,163,184,.15);padding:3px 8px;border-radius:8px;border:1px solid var(--muted);white-space:nowrap;direction:rtl;display:inline-flex;align-items:center;gap:5px}
   tr.highlight-jump{animation:highlightJump 2s ease-out}
   @keyframes highlightJump{0%{background:rgba(34,193,164,.5)!important}30%{background:rgba(34,193,164,.4)!important}100%{background:transparent}}
+  /* ⭐⭐ [جديد] أنماط عرض السنوات الموسّعة في جدول الديون ⭐⭐ */
+  .debts-toggle-bar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .debts-toggle-bar .btn{font-size:12px;padding:6px 12px}
+  .icon-btn.expand-btn{color:var(--accent);border-color:rgba(34,193,164,.5);font-weight:900;font-size:14px;line-height:1;width:26px;height:26px}
+  .icon-btn.expand-btn:hover{background:var(--accent);color:#fff}
+  .icon-btn.expand-btn.expanded{color:var(--danger);border-color:rgba(239,68,68,.5)}
+  .icon-btn.expand-btn.expanded:hover{background:var(--danger);color:#fff}
+  .debts-table tr.expanded-year-row{background:rgba(59,130,246,.06) !important}
+  .debts-table tr.expanded-year-row td{background:rgba(59,130,246,.06)}
+  .debts-table tr.expanded-year-row td:first-child{color:var(--accent2);font-weight:700;font-size:12px}
+  html[dir="rtl"] .debts-table tr.expanded-year-row td:first-child{border-right:3px solid var(--accent2);padding-right:16px}
+  html[dir="ltr"] .debts-table tr.expanded-year-row td:first-child{border-left:3px solid var(--accent2);padding-left:16px}
+  .debts-table tr.expanded-year-row input[type="number"]{border-color:rgba(59,130,246,.4);background:rgba(59,130,246,.04)}
+  .debts-table tr.expanded-year-row input[type="number"]:focus{border-color:var(--accent2);box-shadow:0 0 0 2px rgba(59,130,246,.2)}
+  .debts-table .year-label-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--accent2);color:#fff;font-size:10px;font-weight:700;margin-inline-start:8px;font-family:monospace}
+  .debts-table .active-year-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--ok);color:#fff;font-size:9px;font-weight:700;margin-inline-start:6px}
+  .debts-table .expanded-empty-message{text-align:center;color:var(--muted);font-style:italic;padding:12px;font-size:12px;background:rgba(143,163,184,.06)}
   .pyramid-wrap{display:flex;justify-content:center;align-items:center;padding:20px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;margin-bottom:16px}
   .pyramid-svg{max-width:640px;width:100%;height:auto}
   .pyramid-svg text{font-family:"Segoe UI","Tahoma",sans-serif;pointer-events:none;user-select:none}
@@ -406,6 +423,8 @@
     .debts-table .inline-input.notes {min-width: 0 !important;font-size: 5pt !important;}
     .debts-table .inline-select {font-size: 5pt !important;padding: 1pt !important;border: none !important;background: transparent !important;}
     .debts-table .paid-cell,.debts-table .remain-cell {font-size: 5.5pt !important;padding: 1pt !important;}
+    .debts-table tr.expanded-year-row td{background:#eef2ff !important;border:1px solid #999 !important;font-size:5.5pt !important;padding:1pt !important}
+    .debts-table .year-label-badge,.debts-table .active-year-badge{font-size:5pt !important;padding:1pt 3pt !important}
     .debts-month-table {min-width: 0 !important;width: 100% !important;table-layout: fixed !important;font-size: 5.5pt !important;}
     .debts-month-table th {padding: 2pt 1pt !important;font-size: 5.5pt !important;white-space: normal !important;}
     .debts-month-table td {padding: 1.5pt 1pt !important;font-size: 5.5pt !important;}
@@ -645,6 +664,10 @@
   <div class="card">
     <h2 id="lblDebtsTable"></h2>
     <p class="muted" style="margin-bottom:12px" id="lblDebtsTableHint"></p>
+    <!-- ⭐⭐ [جديد] شريط التبديل لعرض كل السنوات ⭐⭐ -->
+    <div class="debts-toggle-bar noprint">
+      <button class="btn" id="btnToggleAllDebtYears" onclick="toggleAllDebtsYears()">➕ عرض كل السنوات</button>
+    </div>
     <div class="debts-table-wrap"><table class="debts-table" id="debtsTable"></table></div>
   </div>
   <div class="print-section">
@@ -844,7 +867,7 @@ const I18N = {
     dbt_credit:"🔴 دائن (أنا آخذ سلفة — أدفع)",dbt_debit:"🟢 مدين (ناس آخذين مني — أستلم)",dbt_inst:"🏦 قسط (بنك/فيزا — أدفع)",dbt_obligation:"📋 التزامات أخرى (أدفع)",
     dbt_visa:"بطاقة فيزا",dbt_bank:"بنك",dbt_misc:"متنوع",
     debts_table:"📋 جدول الديون والأقساط والالتزامات — عرض السنة النشطة",
-    debts_table_hint:"✏️ كل الخلايا قابلة للتعديل مباشرة. اضغط على 📅 آخر دفعة للانتقال إلى الشهر والسنة. الأزرار 📤 📊 🖨️ تُظهر سجل الدفع الكامل لكل السنوات.",
+    debts_table_hint:"✏️ كل الخلايا قابلة للتعديل مباشرة. اضغط على 📅 آخر دفعة للانتقال إلى الشهر والسنة. الأزرار 📤 📊 🖨️ تُظهر سجل الدفع الكامل لكل السنوات. اضغط ➕ لكل بند لعرض كل سنواته مع الشهور.",
     lbl_annual:"الملخص السنوي التفصيلي (د.ب)",
     kpi_recv_year_d:"💰 سأستلم هذه السنة (مدينون)",kpi_pay_year_d:"💸 سأدفع هذه السنة (دائن + أقساط + التزامات)",
     kpi_net_year_d:"📊 صافي السنة",kpi_rem_to_me:"📌 متبقي لي (مدينون)",kpi_rem_on_me:"📌 متبقي عليّ (دائن + أقساط + التزامات)",kpi_net_remaining:"⚖️ صافي المتبقي",
@@ -909,6 +932,14 @@ const I18N = {
     lbl_car_insurance_ot:"⭐  تأمين + التسجيل السنوي لجميع السيارات",lbl_zakat_ot:"⭐  زكاة (المال أو الذهب أو الاستثمارات)",
     ot_car_insurance:"🚗 تأمين + التسجيل السنوي لجميع السيارات",ot_zakat:"🕌 زكاة (المال أو الذهب أو الاستثمارات)",
     th_income_item:"البند",th_income_amount:"المبلغ (د.ب)",th_income_note:"ملاحظة",
+    // ⭐⭐ [جديد] نصوص عرض السنوات ⭐⭐
+    debts_show_all_years:"➕ عرض كل السنوات",
+    debts_hide_all_years:"➖ طي كل السنوات",
+    debts_show_year:"➕ عرض السنوات",
+    debts_hide_year:"➖ طي السنوات",
+    debts_active_year:"السنة النشطة",
+    debts_no_other_years:"لا توجد دفعات مسجلة في أي سنة",
+    debts_payments_summary:"📅 الدفعات موزعة على {N} سنة — إجمالي مسدد: {T} د.ب ⬇",
   },
   en: {
     app_title:"Capital Manager",footer:"All rights reserved to Muharraqi",
@@ -1007,6 +1038,14 @@ const I18N = {
     lbl_car_insurance_ot:"⭐  Car Insurance",lbl_zakat_ot:"⭐  Zakat",
     ot_car_insurance:"🚗 Car Insurance",ot_zakat:"🕌 Zakat",
     th_income_item:"Item",th_income_amount:"Amount (BHD)",th_income_note:"Note",
+    // ⭐⭐ [جديد] نصوص عرض السنوات ⭐⭐
+    debts_show_all_years:"➕ Show all years",
+    debts_hide_all_years:"➖ Collapse all years",
+    debts_show_year:"➕ Show years",
+    debts_hide_year:"➖ Collapse years",
+    debts_active_year:"Active year",
+    debts_no_other_years:"No payments recorded in any year",
+    debts_payments_summary:"📅 Payments over {N} year(s) — total paid: {T} BHD ⬇",
   }
 };
 
@@ -1033,6 +1072,8 @@ let SAVE_PENDING = false;
 let _pyramidNoteTimer = null;
 let _debtMonthRefreshTimer = null;
 let _pdfLibsPromise = null;
+// ⭐⭐ [جديد] مجموعة البنود الموسّعة لعرض كل سنواتها ⭐⭐
+let EXPANDED_DEBTS = new Set();
 
 const t = key => (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key;
 const getMonths = () => I18N[LANG].months;
@@ -2542,7 +2583,6 @@ async function generatePdfInWindow(htmlStr, filename, orientation){
     throw err;
   }
 }
-/* ⭐⭐ [جديد] تحويل تاريخ السلفة (d.start) إلى صيغة YYYY/M/D ⭐⭐ */
 function formatDebtDate(d){
   if(d && d.start && /^\d{4}-\d{2}-\d{2}$/.test(d.start)){
     const parts = d.start.split('-');
@@ -2551,7 +2591,6 @@ function formatDebtDate(d){
   }
   return '—';
 }
-/* ⭐⭐ [تعديل] إرجاع التاريخ اليدوي الكامل (YYYY/M/D) للشهر ⭐⭐ */
 function formatPrintDate(m, mi){
   if(m && m.customDate && /^\d{4}-\d{2}-\d{2}$/.test(m.customDate)){
     const parts = m.customDate.split('-');
@@ -3421,7 +3460,7 @@ function addDebt(){
   if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); }
   toast(t('added'), 'success');
 }
-function delDebt(id){ if(!confirm(t('confirm_delete'))) return; state.debts = state.debts.filter(d=>d.id!==id); save(); renderDebts(); renderDashboard(); renderMonth(); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); } }
+function delDebt(id){ if(!confirm(t('confirm_delete'))) return; state.debts = state.debts.filter(d=>d.id!==id); EXPANDED_DEBTS.delete(id); save(); renderDebts(); renderDashboard(); renderMonth(); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); } }
 function updDebtMonth(id, mi, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDm(d, state.activeYear, mi, Math.max(0, parseFloat(val)||0)); save(); refreshDebtRowCells(d); updateDebtsFooter(); if(_debtMonthRefreshTimer) clearTimeout(_debtMonthRefreshTimer); _debtMonthRefreshTimer = setTimeout(() => { renderDebtsSummary(); renderDashboard(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); } }, 400); }
 function updDebtName(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.name = val; save(); renderDashboard(); renderMonth(); renderDebtsSummary(); }
 function updDebtTotal(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.total = Math.max(0, parseFloat(val)||0); save(); refreshDebtRowCells(d); updateDebtsFooter(); renderDebtsSummary(); renderDashboard(); renderMonthPills(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); renderPyramidTargets(); } }
@@ -3489,14 +3528,77 @@ function renderDebtsSummary(){
     ${kpi(t('kpi_obligations_total'), money(dt.obligationsTotal), "acc")}
     ${kpi(t('kpi_count'), state.debts.length.toString(), "acc")}`;
 }
+
+// ⭐⭐ [جديد] دوال عرض كل السنوات في جدول الديون ⭐⭐
+function getAllDebtYears(d){
+  const years = new Set();
+  if(d && d.monthlyByYear){
+    Object.keys(d.monthlyByYear).forEach(yy => {
+      const arr = d.monthlyByYear[yy] || [];
+      if(arr.some(v => +v > 0)) years.add(parseInt(yy));
+    });
+  }
+  // ضمان وجود السنة النشطة حتى لو لم يكن فيها دفعات (لعرضها)
+  if(state.activeYear) years.add(state.activeYear);
+  return Array.from(years).sort((a,b)=>a-b);
+}
+function computeRemainingAfterYear(d, uptoYear){
+  let paid = (+d.paidBefore || 0);
+  Object.keys(d.monthlyByYear || {}).forEach(yy => {
+    if(parseInt(yy) <= parseInt(uptoYear)){
+      paid += (d.monthlyByYear[yy]||[]).reduce((a,b)=>a+(+b||0),0);
+    }
+  });
+  return Math.max(0, (+d.total||0) - paid);
+}
+function toggleDebtYearsExpand(id){
+  if(EXPANDED_DEBTS.has(id)) EXPANDED_DEBTS.delete(id);
+  else EXPANDED_DEBTS.add(id);
+  renderDebts();
+}
+function toggleAllDebtsYears(){
+  const allExpanded = state.debts.length > 0 && state.debts.every(d => EXPANDED_DEBTS.has(d.id));
+  if(allExpanded){ EXPANDED_DEBTS.clear(); }
+  else { state.debts.forEach(d => EXPANDED_DEBTS.add(d.id)); }
+  renderDebts();
+}
+function updDebtMonthYear(id, year, mi, val){
+  const d = state.debts.find(x=>x.id===id); if(!d) return;
+  setDm(d, year, mi, Math.max(0, parseFloat(val)||0));
+  save();
+  const yearRow = document.querySelector(`tr[data-debt-year="${d.id}-${year}"]`);
+  if(yearRow){
+    const yearTotal = debtPaidInYear(d, year);
+    const remAfter = computeRemainingAfterYear(d, year);
+    const paidCell = yearRow.querySelector('.paid-cell'); if(paidCell) paidCell.textContent = fmt(yearTotal);
+    const remCell = yearRow.querySelector('.remain-cell');
+    if(remCell){ remCell.textContent = fmt(remAfter); remCell.classList.toggle('pos', remAfter===0); remCell.classList.toggle('neg', remAfter>0); }
+    const badge = yearRow.querySelector('.year-label-badge'); if(badge) badge.textContent = `${t('print_year_total')}: ${fmt(yearTotal)}`;
+  }
+  refreshDebtRowCells(d);
+  updateDebtsFooter();
+  renderDebtsSummary();
+  renderDashboard();
+  renderMonthPills();
+  updatePyramidTargetRow("loans");
+  updatePyramidTargetRow("obligationsSaving");
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
+}
+
 function renderDebts(){
   renderDebtsSummary();
   const el = document.getElementById("debtsTable");
+  // ⭐⭐ [جديد] تحديث نص زر التبديل العام ⭐⭐
+  const gBtn = document.getElementById("btnToggleAllDebtYears");
+  const allExpanded = state.debts.length > 0 && state.debts.every(d => EXPANDED_DEBTS.has(d.id));
+  if(gBtn){
+    gBtn.textContent = allExpanded ? t('debts_hide_all_years') : t('debts_show_all_years');
+  }
   if(!state.debts.length){ el.innerHTML = `<thead><tr><th colspan="21" style="padding:20px;color:var(--muted)">—</th></tr></thead>`; return; }
   const months = getMonths(); const y = state.activeYear;
   let head = `<thead><tr><th style="min-width:200px">${t('th_debt_name')}</th><th style="min-width:80px">${t('th_debt_type')}</th><th style="min-width:80px">${t('lbl_debt_cat')}</th><th style="min-width:85px">${t('th_debt_total')}</th><th style="min-width:85px">${t('lbl_debt_paidbefore')}</th><th style="min-width:120px">${t('lbl_debt_notes')}</th>`;
   months.forEach(m => { head += `<th style="width:80px">${m}</th>`; });
-  head += `<th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th><th class="noprint" style="min-width:130px">⚙️</th></tr></thead>`;
+  head += `<th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th><th class="noprint" style="min-width:160px">⚙️</th></tr></thead>`;
   let body = `<tbody>`;
   state.debts.forEach(d => {
     const rc = d.type === "credit" ? "row-credit" : d.type === "debit" ? "row-debit" : d.type === "obligation" ? "row-obligation" : "row-installment";
@@ -3504,9 +3606,43 @@ function renderDebts(){
     const fullyPaid = isDebtFullyPaid(d);
     const rowCls = fullyPaid ? rc + ' fully-paid-row' : rc;
     const paidBadge = buildPaidInfoHtml(d);
+    const isExpanded = EXPANDED_DEBTS.has(d.id);
+    // ⭐⭐ [جديد] زر ➕/➖ لكل بند ⭐⭐
+    const expandBtn = `<button class="icon-btn expand-btn ${isExpanded?'expanded':''}" onclick="toggleDebtYearsExpand(${d.id})" title="${isExpanded ? t('debts_hide_year') : t('debts_show_year')}">${isExpanded ? '➖' : '➕'}</button>`;
     body += `<tr class="${rowCls}" data-debt-id="${d.id}"><td><input type="text" class="inline-input name" value="${esc(d.name)}" onchange="updDebtName(${d.id}, this.value)"><div class="fully-paid-badge-wrap">${paidBadge}</div></td><td><select class="inline-select type-sel" onchange="updDebtType(${d.id}, this.value)"><option value="credit" ${d.type==='credit'?'selected':''}>🔴 ${t('dt_credit_label')}</option><option value="debit" ${d.type==='debit'?'selected':''}>🟢 ${t('dt_debit_label')}</option><option value="installment" ${d.type==='installment'?'selected':''}>🏦 ${t('dt_inst_label')}</option><option value="obligation" ${d.type==='obligation'?'selected':''}>📋 ${t('dt_obligation_label')}</option></select></td><td><select class="inline-select" onchange="updDebtCategory(${d.id}, this.value)"><option value="" ${!d.category?'selected':''}>—</option><option value="فيزا" ${d.category==='فيزا'?'selected':''}>${t('dbt_visa')}</option><option value="بنك" ${d.category==='بنك'?'selected':''}>${t('dbt_bank')}</option><option value="متنوع" ${d.category==='متنوع'?'selected':''}>${t('dbt_misc')}</option></select></td><td><input type="number" class="inline-input num" value="${inVal(d.total)}" min="0" step="0.001" oninput="updDebtTotal(${d.id}, this.value)"></td><td><input type="number" class="inline-input num paid-before" value="${inVal(d.paidBefore)}" min="0" step="0.001" oninput="updDebtPaidBefore(${d.id}, this.value)"></td><td><input type="text" class="inline-input notes" value="${esc(d.notes)}" placeholder="..." onchange="updDebtNotes(${d.id}, this.value)"></td>`;
-    for(let i=0;i<12;i++){ body += `<td><input type="number" value="${inVal(dm(d,y,i))}" min="0" step="0.001" oninput="updDebtMonth(${d.id}, ${i}, this.value)" onblur="onDebtMonthBlur()"></td>`; }
-    body += `<td class="paid-cell">${fmt(paid)}</td><td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td><td class="noprint"><div class="row-actions"><button class="icon-btn print-btn" onclick="printDebtReport(${d.id})" title="🖨️">🖨️</button><button class="icon-btn excel-btn" onclick="exportPyramidLevelExcel('${d.id}')" title="Excel" style="display:none"></button><button class="icon-btn share-btn" onclick="shareDebtReportPDF(${d.id})" title="${t('btn_share_pdf_row')}">📤</button><button class="icon-btn" onclick="delDebt(${d.id})" title="${t('confirm_delete')}">✕</button></div></td></tr>`;
+    if(isExpanded){
+      // ⭐⭐ [جديد] عند التوسيع: عرض رسالة مكان 12 شهر ⭐⭐
+      const yearsWithData = getAllDebtYears(d);
+      const totalAllY = debtPaidAllYears(d);
+      const msgTpl = t('debts_payments_summary').replace('{N}', yearsWithData.length).replace('{T}', fmt(totalAllY));
+      body += `<td colspan="12" style="text-align:center;color:var(--accent2);font-style:italic;background:rgba(59,130,246,.06);font-size:11px;padding:8px">${msgTpl}</td>`;
+    } else {
+      for(let i=0;i<12;i++){ body += `<td><input type="number" value="${inVal(dm(d,y,i))}" min="0" step="0.001" oninput="updDebtMonth(${d.id}, ${i}, this.value)" onblur="onDebtMonthBlur()"></td>`; }
+    }
+    body += `<td class="paid-cell">${fmt(paid)}</td><td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td><td class="noprint"><div class="row-actions">${expandBtn}<button class="icon-btn print-btn" onclick="printDebtReport(${d.id})" title="🖨️">🖨️</button><button class="icon-btn share-btn" onclick="shareDebtReportPDF(${d.id})" title="${t('btn_share_pdf_row')}">📤</button><button class="icon-btn" onclick="delDebt(${d.id})" title="${t('confirm_delete')}">✕</button></div></td></tr>`;
+    // ⭐⭐ [جديد] صفوف السنوات الفرعية عند التوسيع ⭐⭐
+    if(isExpanded){
+      const yearsWithData = getAllDebtYears(d);
+      if(yearsWithData.length === 0){
+        body += `<tr class="expanded-year-row"><td colspan="21" class="expanded-empty-message">${t('debts_no_other_years')}</td></tr>`;
+      } else {
+        yearsWithData.forEach(yy => {
+          const yearTotal = debtPaidInYear(d, yy);
+          const remAfter = computeRemainingAfterYear(d, yy);
+          const isActiveYear = (yy === y);
+          const activeBadge = isActiveYear ? `<span class="active-year-badge">${t('debts_active_year')}</span>` : '';
+          body += `<tr class="${rc} expanded-year-row" data-debt-year="${d.id}-${yy}">`;
+          body += `<td colspan="6"><span style="font-family:monospace;font-weight:800;color:var(--accent2);font-size:14px">📅 ${yy}</span>${activeBadge}<span class="year-label-badge">${t('print_year_total')}: ${fmt(yearTotal)}</span></td>`;
+          for(let i=0;i<12;i++){
+            body += `<td><input type="number" value="${inVal(dm(d,yy,i))}" min="0" step="0.001" oninput="updDebtMonthYear(${d.id}, ${yy}, ${i}, this.value)" onblur="onDebtMonthBlur()"></td>`;
+          }
+          body += `<td class="paid-cell">${fmt(yearTotal)}</td>`;
+          body += `<td class="remain-cell ${remAfter===0?'pos':'neg'}">${fmt(remAfter)}</td>`;
+          body += `<td class="noprint"></td>`;
+          body += `</tr>`;
+        });
+      }
+    }
   });
   body += `</tbody>`;
   const mTotals = Array(12).fill(0); let tp = 0, tr = 0;
