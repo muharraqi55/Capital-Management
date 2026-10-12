@@ -3848,6 +3848,11 @@ function renderAverage(){
       ${isActive ? `<span class="pyramid-active-badge">${t('debts_active_year')}</span>` : ''}
       <span class="pyramid-year-badge" style="background:var(--accent2)">${t('avg_year_total')}: ${money(yRem)}</span>
       <span class="pyramid-year-badge" style="background:var(--gold)">${t('avg_monthly_avg')}: ${money(yRem/12)}</span>
+      <div style="display:flex;gap:4px;margin-inline-start:auto;flex-wrap:wrap" onclick="event.stopPropagation()">
+        <button class="icon-btn print-btn" onclick="printAvgYear(${y})" title="${t('btn_print_row')}">🖨️</button>
+        <button class="icon-btn excel-btn" onclick="exportAvgYearExcel(${y})" title="Excel">📊</button>
+        <button class="icon-btn share-btn" onclick="shareAvgYearPDF(${y})" title="${t('btn_share_pdf_row')}">📤</button>
+      </div>
     </div>`;
 
     if (isExpanded) {
@@ -3954,7 +3959,204 @@ function renderAverage(){
   const allExpanded = years.every(y => EXPANDED_AVG.has(y));
   if(gBtn) gBtn.textContent = allExpanded ? t('avg_hide_all') : t('avg_show_all');
 }
+/* ⭐⭐ [جديد] تقارير سنوية لتبويب المتوسط السعري ⭐⭐ */
+function generateAvgYearReportHTML(year){
+  const L = LANG === 'ar';
+  const cur = L ? 'د.ب' : 'BHD';
+  const months = getMonths();
+  const monthsArr = Mof(year);
+  const sections = getAvgSections();
 
+  const now = new Date();
+  const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
+  const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+
+  let yInc = 0, yExp = 0, yOne = 0, ySav = 0;
+  monthsArr.forEach((m, mi) => {
+    yInc += avgTotalIncome(m, mi);
+    yExp += avgTotalExpenses(m);
+    yOne += avgTotalOneTime(m);
+    ySav += avgTotalSavings(m);
+  });
+  const yRem = yInc - yExp - yOne - ySav;
+
+  let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('avg_title')} — ${year}</title>`;
+  html += `<style>@page{size:A4 landscape;margin:10mm}*{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:10px;line-height:1.5;margin:0;direction:${L?'rtl':'ltr'}}.header{text-align:center;margin-bottom:18px;padding-bottom:10px;border-bottom:3px double #333}.header .logo{display:inline-block;width:52px;height:52px;line-height:52px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#3b82f6);color:#fff;font-weight:900;font-size:22px;text-align:center}.header h2{margin:10px 0 4px;color:#0e7490;font-size:20px}.header .meta{color:#666;font-size:12px}.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0 18px}.kpi{border:2px solid #ccc;border-radius:8px;padding:10px 6px;text-align:center;background:#f9fafb}.kpi .lbl{font-size:10px;color:#666;margin-bottom:5px;font-weight:600}.kpi .val{font-size:13px;font-weight:800;font-family:monospace;direction:ltr}.kpi.green{border-color:#16a34a;background:#f0fdf4}.kpi.green .val{color:#16a34a}.kpi.red{border-color:#dc2626;background:#fef2f2}.kpi.red .val{color:#dc2626}.kpi.gold{border-color:#d97706;background:#fffbeb}.kpi.gold .val{color:#d97706}.kpi.blue{border-color:#2563eb;background:#eff6ff}.kpi.blue .val{color:#2563eb}table{width:100%;border-collapse:collapse;font-size:10px;margin-bottom:8px;table-layout:fixed}th{background:#e5e7eb;color:#111;padding:5px 3px;text-align:center;border:1px solid #999;font-size:9px;font-weight:700;white-space:nowrap;overflow:hidden}td{padding:4px 3px;border:1px solid #ccc;text-align:center;font-size:9.5px;overflow:hidden}td.lbl-cell{text-align:${L?'right':'left'};font-weight:600;padding:4px 8px;font-size:10px}td.num{font-family:monospace;font-weight:700;direction:ltr}tr.section-row td{background:#f0f4f8;font-weight:800;font-size:11px;text-align:${L?'right':'left'};padding:6px 10px;color:#1e293b}tr.total-row{background:#e0f2fe !important;font-weight:800}tr.total-row td{border-top:2px solid #0891b2}tr.avg-row{background:#dbeafe !important;font-weight:800;color:#1e40af}.footer{text-align:center;margin-top:20px;padding-top:10px;border-top:2px solid #999;color:#666;font-size:10px;line-height:1.6}.footer strong{color:#0e7490}</style></head><body>`;
+  html += `<div class="header"><div class="logo">M</div><h2>📅 ${t('avg_title')} — ${year}</h2><div class="meta">${t('print_generated')}: ${dateStr} — ${timeStr}</div></div>`;
+
+  html += `<div class="kpis">`;
+  html += `<div class="kpi green"><div class="lbl">📊 ${t('mr_inc_total')}</div><div class="val">${fmt(yInc)} ${cur}</div></div>`;
+  html += `<div class="kpi red"><div class="lbl">📊 ${t('mr_exp')}</div><div class="val">${fmt(yExp)} ${cur}</div></div>`;
+  html += `<div class="kpi gold"><div class="lbl">📊 ${t('mr_once_yearly')}</div><div class="val">${fmt(yOne)} ${cur}</div></div>`;
+  html += `<div class="kpi gold"><div class="lbl">📊 ${t('mr_saving')}</div><div class="val">${fmt(ySav)} ${cur}</div></div>`;
+  html += `<div class="kpi blue"><div class="lbl">📊 ${t('avg_remaining')}</div><div class="val">${fmt(yRem)} ${cur}</div></div>`;
+  html += `</div>`;
+
+  html += `<table><thead><tr><th style="width:130px;text-align:${L?'right':'left'}">${t('avg_month')}</th>`;
+  for(let i = 0; i < 12; i++) html += `<th>${months[i]}</th>`;
+  html += `<th style="background:#22c1a4;color:#fff">${t('avg_year_total')}</th>`;
+  html += `<th style="background:#3b82f6;color:#fff">${t('avg_monthly_avg')}</th>`;
+  html += `</tr></thead><tbody>`;
+
+  sections.forEach(sec => {
+    html += `<tr class="section-row"><td colspan="${14}">${sec.title}</td></tr>`;
+    sec.items.forEach(item => {
+      let total = 0;
+      let row = `<tr><td class="lbl-cell">${item.label}</td>`;
+      for(let i = 0; i < 12; i++){
+        const v = getAvgMonthValue(monthsArr[i], i, item);
+        total += v;
+        row += `<td class="num">${v > 0 ? fmt(v) : '—'}</td>`;
+      }
+      row += `<td class="num" style="background:#dcfce7;color:#166534">${total > 0 ? fmt(total) : '—'}</td>`;
+      row += `<td class="num" style="background:#dbeafe;color:#1e40af">${total > 0 ? fmt(total/12) : '—'}</td>`;
+      row += `</tr>`;
+      html += row;
+    });
+  });
+
+  html += `<tr class="total-row"><td class="lbl-cell">📊 ${t('mr_inc_total')}</td>`;
+  monthsArr.forEach((m,i)=>{ const v = avgTotalIncome(m, i); html += `<td class="num">${v ? fmt(v) : '—'}</td>`; });
+  html += `<td class="num">${fmt(yInc)}</td><td class="num">${fmt(yInc/12)}</td></tr>`;
+
+  html += `<tr class="total-row" style="background:#fee2e2 !important"><td class="lbl-cell">📊 ${t('mr_exp')}</td>`;
+  monthsArr.forEach((m)=>{ const v = avgTotalExpenses(m); html += `<td class="num">${v ? fmt(v) : '—'}</td>`; });
+  html += `<td class="num">${fmt(yExp)}</td><td class="num">${fmt(yExp/12)}</td></tr>`;
+
+  html += `<tr class="total-row" style="background:#fef3c7 !important"><td class="lbl-cell">📊 ${t('mr_once_yearly')}</td>`;
+  monthsArr.forEach((m)=>{ const v = avgTotalOneTime(m); html += `<td class="num">${v ? fmt(v) : '—'}</td>`; });
+  html += `<td class="num">${fmt(yOne)}</td><td class="num">${fmt(yOne/12)}</td></tr>`;
+
+  html += `<tr class="total-row" style="background:#fef3c7 !important"><td class="lbl-cell">📊 ${t('mr_saving')}</td>`;
+  monthsArr.forEach((m)=>{ const v = avgTotalSavings(m); html += `<td class="num">${v ? fmt(v) : '—'}</td>`; });
+  html += `<td class="num">${fmt(ySav)}</td><td class="num">${fmt(ySav/12)}</td></tr>`;
+
+  html += `<tr class="avg-row"><td class="lbl-cell">📊 ${t('avg_remaining')}</td>`;
+  monthsArr.forEach((m, i)=>{
+    const v = avgTotalIncome(m, i) - avgTotalExpenses(m) - avgTotalOneTime(m) - avgTotalSavings(m);
+    html += `<td class="num" style="color:${v>=0?'#16a34a':'#dc2626'}">${fmt(v)}</td>`;
+  });
+  html += `<td class="num" style="color:${yRem>=0?'#16a34a':'#dc2626'}">${fmt(yRem)}</td>`;
+  html += `<td class="num" style="color:${(yRem/12)>=0?'#16a34a':'#dc2626'}">${fmt(yRem/12)}</td></tr>`;
+
+  html += `</tbody></table>`;
+  html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div></body></html>`;
+  return html;
+}
+function printAvgYear(year){
+  const htmlStr = generateAvgYearReportHTML(year);
+  if(!htmlStr) return;
+  const w = window.open('', '_blank', 'width=1200,height=900');
+  if(w){ w.document.open(); w.document.write(htmlStr); w.document.close(); setTimeout(() => { try { w.focus(); w.print(); } catch(e){} }, 500); }
+  else { toast(t('print_error_popup'), 'error'); }
+}
+async function shareAvgYearPDF(year){
+  try {
+    toast(t('creating_pdf'));
+    const htmlStr = generateAvgYearReportHTML(year);
+    if(!htmlStr){ toast(t('share_failed'), 'error'); return; }
+    const filename = `avg-year-${year}_${todayStr()}.pdf`;
+    const blob = await generatePdfInWindow(htmlStr, filename, 'landscape');
+    if(!blob){ toast(t('share_failed'), 'error'); return; }
+    await sharePdfBlob(blob, filename);
+  } catch(err){ if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; } toast(t('share_failed'), 'error'); }
+}
+function exportAvgYearExcel(year){
+  try {
+    if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
+    syncFromDOM();
+    const months = getMonths();
+    const monthsArr = Mof(year);
+    const sections = getAvgSections();
+    const L = LANG === 'ar';
+    const cur = L ? 'د.ب' : 'BHD';
+
+    const wb = XLSX.utils.book_new();
+    wb.Workbook = { Views: [{ RTL: true }] };
+    const ws = {};
+    const cols = 15;
+    let r = 0;
+
+    xlTitleRow(ws, r, cols, `📅 ${t('avg_title')} — ${year}`, { sz: 15, h: 30 }); r++;
+    xlTitleRow(ws, r, cols, 'Muharraqi — Capital Manager', { fill: XL.header, sz: 11, h: 22 }); r++;
+    r++;
+
+    let yInc = 0, yExp = 0, yOne = 0, ySav = 0;
+    monthsArr.forEach((m, mi) => {
+      yInc += avgTotalIncome(m, mi);
+      yExp += avgTotalExpenses(m);
+      yOne += avgTotalOneTime(m);
+      ySav += avgTotalSavings(m);
+    });
+    const yRem = yInc - yExp - yOne - ySav;
+
+    xlSectionRow(ws, r, cols, '📊 الملخص السنوي', XL.dark); r++;
+    xlHeaderRow(ws, r, ['البند','القيمة ('+cur+')','','','','','','','','','','','','',''], XL.header); r++;
+    [['📊 إجمالي الدخل', yInc, XL.greenBg],['📊 المصاريف', yExp, XL.redBg],['📊 المصاريف السنوية', yOne, XL.goldBg],['📊 الادخار', ySav, XL.goldBg],['📊 المتبقي', yRem, yRem>=0?XL.greenBg:XL.redBg]
+    ].forEach(x => { xlDataRow(ws, r, [x[0], x[1], '', '', '', '', '', '', '', '', '', '', '', '', ''], cols, { fill: x[2], numFmt: '#,##0.00', align: {horizontal:'right',vertical:'center'} }); r++; });
+    r++;
+
+    xlSectionRow(ws, r, cols, '📅 تفصيل المتوسطات الشهرية', XL.inputHdr); r++;
+    const hdrs = ['البند'];
+    for(let i = 0; i < 12; i++) hdrs.push(months[i]);
+    hdrs.push('إجمالي السنة');
+    hdrs.push('المتوسط الشهري');
+    xlHeaderRow(ws, r, hdrs, XL.inputHdr); r++;
+
+    sections.forEach(sec => {
+      xlSectionRow(ws, r, cols, sec.title, XL.dark); r++;
+      sec.items.forEach(item => {
+        let total = 0;
+        const rowVals = [item.label];
+        for(let i = 0; i < 12; i++){
+          const v = getAvgMonthValue(monthsArr[i], i, item);
+          total += v;
+          rowVals.push(v);
+        }
+        rowVals.push(total);
+        rowVals.push(total/12);
+        xlDataRow(ws, r, rowVals, cols, { fill: XL.rowAlt, numFmt: '#,##0.00', align: {horizontal:'center',vertical:'center'} });
+        r++;
+      });
+    });
+
+    xlSectionRow(ws, r, cols, '📊 المجاميع السنوية', XL.dark); r++;
+    const incRow = ['📊 إجمالي الدخل'];
+    monthsArr.forEach((m,i)=> incRow.push(avgTotalIncome(m, i)));
+    incRow.push(yInc); incRow.push(yInc/12);
+    xlDataRow(ws, r, incRow, cols, { fill: XL.greenBg, numFmt: '#,##0.00', align: {horizontal:'center',vertical:'center'} }); r++;
+
+    const expRow = ['📊 المصاريف'];
+    monthsArr.forEach((m)=> expRow.push(avgTotalExpenses(m)));
+    expRow.push(yExp); expRow.push(yExp/12);
+    xlDataRow(ws, r, expRow, cols, { fill: XL.redBg, numFmt: '#,##0.00', align: {horizontal:'center',vertical:'center'} }); r++;
+
+    const oneRow = ['📊 المصاريف السنوية'];
+    monthsArr.forEach((m)=> oneRow.push(avgTotalOneTime(m)));
+    oneRow.push(yOne); oneRow.push(yOne/12);
+    xlDataRow(ws, r, oneRow, cols, { fill: XL.goldBg, numFmt: '#,##0.00', align: {horizontal:'center',vertical:'center'} }); r++;
+
+    const savRow = ['📊 الادخار'];
+    monthsArr.forEach((m)=> savRow.push(avgTotalSavings(m)));
+    savRow.push(ySav); savRow.push(ySav/12);
+    xlDataRow(ws, r, savRow, cols, { fill: XL.goldBg, numFmt: '#,##0.00', align: {horizontal:'center',vertical:'center'} }); r++;
+
+    const remRow = ['📊 المتبقي'];
+    monthsArr.forEach((m, i)=> remRow.push(avgTotalIncome(m, i) - avgTotalExpenses(m) - avgTotalOneTime(m) - avgTotalSavings(m)));
+    remRow.push(yRem); remRow.push(yRem/12);
+    xlDataRow(ws, r, remRow, cols, { fill: XL.blueBg, numFmt: '#,##0.00', align: {horizontal:'center',vertical:'center'} }); r++;
+
+    ws['!cols'] = [{wch:24}].concat(months.map(()=>({wch:11}))).concat([{wch:14},{wch:14}]);
+    ws['!ref'] = XLSX.utils.encode_range({s:{r:0,c:0},e:{r, c:cols-1}});
+    applySheetRTL(ws, wb);
+    XLSX.utils.book_append_sheet(wb, ws, `${year}`);
+    XLSX.writeFile(wb, `avg-year-${year}_${todayStr()}.xlsx`, { bookType: 'xlsx', cellStyles: true });
+    toast(LANG === 'ar' ? '✅ تم تصدير Excel بنجاح' : '✅ Excel exported successfully', 'success');
+  } catch(err){
+    console.error('exportAvgYearExcel error:', err);
+    toast((LANG === 'ar' ? '⚠️ فشل التصدير: ' : '⚠️ Export failed: ') + (err.message||''), 'error');
+  }
+}
 function renderPyramid(){
   const levels = getPyramidLevels();
   const totals = {};
