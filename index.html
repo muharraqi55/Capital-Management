@@ -1160,6 +1160,7 @@ let _pdfLibsPromise = null;
 let EXPANDED_DEBTS = new Set();
 let EXPANDED_PYRAMID = new Set();
 let EXPANDED_AVG = new Set();
+let PAID_DEBTS_EXPANDED = false; // ⭐ [جديد] حالة قسم الديون المسددة بالكامل
 
 const t = key => (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key;
 const getMonths = () => I18N[LANG].months;
@@ -1350,12 +1351,6 @@ function getYearExtras(year){
   return state.yearExtras[year];
 }
 
-/* ================================================================
-   ⭐ [إصلاح] دوال حساب القروض والالتزامات لهرم الأمان المالي
-   التعديل: استبدال `!isDebtExcluded(d)` بـ `!isDebtFullyPaid(d)`
-   السبب: الديون المسددة بالكامل يجب ألا تُحتسب في هرم الأمان المالي
-   ================================================================ */
-
 // ⭐ [إصلاح] القروض — التراكمي المدفوع (الأقساط النشطة فقط)
 function getLoansCumulativePaid(){
   let total = 0;
@@ -1413,7 +1408,6 @@ function getCumulativeSaved(key){
   return total;
 }
 
-// ⭐ [إصلاح] استثناء السنة/الشهر الحالي — للأقساط والالتزامات النشطة فقط
 function getCumulativeSavedExcluding(key, excludeYear, excludeMonth){
   if(key === "loans"){
     let total = 0;
@@ -2432,7 +2426,6 @@ function exportPyramidExcel(){
   }
 }
 
-// ⭐ [إصلاح] تصدير Excel لبند الهرم — يستثني المسدد بالكامل
 function exportPyramidLevelExcel(key){
   try {
     if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
@@ -2481,7 +2474,6 @@ function exportPyramidLevelExcel(key){
     if(isDebtType){
       xlHeaderRow(ws, r, ['السنة','الشهر','البند','المبلغ ('+cur+')','المرجع','ملاحظة'], XL.inputHdr); r++;
       const filterType = key === "loans" ? "installment" : "obligation";
-      // ⭐ [إصلاح] فقط الأقساط/الالتزامات النشطة (غير المسددة)
       const relevantDebts = (state.debts || []).filter(d => d.type === filterType && !isDebtFullyPaid(d));
       state.yearList.slice().sort((a,b)=>a-b).forEach(y => {
         const arr = Mof(y);
@@ -3383,7 +3375,6 @@ function showWithdrawHistory(key){
   alert(`${t('tgt_history_title')}${name}\n\n${lines.join('\n')}\n\n${t('tgt_history_total')}${fmt(total)} ${LANG==='ar'?'د.ب':'BHD'}`);
 }
 
-// ⭐ [إصلاح] تقرير الطباعة لبند الهرم — يستثني الأقساط/الالتزامات المسددة بالكامل
 function generatePyramidLevelReportHTML(key){
   const lvl = getPyramidLevels().find(l => l.key === key); if(!lvl) return '';
   const L = LANG === 'ar'; const cur = L ? 'د.ب' : 'BHD';
@@ -3399,7 +3390,6 @@ function generatePyramidLevelReportHTML(key){
     const monthsArr = Mof(y); const monthRows = [];
     if(key === "loans" || key === "obligationsSaving"){
       const filterType = key === "loans" ? "installment" : "obligation";
-      // ⭐ [إصلاح] فقط الأقساط/الالتزامات النشطة (غير المسددة)
       const relevantDebts = (state.debts || []).filter(d => d.type === filterType && !isDebtFullyPaid(d));
       monthsArr.forEach((m, mi) => {
         const entries = []; let monthTotal = 0;
@@ -3482,12 +3472,6 @@ function openInstructions(){ const modal = document.getElementById("instructions
 function closeInstructions(){ const modal = document.getElementById("instructionsModal"); if(modal){ modal.classList.remove("show"); document.body.style.overflow = ""; } }
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ const modal = document.getElementById("instructionsModal"); if(modal && modal.classList.contains("show")) closeInstructions(); } });
 
-/* ================================================================
-   ⭐ دالة رسم هرم الأمان المالي — نسخة واحدة فقط (بعد إزالة التكرار)
-   - ارتفاع 720px لعرض مريح (67px لكل صف)
-   - توسيط ديناميكي للنصوص عمودياً في منتصف كل صف
-   - تحديث viewBox تلقائياً
-   ================================================================ */
 function renderPyramidSvg(){
   const levels = getPyramidLevels();
   const totals = {};
@@ -3567,13 +3551,11 @@ function renderPyramidLegend(){
   }).join("");
 }
 
-// ⭐ [إصلاح] استرجاع السنوات التي بها أقساط/التزامات نشطة فقط
 function getAllPyramidYears(key){
   const years = new Set();
   const isAuto = (key === "loans" || key === "obligationsSaving");
   if(isAuto){
     const filterType = key === "loans" ? "installment" : "obligation";
-    // ⭐ [إصلاح] فقط الأقساط/الالتزامات النشطة
     const relevantDebts = (state.debts || []).filter(d => d.type === filterType && !isDebtFullyPaid(d));
     relevantDebts.forEach(d => {
       Object.keys(d.monthlyByYear || {}).forEach(y => {
@@ -3595,12 +3577,10 @@ function getAllPyramidYears(key){
   return Array.from(years).sort((a,b)=>a-b);
 }
 
-// ⭐ [إصلاح] قيمة الشهر لبند الهرم — يستثني الأقساط/الالتزامات المسددة
 function getPyramidLevelMonthValue(key, year, mi){
   const isAuto = (key === "loans" || key === "obligationsSaving");
   if(isAuto){
     const filterType = key === "loans" ? "installment" : "obligation";
-    // ⭐ [إصلاح] فقط الأقساط/الالتزامات النشطة
     const relevantDebts = (state.debts || []).filter(d => d.type === filterType && !isDebtFullyPaid(d));
     return relevantDebts.reduce((s, d) => s + dm(d, year, mi), 0);
   }
@@ -3621,12 +3601,10 @@ function getPyramidLevelYearTotal(key, year){
   return total;
 }
 
-// ⭐ [إصلاح] المجموع التراكمي حتى سنة معينة — يستثني المسدد بالكامل
 function getPyramidLevelCumulativeUpTo(key, uptoYear){
   const isAuto = (key === "loans" || key === "obligationsSaving");
   if(isAuto){
     const filterType = key === "loans" ? "installment" : "obligation";
-    // ⭐ [إصلاح] فقط الأقساط/الالتزامات النشطة
     const relevantDebts = (state.debts || []).filter(d => d.type === filterType && !isDebtFullyPaid(d));
     let total = 0;
     relevantDebts.forEach(d => {
@@ -3683,7 +3661,6 @@ function toggleAllPyramidLevels(){
   renderPyramid();
 }
 
-// ⭐ [إصلاح] عرض السنوات في الجدول — يستثني الأقساط/الالتزامات المسددة
 function renderPyramidLevelYearsHTML(lvl){
   const isAuto = (lvl.auto === true);
   const yearsWithData = getAllPyramidYears(lvl.key);
@@ -3722,7 +3699,6 @@ function renderPyramidLevelYearsHTML(lvl){
   return html;
 }
 
-/* ⭐⭐ دوال تبويب المتوسط السعري ⭐⭐ */
 function getAvgMonthValue(m, mi, item){
   if(item.type === 'salary') return +m.salary || 0;
   if(item.type === 'income') return +m[item.key] || 0;
@@ -4132,6 +4108,7 @@ function exportAvgYearExcel(year){
     toast((LANG === 'ar' ? '⚠️ فشل التصدير: ' : '⚠️ Export failed: ') + (err.message||''), 'error');
   }
 }
+
 function renderPyramid(){
   const levels = getPyramidLevels();
   const totals = {};
@@ -4307,6 +4284,68 @@ function updDebtMonthYear(id, year, mi, val){
   if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
 }
 
+/* ⭐ [جديد] تبديل حالة عرض قسم الديون المسددة بالكامل */
+function togglePaidDebtsSection(){
+  PAID_DEBTS_EXPANDED = !PAID_DEBTS_EXPANDED;
+  renderDebts();
+}
+
+/* ⭐ [جديد] دالة مساعدة لعرض صف دين واحد (مع سنواته إن كانت مفتوحة) */
+function renderDebtRowHTML(d, months, y){
+  const rc = d.type === "credit" ? "row-credit" : d.type === "debit" ? "row-debit" : d.type === "obligation" ? "row-obligation" : "row-installment";
+  const paid = debtPaidInYear(d, y), rem = debtRemaining(d);
+  const fullyPaid = isDebtFullyPaid(d);
+  const rowCls = fullyPaid ? rc + ' fully-paid-row' : rc;
+  const paidBadge = buildPaidInfoHtml(d);
+  const isExpanded = EXPANDED_DEBTS.has(d.id);
+  const expandBtn = `<button class="icon-btn expand-btn ${isExpanded?'expanded':''}" onclick="toggleDebtYearsExpand(${d.id})" title="${isExpanded ? t('debts_hide_year') : t('debts_show_year')}">${isExpanded ? '➖' : '➕'}</button>`;
+
+  let out = `<tr class="${rowCls}" data-debt-id="${d.id}"><td><input type="text" class="inline-input name" value="${esc(d.name)}" onchange="updDebtName(${d.id}, this.value)"><div class="fully-paid-badge-wrap">${paidBadge}</div></td>`;
+  out += `<td><select class="inline-select type-sel" onchange="updDebtType(${d.id}, this.value)"><option value="credit" ${d.type==='credit'?'selected':''}>🔴 ${t('dt_credit_label')}</option><option value="debit" ${d.type==='debit'?'selected':''}>🟢 ${t('dt_debit_label')}</option><option value="installment" ${d.type==='installment'?'selected':''}>🏦 ${t('dt_inst_label')}</option><option value="obligation" ${d.type==='obligation'?'selected':''}>📋 ${t('dt_obligation_label')}</option></select></td>`;
+  out += `<td><select class="inline-select" onchange="updDebtCategory(${d.id}, this.value)"><option value="" ${!d.category?'selected':''}>—</option><option value="فيزا" ${d.category==='فيزا'?'selected':''}>${t('dbt_visa')}</option><option value="بنك" ${d.category==='بنك'?'selected':''}>${t('dbt_bank')}</option><option value="متنوع" ${d.category==='متنوع'?'selected':''}>${t('dbt_misc')}</option></select></td>`;
+  out += `<td><input type="number" class="inline-input num" value="${inVal(d.total)}" min="0" step="0.001" oninput="updDebtTotal(${d.id}, this.value)"></td>`;
+  out += `<td><input type="number" class="inline-input num paid-before" value="${inVal(d.paidBefore)}" min="0" step="0.001" oninput="updDebtPaidBefore(${d.id}, this.value)"></td>`;
+  out += `<td><input type="text" class="inline-input notes" value="${esc(d.notes)}" placeholder="..." onchange="updDebtNotes(${d.id}, this.value)"></td>`;
+
+  if(isExpanded){
+    const yearsWithData = getAllDebtYears(d);
+    const totalAllY = debtPaidAllYears(d);
+    const msgTpl = t('debts_payments_summary').replace('{N}', yearsWithData.length).replace('{T}', fmt(totalAllY));
+    out += `<td colspan="12" style="text-align:center;color:var(--accent2);font-style:italic;background:rgba(59,130,246,.06);font-size:11px;padding:8px">${msgTpl}</td>`;
+  } else {
+    for(let i=0;i<12;i++){ out += `<td><input type="number" value="${inVal(dm(d,y,i))}" min="0" step="0.001" oninput="updDebtMonth(${d.id}, ${i}, this.value)" onblur="onDebtMonthBlur()"></td>`; }
+  }
+  out += `<td class="paid-cell">${fmt(paid)}</td><td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td>`;
+  out += `<td class="noprint"><div class="row-actions">${expandBtn}<button class="icon-btn print-btn" onclick="printDebtReport(${d.id})" title="🖨️">🖨️</button><button class="icon-btn share-btn" onclick="shareDebtReportPDF(${d.id})" title="${t('btn_share_pdf_row')}">📤</button><button class="icon-btn" onclick="delDebt(${d.id})" title="${t('confirm_delete')}">✕</button></div></td></tr>`;
+
+  if(isExpanded){
+    const yearsWithData = getAllDebtYears(d);
+    if(yearsWithData.length === 0){
+      out += `<tr class="expanded-year-row"><td colspan="21" class="expanded-empty-message">${t('debts_no_other_years')}</td></tr>`;
+    } else {
+      yearsWithData.forEach(yy => {
+        const yearTotal = debtPaidInYear(d, yy);
+        const remAfter = computeRemainingAfterYear(d, yy);
+        const isActiveYear = (yy === y);
+        const activeBadge = isActiveYear ? `<span class="active-year-badge">${t('debts_active_year')}</span>` : '';
+        out += `<tr class="${rc} expanded-year-row" data-debt-year="${d.id}-${yy}">`;
+        out += `<td colspan="6"><span style="font-family:monospace;font-weight:800;color:var(--accent2);font-size:14px">📅 ${yy}</span>${activeBadge}<span class="year-label-badge">${t('print_year_total')}: ${fmt(yearTotal)}</span></td>`;
+        for(let i=0;i<12;i++){
+          out += `<td><input type="number" value="${inVal(dm(d,yy,i))}" min="0" step="0.001" oninput="updDebtMonthYear(${d.id}, ${yy}, ${i}, this.value)" onblur="onDebtMonthBlur()"></td>`;
+        }
+        out += `<td class="paid-cell">${fmt(yearTotal)}</td>`;
+        out += `<td class="remain-cell ${remAfter===0?'pos':'neg'}">${fmt(remAfter)}</td>`;
+        out += `<td class="noprint"></td>`;
+        out += `</tr>`;
+      });
+    }
+  }
+  return out;
+}
+
+/* ================================================================
+   ⭐ [مُعدَّلة] دالة عرض جدول الديون — مع قسم قابل للطي للمسددة
+   ================================================================ */
 function renderDebts(){
   renderDebtsSummary();
   const el = document.getElementById("debtsTable");
@@ -4317,57 +4356,52 @@ function renderDebts(){
   }
   if(!state.debts.length){ el.innerHTML = `<thead><tr><th colspan="21" style="padding:20px;color:var(--muted)">—</th></tr></thead>`; return; }
   const months = getMonths(); const y = state.activeYear;
+
   let head = `<thead><tr><th style="min-width:200px">${t('th_debt_name')}</th><th style="min-width:80px">${t('th_debt_type')}</th><th style="min-width:80px">${t('lbl_debt_cat')}</th><th style="min-width:85px">${t('th_debt_total')}</th><th style="min-width:85px">${t('lbl_debt_paidbefore')}</th><th style="min-width:120px">${t('lbl_debt_notes')}</th>`;
   months.forEach(m => { head += `<th style="width:80px">${m}</th>`; });
   head += `<th>${t('th_debt_this_month')}</th><th>${t('th_debt_rem_after')}</th><th class="noprint" style="min-width:160px">⚙️</th></tr></thead>`;
+
+  const activeDebts = state.debts.filter(d => !isDebtFullyPaid(d));
+  const paidDebts = state.debts.filter(d => isDebtFullyPaid(d));
+
   let body = `<tbody>`;
-  state.debts.forEach(d => {
-    const rc = d.type === "credit" ? "row-credit" : d.type === "debit" ? "row-debit" : d.type === "obligation" ? "row-obligation" : "row-installment";
-    const paid = debtPaidInYear(d, y), rem = debtRemaining(d);
-    const fullyPaid = isDebtFullyPaid(d);
-    const rowCls = fullyPaid ? rc + ' fully-paid-row' : rc;
-    const paidBadge = buildPaidInfoHtml(d);
-    const isExpanded = EXPANDED_DEBTS.has(d.id);
-    const expandBtn = `<button class="icon-btn expand-btn ${isExpanded?'expanded':''}" onclick="toggleDebtYearsExpand(${d.id})" title="${isExpanded ? t('debts_hide_year') : t('debts_show_year')}">${isExpanded ? '➖' : '➕'}</button>`;
-    body += `<tr class="${rowCls}" data-debt-id="${d.id}"><td><input type="text" class="inline-input name" value="${esc(d.name)}" onchange="updDebtName(${d.id}, this.value)"><div class="fully-paid-badge-wrap">${paidBadge}</div></td><td><select class="inline-select type-sel" onchange="updDebtType(${d.id}, this.value)"><option value="credit" ${d.type==='credit'?'selected':''}>🔴 ${t('dt_credit_label')}</option><option value="debit" ${d.type==='debit'?'selected':''}>🟢 ${t('dt_debit_label')}</option><option value="installment" ${d.type==='installment'?'selected':''}>🏦 ${t('dt_inst_label')}</option><option value="obligation" ${d.type==='obligation'?'selected':''}>📋 ${t('dt_obligation_label')}</option></select></td><td><select class="inline-select" onchange="updDebtCategory(${d.id}, this.value)"><option value="" ${!d.category?'selected':''}>—</option><option value="فيزا" ${d.category==='فيزا'?'selected':''}>${t('dbt_visa')}</option><option value="بنك" ${d.category==='بنك'?'selected':''}>${t('dbt_bank')}</option><option value="متنوع" ${d.category==='متنوع'?'selected':''}>${t('dbt_misc')}</option></select></td><td><input type="number" class="inline-input num" value="${inVal(d.total)}" min="0" step="0.001" oninput="updDebtTotal(${d.id}, this.value)"></td><td><input type="number" class="inline-input num paid-before" value="${inVal(d.paidBefore)}" min="0" step="0.001" oninput="updDebtPaidBefore(${d.id}, this.value)"></td><td><input type="text" class="inline-input notes" value="${esc(d.notes)}" placeholder="..." onchange="updDebtNotes(${d.id}, this.value)"></td>`;
-    if(isExpanded){
-      const yearsWithData = getAllDebtYears(d);
-      const totalAllY = debtPaidAllYears(d);
-      const msgTpl = t('debts_payments_summary').replace('{N}', yearsWithData.length).replace('{T}', fmt(totalAllY));
-      body += `<td colspan="12" style="text-align:center;color:var(--accent2);font-style:italic;background:rgba(59,130,246,.06);font-size:11px;padding:8px">${msgTpl}</td>`;
-    } else {
-      for(let i=0;i<12;i++){ body += `<td><input type="number" value="${inVal(dm(d,y,i))}" min="0" step="0.001" oninput="updDebtMonth(${d.id}, ${i}, this.value)" onblur="onDebtMonthBlur()"></td>`; }
+
+  if(activeDebts.length > 0){
+    activeDebts.forEach(d => { body += renderDebtRowHTML(d, months, y); });
+  } else {
+    body += `<tr><td colspan="21" style="padding:16px;text-align:center;color:var(--ok);font-style:italic;background:rgba(34,197,94,.06);font-weight:600">🎉 ${LANG==='ar'?'لا توجد ديون نشطة — كل الديون مسددة بالكامل':'No active debts — all are fully paid'}</td></tr>`;
+  }
+
+  if(paidDebts.length > 0){
+    const icon = PAID_DEBTS_EXPANDED ? '▼' : '▶';
+    const hint = PAID_DEBTS_EXPANDED
+      ? (LANG==='ar'?'اضغط لطي القسم':'Click to collapse')
+      : (LANG==='ar'?'اضغط لعرض التفاصيل':'Click to expand');
+    const arrowAnim = PAID_DEBTS_EXPANDED ? 'rotate(0deg)' : 'rotate(-90deg)';
+    body += `<tr class="paid-section-header" data-paid-section="1" style="cursor:pointer;background:linear-gradient(90deg,rgba(34,197,94,.18),rgba(34,197,94,.04));border-top:2px solid var(--ok);border-bottom:2px solid var(--ok);transition:.2s" onclick="togglePaidDebtsSection()" onmouseover="this.style.background='linear-gradient(90deg,rgba(34,197,94,.28),rgba(34,197,94,.08))'" onmouseout="this.style.background='linear-gradient(90deg,rgba(34,197,94,.18),rgba(34,197,94,.04))'">
+      <td colspan="21" style="padding:12px 16px;text-align:${LANG==='ar'?'right':'left'}">
+        <span style="display:inline-flex;align-items:center;gap:12px;font-weight:800;color:var(--ok);font-size:13px">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;background:rgba(34,197,94,.3);border:1px solid var(--ok);font-size:11px;transition:transform .2s;transform:${arrowAnim}">${icon}</span>
+          <span>✅ ${LANG==='ar'?'الديون المسددة بالكامل':'Fully Paid Debts'}</span>
+          <span style="display:inline-block;padding:2px 12px;border-radius:20px;background:rgba(34,197,94,.3);color:#fff;font-size:11px;border:1px solid var(--ok);font-family:monospace">${paidDebts.length}</span>
+          <span style="font-size:11px;color:var(--muted);font-weight:600;font-style:italic">— ${hint}</span>
+        </span>
+      </td>
+    </tr>`;
+
+    if(PAID_DEBTS_EXPANDED){
+      paidDebts.forEach(d => { body += renderDebtRowHTML(d, months, y); });
     }
-    body += `<td class="paid-cell">${fmt(paid)}</td><td class="remain-cell ${rem===0?'pos':'neg'}">${fmt(rem)}</td><td class="noprint"><div class="row-actions">${expandBtn}<button class="icon-btn print-btn" onclick="printDebtReport(${d.id})" title="🖨️">🖨️</button><button class="icon-btn share-btn" onclick="shareDebtReportPDF(${d.id})" title="${t('btn_share_pdf_row')}">📤</button><button class="icon-btn" onclick="delDebt(${d.id})" title="${t('confirm_delete')}">✕</button></div></td></tr>`;
-    if(isExpanded){
-      const yearsWithData = getAllDebtYears(d);
-      if(yearsWithData.length === 0){
-        body += `<tr class="expanded-year-row"><td colspan="21" class="expanded-empty-message">${t('debts_no_other_years')}</td></tr>`;
-      } else {
-        yearsWithData.forEach(yy => {
-          const yearTotal = debtPaidInYear(d, yy);
-          const remAfter = computeRemainingAfterYear(d, yy);
-          const isActiveYear = (yy === y);
-          const activeBadge = isActiveYear ? `<span class="active-year-badge">${t('debts_active_year')}</span>` : '';
-          body += `<tr class="${rc} expanded-year-row" data-debt-year="${d.id}-${yy}">`;
-          body += `<td colspan="6"><span style="font-family:monospace;font-weight:800;color:var(--accent2);font-size:14px">📅 ${yy}</span>${activeBadge}<span class="year-label-badge">${t('print_year_total')}: ${fmt(yearTotal)}</span></td>`;
-          for(let i=0;i<12;i++){
-            body += `<td><input type="number" value="${inVal(dm(d,yy,i))}" min="0" step="0.001" oninput="updDebtMonthYear(${d.id}, ${yy}, ${i}, this.value)" onblur="onDebtMonthBlur()"></td>`;
-          }
-          body += `<td class="paid-cell">${fmt(yearTotal)}</td>`;
-          body += `<td class="remain-cell ${remAfter===0?'pos':'neg'}">${fmt(remAfter)}</td>`;
-          body += `<td class="noprint"></td>`;
-          body += `</tr>`;
-        });
-      }
-    }
-  });
+  }
+
   body += `</tbody>`;
+
   const mTotals = Array(12).fill(0); let tp = 0, tr = 0;
   state.debts.forEach(d=>{ for(let i=0;i<12;i++) mTotals[i] += dm(d,y,i); tp += debtPaidInYear(d,y); tr += debtRemaining(d); });
   let foot = `<tfoot><tr><td colspan="6">${t('dms_total')}</td>`;
   for(let i=0;i<12;i++) foot += `<td>${mTotals[i] > 0 ? fmt(mTotals[i]) : "—"}</td>`;
   foot += `<td class="paid-cell">${fmt(tp)}</td><td class="remain-cell">${fmt(tr)}</td><td class="noprint"></td></tr></tfoot>`;
+
   el.innerHTML = head + body + foot;
 }
 function onDebtMonthBlur(){ renderDebtsSummary(); renderDashboard(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); } }
