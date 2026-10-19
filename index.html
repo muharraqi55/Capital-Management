@@ -9,7 +9,7 @@
 
 <style>
 /* ═══════════════════════════════════════════════════════════════
-   CSS الكامل — نظام إدارة رأس المال (بما فيه تبويب السرقة الجديد)
+   CSS الكامل — نظام إدارة رأس المال (مع إصلاحات الهاتف)
    ═══════════════════════════════════════════════════════════════ */
 
 :root{--bg:#0f1720;--panel:#17212b;--panel2:#1e2b38;--line:#2a3a4a;--txt:#e6eef7;--muted:#8fa3b8;--accent:#22c1a4;--accent2:#3b82f6;--danger:#ef4444;--ok:#22c55e;--gold:#eab308;--shadow:rgba(0,0,0,.35);}
@@ -1154,9 +1154,7 @@ html[dir="ltr"] .target-table .num{text-align:right}
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ⭐ [جديد] أنماط تبويب "كم تم السرقه مني"
-   (كل شيء يعتمد على .expense-table و .card و .kpi الموجودة،
-    أضفنا فقط تحسينات بسيطة للعناوين الفرعية داخل قسم المقارنة)
+   ⭐ أنماط تبويب "كم تم السرقه مني"
    ═══════════════════════════════════════════════════════════════ */
 #stolen .card h3{
   color: var(--accent2);
@@ -1236,7 +1234,6 @@ html[dir="ltr"] .target-table .num{text-align:right}
   text-align: center;
   letter-spacing: 1px;
 }
-/* شبكة المقارنة (خسران / تم الترجيع) */
 #stolen #stolenLossBeforeKpis,
 #stolen #stolenLossAfterKpis{
   gap: 10px;
@@ -1248,7 +1245,6 @@ html[dir="ltr"] .target-table .num{text-align:right}
 #stolen #stolenLossBeforeKpis .kpi{border-color: rgba(239,68,68,.4);}
 #stolen #stolenLossAfterKpis .kpi{border-color: rgba(34,197,94,.4);}
 
-/* طباعة — تبويب السرقة */
 @media print{
   #stolen .card h3{color:#000 !important;border-bottom-color:#999 !important}
   #stolen #lblStolenLossBefore,
@@ -1274,6 +1270,167 @@ html[dir="ltr"] .target-table .num{text-align:right}
     color:#000 !important;
     font-size:9pt !important;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ⭐ [جديد] إصلاحات الاستجابة للهاتف (Mobile Responsive Fixes)
+   تحل مشكلة الخانات العريضة التي تخرج خارج الحاوية
+   - تقرير الشراكة (حاوية المدخلات)
+   - هرم الأمان المالي (البطاقة الذهبية + جدول الأهداف)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ✅ منع توسع أعمدة grid بسبب min-content (السبب الجذري) */
+@media (max-width: 900px){
+  .grid, .g2, .g3, .g4{
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .grid > *, .g2 > *, .g3 > *, .g4 > *{
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px){
+
+  /* ───── 📊 تقرير الشراكة — حاوية المدخلات ───── */
+
+  /* 1) تصغير حجم خط "ابوي يرجع لي" (كان 22px عملاقاً) */
+  #lblReportFather{
+    font-size: 15px !important;
+    line-height: 1.4;
+    word-break: break-word;
+  }
+
+  /* 2) الحقول تمتد بعرض الحاوية بدلاً من عرضها الافتراضي */
+  #rpFather, #rpElecBill, #rpShePaysAmount{
+    width: 100% !important;
+    box-sizing: border-box;
+    min-width: 0 !important;
+    font-size: 18px !important;
+  }
+
+  /* 3) صندوق الكهرباء — تقليل الحشو الداخلي */
+  #report > .card:first-of-type > div:nth-child(3){
+    padding: 12px !important;
+  }
+
+  /* 4) صف "تدفع لي" — يلتف عمودياً بدلاً من overflow */
+  #report div[style*="stretch"]{
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+  #report div[style*="stretch"] > select,
+  #report div[style*="stretch"] > input{
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  /* 5) زر حالة الربح */
+  .profit-toggle-btn{
+    font-size: 13px !important;
+    padding: 10px 8px !important;
+    word-break: break-word;
+    box-sizing: border-box;
+    white-space: normal !important;
+  }
+
+  /* 6) تقليل حشو كارت التقرير */
+  #report .card{ padding: 14px !important; }
+
+  /* ───── 🔺 هرم الأمان المالي ───── */
+
+  /* 7) منع توسع أعمدة legend بسبب min-content */
+  .pyramid-legend{
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .pyramid-legend > *{
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  /* 8) تقليل حشو منطقة SVG */
+  .pyramid-wrap{
+    padding: 8px !important;
+    margin-bottom: 12px !important;
+  }
+  .pyramid-svg{
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
+
+  /* 9) تقليل حشو كروت الهرم */
+  #pyramid .card{ padding: 12px !important; }
+
+  /* 10) بطاقة الهرم الذهبية — تقليل الحشو */
+  .pyr-total-card{ padding: 12px 8px !important; }
+  .pyr-total-card > div{ gap: 8px !important; }
+
+  /* 11) شبكة الهدف والمتبقي — عمود واحد بعرض كامل */
+  .pyr-total-card [style*="minmax(200px"]{
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+  .pyr-total-card [style*="minmax(200px"] > div{
+    padding: 10px 8px !important;
+  }
+
+  /* 12) تصغير الأرقام الكبيرة في البطاقة */
+  .pyr-total-card [style*="28px"]{ font-size: 20px !important; }
+  .pyr-total-card [style*="20px"]{ font-size: 15px !important; }
+  .pyr-total-card [style*="15px"]{ font-size: 12px !important; }
+
+  /* 13) بطاقات الهرم الصغيرة */
+  .pyr-legend-item{ padding: 8px 10px !important; gap: 6px !important; }
+  .pyr-legend-item .pyr-label{ font-size: 11px !important; min-width: 60px !important; }
+  .pyr-legend-item .pyr-val{ font-size: 12px !important; }
+  .pyr-legend-item .pyr-note{ font-size: 10px !important; }
+
+  /* 14) جدول الأهداف — تمرير أفقي مضمون */
+  .target-table-wrap{
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 15) شريط أزرار عرض الكل */
+  .pyramid-toggle-bar{ justify-content: center !important; }
+
+  /* ───── 🔧 إصلاحات عامة ───── */
+
+  /* 16) تقليل حشو main */
+  main{ padding: 12px !important; }
+
+  /* 17) منع overflow عام في الكروت */
+  .card{
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  /* 18) الحقول العامة — تمنع overflow */
+  .field input, .field select, .field textarea{
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* شاشات أضيق من 400px (هواتف صغيرة جداً) */
+@media (max-width: 400px){
+  main{ padding: 8px !important; }
+  #report .card{ padding: 10px !important; }
+  #pyramid .card{ padding: 10px !important; }
+
+  #lblReportFather{ font-size: 13px !important; }
+  #rpFather{ font-size: 16px !important; }
+
+  .pyramid-wrap{ padding: 4px !important; }
+  .pyr-total-card [style*="28px"]{ font-size: 16px !important; }
+  .pyr-total-card [style*="20px"]{ font-size: 13px !important; }
+  .pyr-total-card [style*="15px"]{ font-size: 11px !important; }
 }
 </style>
 </head>
