@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -7,1147 +6,1275 @@
 <title>إدارة رأس المال | Capital Manager</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
+
 <style>
-  :root{--bg:#0f1720;--panel:#17212b;--panel2:#1e2b38;--line:#2a3a4a;--txt:#e6eef7;--muted:#8fa3b8;--accent:#22c1a4;--accent2:#3b82f6;--danger:#ef4444;--ok:#22c55e;--gold:#eab308;--shadow:rgba(0,0,0,.35);}
-  html[data-theme="light"]{--bg:#f0f4f8;--panel:#ffffff;--panel2:#e8eef5;--line:#94a3b8;--txt:#0f172a;--muted:#475569;--accent:#0891b2;--accent2:#2563eb;--danger:#dc2626;--ok:#16a34a;--gold:#d97706;--shadow:rgba(0,0,0,.12);}
-  *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI","Tahoma",sans-serif}
-  html,body{height:100%}
-  body{background:var(--bg);color:var(--txt);min-height:100vh;font-size:14px;transition:background .3s,color .3s}
-  header{background:linear-gradient(90deg,var(--panel),var(--panel2));border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px;flex-wrap:wrap}
-  header h1{font-size:17px;color:var(--accent);display:flex;align-items:center;gap:8px;white-space:nowrap}
-  .toolbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-  .save-indicator{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--line);font-size:12px;font-weight:700;color:var(--ok);white-space:nowrap;transition:.3s;font-family:monospace}
-  .year-picker{display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:4px 6px}
-  .year-picker select{background:transparent;border:none;color:var(--gold);font-weight:700;font-size:15px;padding:4px 6px;outline:none;cursor:pointer;font-family:inherit}
-  .year-picker button{background:transparent;border:none;color:var(--muted);padding:4px 8px;border-radius:6px;cursor:pointer;font-size:15px;font-weight:700;transition:.2s}
-  .year-picker button:hover{background:var(--accent);color:#fff}
-  .btn{background:var(--panel2);color:var(--txt);border:1px solid var(--line);padding:7px 12px;border-radius:8px;cursor:pointer;font-size:13px;transition:.2s;white-space:nowrap}
-  .btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .btn.primary:hover{background:var(--accent2);border-color:var(--accent2)}
-  .btn.share{background:linear-gradient(180deg,#8b5cf6,#6d28d9);color:#fff;border-color:#8b5cf6;font-weight:700}
-  .btn.share:hover{background:linear-gradient(180deg,#7c3aed,#5b21b6);border-color:#7c3aed;transform:translateY(-2px)}
-  .btn.excel{background:linear-gradient(180deg,#16a34a,#15803d);color:#fff;border-color:#16a34a;font-weight:700}
-  .btn.excel:hover{background:linear-gradient(180deg,#15803d,#166534);border-color:#15803d;transform:translateY(-2px)}
-  .btn.success{background:linear-gradient(180deg,var(--ok),#15803d);color:#fff;border-color:var(--ok);font-weight:700;box-shadow:0 0 0 3px rgba(34,197,94,.15);animation:pulseGlow 2s infinite}
-  @keyframes pulseGlow{0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.15)}50%{box-shadow:0 0 0 6px rgba(34,197,94,.25)}}
-  .btn.danger{background:transparent;color:var(--danger);border-color:var(--danger)}
-  .btn.danger:hover{background:var(--danger);color:#fff}
-  .settings-bar{display:flex;gap:4px;padding:4px;background:var(--bg);border:1px solid var(--line);border-radius:10px}
-  .settings-bar button{background:transparent;border:none;color:var(--muted);padding:6px 10px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:700;transition:.2s}
-  .settings-bar button:hover{background:var(--accent);color:#fff}
-  nav.tabs{display:flex;gap:4px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto}
-  nav.tabs button{background:transparent;border:none;color:var(--muted);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:14px;white-space:nowrap;font-weight:500;transition:.2s}
-  nav.tabs button.active{background:var(--accent);color:#fff}
-  nav.tabs button:hover:not(.active){background:var(--panel2);color:var(--txt)}
-  main{padding:20px;max-width:1400px;margin:0 auto}
-  .view{display:none}
-  .view.active{display:block;animation:fade .25s ease}
-  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
-  .card h2{font-size:16px;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--line)}
-  .card h2::before{content:"●";color:var(--accent);font-size:10px}
-  .salary-card{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.10),transparent)}
-  .salary-card h2{color:var(--gold)}
-  .salary-card h2::before{content:"💰";color:var(--gold);font-size:12px}
-  .grid{display:grid;gap:12px}
-  .g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
-  @media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:600px){.g4,.g3,.g2{grid-template-columns:1fr}}
-  .field{display:flex;flex-direction:column;gap:6px}
-  .field label{font-size:12px;color:var(--muted)}
-  .field input,.field select,.field textarea{background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:9px 12px;border-radius:8px;font-size:14px;outline:none;transition:.2s;font-family:inherit}
-  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,193,164,.15)}
-  .field input[readonly]{background:var(--bg);color:var(--accent);font-weight:600;cursor:not-allowed}
-  .field input:disabled{background:var(--bg);cursor:not-allowed}
-  .field-note{background:var(--panel2);border:1px solid var(--line);color:var(--muted);padding:6px 10px;border-radius:6px;font-size:11px;outline:none;font-family:inherit;transition:.2s}
-  .field-note:focus{border-color:var(--accent2);color:var(--txt);box-shadow:0 0 0 2px rgba(59,130,246,.15)}
-  .kpi{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center}
-  .kpi .lbl{font-size:12px;color:var(--muted);margin-bottom:6px}
-  .kpi .val{font-size:19px;font-weight:700;color:var(--txt);direction:ltr;font-family:monospace;letter-spacing:-.3px}
-  .kpi .val.pos{color:var(--ok)}.kpi .val.neg{color:var(--danger)}.kpi .val.gold{color:var(--gold)}.kpi .val.acc{color:var(--accent)}
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  thead{background:var(--panel2)}
-  th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line)}
-  html[dir="ltr"] th,html[dir="ltr"] td{text-align:left}
-  th{color:var(--accent);font-weight:600;font-size:12px}
-  tbody tr:hover{background:rgba(34,193,164,.05)}
-  td.num{direction:ltr;text-align:left;font-family:monospace}
-  html[dir="ltr"] td.num{text-align:right}
-  td.neg{color:var(--danger)}td.pos{color:var(--ok)}
-  .monthPills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-  .monthPills button{background:var(--panel2);border:1px solid var(--line);color:var(--muted);padding:7px 14px;border-radius:20px;cursor:pointer;font-size:13px;position:relative;transition:.2s}
-  .monthPills button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
-  .monthPills button:hover:not(.active){color:var(--txt)}
-  .monthPills button.hasData::after{content:"●";color:var(--ok);font-size:9px;position:absolute;top:4px;left:6px}
-  .muted{color:var(--muted);font-size:12px}
-  .notice-bhd{display:flex;align-items:center;gap:8px;padding:10px 14px;margin-bottom:14px;background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.35);border-radius:8px;color:var(--gold);font-size:13px;font-weight:600}
-  .notice-int{display:flex;align-items:center;gap:8px;padding:8px 14px;margin-bottom:12px;background:rgba(34,193,164,.08);border:1px solid rgba(34,193,164,.3);border-radius:8px;color:var(--accent);font-size:12px;font-weight:600}
-  .toast{position:fixed;bottom:20px;left:20px;background:var(--accent);color:#fff;padding:12px 20px;border-radius:10px;font-weight:600;box-shadow:0 8px 24px var(--shadow);opacity:0;transform:translateY(20px);transition:.3s;pointer-events:none;z-index:400}
-  .toast.show{opacity:1;transform:none}
-  .toast.success{background:linear-gradient(180deg,var(--ok),#15803d)}
-  .toast.error{background:linear-gradient(180deg,var(--danger),#991b1b)}
-  .toast.warn{background:linear-gradient(180deg,var(--gold),#92400e);color:#fff}
-  .icon-btn{background:transparent;border:1px solid var(--line);color:var(--muted);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:13px;transition:.2s;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;padding:0;margin:0 1px}
-  .icon-btn:hover{border-color:var(--danger);color:var(--danger)}
-  .icon-btn.add-btn{color:var(--accent);border-color:rgba(34,193,164,.5);font-weight:900;font-size:15px;line-height:1}
-  .icon-btn.add-btn:hover{border-color:var(--accent);color:#fff;background:var(--accent)}
-  .icon-btn.collapse-btn{color:var(--accent2);border-color:rgba(59,130,246,.5);font-weight:700;font-size:11px;width:auto;padding:0 6px;gap:3px}
-  .icon-btn.collapse-btn:hover{border-color:var(--accent2);color:#fff;background:var(--accent2)}
-  .icon-btn.remove-btn{color:var(--danger);border-color:rgba(239,68,68,.5);font-weight:700}
-  .icon-btn.remove-btn:hover{border-color:var(--danger);color:#fff;background:var(--danger)}
-  .icon-btn.withdraw:hover{border-color:var(--gold);color:var(--gold);background:rgba(234,179,8,.1)}
-  .icon-btn.history:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(59,130,246,.1)}
-  .icon-btn.print-btn{color:var(--accent);border-color:rgba(34,193,164,.5)}
-  .icon-btn.print-btn:hover{border-color:var(--accent);color:#fff;background:var(--accent)}
-  .icon-btn.share-btn{color:#a78bfa;border-color:rgba(139,92,246,.5)}
-  .icon-btn.share-btn:hover{border-color:#8b5cf6;color:#fff;background:#8b5cf6}
-  .icon-btn.excel-btn{color:var(--ok);border-color:rgba(34,197,94,.5)}
-  .icon-btn.excel-btn:hover{border-color:var(--ok);color:#fff;background:var(--ok)}
-  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
-  .badge.green{background:rgba(34,197,94,.15);color:var(--ok)}
-  .badge.red{background:rgba(239,68,68,.15);color:var(--danger)}
-  .badge.blue{background:rgba(59,130,246,.15);color:var(--accent2)}
-  .badge.gold{background:rgba(234,179,8,.15);color:var(--gold)}
-  .badge.purple{background:rgba(168,85,247,.15);color:#c084fc}
-  .badge.auto{background:rgba(100,116,139,.25);color:#cbd5e1;border:1px solid #64748b;font-size:9px;padding:1px 6px;margin-inline-start:4px;font-weight:700}
-  .badge.fully-paid{background:rgba(34,197,94,.2);color:var(--ok);border:1px solid var(--ok);font-size:10px;padding:2px 6px;margin-inline-start:6px;font-weight:700}
-  .badge.excluded-badge{background:rgba(239,68,68,.2);color:var(--danger);border:1px solid var(--danger);font-size:10px;padding:2px 6px;margin-inline-start:6px;font-weight:700}
-  .badge.muted{background:rgba(143,163,184,.15);color:var(--muted)}
-  .badge.negative{background:rgba(239,68,68,.2);color:var(--danger);border:1px solid var(--danger);font-size:10px;padding:1px 6px;font-weight:700}
-  .badge.investment{background:rgba(34,197,94,.2);color:var(--ok);border:1px solid var(--ok);font-size:10px;padding:1px 6px;font-weight:700}
-  .card.eid-card{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.18),rgba(234,179,8,.06));box-shadow:0 0 0 3px rgba(234,179,8,.15);transition:.3s}
-  .card.eid-card h2.eid-title{color:#111827;background:var(--gold);border-bottom-color:rgba(0,0,0,.15);padding:8px 12px;border-radius:6px;font-weight:700;font-size:14px;line-height:1.4}
-  .card.eid-card h2.eid-title::before{content:"⚠";color:#7c2d12;font-size:14px}
-  .card.eid-card .field label{color:#facc15;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.4)}
-  .card.eid-card .field select,.card.eid-card .field input{border-color:var(--gold);background:rgba(20,25,35,.75);color:#fef3c7}
-  .card.eid-card.eid-no{border-color:var(--ok);background:linear-gradient(180deg,rgba(34,197,94,.18),rgba(34,197,94,.06));box-shadow:0 0 0 3px rgba(34,197,94,.15)}
-  .card.eid-card.eid-no h2.eid-title{background:var(--ok);color:#052e16}
-  .card.eid-card.eid-no h2.eid-title::before{color:#052e16}
-  .card.eid-card.eid-no .field label{color:#86efac}
-  .meat-status{display:flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:8px;font-size:13px;font-weight:700;border:2px solid;transition:.25s;user-select:none;min-height:40px;letter-spacing:.3px}
-  .meat-status.meat-status-no{background:#7f1d1d;border-color:#991b1b;color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
-  .meat-status.meat-status-yes{background:#14532d;border-color:#15803d;color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
-  html[data-theme="light"] .meat-status.meat-status-no{background:#b91c1c;border-color:#7f1d1d;color:#ffffff}
-  html[data-theme="light"] .meat-status.meat-status-yes{background:#15803d;border-color:#14532d;color:#ffffff}
-  .expense-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
-  .expense-table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
-  .expense-table thead{background:var(--panel2)}
-  .expense-table th{padding:10px 12px;text-align:right;color:var(--accent);font-size:11px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
-  html[dir="ltr"] .expense-table th{text-align:left}
-  .expense-table td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
-  .expense-table td:first-child{font-weight:600;color:var(--txt);padding-right:14px}
-  html[dir="ltr"] .expense-table td:first-child{padding-right:8px;padding-left:14px}
-  .expense-table input,.expense-table select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 10px;border-radius:6px;font-size:13px;outline:none;transition:.2s;font-family:inherit}
-  .expense-table input:focus,.expense-table select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,193,164,.15)}
-  .expense-table tr.excluded{background:rgba(239,68,68,.06)}
-  .expense-table tr.excluded td:first-child{color:var(--danger);text-decoration:underline;opacity:.75}
-  .expense-table tr.main-row{background:rgba(34,193,164,.05)}
-  .expense-table tr.main-row:hover{background:rgba(34,193,164,.1)}
-  .expense-table tr.extra-row{background:rgba(59,130,246,.04);border-left:3px solid var(--accent2)}
-  html[dir="rtl"] .expense-table tr.extra-row{border-left:none;border-right:3px solid var(--accent2)}
-  .expense-table tr.extra-row:hover{background:rgba(59,130,246,.09)}
-  .expense-table tr.extra-row.excluded{background:rgba(239,68,68,.06)}
-  .expense-table tr.extra-row td:first-child{padding-right:20px;font-weight:500;font-size:12px}
-  html[dir="ltr"] .expense-table tr.extra-row td:first-child{padding-right:8px;padding-left:20px}
-  .extra-name{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--accent2);font-weight:700}
-  .extra-name .extra-hash{opacity:.7;font-family:monospace}
-  .add-btn-inline{margin-inline-start:6px}
-  .bank-excluded{background:rgba(239,68,68,.15) !important;border-color:var(--danger) !important;color:#ffdcdc !important}
-  .expense-table tr.group-header{background:linear-gradient(90deg,rgba(59,130,246,.15),transparent)}
-  .expense-table tr.group-header td{color:var(--accent2);font-weight:700;font-size:12px;padding:8px 14px;border-bottom:1px dashed var(--line)}
-  .birthday-cell{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .birthday-cell select{max-width:110px;padding:4px 8px !important;font-size:11px !important;background:rgba(234,179,8,.1) !important;border-color:var(--gold) !important;color:#facc15 !important;width:auto !important}
-  .expense-table tr.bday-row{background:rgba(234,179,8,.04)}
-  .expense-summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding:14px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:13px}
-  .exp-sum-item{display:flex;gap:8px;align-items:center;padding:6px 12px;border-radius:8px;background:var(--panel);border:1px solid var(--line)}
-  .exp-sum-item span{color:var(--muted)}
-  .exp-sum-item b{color:var(--txt);font-family:monospace;font-size:14px}
-  .exp-sum-item.green{border-color:rgba(34,197,94,.35)}.exp-sum-item.green b{color:var(--ok)}
-  .exp-sum-item.red{border-color:rgba(239,68,68,.35)}.exp-sum-item.red b{color:var(--danger)}
-  .exp-sum-divider{width:100%;height:1px;background:var(--line);margin:6px 0}
-  .exp-sum-title{width:100%;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:4px}
-  .bank-item{transition:.2s;min-width:150px}
-  .bank-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px var(--shadow)}
-  .bank-item.bank-card{border-color:rgba(34,193,164,.4)}.bank-item.bank-card b{color:var(--accent)}
-  .bank-item.bank-nbk{border-color:rgba(59,130,246,.4)}.bank-item.bank-nbk b{color:var(--accent2)}
-  .bank-item.bank-ila{border-color:rgba(168,85,247,.4)}.bank-item.bank-ila b{color:#c084fc}
-  .bank-item.bank-bbk{border-color:rgba(249,115,22,.4)}.bank-item.bank-bbk b{color:#fb923c}
-  .bank-item.bank-meem{border-color:rgba(20,184,166,.4)}.bank-item.bank-meem b{color:#2dd4bf}
-  .bank-item.bank-nbb{border-color:rgba(234,179,8,.4)}.bank-item.bank-nbb b{color:var(--gold)}
-  .bank-item.bank-credimax{border-color:rgba(139,92,246,.45)}.bank-item.bank-credimax b{color:#a78bfa}
-  .bank-item.bank-excl{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.08)}.bank-item.bank-excl b{color:var(--danger)}
-  .saving-card{border:2px solid var(--accent);background:linear-gradient(180deg,rgba(34,193,164,.1),transparent)}
-  .saving-card h2{color:var(--accent)}
-  .saving-field input[type="number"]{font-weight:700;color:var(--accent);text-align:center;font-size:16px}
-  .saving-field input[type="number"]:disabled{background:rgba(34,197,94,.1);border-color:var(--ok);color:var(--ok);cursor:not-allowed;opacity:.85}
-  .saving-field input[type="number"]:disabled::placeholder{color:var(--ok);font-weight:700;font-size:11px}
-  .saving-target-hint{display:inline-block;margin-top:3px;font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(34,197,94,.15);color:var(--ok);border:1px solid rgba(34,197,94,.4);font-weight:700;white-space:nowrap}
-  .eid-type-inline{display:flex;gap:6px;margin-top:6px}
-  .eid-type-inline select{flex:1;background:rgba(234,179,8,.1);border:1px solid var(--gold);color:#facc15;font-weight:700;padding:5px 8px;border-radius:6px;font-size:11px;cursor:pointer}
-  .debts-month-card{border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.08),transparent)}
-  .debts-month-card h2{color:var(--accent2)}
-  .debts-month-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
-  .debts-month-table{width:100%;border-collapse:collapse;font-size:13px;min-width:920px}
-  .debts-month-table thead{background:var(--panel2)}
-  .debts-month-table th{padding:9px 10px;text-align:right;color:var(--accent2);font-size:11px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
-  html[dir="ltr"] .debts-month-table th{text-align:left}
-  .debts-month-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
-  .debts-month-table input[type="number"]{width:110px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 10px;border-radius:6px;font-size:14px;font-weight:700;outline:none;transition:.2s;font-family:monospace;text-align:center}
-  .debts-month-table input[type="number"]:focus{box-shadow:0 0 0 3px rgba(34,193,164,.15)}
-  .debts-month-table input.input-debit{border-color:var(--ok);color:var(--ok);background:rgba(34,197,94,.08)}
-  .debts-month-table input.input-credit{border-color:var(--danger);color:var(--danger);background:rgba(239,68,68,.08)}
-  .debts-month-table input.input-obligation{border-color:#a855f7;color:#c084fc;background:rgba(168,85,247,.08)}
-  .debts-month-table input[type="text"]{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:5px 8px;border-radius:5px;font-size:11px;font-family:inherit;outline:none;transition:.15s;color:var(--muted)}
-  .debts-month-table input[type="text"]:focus{border-color:var(--accent2);color:var(--txt)}
-  .debts-month-table select{width:110px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 6px;border-radius:6px;font-size:12px;font-weight:600;outline:none;cursor:pointer;font-family:inherit}
-  .debts-month-table select:focus{box-shadow:0 0 0 2px rgba(59,130,246,.2);border-color:var(--accent2)}
-  .debts-month-table tr.row-debit{background:rgba(34,197,94,.04)}
-  .debts-month-table tr.row-credit{background:rgba(239,68,68,.04)}
-  .debts-month-table tr.row-installment{background:rgba(59,130,246,.04)}
-  .debts-month-table tr.row-obligation{background:rgba(168,85,247,.05)}
-  .debts-month-table tr.excluded{background:rgba(239,68,68,.08) !important}
-  .debts-month-table tr.excluded td:first-child{color:var(--danger);text-decoration:underline;opacity:.75}
-  .debts-month-table .debt-name{font-weight:700;white-space:nowrap}
-  .debts-month-table tfoot td{background:rgba(59,130,246,.1);font-weight:700;border-top:2px solid var(--accent2);padding:10px}
-  .debts-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
-  .debts-table{width:100%;border-collapse:collapse;font-size:12px;min-width:1700px}
-  .debts-table thead{background:var(--panel2);position:sticky;top:0;z-index:2}
-  .debts-table th{padding:8px 6px;text-align:center;color:var(--accent);font-size:10px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
-  .debts-table td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}
-  .debts-table input[type="number"]{width:72px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:5px 4px;border-radius:4px;text-align:center;font-size:12px;font-family:monospace;outline:none;transition:.15s}
-  .debts-table input[type="number"]:focus{border-color:var(--accent);background:var(--bg);box-shadow:0 0 0 2px rgba(34,193,164,.2)}
-  .debts-table .paid-cell{font-family:monospace;font-weight:700;color:var(--accent);direction:ltr;font-size:12px}
-  .debts-table .remain-cell{font-family:monospace;font-weight:700;direction:ltr;font-size:12px}
-  .debts-table .remain-cell.pos{color:var(--ok)}
-  .debts-table .remain-cell.neg{color:var(--danger)}
-  .debts-table tfoot td{background:rgba(34,193,164,.08);font-weight:700;padding:8px 6px;border-top:2px solid var(--accent)}
-  .debts-table tr.fully-paid-row{opacity:.72;background:rgba(34,197,94,.05)}
-  .debts-table tr.row-obligation{background:rgba(168,85,247,.06)}
-  .debts-table tr.row-obligation:hover{background:rgba(168,85,247,.12)}
-  .debts-table .inline-input{width:100%;background:transparent;border:1px solid transparent;color:var(--txt);padding:5px 6px;border-radius:4px;font-size:12px;font-family:inherit;text-align:right;transition:.15s;outline:none}
-  html[dir="ltr"] .debts-table .inline-input{text-align:left}
-  .debts-table .inline-input:hover{border-color:var(--line);background:var(--panel2)}
-  .debts-table .inline-input:focus{border-color:var(--accent);background:var(--bg);box-shadow:0 0 0 2px rgba(34,193,164,.2)}
-  .debts-table .inline-input.name{font-weight:700;min-width:120px}
-  .debts-table .inline-input.num{text-align:center;font-family:monospace;direction:ltr;font-weight:700;min-width:70px}
-  .debts-table .inline-input.num.paid-before{color:var(--muted);font-weight:600}
-  .debts-table .inline-input.notes{font-size:11px;color:var(--muted);min-width:100px}
-  .debts-table .inline-select{background:transparent;border:1px solid transparent;color:var(--txt);padding:5px 4px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;outline:none;width:100%}
-  .debts-table .inline-select:hover{border-color:var(--line);background:var(--panel2)}
-  .debts-table .inline-select:focus{border-color:var(--accent);background:var(--bg);box-shadow:0 0 0 2px rgba(34,193,164,.2)}
-  .debts-table .inline-select.type-sel{color:var(--accent);text-align:center}
-  .debts-table .row-actions{white-space:nowrap;display:flex;gap:2px;justify-content:center}
-  .fully-paid-badge-wrap{text-align:center;margin-top:2px;min-height:14px}
-  .fully-paid-info{display:flex;flex-direction:column;gap:3px;align-items:center;margin-top:4px}
-  .last-pay-date{font-size:10px;color:var(--ok);font-family:inherit;font-weight:700;background:rgba(34,197,94,.12);padding:3px 8px;border-radius:8px;border:1px solid rgba(34,197,94,.4);white-space:nowrap;direction:rtl;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.2s;-webkit-tap-highlight-color:transparent;user-select:none;outline:none}
-  .last-pay-date:hover{background:rgba(34,197,94,.28);transform:translateY(-1px);box-shadow:0 2px 8px rgba(34,197,94,.25)}
-  .last-pay-date:active{transform:scale(.96)}
-  .last-pay-amount{font-family:monospace;font-size:10px;background:rgba(34,197,94,.25);padding:1px 6px;border-radius:6px;color:var(--ok);font-weight:800;direction:ltr}
-  .last-pay-go{font-size:11px;color:var(--ok);font-weight:900;margin-inline-start:1px;opacity:.85}
-  .last-pay-prior{font-size:10px;color:var(--muted);font-family:inherit;font-weight:700;background:rgba(143,163,184,.15);padding:3px 8px;border-radius:8px;border:1px solid var(--muted);white-space:nowrap;direction:rtl;display:inline-flex;align-items:center;gap:5px}
-  tr.highlight-jump{animation:highlightJump 2s ease-out}
-  @keyframes highlightJump{0%{background:rgba(34,193,164,.5)!important}30%{background:rgba(34,193,164,.4)!important}100%{background:transparent}}
-  .debts-toggle-bar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-  .debts-toggle-bar .btn{font-size:12px;padding:6px 12px}
-  .icon-btn.expand-btn{color:var(--accent);border-color:rgba(34,193,164,.5);font-weight:900;font-size:14px;line-height:1;width:26px;height:26px}
-  .icon-btn.expand-btn:hover{background:var(--accent);color:#fff}
-  .icon-btn.expand-btn.expanded{color:var(--danger);border-color:rgba(239,68,68,.5)}
-  .icon-btn.expand-btn.expanded:hover{background:var(--danger);color:#fff}
-  .debts-table tr.expanded-year-row{background:rgba(59,130,246,.06) !important}
-  .debts-table tr.expanded-year-row td{background:rgba(59,130,246,.06)}
-  .debts-table tr.expanded-year-row td:first-child{color:var(--accent2);font-weight:700;font-size:12px}
-  html[dir="rtl"] .debts-table tr.expanded-year-row td:first-child{border-right:3px solid var(--accent2);padding-right:16px}
-  html[dir="ltr"] .debts-table tr.expanded-year-row td:first-child{border-left:3px solid var(--accent2);padding-left:16px}
-  .debts-table tr.expanded-year-row input[type="number"]{border-color:rgba(59,130,246,.4);background:rgba(59,130,246,.04)}
-  .debts-table tr.expanded-year-row input[type="number"]:focus{border-color:var(--accent2);box-shadow:0 0 0 2px rgba(59,130,246,.2)}
-  .debts-table .year-label-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--accent2);color:#fff;font-size:10px;font-weight:700;margin-inline-start:8px;font-family:monospace}
-  .debts-table .active-year-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--ok);color:#fff;font-size:9px;font-weight:700;margin-inline-start:6px}
-  .debts-table .expanded-empty-message{text-align:center;color:var(--muted);font-style:italic;padding:12px;font-size:12px;background:rgba(143,163,184,.06)}
-  .pyramid-toggle-bar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-  .pyramid-toggle-bar .btn{font-size:12px;padding:6px 12px}
-  .pyramid-expanded-row{background:rgba(59,130,246,.04) !important}
-  .pyramid-expanded-row>td{padding:0 !important;background:rgba(59,130,246,.04) !important}
-  .pyramid-years-wrap{padding:10px 12px}
-  .pyramid-year-block{margin-bottom:10px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-  .pyramid-year-block:last-child{margin-bottom:0}
-  .pyramid-year-header{display:flex;gap:10px;align-items:center;padding:8px 12px;background:var(--panel2);border-bottom:1px solid var(--line);flex-wrap:wrap}
-  .pyramid-year-table{width:100%;border-collapse:collapse;font-size:11px}
-  .pyramid-year-table th{background:var(--panel2);padding:6px 4px;font-size:10px;color:var(--muted);border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
-  .pyramid-year-table td{padding:3px 2px;border-bottom:1px solid var(--line);text-align:center}
-  .pyramid-year-table tr:last-child td{border-bottom:none}
-  .pyramid-year-table input[type="number"]{width:100%;min-width:50px;background:transparent;border:1px solid transparent;color:var(--txt);padding:4px 2px;border-radius:4px;font-size:11px;font-family:monospace;font-weight:700;text-align:center;outline:none;transition:.15s}
-  .pyramid-year-table input[type="number"]:hover{border-color:var(--line);background:var(--panel2)}
-  .pyramid-year-table input[type="number"]:focus{border-color:var(--accent);background:var(--bg);box-shadow:0 0 0 2px rgba(34,193,164,.2)}
-  .pyramid-expanded-empty{padding:16px;text-align:center;color:var(--muted);font-style:italic;font-size:12px}
-  .pyramid-year-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--accent2);color:#fff;font-size:10px;font-weight:700;margin-inline-start:8px;font-family:monospace}
-  .pyramid-active-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--ok);color:#fff;font-size:9px;font-weight:700;margin-inline-start:6px}
-  .pyramid-wrap{display:flex;justify-content:center;align-items:center;padding:20px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;margin-bottom:16px}
-  .pyramid-svg{max-width:640px;width:100%;height:auto}
-  .pyramid-svg text{font-family:"Segoe UI","Tahoma",sans-serif;pointer-events:none;user-select:none}
-  .pyramid-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
-  @media(max-width:768px){.pyramid-legend{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:500px){.pyramid-legend{grid-template-columns:1fr}}
-  .pyr-legend-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;flex-wrap:wrap}
-  .pyr-color{width:16px;height:16px;border-radius:4px;flex-shrink:0}
-  .pyr-legend-item .pyr-label{font-size:12px;color:var(--muted);flex:1;min-width:100px}
-  .pyr-legend-item .pyr-val{font-family:monospace;font-weight:700;color:var(--txt);font-size:14px;direction:ltr}
-  .pyr-legend-item .pyr-note{width:100%;font-size:11px;color:var(--gold);font-style:italic;margin-top:4px;padding:4px 8px;background:rgba(234,179,8,.08);border-radius:6px;border:1px solid rgba(234,179,8,.25);white-space:pre-wrap;word-break:break-word}
-  @media(max-width:768px){.expense-table{min-width:520px;font-size:12px}.expense-table th,.expense-table td{padding:5px 6px}.bank-item{min-width:120px;font-size:11px}.debts-month-table{min-width:780px}}
-  .excluded-cell{color:var(--danger) !important;text-decoration:underline;opacity:.65;font-size:12px}
-  .year-chart{display:flex;gap:16px;align-items:flex-end;justify-content:center;padding:20px 10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;min-height:280px;overflow-x:auto}
-  .year-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px}
-  .year-bar-group{display:flex;gap:4px;align-items:flex-end;height:200px}
-  .year-bar{width:20px;border-radius:4px 4px 0 0;transition:.4s;position:relative;min-height:2px}
-  .year-bar.inc{background:linear-gradient(180deg,var(--accent),#0d9488)}
-  .year-bar.exp{background:linear-gradient(180deg,var(--danger),#991b1b)}
-  .year-bar.sav{background:linear-gradient(180deg,var(--gold),#92400e)}
-  .year-bar.rem{background:linear-gradient(180deg,var(--accent2),#1e40af)}
-  .year-bar:hover{opacity:.85;transform:scaleY(1.02)}
-  .year-bar-label{font-size:14px;font-weight:700;color:var(--gold)}
-  .year-bar-legend{display:flex;gap:16px;justify-content:center;margin-top:12px;flex-wrap:wrap;font-size:12px}
-  .year-bar-legend>div{display:flex;align-items:center;gap:6px}
-  .year-bar-legend .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
-  .site-footer{text-align:center;padding:24px 20px;margin-top:30px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
-  .site-footer strong{color:var(--accent);font-weight:700}
-  .site-footer .copyright{display:inline-flex;align-items:center;gap:6px}
-  .site-footer .logo-m{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:900;font-size:11px}
-  .print-header,.print-footer{display:none}
-  .mr-section-title{grid-column:1/-1;font-size:14px;font-weight:700;padding:10px 14px;border-radius:8px;margin-bottom:4px}
-  .mr-section-title.base{color:var(--accent);background:rgba(34,193,164,.08);border-right:4px solid var(--accent)}
-  .mr-section-title.extra{color:var(--accent2);background:rgba(59,130,246,.08);border-right:4px solid var(--accent2)}
-  .mr-divider{grid-column:1/-1;height:3px;background:linear-gradient(90deg,transparent,var(--accent2),transparent);margin:14px 0;border-radius:3px}
-  .mr-mini-divider{grid-column:1/-1;height:1px;background:var(--line);margin:10px 0}
-  .one-time-card{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.08),transparent)}
-  .one-time-card h2{color:var(--gold)}
-  .one-time-card h2::before{content:"⭐";color:var(--gold);font-size:12px}
-  .target-card{border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.08),transparent)}
-  .target-card h2{color:var(--accent2)}
-  .target-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
-  .target-table{width:100%;border-collapse:collapse;font-size:12px;min-width:1200px}
-  .target-table thead{background:var(--panel2)}
-  .target-table th{padding:8px 10px;text-align:right;color:var(--accent2);font-size:11px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
-  html[dir="ltr"] .target-table th{text-align:left}
-  .target-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
-  .target-table .target-input{width:100px;background:var(--panel2);border:1px solid var(--line);color:var(--gold);padding:6px 8px;border-radius:6px;font-size:13px;font-weight:700;outline:none;font-family:monospace;text-align:center;transition:.2s}
-  .target-table .target-input:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(59,130,246,.2)}
-  .target-table .target-input.auto-input{background:rgba(100,116,139,.15);border-color:#64748b;color:#cbd5e1;cursor:not-allowed}
-  .target-table .target-note{width:100%;min-width:160px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:6px 8px;border-radius:6px;font-size:12px;font-family:inherit;outline:none;transition:.2s}
-  .target-table .target-note:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(234,179,8,.2);color:var(--gold)}
-  .target-table .target-note::placeholder{color:var(--muted);font-style:italic}
-  .target-table .num{direction:ltr;text-align:left;font-family:monospace;font-weight:700;font-size:12px}
-  html[dir="ltr"] .target-table .num{text-align:right}
-  .target-name{display:flex;align-items:center;gap:8px;font-weight:700;white-space:nowrap;flex-wrap:wrap}
-  .target-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
-  .progress-bar{width:100%;min-width:120px;height:16px;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative}
-  .progress-fill{height:100%;transition:width .4s;border-radius:7px 0 0 7px}
-  .progress-text{font-size:10px;color:var(--muted);font-family:monospace;margin-top:3px;font-weight:600;direction:rtl}
-  .target-actions{display:flex;gap:4px;justify-content:center}
-  .target-hint{font-size:9px;color:var(--muted);font-style:italic;display:block;margin-top:2px}
-  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:300;padding:16px;backdrop-filter:blur(4px)}
-  .modal-overlay.show{display:flex;animation:fadeIn .25s}
-  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-  .modal-content{background:var(--panel);border:1px solid var(--line);border-radius:14px;max-width:920px;width:100%;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:slideUp .3s}
-  @keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
-  .modal-header{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,var(--panel),var(--panel2));border-radius:14px 14px 0 0}
-  .modal-header h2{color:var(--accent);font-size:16px;display:flex;align-items:center;gap:8px}
-  .modal-header h2::before{content:"📖"}
-  .modal-close{background:transparent;border:1px solid var(--line);color:var(--muted);width:36px;height:36px;border-radius:9px;cursor:pointer;font-size:16px;transition:.2s;display:flex;align-items:center;justify-content:center}
-  .modal-close:hover{background:var(--danger);color:#fff;border-color:var(--danger);transform:rotate(90deg)}
-  .modal-body{padding:22px 24px;overflow-y:auto;line-height:1.8;font-size:14px;color:var(--txt)}
-  .modal-body h3{color:var(--accent);font-size:15px;margin:22px 0 10px;padding-bottom:8px;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:8px}
-  .modal-body h3:first-child{margin-top:0}
-  .modal-body p{margin:10px 0;color:var(--txt)}
-  .modal-body ul,.modal-body ol{margin:10px 22px;color:var(--txt)}
-  .modal-body li{margin:6px 0}
-  .modal-body table{font-size:12px;margin:14px 0;background:var(--panel2);border-radius:8px;overflow:hidden}
-  .modal-body table th{background:rgba(34,193,164,.15);color:var(--accent);padding:10px;font-size:11px}
-  .modal-body table td{padding:9px 10px;border-color:var(--line)}
-  .modal-body .hl{color:var(--gold);font-weight:700}
-  .modal-body .note{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.35);border-radius:10px;padding:12px 16px;margin:14px 0;color:var(--gold);font-size:13px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
-  .modal-body .note::before{content:"💡";font-size:16px;flex-shrink:0}
-  .modal-body .warn{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:10px;padding:12px 16px;margin:14px 0;color:#fecaca;font-size:13px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
-  .modal-body .warn::before{content:"⚠️";font-size:16px;flex-shrink:0}
-  .modal-body .success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.35);border-radius:10px;padding:12px 16px;margin:14px 0;color:#bbf7d0;font-size:13px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
-  .modal-body .success::before{content:"🎯";font-size:16px;flex-shrink:0}
-  .modal-body strong{color:var(--accent)}
-  .modal-footer{padding:14px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px;border-radius:0 0 14px 14px}
-  @media(max-width:600px){
-    .modal-body{padding:16px;font-size:13px}
-    .modal-header h2{font-size:14px}
-    .modal-body h3{font-size:13px}
-    .target-table{min-width:1000px;font-size:11px}
-  }
-  .print-section{text-align:center;margin:24px 0 8px;padding:20px 12px;border-top:2px dashed var(--line);border-radius:0 0 12px 12px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
-  .print-section .btn{padding:12px 34px;font-size:15px;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.15);letter-spacing:.3px}
-  .print-section .btn:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(34,193,164,.25)}
+/* ═══════════════════════════════════════════════════════════════
+   CSS الكامل — نظام إدارة رأس المال (بما فيه تبويب السرقة الجديد)
+   ═══════════════════════════════════════════════════════════════ */
 
-  .profit-toggle-btn{
-    width:100%;padding:10px 14px;font-size:14px;font-weight:800;
-    border-radius:8px;cursor:pointer;transition:all .2s;
-    letter-spacing:.3px;font-family:inherit;border:2px solid;
-  }
-  .profit-toggle-btn.profit-yes{
-    background:linear-gradient(180deg,#22c55e,#15803d);
-    color:#fff;border-color:#22c55e;
-    box-shadow:0 0 0 3px rgba(34,197,94,.18);
-  }
-  .profit-toggle-btn.profit-yes:hover{
-    background:linear-gradient(180deg,#16a34a,#14532d);
-    transform:translateY(-1px);
-    box-shadow:0 0 0 4px rgba(34,197,94,.25);
-  }
-  .profit-toggle-btn.profit-no{
-    background:linear-gradient(180deg,#ef4444,#991b1b);
-    color:#fff;border-color:#ef4444;
-    box-shadow:0 0 0 3px rgba(239,68,68,.18);
-  }
-  .profit-toggle-btn.profit-no:hover{
-    background:linear-gradient(180deg,#dc2626,#7f1d1d);
-    transform:translateY(-1px);
-    box-shadow:0 0 0 4px rgba(239,68,68,.25);
-  }
-  .rp-points-cell{
-    font-family:monospace;font-weight:800;direction:ltr;
-    text-align:center;color:var(--gold);font-size:15px;
-    letter-spacing:-.3px;
-  }
-  #lblReportFather{font-size:22px !important;font-weight:700;color:var(--gold) !important}
-  #rpFather{font-size:22px !important;font-weight:700;text-align:center}
+:root{--bg:#0f1720;--panel:#17212b;--panel2:#1e2b38;--line:#2a3a4a;--txt:#e6eef7;--muted:#8fa3b8;--accent:#22c1a4;--accent2:#3b82f6;--danger:#ef4444;--ok:#22c55e;--gold:#eab308;--shadow:rgba(0,0,0,.35);}
+html[data-theme="light"]{--bg:#f0f4f8;--panel:#ffffff;--panel2:#e8eef5;--line:#94a3b8;--txt:#0f172a;--muted:#475569;--accent:#0891b2;--accent2:#2563eb;--danger:#dc2626;--ok:#16a34a;--gold:#d97706;--shadow:rgba(0,0,0,.12);}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI","Tahoma",sans-serif}
+html,body{height:100%}
+body{background:var(--bg);color:var(--txt);min-height:100vh;font-size:14px;transition:background .3s,color .3s}
+header{background:linear-gradient(90deg,var(--panel),var(--panel2));border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px;flex-wrap:wrap}
+header h1{font-size:17px;color:var(--accent);display:flex;align-items:center;gap:8px;white-space:nowrap}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.save-indicator{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--line);font-size:12px;font-weight:700;color:var(--ok);white-space:nowrap;transition:.3s;font-family:monospace}
+.year-picker{display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:4px 6px}
+.year-picker select{background:transparent;border:none;color:var(--gold);font-weight:700;font-size:15px;padding:4px 6px;outline:none;cursor:pointer;font-family:inherit}
+.year-picker button{background:transparent;border:none;color:var(--muted);padding:4px 8px;border-radius:6px;cursor:pointer;font-size:15px;font-weight:700;transition:.2s}
+.year-picker button:hover{background:var(--accent);color:#fff}
+.btn{background:var(--panel2);color:var(--txt);border:1px solid var(--line);padding:7px 12px;border-radius:8px;cursor:pointer;font-size:13px;transition:.2s;white-space:nowrap}
+.btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:var(--accent2);border-color:var(--accent2)}
+.btn.share{background:linear-gradient(180deg,#8b5cf6,#6d28d9);color:#fff;border-color:#8b5cf6;font-weight:700}
+.btn.share:hover{background:linear-gradient(180deg,#7c3aed,#5b21b6);border-color:#7c3aed;transform:translateY(-2px)}
+.btn.excel{background:linear-gradient(180deg,#16a34a,#15803d);color:#fff;border-color:#16a34a;font-weight:700}
+.btn.excel:hover{background:linear-gradient(180deg,#15803d,#166534);border-color:#15803d;transform:translateY(-2px)}
+.btn.success{background:linear-gradient(180deg,var(--ok),#15803d);color:#fff;border-color:var(--ok);font-weight:700;box-shadow:0 0 0 3px rgba(34,197,94,.15);animation:pulseGlow 2s infinite}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.15)}50%{box-shadow:0 0 0 6px rgba(34,197,94,.25)}}
+.btn.danger{background:transparent;color:var(--danger);border-color:var(--danger)}
+.btn.danger:hover{background:var(--danger);color:#fff}
+.settings-bar{display:flex;gap:4px;padding:4px;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.settings-bar button{background:transparent;border:none;color:var(--muted);padding:6px 10px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:700;transition:.2s}
+.settings-bar button:hover{background:var(--accent);color:#fff}
+nav.tabs{display:flex;gap:4px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto}
+nav.tabs button{background:transparent;border:none;color:var(--muted);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:14px;white-space:nowrap;font-weight:500;transition:.2s}
+nav.tabs button.active{background:var(--accent);color:#fff}
+nav.tabs button:hover:not(.active){background:var(--panel2);color:var(--txt)}
+main{padding:20px;max-width:1400px;margin:0 auto}
+.view{display:none}
+.view.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
+.card h2{font-size:16px;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.card h2::before{content:"●";color:var(--accent);font-size:10px}
+.salary-card{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.10),transparent)}
+.salary-card h2{color:var(--gold)}
+.salary-card h2::before{content:"💰";color:var(--gold);font-size:12px}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.g4,.g3,.g2{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:12px;color:var(--muted)}
+.field input,.field select,.field textarea{background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:9px 12px;border-radius:8px;font-size:14px;outline:none;transition:.2s;font-family:inherit}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,193,164,.15)}
+.field input[readonly]{background:var(--bg);color:var(--accent);font-weight:600;cursor:not-allowed}
+.field input:disabled{background:var(--bg);cursor:not-allowed}
+.field-note{background:var(--panel2);border:1px solid var(--line);color:var(--muted);padding:6px 10px;border-radius:6px;font-size:11px;outline:none;font-family:inherit;transition:.2s}
+.field-note:focus{border-color:var(--accent2);color:var(--txt);box-shadow:0 0 0 2px rgba(59,130,246,.15)}
+.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center}
+.kpi .lbl{font-size:12px;color:var(--muted);margin-bottom:6px}
+.kpi .val{font-size:19px;font-weight:700;color:var(--txt);direction:ltr;font-family:monospace;letter-spacing:-.3px}
+.kpi .val.pos{color:var(--ok)}.kpi .val.neg{color:var(--danger)}.kpi .val.gold{color:var(--gold)}.kpi .val.acc{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{background:var(--panel2)}
+th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line)}
+html[dir="ltr"] th,html[dir="ltr"] td{text-align:left}
+th{color:var(--accent);font-weight:600;font-size:12px}
+tbody tr:hover{background:rgba(34,193,164,.05)}
+td.num{direction:ltr;text-align:left;font-family:monospace}
+html[dir="ltr"] td.num{text-align:right}
+td.neg{color:var(--danger)}td.pos{color:var(--ok)}
+.monthPills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.monthPills button{background:var(--panel2);border:1px solid var(--line);color:var(--muted);padding:7px 14px;border-radius:20px;cursor:pointer;font-size:13px;position:relative;transition:.2s}
+.monthPills button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.monthPills button:hover:not(.active){color:var(--txt)}
+.monthPills button.hasData::after{content:"●";color:var(--ok);font-size:9px;position:absolute;top:4px;left:6px}
+.muted{color:var(--muted);font-size:12px}
+.notice-bhd{display:flex;align-items:center;gap:8px;padding:10px 14px;margin-bottom:14px;background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.35);border-radius:8px;color:var(--gold);font-size:13px;font-weight:600}
+.notice-int{display:flex;align-items:center;gap:8px;padding:8px 14px;margin-bottom:12px;background:rgba(34,193,164,.08);border:1px solid rgba(34,193,164,.3);border-radius:8px;color:var(--accent);font-size:12px;font-weight:600}
+.toast{position:fixed;bottom:20px;left:20px;background:var(--accent);color:#fff;padding:12px 20px;border-radius:10px;font-weight:600;box-shadow:0 8px 24px var(--shadow);opacity:0;transform:translateY(20px);transition:.3s;pointer-events:none;z-index:400}
+.toast.show{opacity:1;transform:none}
+.toast.success{background:linear-gradient(180deg,var(--ok),#15803d)}
+.toast.error{background:linear-gradient(180deg,var(--danger),#991b1b)}
+.toast.warn{background:linear-gradient(180deg,var(--gold),#92400e);color:#fff}
+.icon-btn{background:transparent;border:1px solid var(--line);color:var(--muted);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:13px;transition:.2s;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;padding:0;margin:0 1px}
+.icon-btn:hover{border-color:var(--danger);color:var(--danger)}
+.icon-btn.add-btn{color:var(--accent);border-color:rgba(34,193,164,.5);font-weight:900;font-size:15px;line-height:1}
+.icon-btn.add-btn:hover{border-color:var(--accent);color:#fff;background:var(--accent)}
+.icon-btn.collapse-btn{color:var(--accent2);border-color:rgba(59,130,246,.5);font-weight:700;font-size:11px;width:auto;padding:0 6px;gap:3px}
+.icon-btn.collapse-btn:hover{border-color:var(--accent2);color:#fff;background:var(--accent2)}
+.icon-btn.remove-btn{color:var(--danger);border-color:rgba(239,68,68,.5);font-weight:700}
+.icon-btn.remove-btn:hover{border-color:var(--danger);color:#fff;background:var(--danger)}
+.icon-btn.withdraw:hover{border-color:var(--gold);color:var(--gold);background:rgba(234,179,8,.1)}
+.icon-btn.history:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(59,130,246,.1)}
+.icon-btn.print-btn{color:var(--accent);border-color:rgba(34,193,164,.5)}
+.icon-btn.print-btn:hover{border-color:var(--accent);color:#fff;background:var(--accent)}
+.icon-btn.share-btn{color:#a78bfa;border-color:rgba(139,92,246,.5)}
+.icon-btn.share-btn:hover{border-color:#8b5cf6;color:#fff;background:#8b5cf6}
+.icon-btn.excel-btn{color:var(--ok);border-color:rgba(34,197,94,.5)}
+.icon-btn.excel-btn:hover{border-color:var(--ok);color:#fff;background:var(--ok)}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.badge.green{background:rgba(34,197,94,.15);color:var(--ok)}
+.badge.red{background:rgba(239,68,68,.15);color:var(--danger)}
+.badge.blue{background:rgba(59,130,246,.15);color:var(--accent2)}
+.badge.gold{background:rgba(234,179,8,.15);color:var(--gold)}
+.badge.purple{background:rgba(168,85,247,.15);color:#c084fc}
+.badge.auto{background:rgba(100,116,139,.25);color:#cbd5e1;border:1px solid #64748b;font-size:9px;padding:1px 6px;margin-inline-start:4px;font-weight:700}
+.badge.fully-paid{background:rgba(34,197,94,.2);color:var(--ok);border:1px solid var(--ok);font-size:10px;padding:2px 6px;margin-inline-start:6px;font-weight:700}
+.badge.excluded-badge{background:rgba(239,68,68,.2);color:var(--danger);border:1px solid var(--danger);font-size:10px;padding:2px 6px;margin-inline-start:6px;font-weight:700}
+.badge.muted{background:rgba(143,163,184,.15);color:var(--muted)}
+.badge.negative{background:rgba(239,68,68,.2);color:var(--danger);border:1px solid var(--danger);font-size:10px;padding:1px 6px;font-weight:700}
+.badge.investment{background:rgba(34,197,94,.2);color:var(--ok);border:1px solid var(--ok);font-size:10px;padding:1px 6px;font-weight:700}
+.card.eid-card{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.18),rgba(234,179,8,.06));box-shadow:0 0 0 3px rgba(234,179,8,.15);transition:.3s}
+.card.eid-card h2.eid-title{color:#111827;background:var(--gold);border-bottom-color:rgba(0,0,0,.15);padding:8px 12px;border-radius:6px;font-weight:700;font-size:14px;line-height:1.4}
+.card.eid-card h2.eid-title::before{content:"⚠";color:#7c2d12;font-size:14px}
+.card.eid-card .field label{color:#facc15;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.card.eid-card .field select,.card.eid-card .field input{border-color:var(--gold);background:rgba(20,25,35,.75);color:#fef3c7}
+.card.eid-card.eid-no{border-color:var(--ok);background:linear-gradient(180deg,rgba(34,197,94,.18),rgba(34,197,94,.06));box-shadow:0 0 0 3px rgba(34,197,94,.15)}
+.card.eid-card.eid-no h2.eid-title{background:var(--ok);color:#052e16}
+.card.eid-card.eid-no h2.eid-title::before{color:#052e16}
+.card.eid-card.eid-no .field label{color:#86efac}
+.meat-status{display:flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:8px;font-size:13px;font-weight:700;border:2px solid;transition:.25s;user-select:none;min-height:40px;letter-spacing:.3px}
+.meat-status.meat-status-no{background:#7f1d1d;border-color:#991b1b;color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.meat-status.meat-status-yes{background:#14532d;border-color:#15803d;color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+html[data-theme="light"] .meat-status.meat-status-no{background:#b91c1c;border-color:#7f1d1d;color:#ffffff}
+html[data-theme="light"] .meat-status.meat-status-yes{background:#15803d;border-color:#14532d;color:#ffffff}
+.expense-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
+.expense-table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+.expense-table thead{background:var(--panel2)}
+.expense-table th{padding:10px 12px;text-align:right;color:var(--accent);font-size:11px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
+html[dir="ltr"] .expense-table th{text-align:left}
+.expense-table td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.expense-table td:first-child{font-weight:600;color:var(--txt);padding-right:14px}
+html[dir="ltr"] .expense-table td:first-child{padding-right:8px;padding-left:14px}
+.expense-table input,.expense-table select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 10px;border-radius:6px;font-size:13px;outline:none;transition:.2s;font-family:inherit}
+.expense-table input:focus,.expense-table select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,193,164,.15)}
+.expense-table tr.excluded{background:rgba(239,68,68,.06)}
+.expense-table tr.excluded td:first-child{color:var(--danger);text-decoration:underline;opacity:.75}
+.expense-table tr.main-row{background:rgba(34,193,164,.05)}
+.expense-table tr.main-row:hover{background:rgba(34,193,164,.1)}
+.expense-table tr.extra-row{background:rgba(59,130,246,.04);border-left:3px solid var(--accent2)}
+html[dir="rtl"] .expense-table tr.extra-row{border-left:none;border-right:3px solid var(--accent2)}
+.expense-table tr.extra-row:hover{background:rgba(59,130,246,.09)}
+.expense-table tr.extra-row.excluded{background:rgba(239,68,68,.06)}
+.expense-table tr.extra-row td:first-child{padding-right:20px;font-weight:500;font-size:12px}
+html[dir="ltr"] .expense-table tr.extra-row td:first-child{padding-right:8px;padding-left:20px}
+.extra-name{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--accent2);font-weight:700}
+.extra-name .extra-hash{opacity:.7;font-family:monospace}
+.add-btn-inline{margin-inline-start:6px}
+.bank-excluded{background:rgba(239,68,68,.15) !important;border-color:var(--danger) !important;color:#ffdcdc !important}
+.expense-table tr.group-header{background:linear-gradient(90deg,rgba(59,130,246,.15),transparent)}
+.expense-table tr.group-header td{color:var(--accent2);font-weight:700;font-size:12px;padding:8px 14px;border-bottom:1px dashed var(--line)}
+.birthday-cell{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.birthday-cell select{max-width:110px;padding:4px 8px !important;font-size:11px !important;background:rgba(234,179,8,.1) !important;border-color:var(--gold) !important;color:#facc15 !important;width:auto !important}
+.expense-table tr.bday-row{background:rgba(234,179,8,.04)}
+.expense-summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding:14px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:13px}
+.exp-sum-item{display:flex;gap:8px;align-items:center;padding:6px 12px;border-radius:8px;background:var(--panel);border:1px solid var(--line)}
+.exp-sum-item span{color:var(--muted)}
+.exp-sum-item b{color:var(--txt);font-family:monospace;font-size:14px}
+.exp-sum-item.green{border-color:rgba(34,197,94,.35)}.exp-sum-item.green b{color:var(--ok)}
+.exp-sum-item.red{border-color:rgba(239,68,68,.35)}.exp-sum-item.red b{color:var(--danger)}
+.exp-sum-divider{width:100%;height:1px;background:var(--line);margin:6px 0}
+.exp-sum-title{width:100%;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.bank-item{transition:.2s;min-width:150px}
+.bank-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px var(--shadow)}
+.bank-item.bank-card{border-color:rgba(34,193,164,.4)}.bank-item.bank-card b{color:var(--accent)}
+.bank-item.bank-nbk{border-color:rgba(59,130,246,.4)}.bank-item.bank-nbk b{color:var(--accent2)}
+.bank-item.bank-ila{border-color:rgba(168,85,247,.4)}.bank-item.bank-ila b{color:#c084fc}
+.bank-item.bank-bbk{border-color:rgba(249,115,22,.4)}.bank-item.bank-bbk b{color:#fb923c}
+.bank-item.bank-meem{border-color:rgba(20,184,166,.4)}.bank-item.bank-meem b{color:#2dd4bf}
+.bank-item.bank-nbb{border-color:rgba(234,179,8,.4)}.bank-item.bank-nbb b{color:var(--gold)}
+.bank-item.bank-credimax{border-color:rgba(139,92,246,.45)}.bank-item.bank-credimax b{color:#a78bfa}
+.bank-item.bank-excl{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.08)}.bank-item.bank-excl b{color:var(--danger)}
+.saving-card{border:2px solid var(--accent);background:linear-gradient(180deg,rgba(34,193,164,.1),transparent)}
+.saving-card h2{color:var(--accent)}
+.saving-field input[type="number"]{font-weight:700;color:var(--accent);text-align:center;font-size:16px}
+.saving-field input[type="number"]:disabled{background:rgba(34,197,94,.1);border-color:var(--ok);color:var(--ok);cursor:not-allowed;opacity:.85}
+.saving-field input[type="number"]:disabled::placeholder{color:var(--ok);font-weight:700;font-size:11px}
+.saving-target-hint{display:inline-block;margin-top:3px;font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(34,197,94,.15);color:var(--ok);border:1px solid rgba(34,197,94,.4);font-weight:700;white-space:nowrap}
+.eid-type-inline{display:flex;gap:6px;margin-top:6px}
+.eid-type-inline select{flex:1;background:rgba(234,179,8,.1);border:1px solid var(--gold);color:#facc15;font-weight:700;padding:5px 8px;border-radius:6px;font-size:11px;cursor:pointer}
+.debts-month-card{border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.08),transparent)}
+.debts-month-card h2{color:var(--accent2)}
+.debts-month-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
+.debts-month-table{width:100%;border-collapse:collapse;font-size:13px;min-width:920px}
+.debts-month-table thead{background:var(--panel2)}
+.debts-month-table th{padding:9px 10px;text-align:right;color:var(--accent2);font-size:11px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
+html[dir="ltr"] .debts-month-table th{text-align:left}
+.debts-month-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.debts-month-table input[type="number"]{width:110px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 10px;border-radius:6px;font-size:14px;font-weight:700;outline:none;transition:.2s;font-family:monospace;text-align:center}
+.debts-month-table input[type="number"]:focus{box-shadow:0 0 0 3px rgba(34,193,164,.15)}
+.debts-month-table input.input-debit{border-color:var(--ok);color:var(--ok);background:rgba(34,197,94,.08)}
+.debts-month-table input.input-credit{border-color:var(--danger);color:var(--danger);background:rgba(239,68,68,.08)}
+.debts-month-table input.input-obligation{border-color:#a855f7;color:#c084fc;background:rgba(168,85,247,.08)}
+.debts-month-table input[type="text"]{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:5px 8px;border-radius:5px;font-size:11px;font-family:inherit;outline:none;transition:.15s;color:var(--muted)}
+.debts-month-table input[type="text"]:focus{border-color:var(--accent2);color:var(--txt)}
+.debts-month-table select{width:110px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 6px;border-radius:6px;font-size:12px;font-weight:600;outline:none;cursor:pointer;font-family:inherit}
+.debts-month-table select:focus{box-shadow:0 0 0 2px rgba(59,130,246,.2);border-color:var(--accent2)}
+.debts-month-table tr.row-debit{background:rgba(34,197,94,.04)}
+.debts-month-table tr.row-credit{background:rgba(239,68,68,.04)}
+.debts-month-table tr.row-installment{background:rgba(59,130,246,.04)}
+.debts-month-table tr.row-obligation{background:rgba(168,85,247,.05)}
+.debts-month-table tr.excluded{background:rgba(239,68,68,.08) !important}
+.debts-month-table tr.excluded td:first-child{color:var(--danger);text-decoration:underline;opacity:.75}
+.debts-month-table .debt-name{font-weight:700;white-space:nowrap}
+.debts-month-table tfoot td{background:rgba(59,130,246,.1);font-weight:700;border-top:2px solid var(--accent2);padding:10px}
+.debts-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
+.debts-table{width:100%;border-collapse:collapse;font-size:12px;min-width:1700px}
+.debts-table thead{background:var(--panel2);position:sticky;top:0;z-index:2}
+.debts-table th{padding:8px 6px;text-align:center;color:var(--accent);font-size:10px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
+.debts-table td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}
+.debts-table input[type="number"]{width:72px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:5px 4px;border-radius:4px;text-align:center;font-size:12px;font-family:monospace;outline:none;transition:.15s}
+.debts-table input[type="number"]:focus{border-color:var(--accent);background:var(--bg);box-shadow:0 0 0 2px rgba(34,193,164,.2)}
+.debts-table .paid-cell{font-family:monospace;font-weight:700;color:var(--accent);direction:ltr;font-size:12px}
+.debts-table .remain-cell{font-family:monospace;font-weight:700;direction:ltr;font-size:12px}
+.debts-table .remain-cell.pos{color:var(--ok)}
+.debts-table .remain-cell.neg{color:var(--danger)}
+.debts-table tfoot td{background:rgba(34,193,164,.08);font-weight:700;padding:8px 6px;border-top:2px solid var(--accent)}
+.debts-table tr.fully-paid-row{opacity:.72;background:rgba(34,197,94,.05)}
+.debts-table tr.row-obligation{background:rgba(168,85,247,.06)}
+.debts-table tr.row-obligation:hover{background:rgba(168,85,247,.12)}
+.debts-table .inline-input{width:100%;background:transparent;border:1px solid transparent;color:var(--txt);padding:5px 6px;border-radius:4px;font-size:12px;font-family:inherit;text-align:right;transition:.15s;outline:none}
+html[dir="ltr"] .debts-table .inline-input{text-align:left}
+.debts-table .inline-input:hover{border-color:var(--line);background:var(--panel2)}
+.debts-table .inline-input:focus{border-color:var(--accent);background:var(--bg);box-shadow:0 0 0 2px rgba(34,193,164,.2)}
+.debts-table .inline-input.name{font-weight:700;min-width:120px}
+.debts-table .inline-input.num{text-align:center;font-family:monospace;direction:ltr;font-weight:700;min-width:70px}
+.debts-table .inline-input.num.paid-before{color:var(--muted);font-weight:600}
+.debts-table .inline-input.notes{font-size:11px;color:var(--muted);min-width:100px}
+.debts-table .inline-select{background:transparent;border:1px solid transparent;color:var(--txt);padding:5px 4px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;outline:none;width:100%}
+.debts-table .inline-select:hover{border-color:var(--line);background:var(--panel2)}
+.debts-table .inline-select:focus{border-color:var(--accent);background:var(--bg);box-shadow:0 0 0 2px rgba(34,193,164,.2)}
+.debts-table .inline-select.type-sel{color:var(--accent);text-align:center}
+.debts-table .row-actions{white-space:nowrap;display:flex;gap:2px;justify-content:center}
+.fully-paid-badge-wrap{text-align:center;margin-top:2px;min-height:14px}
+.fully-paid-info{display:flex;flex-direction:column;gap:3px;align-items:center;margin-top:4px}
+.last-pay-date{font-size:10px;color:var(--ok);font-family:inherit;font-weight:700;background:rgba(34,197,94,.12);padding:3px 8px;border-radius:8px;border:1px solid rgba(34,197,94,.4);white-space:nowrap;direction:rtl;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.2s;-webkit-tap-highlight-color:transparent;user-select:none;outline:none}
+.last-pay-date:hover{background:rgba(34,197,94,.28);transform:translateY(-1px);box-shadow:0 2px 8px rgba(34,197,94,.25)}
+.last-pay-date:active{transform:scale(.96)}
+.last-pay-amount{font-family:monospace;font-size:10px;background:rgba(34,197,94,.25);padding:1px 6px;border-radius:6px;color:var(--ok);font-weight:800;direction:ltr}
+.last-pay-go{font-size:11px;color:var(--ok);font-weight:900;margin-inline-start:1px;opacity:.85}
+.last-pay-prior{font-size:10px;color:var(--muted);font-family:inherit;font-weight:700;background:rgba(143,163,184,.15);padding:3px 8px;border-radius:8px;border:1px solid var(--muted);white-space:nowrap;direction:rtl;display:inline-flex;align-items:center;gap:5px}
+tr.highlight-jump{animation:highlightJump 2s ease-out}
+@keyframes highlightJump{0%{background:rgba(34,193,164,.5)!important}30%{background:rgba(34,193,164,.4)!important}100%{background:transparent}}
+.debts-toggle-bar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.debts-toggle-bar .btn{font-size:12px;padding:6px 12px}
+.icon-btn.expand-btn{color:var(--accent);border-color:rgba(34,193,164,.5);font-weight:900;font-size:14px;line-height:1;width:26px;height:26px}
+.icon-btn.expand-btn:hover{background:var(--accent);color:#fff}
+.icon-btn.expand-btn.expanded{color:var(--danger);border-color:rgba(239,68,68,.5)}
+.icon-btn.expand-btn.expanded:hover{background:var(--danger);color:#fff}
+.debts-table tr.expanded-year-row{background:rgba(59,130,246,.06) !important}
+.debts-table tr.expanded-year-row td{background:rgba(59,130,246,.06)}
+.debts-table tr.expanded-year-row td:first-child{color:var(--accent2);font-weight:700;font-size:12px}
+html[dir="rtl"] .debts-table tr.expanded-year-row td:first-child{border-right:3px solid var(--accent2);padding-right:16px}
+html[dir="ltr"] .debts-table tr.expanded-year-row td:first-child{border-left:3px solid var(--accent2);padding-left:16px}
+.debts-table tr.expanded-year-row input[type="number"]{border-color:rgba(59,130,246,.4);background:rgba(59,130,246,.04)}
+.debts-table tr.expanded-year-row input[type="number"]:focus{border-color:var(--accent2);box-shadow:0 0 0 2px rgba(59,130,246,.2)}
+.debts-table .year-label-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--accent2);color:#fff;font-size:10px;font-weight:700;margin-inline-start:8px;font-family:monospace}
+.debts-table .active-year-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--ok);color:#fff;font-size:9px;font-weight:700;margin-inline-start:6px}
+.debts-table .expanded-empty-message{text-align:center;color:var(--muted);font-style:italic;padding:12px;font-size:12px;background:rgba(143,163,184,.06)}
+.pyramid-toggle-bar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.pyramid-toggle-bar .btn{font-size:12px;padding:6px 12px}
+.pyramid-expanded-row{background:rgba(59,130,246,.04) !important}
+.pyramid-expanded-row>td{padding:0 !important;background:rgba(59,130,246,.04) !important}
+.pyramid-years-wrap{padding:10px 12px}
+.pyramid-year-block{margin-bottom:10px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.pyramid-year-block:last-child{margin-bottom:0}
+.pyramid-year-header{display:flex;gap:10px;align-items:center;padding:8px 12px;background:var(--panel2);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.pyramid-year-table{width:100%;border-collapse:collapse;font-size:11px}
+.pyramid-year-table th{background:var(--panel2);padding:6px 4px;font-size:10px;color:var(--muted);border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+.pyramid-year-table td{padding:3px 2px;border-bottom:1px solid var(--line);text-align:center}
+.pyramid-year-table tr:last-child td{border-bottom:none}
+.pyramid-year-table input[type="number"]{width:100%;min-width:50px;background:transparent;border:1px solid transparent;color:var(--txt);padding:4px 2px;border-radius:4px;font-size:11px;font-family:monospace;font-weight:700;text-align:center;outline:none;transition:.15s}
+.pyramid-year-table input[type="number"]:hover{border-color:var(--line);background:var(--panel2)}
+.pyramid-year-table input[type="number"]:focus{border-color:var(--accent);background:var(--bg);box-shadow:0 0 0 2px rgba(34,193,164,.2)}
+.pyramid-expanded-empty{padding:16px;text-align:center;color:var(--muted);font-style:italic;font-size:12px}
+.pyramid-year-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--accent2);color:#fff;font-size:10px;font-weight:700;margin-inline-start:8px;font-family:monospace}
+.pyramid-active-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:var(--ok);color:#fff;font-size:9px;font-weight:700;margin-inline-start:6px}
+.pyramid-wrap{display:flex;justify-content:center;align-items:center;padding:20px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;margin-bottom:16px}
+.pyramid-svg{max-width:640px;width:100%;height:auto}
+.pyramid-svg text{font-family:"Segoe UI","Tahoma",sans-serif;pointer-events:none;user-select:none}
+.pyramid-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+@media(max-width:768px){.pyramid-legend{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.pyramid-legend{grid-template-columns:1fr}}
+.pyr-legend-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;flex-wrap:wrap}
+.pyr-color{width:16px;height:16px;border-radius:4px;flex-shrink:0}
+.pyr-legend-item .pyr-label{font-size:12px;color:var(--muted);flex:1;min-width:100px}
+.pyr-legend-item .pyr-val{font-family:monospace;font-weight:700;color:var(--txt);font-size:14px;direction:ltr}
+.pyr-legend-item .pyr-note{width:100%;font-size:11px;color:var(--gold);font-style:italic;margin-top:4px;padding:4px 8px;background:rgba(234,179,8,.08);border-radius:6px;border:1px solid rgba(234,179,8,.25);white-space:pre-wrap;word-break:break-word}
+@media(max-width:768px){.expense-table{min-width:520px;font-size:12px}.expense-table th,.expense-table td{padding:5px 6px}.bank-item{min-width:120px;font-size:11px}.debts-month-table{min-width:780px}}
+.excluded-cell{color:var(--danger) !important;text-decoration:underline;opacity:.65;font-size:12px}
+.year-chart{display:flex;gap:16px;align-items:flex-end;justify-content:center;padding:20px 10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;min-height:280px;overflow-x:auto}
+.year-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px}
+.year-bar-group{display:flex;gap:4px;align-items:flex-end;height:200px}
+.year-bar{width:20px;border-radius:4px 4px 0 0;transition:.4s;position:relative;min-height:2px}
+.year-bar.inc{background:linear-gradient(180deg,var(--accent),#0d9488)}
+.year-bar.exp{background:linear-gradient(180deg,var(--danger),#991b1b)}
+.year-bar.sav{background:linear-gradient(180deg,var(--gold),#92400e)}
+.year-bar.rem{background:linear-gradient(180deg,var(--accent2),#1e40af)}
+.year-bar:hover{opacity:.85;transform:scaleY(1.02)}
+.year-bar-label{font-size:14px;font-weight:700;color:var(--gold)}
+.year-bar-legend{display:flex;gap:16px;justify-content:center;margin-top:12px;flex-wrap:wrap;font-size:12px}
+.year-bar-legend>div{display:flex;align-items:center;gap:6px}
+.year-bar-legend .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+.site-footer{text-align:center;padding:24px 20px;margin-top:30px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+.site-footer strong{color:var(--accent);font-weight:700}
+.site-footer .copyright{display:inline-flex;align-items:center;gap:6px}
+.site-footer .logo-m{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:900;font-size:11px}
+.print-header,.print-footer{display:none}
+.mr-section-title{grid-column:1/-1;font-size:14px;font-weight:700;padding:10px 14px;border-radius:8px;margin-bottom:4px}
+.mr-section-title.base{color:var(--accent);background:rgba(34,193,164,.08);border-right:4px solid var(--accent)}
+.mr-section-title.extra{color:var(--accent2);background:rgba(59,130,246,.08);border-right:4px solid var(--accent2)}
+.mr-divider{grid-column:1/-1;height:3px;background:linear-gradient(90deg,transparent,var(--accent2),transparent);margin:14px 0;border-radius:3px}
+.mr-mini-divider{grid-column:1/-1;height:1px;background:var(--line);margin:10px 0}
+.one-time-card{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.08),transparent)}
+.one-time-card h2{color:var(--gold)}
+.one-time-card h2::before{content:"⭐";color:var(--gold);font-size:12px}
+.target-card{border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.08),transparent)}
+.target-card h2{color:var(--accent2)}
+.target-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line)}
+.target-table{width:100%;border-collapse:collapse;font-size:12px;min-width:1200px}
+.target-table thead{background:var(--panel2)}
+.target-table th{padding:8px 10px;text-align:right;color:var(--accent2);font-size:11px;font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
+html[dir="ltr"] .target-table th{text-align:left}
+.target-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.target-table .target-input{width:100px;background:var(--panel2);border:1px solid var(--line);color:var(--gold);padding:6px 8px;border-radius:6px;font-size:13px;font-weight:700;outline:none;font-family:monospace;text-align:center;transition:.2s}
+.target-table .target-input:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(59,130,246,.2)}
+.target-table .target-input.auto-input{background:rgba(100,116,139,.15);border-color:#64748b;color:#cbd5e1;cursor:not-allowed}
+.target-table .target-note{width:100%;min-width:160px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:6px 8px;border-radius:6px;font-size:12px;font-family:inherit;outline:none;transition:.2s}
+.target-table .target-note:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(234,179,8,.2);color:var(--gold)}
+.target-table .target-note::placeholder{color:var(--muted);font-style:italic}
+.target-table .num{direction:ltr;text-align:left;font-family:monospace;font-weight:700;font-size:12px}
+html[dir="ltr"] .target-table .num{text-align:right}
+.target-name{display:flex;align-items:center;gap:8px;font-weight:700;white-space:nowrap;flex-wrap:wrap}
+.target-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.progress-bar{width:100%;min-width:120px;height:16px;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative}
+.progress-fill{height:100%;transition:width .4s;border-radius:7px 0 0 7px}
+.progress-text{font-size:10px;color:var(--muted);font-family:monospace;margin-top:3px;font-weight:600;direction:rtl}
+.target-actions{display:flex;gap:4px;justify-content:center}
+.target-hint{font-size:9px;color:var(--muted);font-style:italic;display:block;margin-top:2px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:300;padding:16px;backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex;animation:fadeIn .25s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-content{background:var(--panel);border:1px solid var(--line);border-radius:14px;max-width:920px;width:100%;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:slideUp .3s}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,var(--panel),var(--panel2));border-radius:14px 14px 0 0}
+.modal-header h2{color:var(--accent);font-size:16px;display:flex;align-items:center;gap:8px}
+.modal-header h2::before{content:"📖"}
+.modal-close{background:transparent;border:1px solid var(--line);color:var(--muted);width:36px;height:36px;border-radius:9px;cursor:pointer;font-size:16px;transition:.2s;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--danger);color:#fff;border-color:var(--danger);transform:rotate(90deg)}
+.modal-body{padding:22px 24px;overflow-y:auto;line-height:1.8;font-size:14px;color:var(--txt)}
+.modal-body h3{color:var(--accent);font-size:15px;margin:22px 0 10px;padding-bottom:8px;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:8px}
+.modal-body h3:first-child{margin-top:0}
+.modal-body p{margin:10px 0;color:var(--txt)}
+.modal-body ul,.modal-body ol{margin:10px 22px;color:var(--txt)}
+.modal-body li{margin:6px 0}
+.modal-body table{font-size:12px;margin:14px 0;background:var(--panel2);border-radius:8px;overflow:hidden}
+.modal-body table th{background:rgba(34,193,164,.15);color:var(--accent);padding:10px;font-size:11px}
+.modal-body table td{padding:9px 10px;border-color:var(--line)}
+.modal-body .hl{color:var(--gold);font-weight:700}
+.modal-body .note{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.35);border-radius:10px;padding:12px 16px;margin:14px 0;color:var(--gold);font-size:13px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
+.modal-body .note::before{content:"💡";font-size:16px;flex-shrink:0}
+.modal-body .warn{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:10px;padding:12px 16px;margin:14px 0;color:#fecaca;font-size:13px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
+.modal-body .warn::before{content:"⚠️";font-size:16px;flex-shrink:0}
+.modal-body .success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.35);border-radius:10px;padding:12px 16px;margin:14px 0;color:#bbf7d0;font-size:13px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
+.modal-body .success::before{content:"🎯";font-size:16px;flex-shrink:0}
+.modal-body strong{color:var(--accent)}
+.modal-footer{padding:14px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px;border-radius:0 0 14px 14px}
+@media(max-width:600px){
+  .modal-body{padding:16px;font-size:13px}
+  .modal-header h2{font-size:14px}
+  .modal-body h3{font-size:13px}
+  .target-table{min-width:1000px;font-size:11px}
+}
+.print-section{text-align:center;margin:24px 0 8px;padding:20px 12px;border-top:2px dashed var(--line);border-radius:0 0 12px 12px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.print-section .btn{padding:12px 34px;font-size:15px;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.15);letter-spacing:.3px}
+.print-section .btn:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(34,193,164,.25)}
 
-  @media print{
-    *{-webkit-print-color-adjust: exact !important;print-color-adjust: exact !important;color-adjust: exact !important;}
-    @page{size: A4 portrait;margin:10mm 8mm}
-    html,body{background:#fff !important;color:#000 !important;font-size:10pt !important}
-    header,nav.tabs,.toolbar,.settings-bar,.btn,.icon-btn,.toast,.monthPills,.site-footer,.modal,.eid-type-inline,.year-picker,.save-indicator,.print-section,.noprint{display:none !important}
-    main{padding:0 !important;max-width:100% !important;width:100% !important}
-    .view{display:none !important}.view.active{display:block !important}
-    .card{break-inside:avoid;page-break-inside:avoid;border:1px solid #999 !important;background:#fff !important;box-shadow:none !important;padding:8pt !important;margin-bottom:6pt !important;border-radius:4pt}
-    .card h2{color:#000 !important;border-bottom:1.5px solid #333 !important;padding-bottom:3pt;margin-bottom:6pt;font-size:11pt}
-    .card h2::before{color:#000 !important}
-    .salary-card{border:2px solid #78350f !important;background:#fffbeb !important}
-    .salary-card h2{color:#78350f !important}
-    .kpi{background:#f5f5f5 !important;border:1px solid #999 !important;padding:5pt !important;border-radius:3pt}
-    .kpi .lbl{color:#333 !important;font-size:7pt}.kpi .val{color:#000 !important;font-size:11pt}
-    .kpi .val.pos{color:#166534 !important}.kpi .val.neg{color:#991b1b !important}
-    .kpi .val.gold{color:#78350f !important}.kpi .val.acc{color:#0e7490 !important}
-    table{font-size:8pt !important}
-    th{background:#eee !important;color:#000 !important;padding:3pt !important}
-    td{color:#000 !important;padding:3pt !important;border-color:#ccc !important}
-    input,select,textarea{border:none !important;background:transparent !important;color:#000 !important;padding:0 !important;font-size:8pt !important;font-weight:600 !important;-webkit-appearance:none;appearance:none}
-    input[type="number"]{text-align:center}
-    .meat-status{border:1px solid #666 !important;background:#f5f5f5 !important;color:#000 !important;padding:3pt !important;font-size:8pt !important}
-    .pyramid-wrap{background:#fff !important;border:1px solid #ccc !important}
-    .pyramid-svg text{fill:#000 !important}
-    .muted,.notice-bhd,.notice-int{color:#444 !important;background:#f8f8f8 !important;border-color:#bbb !important}
-    .year-chart{background:#fff !important;border:1px solid #ccc !important;overflow:visible !important;min-height:auto !important;padding:10pt !important}
-    .year-bar-wrap{min-width:60pt !important}
-    .year-bar-group{height:150pt !important}
-    .year-bar{min-height:2pt !important}
-    .year-bar.inc{background:#0d9488 !important;border:1px solid #0f766e !important}
-    .year-bar.exp{background:#991b1b !important;border:1px solid #7f1d1d !important}
-    .year-bar.sav{background:#92400e !important;border:1px solid #78350f !important}
-    .year-bar.rem{background:#1e40af !important;border:1px solid #1e3a8a !important}
-    .print-header,.print-footer{display:block !important}
-    .print-header{text-align:center;padding-bottom:6pt;margin-bottom:10pt;border-bottom:3px double #000}
-    .print-header h1{color:#000 !important;font-size:16pt;margin-bottom:3pt}
-    .print-header .subtitle{color:#444;font-size:9pt;margin-bottom:2pt}
-    .print-header .meta{color:#666;font-size:8pt}
-    .print-header .logo-m{display:inline-block;width:22pt;height:22pt;line-height:22pt;border-radius:50%;background:#0e7490;color:#fff;font-weight:900;font-size:11pt;text-align:center;margin:0 auto 5pt}
-    .print-footer{text-align:center;padding-top:5pt;margin-top:10pt;border-top:1px solid #999;color:#444;font-size:8pt}
-    .print-footer strong{color:#0e7490}
-    .mr-section-title{color:#000 !important;background:#eee !important;border-right-color:#000 !important}
-    .mr-divider{background:#999 !important}
-    .last-pay-date{color:#166534 !important;background:#e0f2e9 !important;border-color:#166534 !important;font-size:7pt !important}
-    .last-pay-amount{background:#166534 !important;color:#fff !important;font-size:7pt !important}
-    .last-pay-prior{font-size:7pt !important}
-    .progress-bar{background:#eee !important;border:1px solid #999 !important}
-    .progress-fill{background:#0891b2 !important}
-    .expense-table tr.main-row{background:#f5f5f5 !important}
-    .expense-table tr.extra-row{background:#fafafa !important;border-right:2px solid #666 !important}
-    .debts-table-wrap,.expense-table-wrap,.debts-month-wrap,.target-table-wrap {overflow: visible !important;border: none !important;width: 100% !important;}
-    .debts-table{min-width: 0 !important;width: 100% !important;table-layout: fixed !important;font-size: 5.5pt !important;word-break: break-word;}
-    .debts-table thead {position: static !important;}
-    .debts-table th {padding: 1.5pt 0.5pt !important;font-size: 5pt !important;line-height: 1.1 !important;word-break: break-word;white-space: normal !important;overflow: hidden;}
-    .debts-table td {padding: 1pt 0.3pt !important;font-size: 5.5pt !important;line-height: 1.1 !important;}
-    .debts-table input[type="number"] {width: 100% !important;font-size: 5.5pt !important;padding: 1pt 0 !important;min-width: 0 !important;border: none !important;background: transparent !important;}
-    .debts-table .inline-input {font-size: 5.5pt !important;padding: 1pt !important;min-width: 0 !important;width: 100% !important;border: none !important;background: transparent !important;}
-    .debts-table .inline-input.name {min-width: 0 !important;font-size: 5.5pt !important;}
-    .debts-table .inline-input.num {min-width: 0 !important;font-size: 5.5pt !important;}
-    .debts-table .inline-input.notes {min-width: 0 !important;font-size: 5pt !important;}
-    .debts-table .inline-select {font-size: 5pt !important;padding: 1pt !important;border: none !important;background: transparent !important;}
-    .debts-table .paid-cell,.debts-table .remain-cell {font-size: 5.5pt !important;padding: 1pt !important;}
-    .debts-table tr.expanded-year-row td{background:#eef2ff !important;border:1px solid #999 !important;font-size:5.5pt !important;padding:1pt !important}
-    .debts-table .year-label-badge,.debts-table .active-year-badge{font-size:5pt !important;padding:1pt 3pt !important}
-    .debts-month-table {min-width: 0 !important;width: 100% !important;table-layout: fixed !important;font-size: 5.5pt !important;}
-    .debts-month-table th {padding: 2pt 1pt !important;font-size: 5.5pt !important;white-space: normal !important;}
-    .debts-month-table td {padding: 1.5pt 1pt !important;font-size: 5.5pt !important;}
-    .debts-month-table input[type="number"] {width: 100% !important;font-size: 5.5pt !important;padding: 1pt !important;min-width: 0 !important;}
-    .debts-month-table input[type="text"] {font-size: 5pt !important;padding: 1pt !important;}
-    .debts-month-table select {width: 100% !important;font-size: 5pt !important;padding: 1pt !important;}
-    .target-table {min-width: 0 !important;width: 100% !important;table-layout: fixed !important;font-size: 6pt !important;}
-    .target-table th {padding: 2pt 1pt !important;font-size: 6pt !important;white-space: normal !important;}
-    .target-table td {padding: 2pt 1pt !important;font-size: 6pt !important;}
-    .target-table .target-input,.target-table .target-note {font-size: 6pt !important;padding: 1pt !important;min-width: 0 !important;width: 100% !important;}
-    .expense-table {min-width: 0 !important;width: 100% !important;}
-    .expense-table th,.expense-table td {padding: 2pt 2pt !important;font-size: 6pt !important;}
-    .expense-table input,.expense-table select {font-size: 6pt !important;padding: 1pt !important;}
-    #yearsTable, #annualTable, #dashTable, #yearsDistTable, #pyramidTable {min-width: 0 !important;width: 100% !important;table-layout: fixed !important;font-size: 6pt !important;}
-    #yearsTable th, #yearsTable td, #annualTable th, #annualTable td, #dashTable th, #dashTable td, #yearsDistTable th, #yearsDistTable td, #pyramidTable th, #pyramidTable td {padding: 1.5pt 1pt !important;font-size: 6pt !important;white-space: normal !important;word-break: break-word;}
-    .pyramid-year-table{min-width:0 !important;width:100% !important;table-layout:fixed !important;font-size:5.5pt !important}
-    .pyramid-year-table th,.pyramid-year-table td{padding:1pt 0.5pt !important;font-size:5.5pt !important;white-space:normal !important}
-    #avgContainer .pyramid-year-block{page-break-inside:avoid}
-    #avgContainer .pyramid-year-table{min-width:0 !important;width:100% !important;table-layout:fixed !important;font-size:5.5pt !important}
-    #avgContainer .pyramid-year-table th,#avgContainer .pyramid-year-table td{padding:1pt 0.5pt !important;font-size:5pt !important;white-space:normal !important}
-    .profit-toggle-btn{background:#f5f5f5 !important;color:#000 !important;border:1px solid #666 !important;box-shadow:none !important;font-size:8pt !important;padding:4pt !important}
-    .rp-points-cell{color:#78350f !important;font-weight:800 !important}
-  }
+.profit-toggle-btn{
+  width:100%;padding:10px 14px;font-size:14px;font-weight:800;
+  border-radius:8px;cursor:pointer;transition:all .2s;
+  letter-spacing:.3px;font-family:inherit;border:2px solid;
+}
+.profit-toggle-btn.profit-yes{
+  background:linear-gradient(180deg,#22c55e,#15803d);
+  color:#fff;border-color:#22c55e;
+  box-shadow:0 0 0 3px rgba(34,197,94,.18);
+}
+.profit-toggle-btn.profit-yes:hover{
+  background:linear-gradient(180deg,#16a34a,#14532d);
+  transform:translateY(-1px);
+  box-shadow:0 0 0 4px rgba(34,197,94,.25);
+}
+.profit-toggle-btn.profit-no{
+  background:linear-gradient(180deg,#ef4444,#991b1b);
+  color:#fff;border-color:#ef4444;
+  box-shadow:0 0 0 3px rgba(239,68,68,.18);
+}
+.profit-toggle-btn.profit-no:hover{
+  background:linear-gradient(180deg,#dc2626,#7f1d1d);
+  transform:translateY(-1px);
+  box-shadow:0 0 0 4px rgba(239,68,68,.25);
+}
+.rp-points-cell{
+  font-family:monospace;font-weight:800;direction:ltr;
+  text-align:center;color:var(--gold);font-size:15px;
+  letter-spacing:-.3px;
+}
+#lblReportFather{font-size:22px !important;font-weight:700;color:var(--gold) !important}
+#rpFather{font-size:22px !important;font-weight:700;text-align:center}
 
-  /* ═══════════════════════════════════════════════════════════════
-     ⭐ زر الانتقال السريع — تصميم FAB أنيق (أسفل يسار)
-     ═══════════════════════════════════════════════════════════════ */
-  .quick-nav-btn{
-    position: fixed;
-    left: 24px;
-    bottom: 28px;
-    width: 64px;
-    height: 64px;
-    border-radius: 22px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2), #8b5cf6);
-    background-size: 200% 200%;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-size: 26px;
-    z-index: 250;
+@media print{
+  *{-webkit-print-color-adjust: exact !important;print-color-adjust: exact !important;color-adjust: exact !important;}
+  @page{size: A4 portrait;margin:10mm 8mm}
+  html,body{background:#fff !important;color:#000 !important;font-size:10pt !important}
+  header,nav.tabs,.toolbar,.settings-bar,.btn,.icon-btn,.toast,.monthPills,.site-footer,.modal,.eid-type-inline,.year-picker,.save-indicator,.print-section,.noprint{display:none !important}
+  main{padding:0 !important;max-width:100% !important;width:100% !important}
+  .view{display:none !important}.view.active{display:block !important}
+  .card{break-inside:avoid;page-break-inside:avoid;border:1px solid #999 !important;background:#fff !important;box-shadow:none !important;padding:8pt !important;margin-bottom:6pt !important;border-radius:4pt}
+  .card h2{color:#000 !important;border-bottom:1.5px solid #333 !important;padding-bottom:3pt;margin-bottom:6pt;font-size:11pt}
+  .card h2::before{color:#000 !important}
+  .salary-card{border:2px solid #78350f !important;background:#fffbeb !important}
+  .salary-card h2{color:#78350f !important}
+  .kpi{background:#f5f5f5 !important;border:1px solid #999 !important;padding:5pt !important;border-radius:3pt}
+  .kpi .lbl{color:#333 !important;font-size:7pt}.kpi .val{color:#000 !important;font-size:11pt}
+  .kpi .val.pos{color:#166534 !important}.kpi .val.neg{color:#991b1b !important}
+  .kpi .val.gold{color:#78350f !important}.kpi .val.acc{color:#0e7490 !important}
+  table{font-size:8pt !important}
+  th{background:#eee !important;color:#000 !important;padding:3pt !important}
+  td{color:#000 !important;padding:3pt !important;border-color:#ccc !important}
+  input,select,textarea{border:none !important;background:transparent !important;color:#000 !important;padding:0 !important;font-size:8pt !important;font-weight:600 !important;-webkit-appearance:none;appearance:none}
+  input[type="number"]{text-align:center}
+  .meat-status{border:1px solid #666 !important;background:#f5f5f5 !important;color:#000 !important;padding:3pt !important;font-size:8pt !important}
+  .pyramid-wrap{background:#fff !important;border:1px solid #ccc !important}
+  .pyramid-svg text{fill:#000 !important}
+  .muted,.notice-bhd,.notice-int{color:#444 !important;background:#f8f8f8 !important;border-color:#bbb !important}
+  .year-chart{background:#fff !important;border:1px solid #ccc !important;overflow:visible !important;min-height:auto !important;padding:10pt !important}
+  .year-bar-wrap{min-width:60pt !important}
+  .year-bar-group{height:150pt !important}
+  .year-bar{min-height:2pt !important}
+  .year-bar.inc{background:#0d9488 !important;border:1px solid #0f766e !important}
+  .year-bar.exp{background:#991b1b !important;border:1px solid #7f1d1d !important}
+  .year-bar.sav{background:#92400e !important;border:1px solid #78350f !important}
+  .year-bar.rem{background:#1e40af !important;border:1px solid #1e3a8a !important}
+  .print-header,.print-footer{display:block !important}
+  .print-header{text-align:center;padding-bottom:6pt;margin-bottom:10pt;border-bottom:3px double #000}
+  .print-header h1{color:#000 !important;font-size:16pt;margin-bottom:3pt}
+  .print-header .subtitle{color:#444;font-size:9pt;margin-bottom:2pt}
+  .print-header .meta{color:#666;font-size:8pt}
+  .print-header .logo-m{display:inline-block;width:22pt;height:22pt;line-height:22pt;border-radius:50%;background:#0e7490;color:#fff;font-weight:900;font-size:11pt;text-align:center;margin:0 auto 5pt}
+  .print-footer{text-align:center;padding-top:5pt;margin-top:10pt;border-top:1px solid #999;color:#444;font-size:8pt}
+  .print-footer strong{color:#0e7490}
+  .mr-section-title{color:#000 !important;background:#eee !important;border-right-color:#000 !important}
+  .mr-divider{background:#999 !important}
+  .last-pay-date{color:#166534 !important;background:#e0f2e9 !important;border-color:#166534 !important;font-size:7pt !important}
+  .last-pay-amount{background:#166534 !important;color:#fff !important;font-size:7pt !important}
+  .last-pay-prior{font-size:7pt !important}
+  .progress-bar{background:#eee !important;border:1px solid #999 !important}
+  .progress-fill{background:#0891b2 !important}
+  .expense-table tr.main-row{background:#f5f5f5 !important}
+  .expense-table tr.extra-row{background:#fafafa !important;border-right:2px solid #666 !important}
+  .debts-table-wrap,.expense-table-wrap,.debts-month-wrap,.target-table-wrap {overflow: visible !important;border: none !important;width: 100% !important;}
+  .debts-table{min-width: 0 !important;width: 100% !important;table-layout: fixed !important;font-size: 5.5pt !important;word-break: break-word;}
+  .debts-table thead {position: static !important;}
+  .debts-table th {padding: 1.5pt 0.5pt !important;font-size: 5pt !important;line-height: 1.1 !important;word-break: break-word;white-space: normal !important;overflow: hidden;}
+  .debts-table td {padding: 1pt 0.3pt !important;font-size: 5.5pt !important;line-height: 1.1 !important;}
+  .debts-table input[type="number"] {width: 100% !important;font-size: 5.5pt !important;padding: 1pt 0 !important;min-width: 0 !important;border: none !important;background: transparent !important;}
+  .debts-table .inline-input {font-size: 5.5pt !important;padding: 1pt !important;min-width: 0 !important;width: 100% !important;border: none !important;background: transparent !important;}
+  .debts-table .inline-input.name {min-width: 0 !important;font-size: 5.5pt !important;}
+  .debts-table .inline-input.num {min-width: 0 !important;font-size: 5.5pt !important;}
+  .debts-table .inline-input.notes {min-width: 0 !important;font-size: 5pt !important;}
+  .debts-table .inline-select {font-size: 5pt !important;padding: 1pt !important;border: none !important;background: transparent !important;}
+  .debts-table .paid-cell,.debts-table .remain-cell {font-size: 5.5pt !important;padding: 1pt !important;}
+  .debts-table tr.expanded-year-row td{background:#eef2ff !important;border:1px solid #999 !important;font-size:5.5pt !important;padding:1pt !important}
+  .debts-table .year-label-badge,.debts-table .active-year-badge{font-size:5pt !important;padding:1pt 3pt !important}
+  .debts-month-table {min-width: 0 !important;width: 100% !important;table-layout: fixed !important;font-size: 5.5pt !important;}
+  .debts-month-table th {padding: 2pt 1pt !important;font-size: 5.5pt !important;white-space: normal !important;}
+  .debts-month-table td {padding: 1.5pt 1pt !important;font-size: 5.5pt !important;}
+  .debts-month-table input[type="number"] {width: 100% !important;font-size: 5.5pt !important;padding: 1pt !important;min-width: 0 !important;}
+  .debts-month-table input[type="text"] {font-size: 5pt !important;padding: 1pt !important;}
+  .debts-month-table select {width: 100% !important;font-size: 5pt !important;padding: 1pt !important;}
+  .target-table {min-width: 0 !important;width: 100% !important;table-layout: fixed !important;font-size: 6pt !important;}
+  .target-table th {padding: 2pt 1pt !important;font-size: 6pt !important;white-space: normal !important;}
+  .target-table td {padding: 2pt 1pt !important;font-size: 6pt !important;}
+  .target-table .target-input,.target-table .target-note {font-size: 6pt !important;padding: 1pt !important;min-width: 0 !important;width: 100% !important;}
+  .expense-table {min-width: 0 !important;width: 100% !important;}
+  .expense-table th,.expense-table td {padding: 2pt 2pt !important;font-size: 6pt !important;}
+  .expense-table input,.expense-table select {font-size: 6pt !important;padding: 1pt !important;}
+  #yearsTable, #annualTable, #dashTable, #yearsDistTable, #pyramidTable {min-width: 0 !important;width: 100% !important;table-layout: fixed !important;font-size: 6pt !important;}
+  #yearsTable th, #yearsTable td, #annualTable th, #annualTable td, #dashTable th, #dashTable td, #yearsDistTable th, #yearsDistTable td, #pyramidTable th, #pyramidTable td {padding: 1.5pt 1pt !important;font-size: 6pt !important;white-space: normal !important;word-break: break-word;}
+  .pyramid-year-table{min-width:0 !important;width:100% !important;table-layout:fixed !important;font-size:5.5pt !important}
+  .pyramid-year-table th,.pyramid-year-table td{padding:1pt 0.5pt !important;font-size:5.5pt !important;white-space:normal !important}
+  #avgContainer .pyramid-year-block{page-break-inside:avoid}
+  #avgContainer .pyramid-year-table{min-width:0 !important;width:100% !important;table-layout:fixed !important;font-size:5.5pt !important}
+  #avgContainer .pyramid-year-table th,#avgContainer .pyramid-year-table td{padding:1pt 0.5pt !important;font-size:5pt !important;white-space:normal !important}
+  .profit-toggle-btn{background:#f5f5f5 !important;color:#000 !important;border:1px solid #666 !important;box-shadow:none !important;font-size:8pt !important;padding:4pt !important}
+  .rp-points-cell{color:#78350f !important;font-weight:800 !important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ⭐ زر الانتقال السريع — تصميم FAB أنيق (أسفل يسار)
+   ═══════════════════════════════════════════════════════════════ */
+.quick-nav-btn{
+  position: fixed;
+  left: 24px;
+  bottom: 28px;
+  width: 64px;
+  height: 64px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2), #8b5cf6);
+  background-size: 200% 200%;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 26px;
+  z-index: 250;
+  box-shadow:
+    0 8px 24px rgba(34,193,164,.45),
+    0 0 0 0 rgba(34,193,164,.6),
+    inset 0 1px 0 rgba(255,255,255,.25);
+  transition: all .35s cubic-bezier(.34,1.56,.64,1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-family: inherit;
+  line-height: 1;
+  animation: quickNavPulse 2.5s infinite;
+}
+.quick-nav-btn::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,.2), transparent 60%);
+  pointer-events: none;
+  opacity: .7;
+}
+.quick-nav-btn::after{
+  content: "انتقال سريع";
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 6px 12px;
+  background: var(--panel);
+  color: var(--txt);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all .2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,.25);
+}
+.quick-nav-btn:hover::after{
+  opacity: 1;
+  left: calc(100% + 16px);
+}
+.quick-nav-btn:hover{
+  transform: translateY(-4px) scale(1.06);
+  box-shadow:
+    0 14px 32px rgba(34,193,164,.65),
+    0 0 0 8px rgba(34,193,164,.12),
+    inset 0 1px 0 rgba(255,255,255,.3);
+  animation: none;
+}
+.quick-nav-btn:active{
+  transform: translateY(-2px) scale(.98);
+  transition: all .1s;
+}
+.quick-nav-btn.active{
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  transform: translateY(-4px) rotate(360deg) scale(1.06);
+  box-shadow:
+    0 14px 32px rgba(239,68,68,.55),
+    0 0 0 8px rgba(239,68,68,.15);
+  animation: none;
+}
+.quick-nav-btn.active::before{
+  background: linear-gradient(135deg, rgba(255,255,255,.2), transparent 60%);
+}
+
+@keyframes quickNavPulse{
+  0%, 100%{
     box-shadow:
       0 8px 24px rgba(34,193,164,.45),
-      0 0 0 0 rgba(34,193,164,.6),
+      0 0 0 0 rgba(34,193,164,.55),
       inset 0 1px 0 rgba(255,255,255,.25);
-    transition: all .35s cubic-bezier(.34,1.56,.64,1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    font-family: inherit;
-    line-height: 1;
-    animation: quickNavPulse 2.5s infinite;
   }
-  .quick-nav-btn::before{
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(135deg, rgba(255,255,255,.2), transparent 60%);
-    pointer-events: none;
-    opacity: .7;
+  50%{
+    box-shadow:
+      0 8px 24px rgba(34,193,164,.5),
+      0 0 0 14px rgba(34,193,164,0),
+      inset 0 1px 0 rgba(255,255,255,.25);
+  }
+}
+
+.quick-nav-menu{
+  position: fixed;
+  left: 100px;
+  bottom: 28px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 10px;
+  z-index: 249;
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.55),
+    0 0 0 1px rgba(34,193,164,.3),
+    inset 0 1px 0 rgba(255,255,255,.05);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-40px) scale(.9);
+  transform-origin: bottom left;
+  transition: all .35s cubic-bezier(.34,1.56,.64,1);
+  min-width: 290px;
+  max-width: 340px;
+  max-height: 75vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.quick-nav-menu.show{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0) scale(1);
+}
+.quick-nav-menu::before{
+  content: "";
+  position: absolute;
+  left: -8px;
+  bottom: 28px;
+  width: 16px;
+  height: 16px;
+  background: var(--panel);
+  border-left: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  transform: rotate(45deg);
+  box-shadow: -4px 4px 12px rgba(0,0,0,.2);
+}
+.quick-nav-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px 12px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 6px;
+  font-weight: 800;
+  color: var(--accent);
+  font-size: 14px;
+  letter-spacing: .3px;
+  flex-shrink: 0;
+}
+.quick-nav-close{
+  background: rgba(143,163,184,.1);
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .25s ease;
+  padding: 0;
+}
+.quick-nav-close:hover{
+  background: var(--danger);
+  color: #fff;
+  transform: rotate(90deg) scale(1.1);
+}
+.quick-nav-list{
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow-y: auto;
+  padding: 2px;
+  scrollbar-width: thin;
+}
+.quick-nav-list::-webkit-scrollbar{
+  width: 6px;
+}
+.quick-nav-list::-webkit-scrollbar-thumb{
+  background: var(--line);
+  border-radius: 3px;
+}
+.quick-nav-item{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--txt);
+  cursor: pointer;
+  transition: all .2s cubic-bezier(.4,0,.2,1);
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  text-align: start;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.quick-nav-item::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(34,193,164,.15), transparent);
+  opacity: 0;
+  transition: opacity .2s;
+  pointer-events: none;
+}
+.quick-nav-item:hover{
+  background: rgba(34,193,164,.08);
+  border-color: rgba(34,193,164,.4);
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(34,193,164,.15);
+}
+.quick-nav-item:hover::before{
+  opacity: 1;
+}
+.quick-nav-item.active{
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  border-color: transparent;
+  font-weight: 700;
+  box-shadow:
+    0 4px 14px rgba(34,193,164,.4),
+    inset 0 1px 0 rgba(255,255,255,.25);
+}
+.quick-nav-item.active::after{
+  content: "✓";
+  margin-inline-start: auto;
+  font-weight: 900;
+  color: #fff;
+  font-size: 15px;
+  background: rgba(255,255,255,.2);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px){
+  .quick-nav-btn{
+    left: 14px;
+    bottom: 18px;
+    width: 54px;
+    height: 54px;
+    font-size: 22px;
+    border-radius: 18px;
   }
   .quick-nav-btn::after{
-    content: "انتقال سريع";
-    position: absolute;
-    left: calc(100% + 12px);
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 6px 12px;
-    background: var(--panel);
-    color: var(--txt);
-    border: 1px solid var(--accent);
-    border-radius: 8px;
-    font-size: 11px;
-    font-weight: 700;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: all .2s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    display: none;
   }
-  .quick-nav-btn:hover::after{
-    opacity: 1;
-    left: calc(100% + 16px);
-  }
-  .quick-nav-btn:hover{
-    transform: translateY(-4px) scale(1.06);
-    box-shadow:
-      0 14px 32px rgba(34,193,164,.65),
-      0 0 0 8px rgba(34,193,164,.12),
-      inset 0 1px 0 rgba(255,255,255,.3);
-    animation: none;
-  }
-  .quick-nav-btn:active{
-    transform: translateY(-2px) scale(.98);
-    transition: all .1s;
-  }
-  .quick-nav-btn.active{
-    background: linear-gradient(135deg, #ef4444, #b91c1c);
-    transform: translateY(-4px) rotate(360deg) scale(1.06);
-    box-shadow:
-      0 14px 32px rgba(239,68,68,.55),
-      0 0 0 8px rgba(239,68,68,.15);
-    animation: none;
-  }
-  .quick-nav-btn.active::before{
-    background: linear-gradient(135deg, rgba(255,255,255,.2), transparent 60%);
-  }
-
-  @keyframes quickNavPulse{
-    0%, 100%{
-      box-shadow:
-        0 8px 24px rgba(34,193,164,.45),
-        0 0 0 0 rgba(34,193,164,.55),
-        inset 0 1px 0 rgba(255,255,255,.25);
-    }
-    50%{
-      box-shadow:
-        0 8px 24px rgba(34,193,164,.5),
-        0 0 0 14px rgba(34,193,164,0),
-        inset 0 1px 0 rgba(255,255,255,.25);
-    }
-  }
-
   .quick-nav-menu{
-    position: fixed;
-    left: 100px;
-    bottom: 28px;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    padding: 10px;
-    z-index: 249;
-    box-shadow:
-      0 20px 60px rgba(0,0,0,.55),
-      0 0 0 1px rgba(34,193,164,.3),
-      inset 0 1px 0 rgba(255,255,255,.05);
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(-40px) scale(.9);
-    transform-origin: bottom left;
-    transition: all .35s cubic-bezier(.34,1.56,.64,1);
-    min-width: 290px;
-    max-width: 340px;
-    max-height: 75vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-  .quick-nav-menu.show{
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateX(0) scale(1);
-  }
-  .quick-nav-menu::before{
-    content: "";
-    position: absolute;
-    left: -8px;
-    bottom: 28px;
-    width: 16px;
-    height: 16px;
-    background: var(--panel);
-    border-left: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    transform: rotate(45deg);
-    box-shadow: -4px 4px 12px rgba(0,0,0,.2);
-  }
-  .quick-nav-header{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px 12px;
-    border-bottom: 1px solid var(--line);
-    margin-bottom: 6px;
-    font-weight: 800;
-    color: var(--accent);
-    font-size: 14px;
-    letter-spacing: .3px;
-    flex-shrink: 0;
-  }
-  .quick-nav-close{
-    background: rgba(143,163,184,.1);
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 14px;
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all .25s ease;
-    padding: 0;
-  }
-  .quick-nav-close:hover{
-    background: var(--danger);
-    color: #fff;
-    transform: rotate(90deg) scale(1.1);
-  }
-  .quick-nav-list{
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    overflow-y: auto;
-    padding: 2px;
-    scrollbar-width: thin;
-  }
-  .quick-nav-list::-webkit-scrollbar{
-    width: 6px;
-  }
-  .quick-nav-list::-webkit-scrollbar-thumb{
-    background: var(--line);
-    border-radius: 3px;
+    left: 80px;
+    bottom: 18px;
+    min-width: 240px;
+    max-width: 280px;
   }
   .quick-nav-item{
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    background: transparent;
-    border: 1px solid transparent;
-    color: var(--txt);
-    cursor: pointer;
-    transition: all .2s cubic-bezier(.4,0,.2,1);
-    font-size: 13px;
-    font-family: inherit;
-    font-weight: 500;
-    text-align: start;
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-  }
-  .quick-nav-item::before{
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, rgba(34,193,164,.15), transparent);
-    opacity: 0;
-    transition: opacity .2s;
-    pointer-events: none;
-  }
-  .quick-nav-item:hover{
-    background: rgba(34,193,164,.08);
-    border-color: rgba(34,193,164,.4);
-    transform: translateX(4px);
-    box-shadow: 0 2px 8px rgba(34,193,164,.15);
-  }
-  .quick-nav-item:hover::before{
-    opacity: 1;
-  }
-  .quick-nav-item.active{
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #fff;
-    border-color: transparent;
-    font-weight: 700;
-    box-shadow:
-      0 4px 14px rgba(34,193,164,.4),
-      inset 0 1px 0 rgba(255,255,255,.25);
-  }
-  .quick-nav-item.active::after{
-    content: "✓";
-    margin-inline-start: auto;
-    font-weight: 900;
-    color: #fff;
-    font-size: 15px;
-    background: rgba(255,255,255,.2);
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  @media (max-width: 600px){
-    .quick-nav-btn{
-      left: 14px;
-      bottom: 18px;
-      width: 54px;
-      height: 54px;
-      font-size: 22px;
-      border-radius: 18px;
-    }
-    .quick-nav-btn::after{
-      display: none;
-    }
-    .quick-nav-menu{
-      left: 80px;
-      bottom: 18px;
-      min-width: 240px;
-      max-width: 280px;
-    }
-    .quick-nav-item{
-      padding: 10px 12px;
-      font-size: 12px;
-    }
-  }
-
-  @media print{
-    .quick-nav-btn, .quick-nav-menu{ display: none !important; }
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     ⏰ نظام التذكيرات — الأنماط الكاملة
-     ═══════════════════════════════════════════════════════════════ */
-  .reminders-btn{
-    position: fixed;
-    left: 24px;
-    bottom: 108px;
-    width: 64px;
-    height: 64px;
-    border-radius: 22px;
-    background: linear-gradient(135deg, #f59e0b, #dc2626);
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-size: 26px;
-    z-index: 250;
-    box-shadow: 0 8px 24px rgba(220,38,38,.45), inset 0 1px 0 rgba(255,255,255,.25);
-    transition: all .35s cubic-bezier(.34,1.56,.64,1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    font-family: inherit;
-    line-height: 1;
-  }
-  .reminders-btn:hover{
-    transform: translateY(-4px) scale(1.06);
-    box-shadow: 0 14px 32px rgba(220,38,38,.65), 0 0 0 8px rgba(220,38,38,.12);
-  }
-  .reminders-btn:active{ transform: translateY(-2px) scale(.98); }
-  .reminders-badge{
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    background: #ef4444;
-    color: #fff;
-    border: 2px solid var(--panel);
-    border-radius: 12px;
-    min-width: 22px;
-    height: 22px;
-    padding: 0 6px;
-    font-size: 11px;
-    font-weight: 900;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Segoe UI', sans-serif;
-    box-shadow: 0 2px 6px rgba(0,0,0,.3);
-  }
-  @media (max-width: 600px){
-    .reminders-btn{
-      left: 14px;
-      bottom: 84px;
-      width: 54px;
-      height: 54px;
-      font-size: 22px;
-      border-radius: 18px;
-    }
-  }
-  .reminder-form{
-    background: var(--panel2);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 14px;
-    margin-bottom: 14px;
-  }
-  .reminders-list{
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-height: 420px;
-    overflow-y: auto;
-  }
-  .reminder-item{
-    background: var(--panel2);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 12px 14px;
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    transition: .2s;
-  }
-  .reminder-item.due{
-    border-color: var(--danger);
-    background: rgba(239,68,68,.08);
-    animation: reminderPulse 2s infinite;
-  }
-  .reminder-item.done{
-    opacity: .55;
-    border-color: var(--ok);
-    background: rgba(34,197,94,.06);
-  }
-  .reminder-item:hover{
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px var(--shadow);
-  }
-  .reminder-icon{
-    font-size: 22px;
-    flex-shrink: 0;
-    line-height: 1;
-  }
-  .reminder-content{
-    flex: 1;
-    min-width: 0;
-  }
-  .reminder-datetime{
-    font-family: monospace;
-    font-weight: 800;
-    font-size: 13px;
-    color: var(--accent2);
-    direction: ltr;
-    text-align: start;
-    margin-bottom: 4px;
-  }
-  .reminder-item.due .reminder-datetime{ color: var(--danger); }
-  .reminder-item.done .reminder-datetime{ color: var(--ok); text-decoration: line-through; }
-  .reminder-note-text{
-    font-size: 13px;
-    color: var(--txt);
-    word-break: break-word;
-    white-space: pre-wrap;
-    line-height: 1.5;
-  }
-  .reminder-status-badge{
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 10px;
-    margin-top: 6px;
-  }
-  .reminder-status-badge.due{ background: var(--danger); color: #fff; }
-  .reminder-status-badge.upcoming{ background: var(--accent2); color: #fff; }
-  .reminder-status-badge.done{ background: var(--ok); color: #fff; }
-  .reminder-actions{
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex-shrink: 0;
-  }
-  .reminders-empty{
-    text-align: center;
-    padding: 24px;
-    color: var(--muted);
-    font-style: italic;
-    font-size: 13px;
-    background: var(--panel2);
-    border: 1px dashed var(--line);
-    border-radius: 10px;
-  }
-  @keyframes reminderPulse{
-    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,.4); }
-    50% { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
-  }
-  .reminder-popup{
-    position: fixed;
-    top: 80px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-120%);
-    width: min(92vw, 440px);
-    background: var(--panel);
-    border: 2px solid #f59e0b;
-    border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0,0,0,.55), 0 0 0 4px rgba(245,158,11,.15);
-    z-index: 350;
-    opacity: 0;
-    pointer-events: none;
-    transition: all .4s cubic-bezier(.34,1.56,.64,1);
-    overflow: hidden;
-  }
-  .reminder-popup.show{
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateX(-50%) translateY(0);
-  }
-  .reminder-popup-header{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    background: linear-gradient(135deg, #f59e0b, #dc2626);
-    color: #fff;
-  }
-  .reminder-popup-icon{
-    font-size: 22px;
-    animation: bellRing 1s infinite;
-  }
-  @keyframes bellRing{
-    0%, 100% { transform: rotate(0); }
-    25% { transform: rotate(15deg); }
-    75% { transform: rotate(-15deg); }
-  }
-  .reminder-popup-header strong{
-    flex: 1;
-    font-size: 15px;
-    font-weight: 800;
-  }
-  .reminder-popup-close{
-    background: rgba(255,255,255,.2);
-    border: none;
-    color: #fff;
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: .2s;
-  }
-  .reminder-popup-close:hover{
-    background: rgba(255,255,255,.35);
-    transform: rotate(90deg);
-  }
-  .reminder-popup-body{ padding: 16px; }
-  .reminder-popup-date{
-    font-family: monospace;
-    font-size: 14px;
-    font-weight: 800;
-    color: var(--gold);
-    direction: ltr;
-    text-align: start;
-    margin-bottom: 10px;
-    padding: 8px 12px;
-    background: rgba(234,179,8,.1);
-    border: 1px solid rgba(234,179,8,.35);
-    border-radius: 8px;
-    line-height: 1.5;
-  }
-  .reminder-popup-note{
-    font-size: 15px;
-    color: var(--txt);
-    line-height: 1.6;
-    white-space: pre-wrap;
-    word-break: break-word;
     padding: 10px 12px;
-    background: var(--panel2);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    border-inline-start: 4px solid var(--accent);
+    font-size: 12px;
   }
-  .reminder-popup-actions{
-    display: flex;
-    gap: 8px;
-    padding: 0 16px 16px;
-  }
-  @media (max-width: 600px){
-    .reminder-popup{
-      top: 70px;
-      width: calc(100vw - 24px);
-    }
-  }
-  @media print{
-    .reminders-btn, .reminder-popup{ display: none !important; }
-  }
+}
 
-  /* ═══════════════════════════════════════════════════════════════
-     ⭐ [جديد] أنماط احتياطي البنوك
-     ═══════════════════════════════════════════════════════════════ */
-  .bank-row-main{
-    transition: all .2s;
-  }
-  .bank-row-main:hover{
-    background: rgba(59,130,246,.05) !important;
-  }
-  .bank-row-main.has-amount{
-    background: rgba(59,130,246,.04);
-  }
-  .bank-name-select{
-    background: var(--panel2);
-    border: 1px solid var(--line);
-    color: var(--txt);
-    padding: 9px 12px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 700;
-    outline: none;
-    transition: .2s;
-    font-family: inherit;
-    width: 100%;
-    cursor: pointer;
-  }
-  .bank-name-select:focus{
-    border-color: var(--accent2);
-    box-shadow: 0 0 0 3px rgba(59,130,246,.2);
-  }
-  .bank-amount-input{
-    background: var(--panel2);
-    border: 2px solid var(--line);
-    color: var(--accent2);
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 800;
-    outline: none;
-    transition: .2s;
-    font-family: monospace;
-    text-align: center;
-    width: 100%;
-  }
-  .bank-amount-input:focus{
-    border-color: var(--accent2);
-    box-shadow: 0 0 0 3px rgba(59,130,246,.2);
-    background: var(--bg);
-  }
-  .bank-amount-input:not(:placeholder-shown){
-    color: var(--gold);
-  }
-  .bank-add-name-btn{
-    background: rgba(59,130,246,.15);
-    border: 1px dashed var(--accent2);
-    color: var(--accent2);
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 900;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: .2s;
-    padding: 0;
-    flex-shrink: 0;
-  }
-  .bank-add-name-btn:hover{
-    background: var(--accent2);
-    color: #fff;
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(59,130,246,.35);
-  }
-  .banks-total-row{
-    background: linear-gradient(90deg, rgba(234,179,8,.18), rgba(59,130,246,.15)) !important;
-    font-weight: 800;
-    border-top: 3px solid var(--gold) !important;
-  }
-  .banks-total-row td{
-    padding: 14px 12px !important;
-    font-size: 15px;
-    color: var(--gold) !important;
-  }
-  .banks-total-row .banks-total-amount{
-    font-family: monospace;
+@media print{
+  .quick-nav-btn, .quick-nav-menu{ display: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ⏰ نظام التذكيرات — الأنماط الكاملة
+   ═══════════════════════════════════════════════════════════════ */
+.reminders-btn{
+  position: fixed;
+  left: 24px;
+  bottom: 108px;
+  width: 64px;
+  height: 64px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #f59e0b, #dc2626);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 26px;
+  z-index: 250;
+  box-shadow: 0 8px 24px rgba(220,38,38,.45), inset 0 1px 0 rgba(255,255,255,.25);
+  transition: all .35s cubic-bezier(.34,1.56,.64,1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-family: inherit;
+  line-height: 1;
+}
+.reminders-btn:hover{
+  transform: translateY(-4px) scale(1.06);
+  box-shadow: 0 14px 32px rgba(220,38,38,.65), 0 0 0 8px rgba(220,38,38,.12);
+}
+.reminders-btn:active{ transform: translateY(-2px) scale(.98); }
+.reminders-badge{
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ef4444;
+  color: #fff;
+  border: 2px solid var(--panel);
+  border-radius: 12px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+}
+@media (max-width: 600px){
+  .reminders-btn{
+    left: 14px;
+    bottom: 84px;
+    width: 54px;
+    height: 54px;
     font-size: 22px;
-    font-weight: 900;
-    color: var(--gold);
-    direction: ltr;
-    text-align: center;
-    letter-spacing: -.5px;
+    border-radius: 18px;
   }
-  @media print{
-    .bank-add-name-btn{ display: none !important; }
-    .bank-name-select, .bank-amount-input{
-      border: none !important;
-      background: transparent !important;
-      padding: 2pt !important;
-      font-size: 8pt !important;
-    }
+}
+.reminder-form{
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.reminders-list{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+.reminder-item{
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transition: .2s;
+}
+.reminder-item.due{
+  border-color: var(--danger);
+  background: rgba(239,68,68,.08);
+  animation: reminderPulse 2s infinite;
+}
+.reminder-item.done{
+  opacity: .55;
+  border-color: var(--ok);
+  background: rgba(34,197,94,.06);
+}
+.reminder-item:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+.reminder-icon{
+  font-size: 22px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.reminder-content{
+  flex: 1;
+  min-width: 0;
+}
+.reminder-datetime{
+  font-family: monospace;
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--accent2);
+  direction: ltr;
+  text-align: start;
+  margin-bottom: 4px;
+}
+.reminder-item.due .reminder-datetime{ color: var(--danger); }
+.reminder-item.done .reminder-datetime{ color: var(--ok); text-decoration: line-through; }
+.reminder-note-text{
+  font-size: 13px;
+  color: var(--txt);
+  word-break: break-word;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+.reminder-status-badge{
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-top: 6px;
+}
+.reminder-status-badge.due{ background: var(--danger); color: #fff; }
+.reminder-status-badge.upcoming{ background: var(--accent2); color: #fff; }
+.reminder-status-badge.done{ background: var(--ok); color: #fff; }
+.reminder-actions{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.reminders-empty{
+  text-align: center;
+  padding: 24px;
+  color: var(--muted);
+  font-style: italic;
+  font-size: 13px;
+  background: var(--panel2);
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+}
+@keyframes reminderPulse{
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,.4); }
+  50% { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+}
+.reminder-popup{
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-120%);
+  width: min(92vw, 440px);
+  background: var(--panel);
+  border: 2px solid #f59e0b;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.55), 0 0 0 4px rgba(245,158,11,.15);
+  z-index: 350;
+  opacity: 0;
+  pointer-events: none;
+  transition: all .4s cubic-bezier(.34,1.56,.64,1);
+  overflow: hidden;
+}
+.reminder-popup.show{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.reminder-popup-header{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #f59e0b, #dc2626);
+  color: #fff;
+}
+.reminder-popup-icon{
+  font-size: 22px;
+  animation: bellRing 1s infinite;
+}
+@keyframes bellRing{
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(15deg); }
+  75% { transform: rotate(-15deg); }
+}
+.reminder-popup-header strong{
+  flex: 1;
+  font-size: 15px;
+  font-weight: 800;
+}
+.reminder-popup-close{
+  background: rgba(255,255,255,.2);
+  border: none;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: .2s;
+}
+.reminder-popup-close:hover{
+  background: rgba(255,255,255,.35);
+  transform: rotate(90deg);
+}
+.reminder-popup-body{ padding: 16px; }
+.reminder-popup-date{
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gold);
+  direction: ltr;
+  text-align: start;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: rgba(234,179,8,.1);
+  border: 1px solid rgba(234,179,8,.35);
+  border-radius: 8px;
+  line-height: 1.5;
+}
+.reminder-popup-note{
+  font-size: 15px;
+  color: var(--txt);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 10px 12px;
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  border-inline-start: 4px solid var(--accent);
+}
+.reminder-popup-actions{
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 16px;
+}
+@media (max-width: 600px){
+  .reminder-popup{
+    top: 70px;
+    width: calc(100vw - 24px);
   }
+}
+@media print{
+  .reminders-btn, .reminder-popup{ display: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ⭐ أنماط احتياطي البنوك
+   ═══════════════════════════════════════════════════════════════ */
+.bank-row-main{
+  transition: all .2s;
+}
+.bank-row-main:hover{
+  background: rgba(59,130,246,.05) !important;
+}
+.bank-row-main.has-amount{
+  background: rgba(59,130,246,.04);
+}
+.bank-name-select{
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  color: var(--txt);
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  outline: none;
+  transition: .2s;
+  font-family: inherit;
+  width: 100%;
+  cursor: pointer;
+}
+.bank-name-select:focus{
+  border-color: var(--accent2);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.2);
+}
+.bank-amount-input{
+  background: var(--panel2);
+  border: 2px solid var(--line);
+  color: var(--accent2);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 800;
+  outline: none;
+  transition: .2s;
+  font-family: monospace;
+  text-align: center;
+  width: 100%;
+}
+.bank-amount-input:focus{
+  border-color: var(--accent2);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.2);
+  background: var(--bg);
+}
+.bank-amount-input:not(:placeholder-shown){
+  color: var(--gold);
+}
+.bank-add-name-btn{
+  background: rgba(59,130,246,.15);
+  border: 1px dashed var(--accent2);
+  color: var(--accent2);
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: .2s;
+  padding: 0;
+  flex-shrink: 0;
+}
+.bank-add-name-btn:hover{
+  background: var(--accent2);
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(59,130,246,.35);
+}
+.banks-total-row{
+  background: linear-gradient(90deg, rgba(234,179,8,.18), rgba(59,130,246,.15)) !important;
+  font-weight: 800;
+  border-top: 3px solid var(--gold) !important;
+}
+.banks-total-row td{
+  padding: 14px 12px !important;
+  font-size: 15px;
+  color: var(--gold) !important;
+}
+.banks-total-row .banks-total-amount{
+  font-family: monospace;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--gold);
+  direction: ltr;
+  text-align: center;
+  letter-spacing: -.5px;
+}
+@media print{
+  .bank-add-name-btn{ display: none !important; }
+  .bank-name-select, .bank-amount-input{
+    border: none !important;
+    background: transparent !important;
+    padding: 2pt !important;
+    font-size: 8pt !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ⭐ [جديد] أنماط تبويب "كم تم السرقه مني"
+   (كل شيء يعتمد على .expense-table و .card و .kpi الموجودة،
+    أضفنا فقط تحسينات بسيطة للعناوين الفرعية داخل قسم المقارنة)
+   ═══════════════════════════════════════════════════════════════ */
+#stolen .card h3{
+  color: var(--accent2);
+  font-size: 14px;
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--line);
+}
+#stolen #lblStolenLossBefore,
+#stolen #lblStolenLossAfter{
+  display: block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+#stolen #lblStolenLossBefore{
+  background: rgba(239,68,68,.12);
+  border-right: 4px solid var(--danger);
+  color: var(--danger);
+}
+#stolen #lblStolenLossAfter{
+  background: rgba(34,197,94,.12);
+  border-right: 4px solid var(--ok);
+  color: var(--ok);
+}
+#stolen .expense-table tr.stolen-row-main{
+  background: rgba(239,68,68,.03);
+}
+#stolen .expense-table tr.stolen-row-main:hover{
+  background: rgba(239,68,68,.08);
+}
+#stolen .expense-table input[type="date"]{
+  font-family: monospace;
+  direction: ltr;
+  text-align: center;
+}
+#stolen #stolenOrigBefore,
+#stolen #stolenRemBefore,
+#stolen #stolenOrigAfter,
+#stolen #stolenMustPayAfter{
+  font-family: monospace;
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--accent2);
+  text-align: center;
+}
+#stolen #stolenRemBefore,
+#stolen #stolenOrigAfter{
+  color: var(--gold);
+}
+#stolen #stolenMustPayBefore,
+#stolen #stolenRemAfter{
+  font-family: monospace;
+  font-weight: 900;
+  font-size: 18px;
+  color: var(--danger);
+  text-align: center;
+  background: rgba(239,68,68,.08) !important;
+  border-color: var(--danger) !important;
+}
+#stolen #stolenRemAfter{
+  color: var(--ok);
+  background: rgba(34,197,94,.08) !important;
+  border-color: var(--ok) !important;
+}
+#stolen #lblStolenBank{
+  font-weight: 700;
+  color: var(--gold);
+}
+#stolen #stolenBankInput{
+  font-family: monospace;
+  font-weight: 800;
+  color: var(--gold);
+  font-size: 15px;
+  text-align: center;
+  letter-spacing: 1px;
+}
+/* شبكة المقارنة (خسران / تم الترجيع) */
+#stolen #stolenLossBeforeKpis,
+#stolen #stolenLossAfterKpis{
+  gap: 10px;
+}
+#stolen #stolenLossBeforeKpis .kpi,
+#stolen #stolenLossAfterKpis .kpi{
+  padding: 12px 8px;
+}
+#stolen #stolenLossBeforeKpis .kpi{border-color: rgba(239,68,68,.4);}
+#stolen #stolenLossAfterKpis .kpi{border-color: rgba(34,197,94,.4);}
+
+/* طباعة — تبويب السرقة */
+@media print{
+  #stolen .card h3{color:#000 !important;border-bottom-color:#999 !important}
+  #stolen #lblStolenLossBefore,
+  #stolen #lblStolenLossAfter{
+    background:#f5f5f5 !important;
+    color:#000 !important;
+    border-right:3px solid #333 !important;
+  }
+  #stolen #stolenOrigBefore,
+  #stolen #stolenRemBefore,
+  #stolen #stolenOrigAfter,
+  #stolen #stolenMustPayAfter,
+  #stolen #stolenMustPayBefore,
+  #stolen #stolenRemAfter{
+    color:#000 !important;
+    background:transparent !important;
+    border:none !important;
+    font-size:9pt !important;
+  }
+  #stolen #stolenBankInput{
+    border:none !important;
+    background:transparent !important;
+    color:#000 !important;
+    font-size:9pt !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -1195,9 +1322,10 @@
   <button data-view="pyramid" data-i18n="t_pyr">🔺 هرم الأمان المالي</button>
   <button data-view="report" data-i18n="t_report">📊 تقرير الشراكة</button>
   <button data-view="cash" data-i18n="t_cash">💰 كم لدي كاش في التجوري</button>
-  <!-- ⭐ [جديد] تبويب احتياطي البنوك -->
   <button data-view="banks" data-i18n="t_banks">🏦 احتياطي البنوك</button>
   <button data-view="eidi" data-i18n="t_eidi">🎁 توزيع العيادي</button>
+  <!-- ⭐ [جديد] تبويب كم تم السرقه مني -->
+  <button data-view="stolen" data-i18n="t_stolen">🚨 كم تم السرقه مني</button>
 </nav>
 
 <main id="mainContent">
@@ -1597,9 +1725,6 @@
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     ⭐ [جديد] قسم احتياطي مبالغ جميع البنوك
-     ═══════════════════════════════════════════════════════════════ -->
 <section id="banks" class="view">
   <div class="card" style="border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.06),transparent)">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
@@ -1666,6 +1791,118 @@
   </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     ⭐ [جديد] قسم كم تم السرقه مني — بناءً على ملف Book2.xlsx
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="stolen" class="view">
+  <div class="card" style="border:2px solid var(--danger);background:linear-gradient(180deg,rgba(239,68,68,.06),transparent)">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
+      <h2 id="lblStolenTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none;color:var(--danger)">🚨 كم تم السرقه مني</h2>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn primary" onclick="addStolenTransaction()" id="btnAddStolen" style="font-size:12px;padding:6px 12px">➕ إضافة بند</button>
+        <button class="btn danger" onclick="resetStolen()" id="btnResetStolen" style="font-size:12px;padding:6px 12px">🗑 تصفير الكل</button>
+      </div>
+    </div>
+    <p class="muted" style="margin-bottom:14px" id="lblStolenHint">أدخل كل عملية سرقة أو رسوم تحويل. سيتم حساب المجاميع تلقائياً.</p>
+
+    <div class="grid g2" style="margin-bottom:14px">
+      <div class="field">
+        <label id="lblStolenBank">🏦 اسم البنك</label>
+        <input type="text" id="stolenBankInput" oninput="updStolenBank(this.value)" placeholder="NBK">
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <div style="display:flex;gap:8px">
+          <button class="btn excel" onclick="exportStolenExcel()" style="flex:1">📊 Excel</button>
+          <button class="btn share" onclick="shareStolenPDF()" style="flex:1">📤 PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="expense-table-wrap">
+      <table class="expense-table" style="min-width:820px">
+        <thead><tr>
+          <th style="width:50px" id="thStolenIndex">#</th>
+          <th style="min-width:200px" id="thStolenType">النوع</th>
+          <th style="min-width:180px" id="thStolenAmount">المبلغ (د.ب)</th>
+          <th style="min-width:150px" id="thStolenDate">التاريخ</th>
+          <th id="thStolenNote">ملاحظة</th>
+          <th class="noprint" style="width:60px">⚙️</th>
+        </tr></thead>
+        <tbody id="stolenBody"></tbody>
+        <tfoot id="stolenFoot"></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- ملخص المبالغ -->
+  <div class="card" style="border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.06),transparent)">
+    <h2 id="lblStolenSummaryTitle" style="color:var(--gold)">📊 ملخص المبالغ</h2>
+    <div class="grid g3" id="stolenKpis"></div>
+  </div>
+
+  <!-- الوضع قبل الترجيع -->
+  <div class="card" style="border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.06),transparent)">
+    <h2 id="lblStolenBeforeTitle" style="color:var(--accent2)">💳 الوضع قبل الترجيع</h2>
+    <p class="muted" style="margin-bottom:14px" id="lblStolenBeforeHint">يجب الدفع مع السرقة</p>
+    <div class="grid g3">
+      <div class="field">
+        <label id="lblStolenOrigBefore">💰 اصل الموجود في البطاقة</label>
+        <input type="number" step="0.001" id="stolenOrigBefore" oninput="updStolenBefore('original', this.value)">
+      </div>
+      <div class="field">
+        <label id="lblStolenRemBefore">💸 المتبقي في البطاقة</label>
+        <input type="number" step="0.001" id="stolenRemBefore" oninput="updStolenBefore('remaining', this.value)">
+      </div>
+      <div class="field">
+        <label id="lblStolenMustPayBefore">🏦 يجب الدفع للبنك</label>
+        <input type="text" id="stolenMustPayBefore" readonly>
+      </div>
+    </div>
+  </div>
+
+  <!-- الوضع بعد الترجيع -->
+  <div class="card" style="border:2px solid var(--ok);background:linear-gradient(180deg,rgba(34,197,94,.06),transparent)">
+    <h2 id="lblStolenAfterTitle" style="color:var(--ok)">✅ الوضع بعد الترجيع</h2>
+    <p class="muted" style="margin-bottom:14px" id="lblStolenAfterHint">تم استرجاع المبلغ المسروق و يجب الدفع للبنك</p>
+    <div class="grid g3">
+      <div class="field">
+        <label id="lblStolenOrigAfter">💰 اصل الموجود في البطاقة</label>
+        <input type="number" step="0.001" id="stolenOrigAfter" oninput="updStolenAfter('original', this.value)">
+      </div>
+      <div class="field">
+        <label id="lblStolenMustPayAfter">💸 يجب الدفع للبنك بعد التعديل</label>
+        <input type="number" step="0.001" id="stolenMustPayAfter" oninput="updStolenAfter('mustPay', this.value)">
+      </div>
+      <div class="field">
+        <label id="lblStolenRemAfter">💰 المتبقي في البطاقة بعد التعديل</label>
+        <input type="text" id="stolenRemAfter" readonly>
+      </div>
+    </div>
+  </div>
+
+  <!-- المقارنة -->
+  <div class="card" style="border:2px solid var(--danger);background:linear-gradient(180deg,rgba(239,68,68,.08),transparent)">
+    <h2 id="lblStolenCompareTitle" style="color:var(--danger)">⚖️ المقارنة</h2>
+    <div class="grid g2">
+      <div>
+        <h3 style="color:var(--danger);font-size:14px;margin-bottom:10px" id="lblStolenLossBefore">😞 خسران (قبل الترجيع)</h3>
+        <div class="grid" id="stolenLossBeforeKpis" style="grid-template-columns:1fr 1fr"></div>
+      </div>
+      <div>
+        <h3 style="color:var(--ok);font-size:14px;margin-bottom:10px" id="lblStolenLossAfter">✅ تم الترجيع و الخصم (بعد)</h3>
+        <div class="grid" id="stolenLossAfterKpis" style="grid-template-columns:1fr 1fr"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="print-section">
+    <button class="btn primary" onclick="printCurrentView(false, 'portrait')" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn share" onclick="shareViewPDF('stolen', false, 'portrait')" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
+    <button class="btn excel" onclick="exportStolenExcel()">📊 Excel</button>
+  </div>
+</section>
+
 </main>
 
 <footer class="site-footer">
@@ -1728,7 +1965,6 @@
   </div>
 </div>
 
-<!-- ⭐ زر الانتقال السريع العائم -->
 <button id="quickNavBtn" class="quick-nav-btn" onclick="toggleQuickNav()" title="انتقال سريع بين التبويبات">☰</button>
 <div id="quickNavMenu" class="quick-nav-menu">
   <div class="quick-nav-header">
@@ -1738,13 +1974,11 @@
   <div class="quick-nav-list" id="quickNavList"></div>
 </div>
 
-<!-- ⭐ زر التذكيرات العائم -->
 <button id="remindersBtn" class="reminders-btn" onclick="openReminders()" title="التذكيرات">
   ⏰
   <span id="remindersBadge" class="reminders-badge" style="display:none">0</span>
 </button>
 
-<!-- ⭐ نافذة إدارة التذكيرات -->
 <div class="modal-overlay" id="remindersModal" onclick="if(event.target===this)closeReminders()">
   <div class="modal-content" style="max-width:640px">
     <div class="modal-header">
@@ -1774,7 +2008,6 @@
   </div>
 </div>
 
-<!-- ⭐ منبثق التنبيه -->
 <div class="reminder-popup" id="reminderPopup">
   <div class="reminder-popup-header">
     <span class="reminder-popup-icon">⏰</span>
@@ -1785,16 +2018,20 @@
     <div class="reminder-popup-date" id="reminderPopupDate"></div>
     <div class="reminder-popup-note" id="reminderPopupNote"></div>
   </div>
-<div class="reminder-popup-actions" style="flex-wrap:wrap">
-  <button class="btn success" onclick="markCurrentPopupDone()" style="flex:1;min-width:80px">✅ تم</button>
-  <button class="btn" onclick="editCurrentPopup()" style="flex:1;min-width:80px;background:var(--accent2);color:#fff;border-color:var(--accent2)">✏️ تعديل</button>
-  <button class="btn" onclick="dismissCurrentPopup()" style="flex:1;min-width:80px">إخفاء</button>
+  <div class="reminder-popup-actions" style="flex-wrap:wrap">
+    <button class="btn success" onclick="markCurrentPopupDone()" style="flex:1;min-width:80px">✅ تم</button>
+    <button class="btn" onclick="editCurrentPopup()" style="flex:1;min-width:80px;background:var(--accent2);color:#fff;border-color:var(--accent2)">✏️ تعديل</button>
+    <button class="btn" onclick="dismissCurrentPopup()" style="flex:1;min-width:80px">إخفاء</button>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
+
+
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   Capital Manager — JavaScript (3-A)
+   Capital Manager — JavaScript (القسم 3 من 3)
+   مع تبويب "كم تم السرقه مني" — الافتراضيات مصفّرة
    ═══════════════════════════════════════════════════════════════ */
 
 const I18N = {
@@ -1804,6 +2041,43 @@ const I18N = {
     t_avg:"📊 المتوسط السعري",t_pyr:"🔺 هرم الأمان المالي",t_debts:"🤝 السلف والديون و الالتزامات",
     t_annual:"📈 الملخص السنوي",t_report:"📊 تقرير الشراكة",t_cash:"💰 كم لدي كاش في التجوري",
     t_banks:"🏦 احتياطي البنوك",t_eidi:"🎁 توزيع العيادي",
+    t_stolen:"🚨 كم تم السرقه مني",
+    lblStolenTitle:"🚨 كم تم السرقه مني",
+    lblStolenHint:"أدخل كل عملية سرقة أو رسوم تحويل. سيتم حساب المجاميع تلقائياً.",
+    lblStolenBank:"🏦 اسم البنك",
+    thStolenIndex:"#",thStolenType:"النوع",thStolenAmount:"المبلغ (د.ب)",
+    thStolenDate:"التاريخ",thStolenNote:"ملاحظة",
+    lblStolenSummaryTitle:"📊 ملخص المبالغ",
+    lblStolenBeforeTitle:"💳 الوضع قبل الترجيع",
+    lblStolenBeforeHint:"يجب الدفع مع السرقة",
+    lblStolenOrigBefore:"💰 اصل الموجود في البطاقة",
+    lblStolenRemBefore:"💸 المتبقي في البطاقة",
+    lblStolenMustPayBefore:"🏦 يجب الدفع للبنك",
+    lblStolenAfterTitle:"✅ الوضع بعد الترجيع",
+    lblStolenAfterHint:"تم استرجاع المبلغ المسروق و يجب الدفع للبنك",
+    lblStolenOrigAfter:"💰 اصل الموجود في البطاقة",
+    lblStolenMustPayAfter:"💸 يجب الدفع للبنك بعد التعديل",
+    lblStolenRemAfter:"💰 المتبقي في البطاقة بعد التعديل",
+    lblStolenCompareTitle:"⚖️ المقارنة",
+    lblStolenLossBefore:"😞 خسران (قبل الترجيع)",
+    lblStolenLossAfter:"✅ تم الترجيع و الخصم (بعد)",
+    stolen_fee:"رسوم التحويل الى العمله",stolen_amount:"المبلغ",
+    stolen_kpi_fees:"💸 الرسوم فقط",
+    stolen_kpi_with_fees:"💵 المبلغ الكلي مع الرسوم",
+    stolen_kpi_without_fees:"💰 المبلغ الكلي بدون الرسوم",
+    stolen_kpi_count:"📋 عدد العمليات",
+    stolen_kpi_must_pay_before:"🏦 يجب الدفع (قبل)",
+    stolen_kpi_rem_after:"💰 المتبقي (بعد)",
+    stolen_kpi_must_pay_after:"💸 يجب الدفع (بعد)",
+    stolen_kpi_total_recovered:"✅ إجمالي الترجيع",
+    stolen_kpi_net_loss:"🎯 صافي الخسارة",
+    stolen_kpi_bank:"🏦 البنك",
+    stolen_btn_add:"➕ إضافة بند",stolen_btn_reset:"🗑 تصفير الكل",
+    stolen_reset_confirm:"تصفير جميع بيانات السرقة؟",
+    stolen_add_ok:"✅ تمت إضافة بند",stolen_reset_ok:"✅ تم التصفير",
+    stolen_delete_confirm:"حذف هذا البند؟",stolen_delete_ok:"🗑 تم الحذف",
+    stolen_type_fee:"📊 رسوم التحويل",stolen_type_amount:"💵 مبلغ",
+    stolen_excel_ok:"✅ تم تصدير Excel بنجاح",
     btn_export:"📤 تصدير",btn_import:"📥 استيراد",btn_reset:"🗑 تصفير",btn_save:"💾 حفظ",
     btn_print_page:"🖨️ طباعة هذه الصفحة",btn_print_month:"🖨️ طباعة هذا الشهر",
     btn_share_pdf:"📤 مشاركة PDF",btn_share_pdf_row:"📤 مشاركة PDF",
@@ -1963,6 +2237,43 @@ const I18N = {
     t_avg:"📊 Average Pricing",t_pyr:"🔺 Financial Safety Pyramid",t_debts:"🤝 Debts & Obligations",
     t_annual:"📈 Annual Summary",t_report:"📊 Partnership Report",t_cash:"💰 Cash in Safe",
     t_banks:"🏦 Bank Reserves",t_eidi:"🎁 Eidi Distribution",
+    t_stolen:"🚨 How much was stolen from me",
+    lblStolenTitle:"🚨 How much was stolen from me",
+    lblStolenHint:"Enter each theft or transfer fee. Totals are calculated automatically.",
+    lblStolenBank:"🏦 Bank Name",
+    thStolenIndex:"#",thStolenType:"Type",thStolenAmount:"Amount (BHD)",
+    thStolenDate:"Date",thStolenNote:"Note",
+    lblStolenSummaryTitle:"📊 Amounts Summary",
+    lblStolenBeforeTitle:"💳 Before Reversal",
+    lblStolenBeforeHint:"Must pay with theft",
+    lblStolenOrigBefore:"💰 Original Card Balance",
+    lblStolenRemBefore:"💸 Remaining Card Balance",
+    lblStolenMustPayBefore:"🏦 Must Pay Bank",
+    lblStolenAfterTitle:"✅ After Reversal",
+    lblStolenAfterHint:"Stolen amount recovered, must pay bank",
+    lblStolenOrigAfter:"💰 Original Card Balance",
+    lblStolenMustPayAfter:"💸 Must Pay Bank After Adjustment",
+    lblStolenRemAfter:"💰 Remaining After Adjustment",
+    lblStolenCompareTitle:"⚖️ Comparison",
+    lblStolenLossBefore:"😞 Loss (Before)",
+    lblStolenLossAfter:"✅ Recovered & Deducted (After)",
+    stolen_fee:"Currency Transfer Fee",stolen_amount:"Amount",
+    stolen_kpi_fees:"💸 Fees Only",
+    stolen_kpi_with_fees:"💵 Total with Fees",
+    stolen_kpi_without_fees:"💰 Total without Fees",
+    stolen_kpi_count:"📋 Transactions",
+    stolen_kpi_must_pay_before:"🏦 Must Pay (Before)",
+    stolen_kpi_rem_after:"💰 Remaining (After)",
+    stolen_kpi_must_pay_after:"💸 Must Pay (After)",
+    stolen_kpi_total_recovered:"✅ Total Recovered",
+    stolen_kpi_net_loss:"🎯 Net Loss",
+    stolen_kpi_bank:"🏦 Bank",
+    stolen_btn_add:"➕ Add Item",stolen_btn_reset:"🗑 Reset All",
+    stolen_reset_confirm:"Reset all stolen data?",
+    stolen_add_ok:"✅ Added",stolen_reset_ok:"✅ Reset",
+    stolen_delete_confirm:"Delete this item?",stolen_delete_ok:"🗑 Deleted",
+    stolen_type_fee:"📊 Transfer Fee",stolen_type_amount:"💵 Amount",
+    stolen_excel_ok:"✅ Excel exported",
     btn_export:"📤 Export",btn_import:"📥 Import",btn_reset:"🗑 Reset",btn_save:"💾 Save",
     btn_print_page:"🖨️ Print",btn_print_month:"🖨️ Print month",
     btn_share_pdf:"📤 Share PDF",btn_share_pdf_row:"📤 Share PDF",
@@ -2126,13 +2437,11 @@ const CASH_DENOMINATIONS = [
   { key: "twenty", value: 20.000, labelAr: "عشرين",           labelEn: "Twenty Dinars",        color: "#22c55e", icon: "💵" },
 ];
 
-const DEFAULT_EIDI_ITEMS = [
-  { name: "عيالي",        amount: 20.00 },
-  { name: "عيال اخوي",    amount: 0 },
-  { name: "عيال فاطمه",   amount: 0 },
-  { name: "عيال ساره",    amount: 0 },
-  { name: "عيال الماص",   amount: 0 },
-];
+/* ⭐ [تعديل] مصفوفة فارغة — لا أسماء افتراضية للعيادي */
+const DEFAULT_EIDI_ITEMS = [];
+
+/* ⭐ [تعديل] مصفوفة فارغة — لا حركات افتراضية للسرقة */
+const DEFAULT_STOLEN_TRANSACTIONS = [];
 
 const KEY = "cm_stable_data_v1";
 const BACKUP_KEY = "cm_stable_data_v1_backup";
@@ -2155,7 +2464,7 @@ let EXPANDED_AVG = new Set();
 let PAID_DEBTS_EXPANDED = false;
 let _shownReminderPopups = new Set();
 let _currentPopupReminderId = null;
-let _editingReminderId = null;   /* ⭐ جديد: معرّف التذكير الذي في وضع التعديل */
+let _editingReminderId = null;
 let _monthRefreshTimer = null;
 
 const t = key => (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key;
@@ -2226,24 +2535,416 @@ function makeEmptyMonth(){
 const EMPTY_MONTH = makeEmptyMonth;
 const emptyYear = () => Array.from({length:12}, EMPTY_MONTH);
 
+/* ⭐ [تعديل] الافتراضيات صفر لكل التبويبات الثلاثة */
 let state = {
   years: {}, yearList: [], activeYear: new Date().getFullYear(), activeMonth: 0,
   debts: [], yearExtras: {}, pyramidTargets: {}, pyramidNotes: {}, pyramidWithdrawals: {},
   cash: { counts: {} },
-  eidi: { items: [] },
+  eidi: { items: [] },                    /* ⭐ فارغ */
   reminders: [],
   banks: { items: [], customNames: [] },
-  report: {
-    fatherDebt: 760, electricityBill: 52.5, shePaysMe: 30,
+  stolen: {                               /* ⭐ كله صفر */
+    bank: "",
+    transactions: [],
+    before: { original: 0, remaining: 0 },
+    after: { original: 0, mustPay: 0 }
+  },
+  report: {                               /* ⭐ كله صفر */
+    fatherDebt: 0, electricityBill: 0, shePaysMe: 0,
     shePaysToggle: true, profitToggle: true,
-    purchases: [
-      { id: 1, name: "رامز", amount: 553.56 },
-      { id: 2, name: "ميغامارت", amount: 217.85 }
-    ],
+    purchases: [],
     purchaseNames: [...DEFAULT_PURCHASE_NAMES],
     notes: ""
   }
 };
+
+/* ═══════════════════════════════════════════════════════════════
+   ⭐ دوال تبويب "كم تم السرقه مني"
+   ═══════════════════════════════════════════════════════════════ */
+
+function ensureStolen(){
+  if(!state.stolen) state.stolen = {};
+  const s = state.stolen;
+  if(typeof s.bank !== 'string') s.bank = "";
+  if(!Array.isArray(s.transactions)) s.transactions = [];
+  /* ⭐ [تعديل] أزلنا تعبئة الافتراضيات — يبقى فارغ حتى يدخل المستخدم بياناته */
+  s.transactions = s.transactions.map(x => {
+    if(typeof x.id !== 'number') x.id = Date.now() + Math.floor(Math.random() * 10000);
+    if(x.type !== "amount" && x.type !== "fee") x.type = "amount";
+    x.amount = +x.amount || 0;
+    if(!x.date) x.date = "";
+    if(typeof x.note !== 'string') x.note = "";
+    return x;
+  });
+  if(!s.before) s.before = { original: 0, remaining: 0 };
+  if(typeof s.before.original !== 'number') s.before.original = 0;
+  if(typeof s.before.remaining !== 'number') s.before.remaining = 0;
+  if(!s.after) s.after = { original: 0, mustPay: 0 };
+  if(typeof s.after.original !== 'number') s.after.original = 0;
+  if(typeof s.after.mustPay !== 'number') s.after.mustPay = 0;
+  return s;
+}
+
+function stolenTotalFees(){
+  return ensureStolen().transactions.filter(x => x.type === "fee").reduce((s, x) => s + (+x.amount || 0), 0);
+}
+function stolenTotalAmounts(){
+  return ensureStolen().transactions.filter(x => x.type === "amount").reduce((s, x) => s + (+x.amount || 0), 0);
+}
+function stolenTotalWithFees(){
+  return ensureStolen().transactions.reduce((s, x) => s + (+x.amount || 0), 0);
+}
+function stolenTotalWithoutFees(){ return stolenTotalAmounts(); }
+function stolenMustPayBefore(){
+  const b = ensureStolen().before;
+  return Math.max(0, (+b.original || 0) - (+b.remaining || 0));
+}
+function stolenRemAfter(){
+  const a = ensureStolen().after;
+  return Math.max(0, (+a.original || 0) - (+a.mustPay || 0));
+}
+function stolenRecoveredAmount(){
+  const before = stolenMustPayBefore();
+  const after = +ensureStolen().after.mustPay || 0;
+  return before - after;
+}
+function stolenNetLoss(){
+  return (+ensureStolen().after.mustPay || 0) - stolenTotalFees();
+}
+function stolenTypeLabel(type){
+  return type === "fee" ? t('stolen_type_fee') : t('stolen_type_amount');
+}
+function stolenCount(){ return ensureStolen().transactions.length; }
+
+function addStolenTransaction(){
+  const s = ensureStolen();
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  s.transactions.push({
+    id: Date.now() + Math.floor(Math.random() * 10000),
+    type: "amount",
+    amount: 0,
+    date: dateStr,
+    note: ""
+  });
+  save();
+  renderStolen();
+  toast(t('stolen_add_ok'), 'success');
+}
+function updStolenTransaction(id, field, val){
+  const s = ensureStolen();
+  const item = s.transactions.find(x => x.id === id);
+  if(!item) return;
+  if(field === "amount"){
+    item.amount = Math.max(0, parseFloat(val) || 0);
+  } else if(field === "type"){
+    item.type = (val === "fee") ? "fee" : "amount";
+  } else {
+    item[field] = val;
+  }
+  save();
+  updateStolenSummaryCards();
+  updateStolenTotalsInline();
+}
+function delStolenTransaction(id){
+  if(!confirm(t('stolen_delete_confirm'))) return;
+  state.stolen.transactions = ensureStolen().transactions.filter(x => x.id !== id);
+  save();
+  renderStolen();
+  toast(t('stolen_delete_ok'), 'success');
+}
+/* ⭐ [تعديل] تصفير كامل لكل شيء */
+function resetStolen(){
+  if(!confirm(t('stolen_reset_confirm'))) return;
+  state.stolen = {
+    bank: "",
+    transactions: [],
+    before: { original: 0, remaining: 0 },
+    after: { original: 0, mustPay: 0 }
+  };
+  save();
+  renderStolen();
+  toast(t('stolen_reset_ok'), 'success');
+}
+function updStolenBank(val){
+  ensureStolen().bank = String(val || "");
+  save();
+}
+function updStolenBefore(field, val){
+  const s = ensureStolen();
+  if(field === "original") s.before.original = Math.max(0, parseFloat(val) || 0);
+  else if(field === "remaining") s.before.remaining = Math.max(0, parseFloat(val) || 0);
+  save();
+  updateStolenSummaryCards();
+  updateStolenTotalsInline();
+}
+function updStolenAfter(field, val){
+  const s = ensureStolen();
+  if(field === "original") s.after.original = Math.max(0, parseFloat(val) || 0);
+  else if(field === "mustPay") s.after.mustPay = Math.max(0, parseFloat(val) || 0);
+  save();
+  updateStolenSummaryCards();
+  updateStolenTotalsInline();
+}
+
+function renderStolen(){
+  ensureStolen();
+  const s = state.stolen;
+  const body = document.getElementById("stolenBody");
+  if(!body) return;
+
+  const bankInput = document.getElementById("stolenBankInput");
+  if(bankInput) bankInput.value = s.bank || "";
+
+  const typeOptsFor = val => `
+    <option value="amount" ${val === 'amount' ? 'selected' : ''}>💵 ${t('stolen_amount')}</option>
+    <option value="fee" ${val === 'fee' ? 'selected' : ''}>📊 ${t('stolen_fee')}</option>
+  `;
+  if(!s.transactions.length){
+    body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted);font-style:italic">${LANG==='ar'?'لا توجد بنود — اضغط ➕':'No items — click ➕'}</td></tr>`;
+  } else {
+    body.innerHTML = s.transactions.map((tr, idx) => {
+      const isFee = tr.type === 'fee';
+      const rowCls = isFee ? 'stolen-row-fee' : 'stolen-row-main';
+      const rowBg = isFee ? 'background:rgba(234,179,8,.06)' : 'background:rgba(239,68,68,.03)';
+      return `<tr class="${rowCls}" style="${rowBg}">
+        <td class="num" style="text-align:center;font-family:monospace;font-weight:700;color:var(--muted);width:50px">${idx + 1}</td>
+        <td>
+          <select onchange="updStolenTransaction(${tr.id}, 'type', this.value)"
+                  style="width:100%;background:var(--panel2);border:1px solid var(--line);color:${isFee ? 'var(--gold)' : 'var(--danger)'};padding:8px 10px;border-radius:6px;font-size:13px;font-weight:700;font-family:inherit">
+            ${typeOptsFor(tr.type)}
+          </select>
+        </td>
+        <td>
+          <input type="number" value="${inVal(tr.amount)}" step="0.001" min="0"
+                 oninput="updStolenTransaction(${tr.id}, 'amount', this.value)"
+                 style="width:100%;text-align:center;font-family:monospace;font-weight:800;font-size:15px;color:${isFee ? 'var(--gold)' : 'var(--danger)'};background:var(--panel2);border:2px solid ${isFee ? 'var(--gold)' : 'var(--danger)'};padding:9px 12px;border-radius:6px">
+        </td>
+        <td>
+          <input type="date" value="${esc(tr.date)}"
+                 oninput="updStolenTransaction(${tr.id}, 'date', this.value)"
+                 style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:8px 10px;border-radius:6px;font-size:13px;font-family:monospace;text-align:center">
+        </td>
+        <td>
+          <input type="text" value="${esc(tr.note)}"
+                 oninput="updStolenTransaction(${tr.id}, 'note', this.value)"
+                 placeholder="..."
+                 style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:8px 10px;border-radius:6px;font-size:13px;font-family:inherit">
+        </td>
+        <td class="noprint" style="text-align:center;width:60px">
+          <button class="icon-btn remove-btn" onclick="delStolenTransaction(${tr.id})" title="${LANG==='ar'?'حذف':'Delete'}">✕</button>
+        </td>
+      </tr>`;
+    }).join("");
+  }
+
+  const foot = document.getElementById("stolenFoot");
+  if(foot){
+    foot.innerHTML = `
+      <tr style="background:rgba(234,179,8,.12);font-weight:800">
+        <td colspan="2" style="color:var(--gold);font-size:14px">📊 ${LANG==='ar'?'الرسوم فقط':'Fees Only'}</td>
+        <td class="num" style="color:var(--gold);font-family:monospace;font-size:15px;text-align:center">${fmt(stolenTotalFees())}</td>
+        <td colspan="3" style="text-align:${LANG==='ar'?'left':'right'};font-size:11px;color:var(--muted);font-style:italic">= مجموع رسوم التحويل</td>
+      </tr>
+      <tr style="background:rgba(59,130,246,.12);font-weight:800">
+        <td colspan="2" style="color:var(--accent2);font-size:14px">💵 ${LANG==='ar'?'المبلغ الكلي مع الرسوم':'Total with Fees'}</td>
+        <td class="num" style="color:var(--accent2);font-family:monospace;font-size:15px;text-align:center">${fmt(stolenTotalWithFees())}</td>
+        <td colspan="3" style="text-align:${LANG==='ar'?'left':'right'};font-size:11px;color:var(--muted);font-style:italic">= مجموع كل البنود</td>
+      </tr>
+      <tr style="background:rgba(34,197,94,.12);font-weight:800">
+        <td colspan="2" style="color:var(--ok);font-size:14px">💰 ${LANG==='ar'?'المبلغ الكلي بدون الرسوم':'Total without Fees'}</td>
+        <td class="num" style="color:var(--ok);font-family:monospace;font-size:15px;text-align:center">${fmt(stolenTotalWithoutFees())}</td>
+        <td colspan="3" style="text-align:${LANG==='ar'?'left':'right'};font-size:11px;color:var(--muted);font-style:italic">= مجموع المبالغ فقط</td>
+      </tr>
+    `;
+  }
+
+  updateStolenSummaryCards();
+  updateStolenTotalsInline();
+}
+
+function updateStolenSummaryCards(){
+  const s = ensureStolen();
+
+  const kpis = document.getElementById("stolenKpis");
+  if(kpis){
+    kpis.innerHTML = `
+      ${kpi(t('stolen_kpi_fees'), money(stolenTotalFees()), "gold")}
+      ${kpi(t('stolen_kpi_with_fees'), money(stolenTotalWithFees()), "neg")}
+      ${kpi(t('stolen_kpi_without_fees'), money(stolenTotalWithoutFees()), "pos")}
+      ${kpi(t('stolen_kpi_count'), String(stolenCount()), "acc")}
+      ${kpi(t('stolen_kpi_bank'), s.bank || "—", "acc")}
+      ${kpi(t('stolen_kpi_must_pay_before'), money(stolenMustPayBefore()), "neg")}
+    `;
+  }
+
+  const mustPayBeforeEl = document.getElementById("stolenMustPayBefore");
+  if(mustPayBeforeEl){
+    mustPayBeforeEl.value = fmt(stolenMustPayBefore()) + " " + (LANG==='ar'?'د.ب':'BHD');
+  }
+
+  const remAfterEl = document.getElementById("stolenRemAfter");
+  if(remAfterEl){
+    remAfterEl.value = fmt(stolenRemAfter()) + " " + (LANG==='ar'?'د.ب':'BHD');
+  }
+
+  const beforeKpis = document.getElementById("stolenLossBeforeKpis");
+  if(beforeKpis){
+    beforeKpis.innerHTML = `
+      ${kpi(LANG==='ar'?'💸 يجب الدفع قبل':'💸 Must Pay Before', money(stolenMustPayBefore()), "neg")}
+      ${kpi(LANG==='ar'?'💵 الرسوم فقط':'💵 Fees Only', money(stolenTotalFees()), "gold")}
+      ${kpi(LANG==='ar'?'📦 إجمالي المسروق':'📦 Total Stolen', money(stolenTotalWithFees()), "neg")}
+      ${kpi(LANG==='ar'?'📋 عدد العمليات':'📋 Count', String(stolenCount()), "acc")}
+    `;
+  }
+
+  const afterKpis = document.getElementById("stolenLossAfterKpis");
+  if(afterKpis){
+    afterKpis.innerHTML = `
+      ${kpi(LANG==='ar'?'💰 يجب الدفع بعد':'💰 Must Pay After', money(+s.after.mustPay || 0), "neg")}
+      ${kpi(LANG==='ar'?'💸 المتبقي بعد':'💸 Remaining After', money(stolenRemAfter()), "pos")}
+      ${kpi(LANG==='ar'?'✅ تم استرجاع':'✅ Recovered', money(stolenRecoveredAmount()), "pos")}
+      ${kpi(LANG==='ar'?'🎯 صافي الخسارة':'🎯 Net Loss', money(stolenNetLoss()), "gold")}
+    `;
+  }
+}
+
+function updateStolenTotalsInline(){
+  const s = ensureStolen();
+
+  const origBeforeEl = document.getElementById("stolenOrigBefore");
+  if(origBeforeEl && document.activeElement !== origBeforeEl) origBeforeEl.value = inVal(s.before.original);
+  const remBeforeEl = document.getElementById("stolenRemBefore");
+  if(remBeforeEl && document.activeElement !== remBeforeEl) remBeforeEl.value = inVal(s.before.remaining);
+  const mustPayBeforeEl = document.getElementById("stolenMustPayBefore");
+  if(mustPayBeforeEl) mustPayBeforeEl.value = fmt(stolenMustPayBefore()) + " " + (LANG==='ar'?'د.ب':'BHD');
+
+  const origAfterEl = document.getElementById("stolenOrigAfter");
+  if(origAfterEl && document.activeElement !== origAfterEl) origAfterEl.value = inVal(s.after.original);
+  const mustPayAfterEl = document.getElementById("stolenMustPayAfter");
+  if(mustPayAfterEl && document.activeElement !== mustPayAfterEl) mustPayAfterEl.value = inVal(s.after.mustPay);
+  const remAfterEl = document.getElementById("stolenRemAfter");
+  if(remAfterEl) remAfterEl.value = fmt(stolenRemAfter()) + " " + (LANG==='ar'?'د.ب':'BHD');
+}
+
+function exportStolenExcel(){
+  try {
+    if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
+    syncFromDOM();
+    const s = ensureStolen();
+    const L = LANG === 'ar'; const cur = L ? 'د.ب' : 'BHD';
+    const wb = XLSX.utils.book_new(); wb.Workbook = { Views: [{ RTL: true }] };
+    const ws = {}; const cols = 4;
+    let r = 0;
+    xlTitleRow(ws, r, cols, L ? '🚨 كم تم السرقه مني' : '🚨 How much was stolen', { sz: 16, h: 34 }); r++;
+    xlTitleRow(ws, r, cols, 'Muharraqi — Capital Manager', { fill: XL.header, sz: 11, h: 22 }); r++;
+    xlTitleRow(ws, r, cols, `${L ? 'التاريخ' : 'Date'}: ${todayStr()} | ${L ? 'البنك' : 'Bank'}: ${s.bank || '—'}`, { sz: 10, h: 20, fill: 'E2E8F0', color: '334155' }); r++; r++;
+
+    xlSectionRow(ws, r, cols, L ? '📋 الحركات' : '📋 Transactions', XL.header); r++;
+    xlHeaderRow(ws, r, [L ? 'النوع' : 'Type', L ? 'المبلغ' : 'Amount', L ? 'التاريخ' : 'Date', L ? 'ملاحظة' : 'Note'], XL.header); r++;
+    s.transactions.forEach((tr, idx) => {
+      const typeLabel = tr.type === 'fee' ? (L ? 'رسوم التحويل الى العمله' : 'Transfer Fee') : (L ? 'المبلغ' : 'Amount');
+      xlDataRow(ws, r, [typeLabel, +tr.amount || 0, tr.date || '—', tr.note || '—'], cols, { fill: tr.type === 'fee' ? XL.goldBg : XL.rowAlt, numFmt: '#,##0.000' }); r++;
+    });
+    r++;
+
+    xlSectionRow(ws, r, cols, L ? '📊 المجاميع' : '📊 Totals', XL.inputHdr); r++;
+    xlHeaderRow(ws, r, [L ? 'البند' : 'Item', L ? 'القيمة (' + cur + ')' : 'Value (BHD)', '', ''], XL.inputHdr); r++;
+    xlDataRow(ws, r, [L ? 'الرسوم فقط' : 'Fees Only', stolenTotalFees(), '', ''], cols, { fill: XL.goldBg, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'المبلغ الكلي مع الرسوم' : 'Total with Fees', stolenTotalWithFees(), '', ''], cols, { fill: XL.cyanBg, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'المبلغ الكلي بدون الرسوم' : 'Total without Fees', stolenTotalWithoutFees(), '', ''], cols, { fill: XL.greenBg, numFmt: '#,##0.000' }); r++;
+    r++;
+
+    xlSectionRow(ws, r, cols, L ? '💳 الوضع قبل الترجيع' : '💳 Before Reversal', XL.header); r++;
+    xlHeaderRow(ws, r, [L ? 'البند' : 'Item', L ? 'القيمة (' + cur + ')' : 'Value (BHD)', '', ''], XL.header); r++;
+    xlDataRow(ws, r, [L ? 'اصل الموجود في البطاقة' : 'Original Card Balance', +s.before.original || 0, '', ''], cols, { fill: XL.rowAlt, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'المتبقي في البطاقة' : 'Remaining Card Balance', +s.before.remaining || 0, '', ''], cols, { fill: XL.rowAlt, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'يجب الدفع للبنك' : 'Must Pay Bank', stolenMustPayBefore(), '', ''], cols, { fill: XL.redBg, numFmt: '#,##0.000' }); r++;
+    r++;
+
+    xlSectionRow(ws, r, cols, L ? '✅ الوضع بعد الترجيع' : '✅ After Reversal', XL.header); r++;
+    xlHeaderRow(ws, r, [L ? 'البند' : 'Item', L ? 'القيمة (' + cur + ')' : 'Value (BHD)', '', ''], XL.header); r++;
+    xlDataRow(ws, r, [L ? 'اصل الموجود في البطاقة' : 'Original Card Balance', +s.after.original || 0, '', ''], cols, { fill: XL.rowAlt, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'يجب الدفع للبنك بعد التعديل' : 'Must Pay After Adjustment', +s.after.mustPay || 0, '', ''], cols, { fill: XL.redBg, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'المتبقي بعد التعديل' : 'Remaining After Adjustment', stolenRemAfter(), '', ''], cols, { fill: XL.greenBg, numFmt: '#,##0.000' }); r++;
+    r++;
+
+    xlSectionRow(ws, r, cols, L ? '⚖️ المقارنة' : '⚖️ Comparison', XL.convHdr); r++;
+    xlHeaderRow(ws, r, [L ? 'البند' : 'Item', L ? 'خسران (قبل)' : 'Loss (Before)', L ? 'بعد الترجيع' : 'After Reversal', ''], XL.convHdr); r++;
+    xlDataRow(ws, r, [L ? 'يجب الدفع / المتبقي' : 'Must Pay / Remaining', stolenMustPayBefore(), stolenRemAfter(), ''], cols, { fill: XL.rowAlt, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'الرسوم فقط' : 'Fees Only', stolenTotalFees(), +s.after.mustPay || 0, ''], cols, { fill: XL.goldBg, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'إجمالي المسروق' : 'Total Stolen', stolenTotalWithFees(), stolenRecoveredAmount(), ''], cols, { fill: XL.cyanBg, numFmt: '#,##0.000' }); r++;
+    xlTotalRow(ws, r, [L ? '🎯 صافي الخسارة' : '🎯 Net Loss', stolenNetLoss(), '', ''], cols); r++;
+
+    ws['!cols'] = [{wch:32}, {wch:18}, {wch:18}, {wch:24}];
+    ws['!ref'] = XLSX.utils.encode_range({s:{r:0,c:0},e:{r, c:cols-1}});
+    applySheetRTL(ws, wb);
+    XLSX.utils.book_append_sheet(wb, ws, L ? 'السرقة' : 'Stolen');
+    XLSX.writeFile(wb, `stolen_${todayStr()}.xlsx`, { bookType: 'xlsx', cellStyles: true });
+    toast(t('stolen_excel_ok'), 'success');
+  } catch(err){ console.error(err); toast((LANG==='ar'?'⚠️ فشل التصدير: ':'⚠️ Failed: ') + (err.message||''), 'error'); }
+}
+
+async function shareStolenPDF(){
+  try {
+    toast(t('creating_pdf'));
+    const s = ensureStolen();
+    const L = LANG === 'ar'; const cur = L ? 'د.ب' : 'BHD';
+    const now = new Date();
+    const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
+    const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+    let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('lblStolenTitle')}</title><style>@page{size:A4;margin:12mm}*{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:10px;line-height:1.6;margin:0;direction:${L?'rtl':'ltr'}}.header{text-align:center;margin-bottom:20px;padding-bottom:10px;border-bottom:3px double #333}.header .logo{display:inline-block;width:54px;height:54px;line-height:54px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;font-weight:900;font-size:24px;text-align:center}.header h2{margin:10px 0 4px;color:#b91c1c;font-size:20px}.header .meta{color:#666;font-size:12px}.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 20px}.kpi{border:2px solid #ccc;border-radius:8px;padding:10px 8px;text-align:center;background:#f9fafb}.kpi .lbl{font-size:11px;color:#666;margin-bottom:5px;font-weight:600}.kpi .val{font-size:15px;font-weight:800;font-family:monospace}.kpi.gold{border-color:#d97706;background:#fffbeb}.kpi.gold .val{color:#d97706}.kpi.red{border-color:#dc2626;background:#fef2f2}.kpi.red .val{color:#dc2626}.kpi.green{border-color:#16a34a;background:#f0fdf4}.kpi.green .val{color:#16a34a}.kpi.blue{border-color:#2563eb;background:#eff6ff}.kpi.blue .val{color:#2563eb}.section-title{background:#f0f4f8;padding:8px 12px;border-right:5px solid #b91c1c;font-weight:700;margin:18px 0 8px;font-size:13px;color:#1e293b}table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px}th{background:#e5e7eb;color:#111;padding:7px 8px;text-align:${L?'right':'left'};border:1px solid #999;font-size:10px;font-weight:700}td{padding:6px 8px;border:1px solid #ccc;text-align:${L?'right':'left'}}td.num{font-family:monospace;text-align:center;font-weight:700}tbody tr:nth-child(even){background:#f9fafb}.total-row{background:#fef3c7 !important;font-weight:800}.total-row td{border:2px solid #d97706;font-family:monospace;font-size:13px}.footer{text-align:center;margin-top:28px;padding-top:10px;border-top:2px solid #999;color:#666;font-size:10px;line-height:1.6}.footer strong{color:#b91c1c}</style></head><body>`;
+    html += `<div class="header"><div class="logo">M</div><h2>🚨 ${t('lblStolenTitle')}</h2><div class="meta">${L ? 'البنك' : 'Bank'}: <strong>${esc(s.bank) || '—'}</strong> — ${t('print_generated')}: ${dateStr} — ${timeStr}</div></div>`;
+
+    html += `<div class="kpis"><div class="kpi gold"><div class="lbl">💸 ${L?'الرسوم فقط':'Fees Only'}</div><div class="val">${fmt(stolenTotalFees())} ${cur}</div></div><div class="kpi red"><div class="lbl">💵 ${L?'المبلغ الكلي مع الرسوم':'Total with Fees'}</div><div class="val">${fmt(stolenTotalWithFees())} ${cur}</div></div><div class="kpi green"><div class="lbl">💰 ${L?'المبلغ الكلي بدون الرسوم':'Total without Fees'}</div><div class="val">${fmt(stolenTotalWithoutFees())} ${cur}</div></div></div>`;
+
+    html += `<div class="section-title">📋 ${L?'الحركات':'Transactions'}</div>`;
+    if(!s.transactions.length){ html += `<div style="text-align:center;padding:20px;color:#888;font-style:italic">${L?'لا توجد بنود':'No items'}</div>`; }
+    else {
+      html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th>${t('thStolenType')}</th><th style="width:120px">${t('thStolenAmount')} (${cur})</th><th style="width:110px">${t('thStolenDate')}</th><th>${t('thStolenNote')}</th></tr></thead><tbody>`;
+      s.transactions.forEach((tr, idx) => {
+        html += `<tr><td class="num">${idx+1}</td><td>${tr.type === 'fee' ? '📊 ' + t('stolen_fee') : '💵 ' + t('stolen_amount')}</td><td class="num">${fmt(+tr.amount||0)}</td><td class="num" dir="ltr">${esc(tr.date) || '—'}</td><td>${esc(tr.note) || '—'}</td></tr>`;
+      });
+      html += `</tbody></table>`;
+    }
+
+    html += `<div class="section-title">💳 ${t('lblStolenBeforeTitle')}</div>`;
+    html += `<table><thead><tr><th>${L?'البند':'Item'}</th><th style="width:140px">${L?'القيمة':'Value'} (${cur})</th></tr></thead><tbody>`;
+    html += `<tr><td>${t('lblStolenOrigBefore')}</td><td class="num">${fmt(+s.before.original||0)}</td></tr>`;
+    html += `<tr><td>${t('lblStolenRemBefore')}</td><td class="num">${fmt(+s.before.remaining||0)}</td></tr>`;
+    html += `<tr class="total-row"><td>${t('lblStolenMustPayBefore')}</td><td class="num">${fmt(stolenMustPayBefore())}</td></tr>`;
+    html += `</tbody></table>`;
+
+    html += `<div class="section-title">✅ ${t('lblStolenAfterTitle')}</div>`;
+    html += `<table><thead><tr><th>${L?'البند':'Item'}</th><th style="width:140px">${L?'القيمة':'Value'} (${cur})</th></tr></thead><tbody>`;
+    html += `<tr><td>${t('lblStolenOrigAfter')}</td><td class="num">${fmt(+s.after.original||0)}</td></tr>`;
+    html += `<tr><td>${t('lblStolenMustPayAfter')}</td><td class="num">${fmt(+s.after.mustPay||0)}</td></tr>`;
+    html += `<tr class="total-row"><td>${t('lblStolenRemAfter')}</td><td class="num">${fmt(stolenRemAfter())}</td></tr>`;
+    html += `</tbody></table>`;
+
+    html += `<div class="section-title">⚖️ ${t('lblStolenCompareTitle')}</div>`;
+    html += `<table><thead><tr><th>${L?'البند':'Item'}</th><th>${L?'خسران (قبل)':'Loss (Before)'}</th><th>${L?'بعد الترجيع':'After Reversal'}</th></tr></thead><tbody>`;
+    html += `<tr><td>${L?'يجب الدفع / المتبقي':'Must Pay / Remaining'}</td><td class="num">${fmt(stolenMustPayBefore())}</td><td class="num">${fmt(stolenRemAfter())}</td></tr>`;
+    html += `<tr><td>${L?'الرسوم فقط':'Fees Only'}</td><td class="num">${fmt(stolenTotalFees())}</td><td class="num">${fmt(+s.after.mustPay||0)}</td></tr>`;
+    html += `<tr><td>${L?'إجمالي المسروق':'Total Stolen'}</td><td class="num">${fmt(stolenTotalWithFees())}</td><td class="num">${fmt(stolenRecoveredAmount())}</td></tr>`;
+    html += `<tr class="total-row"><td>🎯 ${L?'صافي الخسارة':'Net Loss'}</td><td class="num" colspan="2">${fmt(stolenNetLoss())} ${cur}</td></tr>`;
+    html += `</tbody></table>`;
+
+    html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div></body></html>`;
+
+    const filename = `stolen_${todayStr()}.pdf`;
+    const blob = await generatePdfInWindow(html, filename, 'portrait');
+    if(!blob){ toast(t('share_failed'), 'error'); return; }
+    await sharePdfBlob(blob, filename);
+  } catch(err){
+    if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
+    toast(t('share_failed'), 'error');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ← نهاية إضافات تبويب السرقة
+   ═══════════════════════════════════════════════════════════════ */
 
 function ensureCash(){
   if(!state.cash) state.cash = { counts: {} };
@@ -2271,12 +2972,11 @@ function resetCash(){
   save(); renderCash(); toast(LANG === 'ar' ? '✅ تم تصفير التجوري' : '✅ Cash reset', 'success');
 }
 
+/* ⭐ [تعديل] ensureEidi — بدون تعبئة افتراضية */
 function ensureEidi(){
   if(!state.eidi) state.eidi = { items: [] };
   if(!Array.isArray(state.eidi.items)) state.eidi.items = [];
-  if(state.eidi.items.length === 0){
-    state.eidi.items = DEFAULT_EIDI_ITEMS.map((x, i) => ({ id: Date.now() + i * 1000 + Math.floor(Math.random()*100), name: x.name, amount: +x.amount || 0 }));
-  }
+  /* ⭐ أزلنا تعبئة DEFAULT_EIDI_ITEMS — تبقى القائمة فارغة */
   return state.eidi;
 }
 function eidiTotal(){ return ensureEidi().items.reduce((s, x) => s + (+x.amount || 0), 0); }
@@ -2284,7 +2984,13 @@ function updEidiAmount(id, val){ const e = ensureEidi(); const item = e.items.fi
 function updEidiName(id, val){ const e = ensureEidi(); const item = e.items.find(x => x.id === id); if(!item) return; item.name = val; save(); }
 function addEidiItem(){ const e = ensureEidi(); e.items.push({ id: Date.now() + Math.floor(Math.random()*10000), name: "", amount: 0 }); save(); renderEidi(); toast(LANG === 'ar' ? '✅ تمت إضافة بند' : '✅ Added', 'success'); }
 function removeEidiItem(id){ if(!confirm(LANG === 'ar' ? 'حذف هذا البند؟' : 'Delete?')) return; const e = ensureEidi(); e.items = e.items.filter(x => x.id !== id); save(); renderEidi(); toast(LANG === 'ar' ? '🗑 تم الحذف' : '🗑 Deleted', 'success'); }
-function resetEidi(){ if(!confirm(LANG === 'ar' ? 'تصفير جميع مبالغ العيادي؟' : 'Reset?')) return; ensureEidi(); state.eidi.items.forEach(x => { x.amount = 0; }); save(); renderEidi(); toast(LANG === 'ar' ? '✅ تم تصفير' : '✅ Reset', 'success'); }
+/* ⭐ [تعديل] resetEidi — يمسح كل الأسماء (ليس فقط تصفير المبالغ) */
+function resetEidi(){
+  if(!confirm(LANG === 'ar' ? 'تصفير جميع بيانات العيادي (الأسماء والمبالغ)؟' : 'Reset all Eidi data (names and amounts)?')) return;
+  state.eidi = { items: [] };
+  save(); renderEidi();
+  toast(LANG === 'ar' ? '✅ تم تصفير كل شيء' : '✅ All cleared', 'success');
+}
 
 function ensureReminders(){ if(!Array.isArray(state.reminders)) state.reminders = []; return state.reminders; }
 
@@ -2435,17 +3141,25 @@ function ensurePyramidWithdrawals(){ if(!state.pyramidWithdrawals) state.pyramid
 function getWithdrawals(key){ const w = ensurePyramidWithdrawals(); if(!w[key]) w[key] = []; return w[key]; }
 function getWithdrawnTotal(key){ return getWithdrawals(key).reduce((s,x)=>s+(+x.amount||0),0); }
 
+/* ⭐ [تعديل] ensureReport — كل الافتراضيات صفر، purchases فارغة */
 function ensureReport(){
-  if(!state.report) state.report = { fatherDebt: 760, electricityBill: 52.5, shePaysMe: 30, shePaysToggle: true, profitToggle: true, purchases: [{ id: 1, name: "رامز", amount: 553.56 },{ id: 2, name: "ميغامارت", amount: 217.85 }], purchaseNames: [...DEFAULT_PURCHASE_NAMES], notes: "" };
+  if(!state.report) state.report = {
+    fatherDebt: 0, electricityBill: 0, shePaysMe: 0,
+    shePaysToggle: true, profitToggle: true,
+    purchases: [],
+    purchaseNames: [...DEFAULT_PURCHASE_NAMES],
+    notes: ""
+  };
   if(!Array.isArray(state.report.purchases)) state.report.purchases = [];
-  if(typeof state.report.fatherDebt !== 'number') state.report.fatherDebt = 760;
-  if(typeof state.report.electricityBill !== 'number') state.report.electricityBill = 52.5;
-  if(typeof state.report.shePaysMe !== 'number') state.report.shePaysMe = 30;
+  if(typeof state.report.fatherDebt !== 'number') state.report.fatherDebt = 0;
+  if(typeof state.report.electricityBill !== 'number') state.report.electricityBill = 0;
+  if(typeof state.report.shePaysMe !== 'number') state.report.shePaysMe = 0;
   if(typeof state.report.shePaysToggle !== 'boolean') state.report.shePaysToggle = true;
   if(typeof state.report.profitToggle !== 'boolean') state.report.profitToggle = true;
   if(typeof state.report.notes !== 'string') state.report.notes = "";
   if(!Array.isArray(state.report.purchaseNames)) state.report.purchaseNames = [...DEFAULT_PURCHASE_NAMES];
   DEFAULT_PURCHASE_NAMES.forEach(n => { if(!state.report.purchaseNames.includes(n)) state.report.purchaseNames.unshift(n); });
+  /* إضافة أسماء مخصصة موجودة ضمن المشتريات (لو استورد المستخدم بيانات) */
   state.report.purchases.forEach(p => { if(p.name && !state.report.purchaseNames.includes(p.name)) state.report.purchaseNames.push(p.name); });
   delete state.report.pointsMultiplier;
   return state.report;
@@ -2519,7 +3233,7 @@ function load(){
     let raw = localStorage.getItem(KEY); let migratedFrom = null;
     if(!raw){ const backup = localStorage.getItem(BACKUP_KEY); if(backup){ raw = backup; } }
     if(!raw){ for(const oldKey of OLD_KEYS){ const oldRaw = localStorage.getItem(oldKey); if(oldRaw){ raw = oldRaw; migratedFrom = oldKey; break; } } }
-    if(!raw){ ensureReport(); ensureCash(); ensureEidi(); ensureReminders(); ensureBanks(); return; }
+    if(!raw){ ensureReport(); ensureCash(); ensureEidi(); ensureReminders(); ensureBanks(); ensureStolen(); return; }
     const d = JSON.parse(raw);
     if(d.months && !d.years){
       const y = new Date().getFullYear();
@@ -2527,7 +3241,7 @@ function load(){
       state.debts = (d.debts||[]).map(dd => { const n = {...dd}; n.monthlyByYear = { [y]: dd.monthly || Array(12).fill(0) }; delete n.monthly; return n; });
       if(migratedFrom) setTimeout(() => save(), 100);
       LOADED_FROM_DATA = true;
-      ensureReport(); ensureCash(); ensureEidi(); ensureReminders(); ensureBanks();
+      ensureReport(); ensureCash(); ensureEidi(); ensureReminders(); ensureBanks(); ensureStolen();
       return;
     }
     const oldYearExtras = d.yearExtras || {};
@@ -2535,6 +3249,8 @@ function load(){
     if(!state.pyramidTargets) state.pyramidTargets = {};
     if(!state.pyramidNotes) state.pyramidNotes = {};
     if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {};
+    if(!state.stolen) state.stolen = {};
+    ensureStolen();
     if(state.obligations && Array.isArray(state.obligations) && state.obligations.length){
       state.obligations.forEach(o => { state.debts.push({ id: o.id || Date.now()+Math.random(), name: o.name || 'التزام', type: 'obligation', category: '', total: +o.amount || 0, paidBefore: 0, bank: "بطاقة صراف الالي", monthlyByYear: { [state.activeYear]: Array(12).fill(0) }, refByYear: { [state.activeYear]: Array(12).fill("") }, start: '', end: '', notes: o.notes || '' }); });
       delete state.obligations;
@@ -2589,11 +3305,12 @@ function load(){
         if(!state.pyramidTargets) state.pyramidTargets = {};
         if(!state.pyramidNotes) state.pyramidNotes = {};
         if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {};
+        if(!state.stolen) state.stolen = {}; ensureStolen();
         LOADED_FROM_DATA = true;
         ensureReport(); ensureCash(); ensureEidi(); ensureReminders(); ensureBanks();
         toast(LANG==='ar'?'⚠️ تم استرجاع نسخة احتياطية':'⚠️ Restored', 'warn');
       }
-    }catch(e2){ console.error(e2); ensureReport(); ensureCash(); ensureEidi(); ensureReminders(); ensureBanks(); }
+    }catch(e2){ console.error(e2); ensureReport(); ensureCash(); ensureEidi(); ensureReminders(); ensureBanks(); ensureStolen(); }
   }
 }
 
@@ -2601,7 +3318,7 @@ function initIfEmpty(){
   if(!state.yearList || !state.yearList.length){ const y = new Date().getFullYear(); state.years = { [y]: emptyYear() }; state.yearList = [y]; state.activeYear = y; }
   if(!state.years[state.activeYear]) state.years[state.activeYear] = emptyYear();
   ensurePyramidTargets(); ensurePyramidNotes(); ensurePyramidWithdrawals(); ensureReport();
-  ensureCash(); ensureEidi(); ensureReminders(); ensureBanks();
+  ensureCash(); ensureEidi(); ensureReminders(); ensureBanks(); ensureStolen();
   if(typeof updateRemindersBadge === 'function') updateRemindersBadge();
 }
 
@@ -2701,7 +3418,7 @@ function inVal(v){ if(v === 0 || v === '0' || v === '' || v === undefined || v =
 function toast(msg, type){ const el = document.getElementById("toast"); el.textContent = msg; el.classList.remove('success','error','warn'); if(type) el.classList.add(type); el.classList.add("show"); clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove("show"), type === 'success' ? 2800 : 3500); }
 function kpi(lbl,val,cls=""){ return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val ${cls}">${val}</div></div>`; }
 function esc(s){ return String(s||"").replace(/"/g,'&quot;'); }
-/* ════════ Rendering — Core ════════ */
+
 function renderYearSelect(){ const sel = document.getElementById("yearSelect"); sel.innerHTML = state.yearList.map(y => `<option value="${y}" ${y===state.activeYear?'selected':''}>${y}</option>`).join(""); }
 function selectYear(y){ state.activeYear = y; if(!state.years[y]) state.years[y] = emptyYear(); save(); renderYearSelect(); renderAll(); }
 function yearPrev(){ const idx = state.yearList.indexOf(state.activeYear); if(idx > 0) selectYear(state.yearList[idx-1]); else toast(LANG==='ar'?'لا توجد سنوات أقدم':'No earlier year'); }
@@ -2763,6 +3480,17 @@ function applyLang(){
     remindersTitle:'reminders_title',remDateLabel:'reminders_date',remTimeLabel:'reminders_time',remNoteLabel:'reminders_note',remAddBtn:'reminders_add_btn',
     lblBanksTitle:'bank_title',lblBanksHint:'bank_hint',thBankName:'bank_th_name',thBankAmount:'bank_th_amount',
     btnAddBankRow:'bank_btn_add_row',btnResetBanks:'bank_btn_reset',lblBanksSummary:'bank_summary',
+    lblStolenTitle:'lblStolenTitle',lblStolenHint:'lblStolenHint',lblStolenBank:'lblStolenBank',
+    thStolenIndex:'thStolenIndex',thStolenType:'thStolenType',thStolenAmount:'thStolenAmount',
+    thStolenDate:'thStolenDate',thStolenNote:'thStolenNote',
+    lblStolenSummaryTitle:'lblStolenSummaryTitle',lblStolenBeforeTitle:'lblStolenBeforeTitle',
+    lblStolenBeforeHint:'lblStolenBeforeHint',lblStolenOrigBefore:'lblStolenOrigBefore',
+    lblStolenRemBefore:'lblStolenRemBefore',lblStolenMustPayBefore:'lblStolenMustPayBefore',
+    lblStolenAfterTitle:'lblStolenAfterTitle',lblStolenAfterHint:'lblStolenAfterHint',
+    lblStolenOrigAfter:'lblStolenOrigAfter',lblStolenMustPayAfter:'lblStolenMustPayAfter',
+    lblStolenRemAfter:'lblStolenRemAfter',lblStolenCompareTitle:'lblStolenCompareTitle',
+    lblStolenLossBefore:'lblStolenLossBefore',lblStolenLossAfter:'lblStolenLossAfter',
+    btnAddStolen:'stolen_btn_add',btnResetStolen:'stolen_btn_reset',
   };
   Object.keys(ids).forEach(id => { const el = document.getElementById(id); if(el) el.textContent = t(ids[id]); });
   renderAll();
@@ -2788,9 +3516,8 @@ function updateMonthPrintBtn(){
   if(btn) btn.textContent = `🖨️ ${t('btn_print_month')} — ${label}`;
   if(btnShare) btnShare.textContent = `📤 ${t('btn_share_pdf')} — ${label}`;
 }
-function renderAll(){ renderYearSelect(); renderMonthPills(); renderMonth(); renderDashboard(); renderDebts(); renderPyramid(); renderYears(); renderAverage(); renderAnnual(); renderReport(); renderCash(); renderBanks(); renderEidi(); updateMonthPrintBtn(); }
+function renderAll(){ renderYearSelect(); renderMonthPills(); renderMonth(); renderDashboard(); renderDebts(); renderPyramid(); renderYears(); renderAverage(); renderAnnual(); renderReport(); renderCash(); renderBanks(); renderEidi(); renderStolen(); updateMonthPrintBtn(); }
 
-/* ════════ Dashboard ════════ */
 function renderDashboard(){
   const months = M(); const y = state.activeYear;
   let totInc=0, totExp=0, totSav=0, totOneTime=0;
@@ -2828,7 +3555,6 @@ function renderDashboard(){
   document.getElementById("dashTable").innerHTML = html + `</tbody>`;
 }
 
-/* ════════ Month ════════ */
 function renderMonthPills(){
   const months = getMonths(); const y = state.activeYear;
   document.getElementById("monthPills").innerHTML = months.map((m,i)=>{
@@ -3100,7 +3826,6 @@ function renderMonthDate(){
   if(m.lastModified){ const d = new Date(m.lastModified); disp.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; } else disp.value = "—";
 }
 
-/* ════════ Pyramid ════════ */
 function renderPyramidTargets(){
   const body = document.getElementById("pyramidTargetsBody"); if(!body) return;
   const levels = getPyramidLevels();
@@ -3320,7 +4045,6 @@ function renderPyramidLegend(){
   document.getElementById("pyramidLegend").innerHTML = itemsHtml + totalCard;
 }
 
-/* ════════ Report ════════ */
 function rpPurchasesTotal(){ const r = ensureReport(); return (r.purchases || []).reduce((s, p) => s + (+p.amount || 0), 0); }
 function rpFullAmount(){ const r = ensureReport(); let shePays = 0; if(r.shePaysToggle) shePays = +r.shePaysMe || 0; return rpPurchasesTotal() + shePays; }
 function rpPoints(){ return rpPurchasesTotal() * 2; }
@@ -3379,8 +4103,9 @@ function renderReport(){
   }
   refreshReportTotals();
 }
+/* ⭐ [تعديل] resetReport — تصفير كل شيء مع الحفاظ على الأسماء المخصصة للاختيار فقط */
 function resetReport(){
-  const msg = LANG === 'ar' ? '⚠️ سيتم تصفير بيانات تقرير الشراكة (القيم الافتراضية 760/52.5/30 لن تُستعاد). هل أنت متأكد؟' : '⚠️ This will reset the Partnership Report. Defaults (760/52.5/30) will NOT be restored. Are you sure?';
+  const msg = LANG === 'ar' ? '⚠️ سيتم تصفير تقرير الشراكة بالكامل (كل الحقول والمشتريات). هل أنت متأكد؟' : '⚠️ This will reset the Partnership Report completely (all fields and purchases). Are you sure?';
   if(!confirm(msg)) return;
   const existingNames = state.report?.purchaseNames || [];
   const customNames = existingNames.filter(n => !DEFAULT_PURCHASE_NAMES.includes(n));
@@ -3388,7 +4113,6 @@ function resetReport(){
   ensureReport(); save(); renderReport(); toast(LANG === 'ar' ? '✅ تم التصفير' : '✅ Reset', 'success');
 }
 
-/* ════════ Average ════════ */
 function getAvgMonthValue(m, mi, item){
   if(item.type === 'salary') return +m.salary || 0;
   if(item.type === 'income') return +m[item.key] || 0;
@@ -3470,7 +4194,6 @@ function renderAverage(){
   if(gBtn) gBtn.textContent = allExpanded ? t('avg_hide_all') : t('avg_show_all');
 }
 
-/* ════════ Debts ════════ */
 function renderDebtsSummary(){
   const dt = debtTotals(); const el = document.getElementById("debtsSummary"); if(!el) return;
   el.innerHTML = `${kpi(t('kpi_recv_year_d'), money(dt.receiveThisYear), "pos")}${kpi(t('kpi_pay_year_d'), money(dt.payThisYear), "neg")}${kpi(t('kpi_net_year_d'), money(dt.netThisYear), dt.netThisYear>=0?"pos":"neg")}${kpi(t('kpi_rem_to_me'), money(dt.remainingToReceive), "pos")}${kpi(t('kpi_rem_on_me'), money(dt.remainingOnMe), "neg")}${kpi(t('kpi_net_remaining'), money(dt.netRemaining), dt.netRemaining>=0?"pos":"neg")}${kpi(t('kpi_total_debt'), money(dt.totalDebt), "acc")}${kpi(t('kpi_obligations_total'), money(dt.obligationsTotal), "gold")}`;
@@ -3572,7 +4295,6 @@ function updDebtNotes(id, val){ const d = state.debts.find(x=>x.id===id); if(!d)
 function updDebtMonth(id, mi, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDm(d, state.activeYear, mi, Math.max(0, parseFloat(val)||0)); save(); refreshDebtsMonthCells(); }
 function updDebtMonthYear(id, yy, mi, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDm(d, yy, mi, Math.max(0, parseFloat(val)||0)); save(); }
 
-/* ════════ Years + Annual ════════ */
 function renderYears(){
   const all = allYearsTotals(); const totalY = state.yearList.length;
   let bestYear = null, bestRem = -Infinity;
@@ -3666,7 +4388,6 @@ function renderAnnual(){
   document.getElementById("annualTable").innerHTML = html + `</tbody>`;
 }
 
-/* ════════ Cash Render ════════ */
 function renderCash(){
   ensureCash(); const L = LANG === 'ar';
   const tbody = document.getElementById("cashBody"); const tfoot = document.getElementById("cashFoot"); const kpis = document.getElementById("cashKpis");
@@ -3680,7 +4401,6 @@ function renderCash(){
   if(kpis){ kpis.innerHTML = `${kpi(L ? '💰 إجمالي الكاش' : '💰 Total Cash', money(total), total > 0 ? 'gold' : '')}`; }
 }
 
-/* ════════ Banks Render ════════ */
 function renderBanks(){
   ensureBanks(); const L = LANG === 'ar';
   const tbody = document.getElementById("banksBody"); const tfoot = document.getElementById("banksFoot"); const kpis = document.getElementById("banksKpis");
@@ -3699,13 +4419,12 @@ function renderBanks(){
   if(kpis){ kpis.innerHTML = getBanksKpisHTML(); }
 }
 
-/* ════════ Eidi Render ════════ */
 function renderEidi(){
   ensureEidi(); const L = LANG === 'ar';
   const tbody = document.getElementById("eidiBody"); const tfoot = document.getElementById("eidiFoot"); const kpis = document.getElementById("eidiKpis");
   if(!tbody) return;
   const items = state.eidi.items; const total = items.reduce((s, x) => s + (+x.amount || 0), 0);
-  if(!items.length){ tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--muted);font-style:italic">${L ? 'لا توجد بنود' : 'No items'}</td></tr>`; }
+  if(!items.length){ tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--muted);font-style:italic">${L ? 'لا توجد بنود — اضغط ➕ إضافة اسم' : 'No items — click ➕ Add Name'}</td></tr>`; }
   else {
     tbody.innerHTML = items.map((item, idx) => {
       const amount = +item.amount || 0;
@@ -3716,7 +4435,7 @@ function renderEidi(){
   if(kpis){ kpis.innerHTML = `${kpi(L ? '💰 إجمالي العيادي' : '💰 Total', money(total), total > 0 ? 'gold' : '')}${kpi(L ? '📋 عدد المستفيدين' : '📋 Beneficiaries', items.length.toString(), 'acc')}${kpi(L ? '📊 متوسط العطية' : '📊 Average', items.length > 0 ? money(total / items.length) : money(0), 'acc')}`; }
 }
 
-/* ════════ ⏰ Reminders System (مع التعديل) ════════ */
+/* ════════ ⏰ Reminders System ════════ */
 function updateReminderFormMode(){
   const btn = document.getElementById("remAddBtn");
   if(!btn) return;
@@ -3902,6 +4621,7 @@ function checkReminders(){
   pending.sort((a,b) => { const ta = new Date(`${a.date}T${a.time || "00:00"}:00`).getTime(); const tb = new Date(`${b.date}T${b.time || "00:00"}:00`).getTime(); return ta - tb; });
   showReminderPopup(pending[0]);
 }
+
 /* ════════ Excel Helpers ════════ */
 const XL = { dark:'0F172A', header:'1E3A5F', inputHdr:'0EA5E9', convHdr:'8B5CF6', accent:'22C1A4', accent2:'3B82F6', gold:'EAB308', danger:'EF4444', ok:'22C55E', purple:'8B5CF6', cyan:'0EA5E9', border:'94A3B8', borderThk:'0F172A', rowAlt:'F0F4F8', greenBg:'DCFCE7', redBg:'FEE2E2', blueBg:'DBEAFE', goldBg:'FEF3C7', purpleBg:'EDE9FE', cyanBg:'E0F2FE', tealBg:'CCFBF1', pinkBg:'FCE7F3', slateBg:'E2E8F0', whiteTxt:'FFFFFF', darkTxt:'0F172A' };
 function xlB(color, style){ color = color || XL.border; style = style || 'thin'; return { style, color: { rgb: color } }; }
@@ -3918,7 +4638,6 @@ function xlTotalRow(ws, r, values, cols, numFmt){ values.forEach((v, c) => { con
 function applySheetRTL(ws, wb){ ws['!views'] = [{ RTL: true }]; if(!wb.Workbook) wb.Workbook = {}; wb.Workbook = { Views: [{ RTL: true }] }; }
 function todayStr(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 
-/* ════════ Excel Exports ════════ */
 function exportDashboardExcel(){
   try {
     if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
@@ -4481,6 +5200,7 @@ function generateViewHTML(viewId, includeMonthName, orientation){
 }
 async function shareViewPDF(viewId, includeMonthName, orientation){
   if(viewId === 'debts'){ await shareDebtsTablePDF(); return; }
+  if(viewId === 'stolen'){ await shareStolenPDF(); return; }
   try {
     toast(t('creating_pdf'));
     const htmlStr = generateViewHTML(viewId, includeMonthName, orientation);
@@ -4689,6 +5409,7 @@ document.querySelectorAll("nav.tabs button").forEach(btn=>{
     if(v==="cash") renderCash();
     if(v==="banks") renderBanks();
     if(v==="eidi") renderEidi();
+    if(v==="stolen") renderStolen();
   };
 });
 function exportData(){
@@ -4752,8 +5473,5 @@ function quickNavTo(view){ const targetBtn = document.querySelector(`nav.tabs bu
 document.addEventListener('click', function(e){ const menu = document.getElementById('quickNavMenu'); const btn = document.getElementById('quickNavBtn'); if(!menu || !btn) return; if(!menu.classList.contains('show')) return; if(menu.contains(e.target) || btn.contains(e.target)) return; menu.classList.remove('show'); btn.classList.remove('active'); });
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ const menu = document.getElementById('quickNavMenu'); const btn = document.getElementById('quickNavBtn'); if(menu && btn && menu.classList.contains('show')){ menu.classList.remove('show'); btn.classList.remove('active'); } } });
 </script>
-</body>
-</html>
-
 </body>
 </html>
