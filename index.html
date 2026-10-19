@@ -6,11 +6,8 @@
 <title>إدارة رأس المال | Capital Manager</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
-
 <style>
-/* ═══════════════════════════════════════════════════════════════
-   CSS الكامل — نظام إدارة رأس المال (مع إصلاحات الهاتف)
-   ═══════════════════════════════════════════════════════════════ */
+
 
 :root{--bg:#0f1720;--panel:#17212b;--panel2:#1e2b38;--line:#2a3a4a;--txt:#e6eef7;--muted:#8fa3b8;--accent:#22c1a4;--accent2:#3b82f6;--danger:#ef4444;--ok:#22c55e;--gold:#eab308;--shadow:rgba(0,0,0,.35);}
 html[data-theme="light"]{--bg:#f0f4f8;--panel:#ffffff;--panel2:#e8eef5;--line:#94a3b8;--txt:#0f172a;--muted:#475569;--accent:#0891b2;--accent2:#2563eb;--danger:#dc2626;--ok:#16a34a;--gold:#d97706;--shadow:rgba(0,0,0,.12);}
@@ -1273,13 +1270,8 @@ html[dir="ltr"] .target-table .num{text-align:right}
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ⭐ [جديد] إصلاحات الاستجابة للهاتف (Mobile Responsive Fixes)
-   تحل مشكلة الخانات العريضة التي تخرج خارج الحاوية
-   - تقرير الشراكة (حاوية المدخلات)
-   - هرم الأمان المالي (البطاقة الذهبية + جدول الأهداف)
+   ⭐ إصلاحات الاستجابة للهاتف (Mobile Responsive Fixes)
    ═══════════════════════════════════════════════════════════════ */
-
-/* ✅ منع توسع أعمدة grid بسبب min-content (السبب الجذري) */
 @media (max-width: 900px){
   .grid, .g2, .g3, .g4{
     grid-template-columns: minmax(0, 1fr) !important;
@@ -1291,30 +1283,20 @@ html[dir="ltr"] .target-table .num{text-align:right}
 }
 
 @media (max-width: 600px){
-
-  /* ───── 📊 تقرير الشراكة — حاوية المدخلات ───── */
-
-  /* 1) تصغير حجم خط "ابوي يرجع لي" (كان 22px عملاقاً) */
   #lblReportFather{
     font-size: 15px !important;
     line-height: 1.4;
     word-break: break-word;
   }
-
-  /* 2) الحقول تمتد بعرض الحاوية بدلاً من عرضها الافتراضي */
   #rpFather, #rpElecBill, #rpShePaysAmount{
     width: 100% !important;
     box-sizing: border-box;
     min-width: 0 !important;
     font-size: 18px !important;
   }
-
-  /* 3) صندوق الكهرباء — تقليل الحشو الداخلي */
   #report > .card:first-of-type > div:nth-child(3){
     padding: 12px !important;
   }
-
-  /* 4) صف "تدفع لي" — يلتف عمودياً بدلاً من overflow */
   #report div[style*="stretch"]{
     flex-wrap: wrap !important;
     gap: 6px !important;
@@ -1326,8 +1308,6 @@ html[dir="ltr"] .target-table .num{text-align:right}
     width: 100% !important;
     box-sizing: border-box;
   }
-
-  /* 5) زر حالة الربح */
   .profit-toggle-btn{
     font-size: 13px !important;
     padding: 10px 8px !important;
@@ -1335,13 +1315,8 @@ html[dir="ltr"] .target-table .num{text-align:right}
     box-sizing: border-box;
     white-space: normal !important;
   }
-
-  /* 6) تقليل حشو كارت التقرير */
   #report .card{ padding: 14px !important; }
 
-  /* ───── 🔺 هرم الأمان المالي ───── */
-
-  /* 7) منع توسع أعمدة legend بسبب min-content */
   .pyramid-legend{
     grid-template-columns: minmax(0, 1fr) !important;
   }
@@ -1349,8 +1324,6 @@ html[dir="ltr"] .target-table .num{text-align:right}
     min-width: 0 !important;
     max-width: 100%;
   }
-
-  /* 8) تقليل حشو منطقة SVG */
   .pyramid-wrap{
     padding: 8px !important;
     margin-bottom: 12px !important;
@@ -1361,15 +1334,9 @@ html[dir="ltr"] .target-table .num{text-align:right}
     height: auto !important;
     display: block !important;
   }
-
-  /* 9) تقليل حشو كروت الهرم */
   #pyramid .card{ padding: 12px !important; }
-
-  /* 10) بطاقة الهرم الذهبية — تقليل الحشو */
   .pyr-total-card{ padding: 12px 8px !important; }
   .pyr-total-card > div{ gap: 8px !important; }
-
-  /* 11) شبكة الهدف والمتبقي — عمود واحد بعرض كامل */
   .pyr-total-card [style*="minmax(200px"]{
     grid-template-columns: minmax(0, 1fr) !important;
     gap: 8px !important;
@@ -1377,48 +1344,32 @@ html[dir="ltr"] .target-table .num{text-align:right}
   .pyr-total-card [style*="minmax(200px"] > div{
     padding: 10px 8px !important;
   }
-
-  /* 12) تصغير الأرقام الكبيرة في البطاقة */
   .pyr-total-card [style*="28px"]{ font-size: 20px !important; }
   .pyr-total-card [style*="20px"]{ font-size: 15px !important; }
   .pyr-total-card [style*="15px"]{ font-size: 12px !important; }
-
-  /* 13) بطاقات الهرم الصغيرة */
   .pyr-legend-item{ padding: 8px 10px !important; gap: 6px !important; }
   .pyr-legend-item .pyr-label{ font-size: 11px !important; min-width: 60px !important; }
   .pyr-legend-item .pyr-val{ font-size: 12px !important; }
   .pyr-legend-item .pyr-note{ font-size: 10px !important; }
-
-  /* 14) جدول الأهداف — تمرير أفقي مضمون */
   .target-table-wrap{
     max-width: 100% !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch;
   }
-
-  /* 15) شريط أزرار عرض الكل */
   .pyramid-toggle-bar{ justify-content: center !important; }
 
-  /* ───── 🔧 إصلاحات عامة ───── */
-
-  /* 16) تقليل حشو main */
   main{ padding: 12px !important; }
-
-  /* 17) منع overflow عام في الكروت */
   .card{
     max-width: 100%;
     overflow-wrap: break-word;
     word-wrap: break-word;
   }
-
-  /* 18) الحقول العامة — تمنع overflow */
   .field input, .field select, .field textarea{
     max-width: 100%;
     box-sizing: border-box;
   }
 }
 
-/* شاشات أضيق من 400px (هواتف صغيرة جداً) */
 @media (max-width: 400px){
   main{ padding: 8px !important; }
   #report .card{ padding: 10px !important; }
@@ -1431,6 +1382,103 @@ html[dir="ltr"] .target-table .num{text-align:right}
   .pyr-total-card [style*="28px"]{ font-size: 16px !important; }
   .pyr-total-card [style*="20px"]{ font-size: 13px !important; }
   .pyr-total-card [style*="15px"]{ font-size: 11px !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ⭐ [جديد] أنماط نافذة تأكيد التصفير مع حفظ نسخة احتياطية
+   ═══════════════════════════════════════════════════════════════ */
+.confirm-reset-warning{
+  background: rgba(239,68,68,.12);
+  border: 2px solid var(--danger);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  color: var(--danger);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.6;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.confirm-reset-warning::before{
+  content: "⚠️";
+  font-size: 22px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.confirm-reset-details{
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--txt);
+  margin-bottom: 12px;
+}
+.confirm-reset-details .confirm-reset-details-title{
+  font-weight: 800;
+  color: var(--danger);
+  font-size: 13px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.confirm-reset-details ul{
+  margin: 4px 20px;
+  padding: 0;
+  list-style: none;
+}
+.confirm-reset-details li{
+  margin: 6px 0;
+  position: relative;
+  padding-right: 22px;
+}
+.confirm-reset-details li::before{
+  content: "🗑";
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 12px;
+  opacity: .85;
+}
+html[dir="ltr"] .confirm-reset-details li{
+  padding-right: 0;
+  padding-left: 22px;
+}
+html[dir="ltr"] .confirm-reset-details li::before{
+  right: auto;
+  left: 0;
+}
+.confirm-reset-details strong{
+  color: var(--danger);
+  font-weight: 800;
+}
+.confirm-reset-hint{
+  background: rgba(234,179,8,.1);
+  border: 1px solid rgba(234,179,8,.4);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--gold);
+  line-height: 1.6;
+}
+.confirm-reset-hint strong{
+  color: var(--gold);
+  font-weight: 800;
+}
+#confirmResetModal .modal-header h2::before{
+  content: "" !important;
+}
+@media (max-width: 600px){
+  #confirmResetModal .modal-content{ max-width: calc(100vw - 24px) !important; }
+  .confirm-reset-warning{ font-size: 13px; padding: 12px; }
+  .confirm-reset-details{ font-size: 12px; padding: 10px 12px; }
+  #confirmResetModal .modal-footer button{ font-size: 13px !important; padding: 10px !important; }
 }
 </style>
 </head>
@@ -1481,7 +1529,6 @@ html[dir="ltr"] .target-table .num{text-align:right}
   <button data-view="cash" data-i18n="t_cash">💰 كم لدي كاش في التجوري</button>
   <button data-view="banks" data-i18n="t_banks">🏦 احتياطي البنوك</button>
   <button data-view="eidi" data-i18n="t_eidi">🎁 توزيع العيادي</button>
-  <!-- ⭐ [جديد] تبويب كم تم السرقه مني -->
   <button data-view="stolen" data-i18n="t_stolen">🚨 كم تم السرقه مني</button>
 </nav>
 
@@ -1948,9 +1995,6 @@ html[dir="ltr"] .target-table .num{text-align:right}
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     ⭐ [جديد] قسم كم تم السرقه مني — بناءً على ملف Book2.xlsx
-     ═══════════════════════════════════════════════════════════════ -->
 <section id="stolen" class="view">
   <div class="card" style="border:2px solid var(--danger);background:linear-gradient(180deg,rgba(239,68,68,.06),transparent)">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
@@ -1992,13 +2036,11 @@ html[dir="ltr"] .target-table .num{text-align:right}
     </div>
   </div>
 
-  <!-- ملخص المبالغ -->
   <div class="card" style="border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.06),transparent)">
     <h2 id="lblStolenSummaryTitle" style="color:var(--gold)">📊 ملخص المبالغ</h2>
     <div class="grid g3" id="stolenKpis"></div>
   </div>
 
-  <!-- الوضع قبل الترجيع -->
   <div class="card" style="border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.06),transparent)">
     <h2 id="lblStolenBeforeTitle" style="color:var(--accent2)">💳 الوضع قبل الترجيع</h2>
     <p class="muted" style="margin-bottom:14px" id="lblStolenBeforeHint">يجب الدفع مع السرقة</p>
@@ -2018,7 +2060,6 @@ html[dir="ltr"] .target-table .num{text-align:right}
     </div>
   </div>
 
-  <!-- الوضع بعد الترجيع -->
   <div class="card" style="border:2px solid var(--ok);background:linear-gradient(180deg,rgba(34,197,94,.06),transparent)">
     <h2 id="lblStolenAfterTitle" style="color:var(--ok)">✅ الوضع بعد الترجيع</h2>
     <p class="muted" style="margin-bottom:14px" id="lblStolenAfterHint">تم استرجاع المبلغ المسروق و يجب الدفع للبنك</p>
@@ -2038,7 +2079,6 @@ html[dir="ltr"] .target-table .num{text-align:right}
     </div>
   </div>
 
-  <!-- المقارنة -->
   <div class="card" style="border:2px solid var(--danger);background:linear-gradient(180deg,rgba(239,68,68,.08),transparent)">
     <h2 id="lblStolenCompareTitle" style="color:var(--danger)">⚖️ المقارنة</h2>
     <div class="grid g2">
@@ -2182,14 +2222,41 @@ html[dir="ltr"] .target-table .num{text-align:right}
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     ⭐ [جديد] نافذة تأكيد التصفير مع حفظ نسخة احتياطية
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="confirmResetModal" onclick="if(event.target===this)closeConfirmReset()">
+  <div class="modal-content" style="max-width:560px">
+    <div class="modal-header" style="background:linear-gradient(90deg,rgba(239,68,68,.18),rgba(239,68,68,.05));border-bottom:2px solid var(--danger)">
+      <h2 id="confirmResetTitle" style="color:var(--danger)">⚠️ تأكيد الحذف</h2>
+      <button class="modal-close" onclick="closeConfirmReset()" title="إغلاق">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="confirmResetWarning" class="confirm-reset-warning"></div>
+      <div id="confirmResetDetails" class="confirm-reset-details"></div>
+      <div class="confirm-reset-hint">
+        💡 <strong>نصيحة:</strong> اضغط زر <strong>💾 حفظ نسخة احتياطية</strong> أولاً حتى تستطيع استعادة بياناتك لاحقاً إذا احتجت.
+      </div>
+    </div>
+    <div class="modal-footer" style="flex-direction:column;gap:8px;padding:16px 22px">
+      <button class="btn" id="confirmResetSaveBackup" style="width:100%;background:linear-gradient(180deg,#22c55e,#15803d);color:#fff;border:2px solid #22c55e;font-weight:800;padding:12px;font-size:14px">
+        💾 حفظ نسخة احتياطية (JSON)
+      </button>
+      <button class="btn danger" id="confirmResetConfirm" style="width:100%;background:linear-gradient(180deg,#ef4444,#991b1b);color:#fff;border:2px solid #ef4444;font-weight:800;padding:12px;font-size:14px">
+        🗑 تأكيد الحذف
+      </button>
+      <button class="btn" id="confirmResetCancel" onclick="closeConfirmReset()" style="width:100%;padding:10px">
+        ✕ إلغاء والعودة بدون حذف
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 
 <script>
-/* ═══════════════════════════════════════════════════════════════
-   Capital Manager — JavaScript (القسم 3 من 3)
-   مع تبويب "كم تم السرقه مني" — الافتراضيات مصفّرة
-   ═══════════════════════════════════════════════════════════════ */
+
 
 const I18N = {
   ar: {
@@ -2594,10 +2661,7 @@ const CASH_DENOMINATIONS = [
   { key: "twenty", value: 20.000, labelAr: "عشرين",           labelEn: "Twenty Dinars",        color: "#22c55e", icon: "💵" },
 ];
 
-/* ⭐ [تعديل] مصفوفة فارغة — لا أسماء افتراضية للعيادي */
 const DEFAULT_EIDI_ITEMS = [];
-
-/* ⭐ [تعديل] مصفوفة فارغة — لا حركات افتراضية للسرقة */
 const DEFAULT_STOLEN_TRANSACTIONS = [];
 
 const KEY = "cm_stable_data_v1";
@@ -2623,6 +2687,9 @@ let _shownReminderPopups = new Set();
 let _currentPopupReminderId = null;
 let _editingReminderId = null;
 let _monthRefreshTimer = null;
+
+/* ⭐ [جديد] متغير لحفظ دالة التأكيد الحالية */
+let _confirmResetCallback = null;
 
 const t = key => (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key;
 const getMonths = () => I18N[LANG].months;
@@ -2692,21 +2759,20 @@ function makeEmptyMonth(){
 const EMPTY_MONTH = makeEmptyMonth;
 const emptyYear = () => Array.from({length:12}, EMPTY_MONTH);
 
-/* ⭐ [تعديل] الافتراضيات صفر لكل التبويبات الثلاثة */
 let state = {
   years: {}, yearList: [], activeYear: new Date().getFullYear(), activeMonth: 0,
   debts: [], yearExtras: {}, pyramidTargets: {}, pyramidNotes: {}, pyramidWithdrawals: {},
   cash: { counts: {} },
-  eidi: { items: [] },                    /* ⭐ فارغ */
+  eidi: { items: [] },
   reminders: [],
   banks: { items: [], customNames: [] },
-  stolen: {                               /* ⭐ كله صفر */
+  stolen: {
     bank: "",
     transactions: [],
     before: { original: 0, remaining: 0 },
     after: { original: 0, mustPay: 0 }
   },
-  report: {                               /* ⭐ كله صفر */
+  report: {
     fatherDebt: 0, electricityBill: 0, shePaysMe: 0,
     shePaysToggle: true, profitToggle: true,
     purchases: [],
@@ -2716,7 +2782,284 @@ let state = {
 };
 
 /* ═══════════════════════════════════════════════════════════════
-   ⭐ دوال تبويب "كم تم السرقه مني"
+   ⭐ [جديد] نظام تأكيد التصفير الاحترافي
+   ═══════════════════════════════════════════════════════════════ */
+
+function openConfirmReset(config){
+  const modal = document.getElementById("confirmResetModal");
+  if(!modal){ console.error("confirmResetModal not found"); return; }
+
+  _confirmResetCallback = config.onConfirm || null;
+
+  const L = LANG === 'ar';
+
+  const titleEl = document.getElementById("confirmResetTitle");
+  if(titleEl) titleEl.textContent = "⚠️ " + (config.title || (L ? "تأكيد الحذف" : "Confirm Deletion"));
+
+  const warnEl = document.getElementById("confirmResetWarning");
+  if(warnEl){
+    warnEl.textContent = config.warning || (L
+      ? "هل أنت متأكد؟ سيتم حذف البيانات نهائياً ولا يمكن التراجع عن هذه العملية!"
+      : "Are you sure? Data will be permanently deleted and cannot be undone!");
+  }
+
+  const detailsEl = document.getElementById("confirmResetDetails");
+  if(detailsEl){
+    if(Array.isArray(config.details) && config.details.length > 0){
+      const detailTitle = L ? "📋 ما سيتم حذفه:" : "📋 What will be deleted:";
+      const listItems = config.details.map(d => `<li>${d}</li>`).join("");
+      detailsEl.innerHTML = `<div class="confirm-reset-details-title">${detailTitle}</div><ul>${listItems}</ul>`;
+      detailsEl.style.display = "block";
+    } else {
+      detailsEl.style.display = "none";
+    }
+  }
+
+  const backupBtn = document.getElementById("confirmResetSaveBackup");
+  if(backupBtn){
+    backupBtn.onclick = function(){
+      try {
+        exportData();
+        toast(L ? '💾 تم حفظ نسخة احتياطية من بياناتك' : '💾 Backup saved', 'success');
+      } catch(e){
+        console.error(e);
+        toast(L ? '⚠️ فشل حفظ النسخة' : '⚠️ Backup failed', 'error');
+      }
+    };
+  }
+
+  const confirmBtn = document.getElementById("confirmResetConfirm");
+  if(confirmBtn){
+    confirmBtn.onclick = function(){
+      if(typeof _confirmResetCallback === 'function'){
+        try { _confirmResetCallback(); } catch(e){ console.error(e); }
+      }
+      closeConfirmReset();
+    };
+  }
+
+  modal.classList.add("show");
+  document.body.style.overflow = "hidden";
+}
+
+function closeConfirmReset(){
+  const modal = document.getElementById("confirmResetModal");
+  if(modal){
+    modal.classList.remove("show");
+    document.body.style.overflow = "";
+  }
+  _confirmResetCallback = null;
+}
+
+/* ── تعديلات دوال التصفير لتستخدم النافذة الجديدة ── */
+
+/* ── 1) تصفير تقرير الشراكة ── */
+function resetReport(){
+  const L = LANG === 'ar';
+  openConfirmReset({
+    title: L ? "تصفير تقرير الشراكة" : "Reset Partnership Report",
+    warning: L
+      ? "سيتم تصفير تقرير الشراكة بالكامل — جميع الحقول والمشتريات ستعود إلى الصفر. لا يمكن التراجع عن هذه العملية!"
+      : "The Partnership Report will be fully reset — all fields and purchases will return to zero. This cannot be undone!",
+    details: L ? [
+      "<strong>ابوي يرجع لي</strong> → 0",
+      "<strong>بيل الكهرباء</strong> → 0",
+      "<strong>تدفع لي</strong> → 0",
+      "جميع <strong>بنود المشتريات</strong> ستُحذف",
+      "<strong>الملاحظات</strong> ستُمسح",
+      "حالة الربح ستعود إلى الوضع الافتراضي"
+    ] : [
+      "<strong>Father owes me</strong> → 0",
+      "<strong>Electricity bill</strong> → 0",
+      "<strong>She pays me</strong> → 0",
+      "All <strong>purchase items</strong> will be deleted",
+      "<strong>Notes</strong> will be cleared",
+      "Profit status will return to default"
+    ],
+    onConfirm: function(){
+      const existingNames = state.report?.purchaseNames || [];
+      const customNames = existingNames.filter(n => !DEFAULT_PURCHASE_NAMES.includes(n));
+      state.report = {
+        fatherDebt: 0, electricityBill: 0, shePaysMe: 0,
+        shePaysToggle: true, profitToggle: true,
+        purchases: [],
+        purchaseNames: [...DEFAULT_PURCHASE_NAMES, ...customNames],
+        notes: ""
+      };
+      ensureReport();
+      save();
+      renderReport();
+      toast(L ? '✅ تم تصفير تقرير الشراكة' : '✅ Partnership Report reset', 'success');
+    }
+  });
+}
+
+/* ── 2) تصفير توزيع العيادي ── */
+function resetEidi(){
+  const L = LANG === 'ar';
+  openConfirmReset({
+    title: L ? "تصفير توزيع العيادي" : "Reset Eidi Distribution",
+    warning: L
+      ? "سيتم حذف جميع الأسماء والمبالغ من توزيع العيادي — القائمة ستعود فارغة تماماً!"
+      : "All names and amounts will be deleted from the Eidi distribution — the list will be completely empty!",
+    details: L ? [
+      "جميع <strong>الأسماء</strong> ستُحذف",
+      "جميع <strong>المبالغ</strong> ستُمسح",
+      "عدد المستفيدين سيصبح <strong>صفر</strong>",
+      "المجموع الكلي سيصبح <strong>0</strong>"
+    ] : [
+      "All <strong>names</strong> will be deleted",
+      "All <strong>amounts</strong> will be cleared",
+      "Beneficiaries count will be <strong>zero</strong>",
+      "Total will become <strong>0</strong>"
+    ],
+    onConfirm: function(){
+      state.eidi = { items: [] };
+      save();
+      renderEidi();
+      toast(L ? '✅ تم تصفير توزيع العيادي' : '✅ Eidi distribution reset', 'success');
+    }
+  });
+}
+
+/* ── 3) تصفير كم تم السرقه مني ── */
+function resetStolen(){
+  const L = LANG === 'ar';
+  openConfirmReset({
+    title: L ? "تصفير بيانات السرقة" : "Reset Stolen Data",
+    warning: L
+      ? "سيتم حذف جميع الحركات والبيانات المالية لتبويب «كم تم السرقه مني» — كل شيء سيعود إلى الصفر!"
+      : "All transactions and financial data in 'How much was stolen' will be deleted — everything will return to zero!",
+    details: L ? [
+      "جميع <strong>الحركات</strong> (مبالغ + رسوم) ستُحذف",
+      "<strong>اسم البنك</strong> سيُمسح",
+      "بيانات <strong>قبل الترجيع</strong> (الأصل + المتبقي) → 0",
+      "بيانات <strong>بعد الترجيع</strong> (الأصل + يجب الدفع) → 0",
+      "جميع <strong>المجاميع</strong> ستصبح 0"
+    ] : [
+      "All <strong>transactions</strong> (amounts + fees) will be deleted",
+      "<strong>Bank name</strong> will be cleared",
+      "<strong>Before reversal</strong> data → 0",
+      "<strong>After reversal</strong> data → 0",
+      "All <strong>totals</strong> will become 0"
+    ],
+    onConfirm: function(){
+      state.stolen = {
+        bank: "",
+        transactions: [],
+        before: { original: 0, remaining: 0 },
+        after: { original: 0, mustPay: 0 }
+      };
+      save();
+      renderStolen();
+      toast(L ? '✅ تم تصفير بيانات السرقة' : '✅ Stolen data reset', 'success');
+    }
+  });
+}
+
+/* ── 4) تصفير التجوري ── */
+function resetCash(){
+  const L = LANG === 'ar';
+  openConfirmReset({
+    title: L ? "تصفير التجوري" : "Reset Cash",
+    warning: L
+      ? "سيتم تصفير جميع أعداد العملات الورقية والمعدنية في التجوري — المجموع الكلي سيصبح صفر!"
+      : "All banknote and coin counts in the safe will be reset — total will become zero!",
+    details: L ? [
+      "جميع <strong>فئات النصف دينار</strong> → 0",
+      "جميع <strong>فئات الدينار</strong> → 0",
+      "جميع <strong>فئات الخمسة</strong> → 0",
+      "جميع <strong>فئات العشرة</strong> → 0",
+      "جميع <strong>فئات العشرين</strong> → 0",
+      "المجموع الكلي → <strong>0 د.ب</strong>"
+    ] : [
+      "All <strong>Half Dinar</strong> counts → 0",
+      "All <strong>One Dinar</strong> counts → 0",
+      "All <strong>Five Dinar</strong> counts → 0",
+      "All <strong>Ten Dinar</strong> counts → 0",
+      "All <strong>Twenty Dinar</strong> counts → 0",
+      "Grand total → <strong>0 BHD</strong>"
+    ],
+    onConfirm: function(){
+      ensureCash();
+      CASH_DENOMINATIONS.forEach(d => { state.cash.counts[d.key] = 0; });
+      save();
+      renderCash();
+      toast(L ? '✅ تم تصفير التجوري' : '✅ Cash reset', 'success');
+    }
+  });
+}
+
+/* ── 5) تصفير احتياطي البنوك ── */
+function resetBanks(){
+  const L = LANG === 'ar';
+  openConfirmReset({
+    title: L ? "تصفير احتياطي البنوك" : "Reset Banks Reserves",
+    warning: L
+      ? "سيتم تصفير جميع المبالغ المودعة في البنوك — أسماء البنوك ستبقى لكن المبالغ ستعود إلى صفر!"
+      : "All deposited bank amounts will be reset — bank names remain but amounts return to zero!",
+    details: L ? [
+      "جميع <strong>المبالغ</strong> في كل البنوك → 0",
+      "<strong>أسماء البنوك</strong> ستبقى محفوظة",
+      "<strong>المجموع الكلي للاحتياطي</strong> → 0 د.ب",
+      "يمكنك إدخال مبالغ جديدة في أي وقت"
+    ] : [
+      "All <strong>amounts</strong> in all banks → 0",
+      "<strong>Bank names</strong> will be preserved",
+      "<strong>Total reserves</strong> → 0 BHD",
+      "You can enter new amounts anytime"
+    ],
+    onConfirm: function(){
+      ensureBanks().items.forEach(x => { x.amount = 0; });
+      save();
+      renderBanks();
+      toast(L ? '✅ تم تصفير مبالغ البنوك' : '✅ Bank amounts reset', 'success');
+    }
+  });
+}
+
+/* ── 6) تصفير كل شيء (الزر الرئيسي) ── */
+function resetAll(){
+  const L = LANG === 'ar';
+  openConfirmReset({
+    title: L ? "🚨 تصفير جميع البيانات" : "🚨 Reset ALL Data",
+    warning: L
+      ? "⚠️ تحذير خطير! سيتم حذف جميع بياناتك نهائياً — لا يمكن التراجع عن هذه العملية إطلاقاً! تأكد من حفظ نسخة احتياطية أولاً."
+      : "⚠️ CRITICAL WARNING! All your data will be permanently deleted — this action absolutely cannot be undone! Make sure to save a backup first.",
+    details: L ? [
+      "جميع <strong>السنوات والشهور</strong> ستُحذف",
+      "جميع <strong>الديون والأقساط والالتزامات</strong> ستُحذف",
+      "جميع <strong>الادخارات وأهداف الهرم</strong> ستُحذف",
+      "جميع <strong>بيانات تقرير الشراكة</strong> ستُحذف",
+      "جميع <strong>بيانات توزيع العيادي</strong> ستُحذف",
+      "جميع <strong>بيانات السرقة</strong> ستُحذف",
+      "جميع <strong>بيانات التجوري</strong> ستُحذف",
+      "جميع <strong>بيانات البنوك</strong> ستُحذف",
+      "جميع <strong>التذكيرات</strong> ستُحذف",
+      "سيتم <strong>إعادة تحميل</strong> التطبيق كأنك تستخدمه لأول مرة"
+    ] : [
+      "All <strong>years and months</strong> will be deleted",
+      "All <strong>debts, installments, obligations</strong> will be deleted",
+      "All <strong>savings and pyramid targets</strong> will be deleted",
+      "All <strong>Partnership Report</strong> data will be deleted",
+      "All <strong>Eidi distribution</strong> data will be deleted",
+      "All <strong>stolen data</strong> will be deleted",
+      "All <strong>cash data</strong> will be deleted",
+      "All <strong>banks data</strong> will be deleted",
+      "All <strong>reminders</strong> will be deleted",
+      "The app will <strong>reload</strong> as if used for the first time"
+    ],
+    onConfirm: function(){
+      localStorage.removeItem(KEY);
+      localStorage.removeItem(BACKUP_KEY);
+      OLD_KEYS.forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ← نهاية نظام تأكيد التصفير
    ═══════════════════════════════════════════════════════════════ */
 
 function ensureStolen(){
@@ -2724,7 +3067,6 @@ function ensureStolen(){
   const s = state.stolen;
   if(typeof s.bank !== 'string') s.bank = "";
   if(!Array.isArray(s.transactions)) s.transactions = [];
-  /* ⭐ [تعديل] أزلنا تعبئة الافتراضيات — يبقى فارغ حتى يدخل المستخدم بياناته */
   s.transactions = s.transactions.map(x => {
     if(typeof x.id !== 'number') x.id = Date.now() + Math.floor(Math.random() * 10000);
     if(x.type !== "amount" && x.type !== "fee") x.type = "amount";
@@ -2809,19 +3151,6 @@ function delStolenTransaction(id){
   save();
   renderStolen();
   toast(t('stolen_delete_ok'), 'success');
-}
-/* ⭐ [تعديل] تصفير كامل لكل شيء */
-function resetStolen(){
-  if(!confirm(t('stolen_reset_confirm'))) return;
-  state.stolen = {
-    bank: "",
-    transactions: [],
-    before: { original: 0, remaining: 0 },
-    after: { original: 0, mustPay: 0 }
-  };
-  save();
-  renderStolen();
-  toast(t('stolen_reset_ok'), 'success');
 }
 function updStolenBank(val){
   ensureStolen().bank = String(val || "");
@@ -3123,17 +3452,10 @@ function updCashCount(key, val){
   const tCell = document.getElementById('cashTotalCell'); if(tCell) tCell.textContent = `${fmt(total)} ${LANG === 'ar' ? 'د.ب' : 'BHD'}`;
   const kpiVal = document.querySelector('#cashKpis .kpi .val'); if(kpiVal) kpiVal.textContent = money(total);
 }
-function resetCash(){
-  if(!confirm(LANG === 'ar' ? 'تصفير جميع أعداد التجوري؟' : 'Reset?')) return;
-  ensureCash(); CASH_DENOMINATIONS.forEach(d => { state.cash.counts[d.key] = 0; });
-  save(); renderCash(); toast(LANG === 'ar' ? '✅ تم تصفير التجوري' : '✅ Cash reset', 'success');
-}
 
-/* ⭐ [تعديل] ensureEidi — بدون تعبئة افتراضية */
 function ensureEidi(){
   if(!state.eidi) state.eidi = { items: [] };
   if(!Array.isArray(state.eidi.items)) state.eidi.items = [];
-  /* ⭐ أزلنا تعبئة DEFAULT_EIDI_ITEMS — تبقى القائمة فارغة */
   return state.eidi;
 }
 function eidiTotal(){ return ensureEidi().items.reduce((s, x) => s + (+x.amount || 0), 0); }
@@ -3141,13 +3463,6 @@ function updEidiAmount(id, val){ const e = ensureEidi(); const item = e.items.fi
 function updEidiName(id, val){ const e = ensureEidi(); const item = e.items.find(x => x.id === id); if(!item) return; item.name = val; save(); }
 function addEidiItem(){ const e = ensureEidi(); e.items.push({ id: Date.now() + Math.floor(Math.random()*10000), name: "", amount: 0 }); save(); renderEidi(); toast(LANG === 'ar' ? '✅ تمت إضافة بند' : '✅ Added', 'success'); }
 function removeEidiItem(id){ if(!confirm(LANG === 'ar' ? 'حذف هذا البند؟' : 'Delete?')) return; const e = ensureEidi(); e.items = e.items.filter(x => x.id !== id); save(); renderEidi(); toast(LANG === 'ar' ? '🗑 تم الحذف' : '🗑 Deleted', 'success'); }
-/* ⭐ [تعديل] resetEidi — يمسح كل الأسماء (ليس فقط تصفير المبالغ) */
-function resetEidi(){
-  if(!confirm(LANG === 'ar' ? 'تصفير جميع بيانات العيادي (الأسماء والمبالغ)؟' : 'Reset all Eidi data (names and amounts)?')) return;
-  state.eidi = { items: [] };
-  save(); renderEidi();
-  toast(LANG === 'ar' ? '✅ تم تصفير كل شيء' : '✅ All cleared', 'success');
-}
 
 function ensureReminders(){ if(!Array.isArray(state.reminders)) state.reminders = []; return state.reminders; }
 
@@ -3175,7 +3490,6 @@ function updBankAmount(id, val){
 }
 function addBankRow(){ const b = ensureBanks(); b.items.push({ id: Date.now() + Math.floor(Math.random() * 10000), name: b.customNames[0] || "NBK", amount: 0 }); save(); renderBanks(); toast(t('bank_add_row_ok'), 'success'); }
 function removeBankRow(id){ if(!confirm(t('bank_delete_row_confirm'))) return; state.banks.items = ensureBanks().items.filter(x => x.id !== id); save(); renderBanks(); toast(t('bank_delete_row_ok'), 'success'); }
-function resetBanks(){ if(!confirm(LANG === 'ar' ? 'تصفير جميع المبالغ؟' : 'Reset?')) return; ensureBanks().items.forEach(x => { x.amount = 0; }); save(); renderBanks(); toast(t('bank_reset_ok'), 'success'); }
 function addCustomBankName(targetId){
   const newName = prompt(t('bank_add_name_prompt'), ''); if(newName === null) return;
   const trimmed = newName.trim(); if(!trimmed){ toast(t('bank_invalid_name'), 'warn'); return; }
@@ -3298,7 +3612,6 @@ function ensurePyramidWithdrawals(){ if(!state.pyramidWithdrawals) state.pyramid
 function getWithdrawals(key){ const w = ensurePyramidWithdrawals(); if(!w[key]) w[key] = []; return w[key]; }
 function getWithdrawnTotal(key){ return getWithdrawals(key).reduce((s,x)=>s+(+x.amount||0),0); }
 
-/* ⭐ [تعديل] ensureReport — كل الافتراضيات صفر، purchases فارغة */
 function ensureReport(){
   if(!state.report) state.report = {
     fatherDebt: 0, electricityBill: 0, shePaysMe: 0,
@@ -3316,7 +3629,6 @@ function ensureReport(){
   if(typeof state.report.notes !== 'string') state.report.notes = "";
   if(!Array.isArray(state.report.purchaseNames)) state.report.purchaseNames = [...DEFAULT_PURCHASE_NAMES];
   DEFAULT_PURCHASE_NAMES.forEach(n => { if(!state.report.purchaseNames.includes(n)) state.report.purchaseNames.unshift(n); });
-  /* إضافة أسماء مخصصة موجودة ضمن المشتريات (لو استورد المستخدم بيانات) */
   state.report.purchases.forEach(p => { if(p.name && !state.report.purchaseNames.includes(p.name)) state.report.purchaseNames.push(p.name); });
   delete state.report.pointsMultiplier;
   return state.report;
@@ -3587,13 +3899,53 @@ function addYear(){
   state.years[y] = emptyYear(); state.yearList.push(y); state.yearList.sort((a,b)=>a-b); state.activeYear = y;
   save(); renderYearSelect(); renderAll(); toast(t('y_added') + y, 'success');
 }
+
+/* ⭐ [معدّلة] deleteYear — تستخدم النافذة الجديدة */
 function deleteYear(){
+  const L = LANG === 'ar';
   if(state.yearList.length <= 1){ toast(t('y_cant_del')); return; }
-  if(!confirm(`${t('y_confirm_del')} ${state.activeYear}?`)) return;
-  const y = state.activeYear; delete state.years[y];
-  if(state.yearExtras) delete state.yearExtras[y];
-  state.yearList = state.yearList.filter(x=>x!==y); state.activeYear = state.yearList[state.yearList.length-1];
-  save(); renderYearSelect(); renderAll(); toast(t('y_deleted') + y);
+
+  const yearToDelete = state.activeYear;
+  const yearData = state.years[yearToDelete] || [];
+  const filledMonths = yearData.filter(m => {
+    if(!m) return false;
+    return (+m.salary || 0) > 0 || (+m.costOfLiving || 0) > 0 || (+m.housing || 0) > 0 ||
+           getExpenseRows().some(r => (+m[r.key] || 0) > 0) ||
+           getSavingFields().some(f => (+m[f[0]] || 0) > 0);
+  }).length;
+  const debtsCount = state.debts.length;
+
+  openConfirmReset({
+    title: L ? `حذف سنة ${yearToDelete}` : `Delete Year ${yearToDelete}`,
+    warning: L
+      ? `سيتم حذف سنة ${yearToDelete} بالكامل — جميع الشهور والبيانات المالية داخلها ستُفقد نهائياً!`
+      : `Year ${yearToDelete} will be fully deleted — all months and financial data will be permanently lost!`,
+    details: L ? [
+      `سيتم حذف <strong>12 شهراً</strong> من سنة ${yearToDelete}`,
+      `يحتوي على <strong>${filledMonths} شهر</strong> فيه بيانات مسجلة`,
+      `دفعات الديون المسجلة في هذه السنة ستُحذف من <strong>${debtsCount} بند</strong>`,
+      "بيانات <strong>الادخار</strong> لهذه السنة ستُحذف",
+      "بيانات <strong>تقرير الشراكة</strong> و<strong>العيادي</strong> و<strong>السرقة</strong> لن تتأثر",
+      "السنة السابقة في القائمة ستصبح النشطة"
+    ] : [
+      `<strong>12 months</strong> of year ${yearToDelete} will be deleted`,
+      `Contains <strong>${filledMonths} months</strong> with data`,
+      `Debt payments in this year will be removed from <strong>${debtsCount} item(s)</strong>`,
+      "<strong>Savings</strong> data for this year will be deleted",
+      "<strong>Partnership Report</strong>, <strong>Eidi</strong>, and <strong>Stolen</strong> data will NOT be affected",
+      "The previous year will become active"
+    ],
+    onConfirm: function(){
+      delete state.years[yearToDelete];
+      if(state.yearExtras) delete state.yearExtras[yearToDelete];
+      state.yearList = state.yearList.filter(x => x !== yearToDelete);
+      state.activeYear = state.yearList[state.yearList.length - 1];
+      save();
+      renderYearSelect();
+      renderAll();
+      toast((L ? '✅ تم حذف: ' : '✅ Deleted: ') + yearToDelete, 'success');
+    }
+  });
 }
 
 function applyLang(){
@@ -4259,15 +4611,6 @@ function renderReport(){
     }).join("");
   }
   refreshReportTotals();
-}
-/* ⭐ [تعديل] resetReport — تصفير كل شيء مع الحفاظ على الأسماء المخصصة للاختيار فقط */
-function resetReport(){
-  const msg = LANG === 'ar' ? '⚠️ سيتم تصفير تقرير الشراكة بالكامل (كل الحقول والمشتريات). هل أنت متأكد؟' : '⚠️ This will reset the Partnership Report completely (all fields and purchases). Are you sure?';
-  if(!confirm(msg)) return;
-  const existingNames = state.report?.purchaseNames || [];
-  const customNames = existingNames.filter(n => !DEFAULT_PURCHASE_NAMES.includes(n));
-  state.report = { fatherDebt: 0, electricityBill: 0, shePaysMe: 0, shePaysToggle: true, profitToggle: true, purchases: [], purchaseNames: [...DEFAULT_PURCHASE_NAMES, ...customNames], notes: "" };
-  ensureReport(); save(); renderReport(); toast(LANG === 'ar' ? '✅ تم التصفير' : '✅ Reset', 'success');
 }
 
 function getAvgMonthValue(m, mi, item){
@@ -5581,12 +5924,6 @@ function importData(e){
   r.onload = ev => { try{ const d = JSON.parse(ev.target.result); if(d.years || d.months){ state = {...state, ...d}; saveNow(); location.reload(); } } catch(err){ alert(t('invalid_file')); } };
   r.readAsText(file);
 }
-function resetAll(){
-  if(!confirm(t('confirm_reset'))) return;
-  localStorage.removeItem(KEY); localStorage.removeItem(BACKUP_KEY);
-  OLD_KEYS.forEach(k => localStorage.removeItem(k));
-  location.reload();
-}
 window.addEventListener('beforeunload', function(){ if(SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; } if(SAVE_PENDING || LAST_SAVE === null){ saveNow(); } });
 document.addEventListener('visibilitychange', function(){ if(document.hidden && SAVE_PENDING){ if(SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; } saveNow(); } });
 document.addEventListener('keydown', function(e){ if((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')){ e.preventDefault(); manualSave(); } });
@@ -5594,6 +5931,7 @@ document.addEventListener('keydown', function(e){
   if(e.key === 'Escape'){
     const modal = document.getElementById("instructionsModal"); if(modal && modal.classList.contains("show")) closeInstructions();
     const popup = document.getElementById("reminderPopup"); if(popup && popup.classList.contains("show")) dismissCurrentPopup();
+    const resetModal = document.getElementById("confirmResetModal"); if(resetModal && resetModal.classList.contains("show")) closeConfirmReset();
     if(_editingReminderId != null){ cancelEditReminder(); }
   }
 });
