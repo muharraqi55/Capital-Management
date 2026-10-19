@@ -6,6 +6,7 @@
 <title>إدارة رأس المال | Capital Manager</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
+
 <style>
 
 
@@ -1385,7 +1386,7 @@ html[dir="ltr"] .target-table .num{text-align:right}
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ⭐ [جديد] أنماط نافذة تأكيد التصفير مع حفظ نسخة احتياطية
+   ⭐ أنماط نافذة تأكيد التصفير مع حفظ نسخة احتياطية
    ═══════════════════════════════════════════════════════════════ */
 .confirm-reset-warning{
   background: rgba(239,68,68,.12);
@@ -1480,6 +1481,53 @@ html[dir="ltr"] .confirm-reset-details li::before{
   .confirm-reset-details{ font-size: 12px; padding: 10px 12px; }
   #confirmResetModal .modal-footer button{ font-size: 13px !important; padding: 10px !important; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   ⭐ [جديد] حقل اسم البند القابل للتعديل في تقرير الشراكة
+   ═══════════════════════════════════════════════════════════════ */
+.report-label-input{
+  width: 100%;
+  background: linear-gradient(180deg, rgba(234,179,8,.12), rgba(234,179,8,.04));
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  outline: none;
+  transition: .2s;
+  font-family: inherit;
+  text-align: center;
+  letter-spacing: .3px;
+}
+.report-label-input::placeholder{
+  color: rgba(234,179,8,.5);
+  font-weight: 600;
+  font-size: 13px;
+}
+.report-label-input:focus{
+  border-color: var(--accent2);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.25);
+  background: linear-gradient(180deg, rgba(59,130,246,.12), rgba(59,130,246,.04));
+  color: var(--accent2);
+}
+@media (max-width: 600px){
+  .report-label-input{
+    font-size: 14px !important;
+    padding: 9px 12px !important;
+  }
+}
+@media print{
+  .report-label-input{
+    border: 1px solid #666 !important;
+    background: #fff !important;
+    color: #000 !important;
+    font-weight: 800 !important;
+    font-size: 9pt !important;
+    padding: 2pt 4pt !important;
+    text-align: center;
+  }
+}
 </style>
 </head>
 <body>
@@ -1518,18 +1566,19 @@ html[dir="ltr"] .confirm-reset-details li::before{
 </header>
 
 <nav class="tabs">
+  <!-- ⭐ [تعديل] إعادة ترتيب التبويبات: pyramid في الموضع #4، report في الأخير -->
   <button data-view="dashboard" class="active" data-i18n="t_dash">📊 اللوحة الرئيسية</button>
   <button data-view="month" data-i18n="t_month">📅 إدارة الشهور</button>
   <button data-view="debts" data-i18n="t_debts">🤝 السلف والديون و الالتزامات</button>
+  <button data-view="pyramid" data-i18n="t_pyr">🔺 هرم الأمان المالي</button>
   <button data-view="annual" data-i18n="t_annual">📈 الملخص السنوي</button>
   <button data-view="years" data-i18n="t_years">📆 مقارنة السنوات</button>
   <button data-view="avg" data-i18n="t_avg">📊 المتوسط السعري</button>
-  <button data-view="pyramid" data-i18n="t_pyr">🔺 هرم الأمان المالي</button>
-  <button data-view="report" data-i18n="t_report">📊 تقرير الشراكة</button>
   <button data-view="cash" data-i18n="t_cash">💰 كم لدي كاش في التجوري</button>
   <button data-view="banks" data-i18n="t_banks">🏦 احتياطي البنوك</button>
   <button data-view="eidi" data-i18n="t_eidi">🎁 توزيع العيادي</button>
   <button data-view="stolen" data-i18n="t_stolen">🚨 كم تم السرقه مني</button>
+  <button data-view="report" data-i18n="t_report">📊 تقرير الشراكة</button>
 </nav>
 
 <main id="mainContent">
@@ -1721,6 +1770,54 @@ html[dir="ltr"] .confirm-reset-details li::before{
   </div>
 </section>
 
+<!-- ⭐ [تعديل] قسم pyramid الآن في الموضع #4 (الترتيب: chart → targets → details) -->
+<section id="pyramid" class="view">
+  <!-- 🔺 #4-الرسم البياني -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
+      <h2 id="lblPyrTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none"></h2>
+      <button class="btn primary" onclick="openInstructions()" id="btnInstructions">📖 تعليمات</button>
+    </div>
+    <p class="muted" style="margin-bottom:14px" id="lblPyrDesc"></p>
+    <div class="pyramid-wrap"><svg class="pyramid-svg" viewBox="0 0 500 460" xmlns="http://www.w3.org/2000/svg" id="pyramidSvg"></svg></div>
+    <div class="pyramid-legend" id="pyramidLegend"></div>
+  </div>
+  <!-- 🎯 #4-أهداف الهرم -->
+  <div class="card target-card">
+    <h2 id="lblPyramidTargets">🎯 أهداف هرم الأمان المالي</h2>
+    <p class="muted" style="margin-bottom:14px" id="lblPyramidTargetsHint">أدخل المبلغ المستهدف لكل بند، وأضف ملاحظاتك. عند وصول المجموع المُدَّخر للهدف، يتم تعطيل خانة الإدخال تلقائياً في تبويب «إدارة الشهور». استخدم زر ⬇ للسحب.</p>
+    <div class="target-table-wrap">
+      <table class="target-table">
+        <thead><tr>
+          <th id="thTgtItem">البند</th>
+          <th id="thTgtTarget">الهدف (د.ب)</th>
+          <th id="thTgtSaved">المُدَّخر (تراكمي)</th>
+          <th id="thTgtWithdrawn">المسحوب</th>
+          <th id="thTgtNet">الصافي</th>
+          <th id="thTgtProgress">التقدم</th>
+          <th id="thTgtStatus">الحالة</th>
+          <th id="thTgtNote">ملاحظات</th>
+          <th id="thTgtActions">إجراء</th>
+        </tr></thead>
+        <tbody id="pyramidTargetsBody"></tbody>
+      </table>
+    </div>
+  </div>
+  <!-- 📊 التفاصيل -->
+  <div class="card">
+    <h2 id="lblPyrDetail"></h2>
+    <div class="pyramid-toggle-bar noprint">
+      <button class="btn" id="btnToggleAllPyramidYears" onclick="toggleAllPyramidLevels()">➕ عرض كل السنوات</button>
+    </div>
+    <div style="overflow-x:auto"><table id="pyramidTable"></table></div>
+  </div>
+  <div class="print-section">
+    <button class="btn primary" onclick="printCurrentView(false, 'landscape')" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn share" onclick="shareViewPDF('pyramid', false, 'landscape')" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
+    <button class="btn excel" onclick="exportPyramidExcel()">📊 Excel</button>
+  </div>
+</section>
+
 <section id="annual" class="view">
   <div class="card"><h2 id="lblAnnualTitle"></h2><div style="overflow-x:auto"><table id="annualTable"></table></div></div>
   <div class="print-section">
@@ -1769,133 +1866,6 @@ html[dir="ltr"] .confirm-reset-details li::before{
   <div class="print-section">
     <button class="btn primary" onclick="printCurrentView(false, 'landscape')" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
     <button class="btn share" onclick="shareViewPDF('avg', false, 'landscape')" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
-  </div>
-</section>
-
-<section id="pyramid" class="view">
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
-      <h2 id="lblPyrTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none"></h2>
-      <button class="btn primary" onclick="openInstructions()" id="btnInstructions">📖 تعليمات</button>
-    </div>
-    <p class="muted" style="margin-bottom:14px" id="lblPyrDesc"></p>
-    <div class="pyramid-wrap"><svg class="pyramid-svg" viewBox="0 0 500 460" xmlns="http://www.w3.org/2000/svg" id="pyramidSvg"></svg></div>
-    <div class="pyramid-legend" id="pyramidLegend"></div>
-  </div>
-  <div class="card target-card">
-    <h2 id="lblPyramidTargets">🎯 أهداف هرم الأمان المالي</h2>
-    <p class="muted" style="margin-bottom:14px" id="lblPyramidTargetsHint">أدخل المبلغ المستهدف لكل بند، وأضف ملاحظاتك. عند وصول المجموع المُدَّخر للهدف، يتم تعطيل خانة الإدخال تلقائياً في تبويب «إدارة الشهور». استخدم زر ⬇ للسحب.</p>
-    <div class="target-table-wrap">
-      <table class="target-table">
-        <thead><tr>
-          <th id="thTgtItem">البند</th>
-          <th id="thTgtTarget">الهدف (د.ب)</th>
-          <th id="thTgtSaved">المُدَّخر (تراكمي)</th>
-          <th id="thTgtWithdrawn">المسحوب</th>
-          <th id="thTgtNet">الصافي</th>
-          <th id="thTgtProgress">التقدم</th>
-          <th id="thTgtStatus">الحالة</th>
-          <th id="thTgtNote">ملاحظات</th>
-          <th id="thTgtActions">إجراء</th>
-        </tr></thead>
-        <tbody id="pyramidTargetsBody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="card">
-    <h2 id="lblPyrDetail"></h2>
-    <div class="pyramid-toggle-bar noprint">
-      <button class="btn" id="btnToggleAllPyramidYears" onclick="toggleAllPyramidLevels()">➕ عرض كل السنوات</button>
-    </div>
-    <div style="overflow-x:auto"><table id="pyramidTable"></table></div>
-  </div>
-  <div class="print-section">
-    <button class="btn primary" onclick="printCurrentView(false, 'landscape')" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
-    <button class="btn share" onclick="shareViewPDF('pyramid', false, 'landscape')" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
-    <button class="btn excel" onclick="exportPyramidExcel()">📊 Excel</button>
-  </div>
-</section>
-
-<section id="report" class="view">
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
-      <h2 id="lblReportTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none">⚙️ المدخلات الأساسية</h2>
-      <button class="btn danger" onclick="resetReport()" style="font-size:12px;padding:6px 12px">🗑 تصفير التقرير</button>
-    </div>
-    <div class="grid g2">
-      <div class="field">
-        <label id="lblReportFather">ابوي يرجع لي (انا نقصته)</label>
-        <input type="number" id="rpFather" step="0.001" oninput="updReport('fatherDebt', this.value)">
-      </div>
-      <div class="field">
-        <label id="lblReportProfitToggle">حالة الربح</label>
-        <button type="button" id="rpProfitToggle" class="profit-toggle-btn profit-yes" onclick="toggleProfitStatus()">✅ انت ربحت</button>
-      </div>
-    </div>
-
-    <div style="margin-top:16px;padding:16px;background:linear-gradient(180deg,rgba(59,130,246,.08),rgba(234,179,8,.04));border:2px solid rgba(59,130,246,.4);border-radius:12px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px dashed rgba(59,130,246,.35)">
-        <span style="font-size:16px">⚡</span>
-        <span style="font-weight:800;color:var(--accent2);font-size:13px" id="lblReportElecBox">⚡ الكهرباء</span>
-      </div>
-      <div class="grid g2" style="gap:14px">
-        <div class="field">
-          <label id="lblReportElecBill">⚡ مبلغ بيل الكهرباء كامل (مرجع فقط)</label>
-          <input type="number" id="rpElecBill" step="0.001" oninput="updReport('electricityBill', this.value)" placeholder="0.000">
-        </div>
-        <div class="field">
-          <label id="lblReportShePays">💸 تدفع لي</label>
-          <div style="display:flex;gap:8px;align-items:stretch">
-            <select id="rpShePaysToggle" onchange="onShePaysToggle(this.value)" style="flex:1;min-width:130px">
-              <option value="yes" data-i18n="rp_she_pays_yes">تدفع لي</option>
-              <option value="no" data-i18n="rp_she_pays_no">لا ما تدفع لي</option>
-            </select>
-            <input type="number" id="rpShePaysAmount" step="0.001" min="0" oninput="updReport('shePaysMe', this.value)" placeholder="0.000" style="flex:1">
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
-      <h2 style="margin-bottom:0;padding-bottom:0;border-bottom:none" id="lblReportPurchases">🛒 تفاصيل الشراء</h2>
-      <button class="btn primary" onclick="addReportPurchase()" id="btnAddReportPurchase">➕ إضافة بند</button>
-    </div>
-    <div class="expense-table-wrap">
-      <table class="expense-table">
-        <thead><tr>
-          <th style="width:60px" id="thRpIndex">#</th>
-          <th id="thRpName">الاسم</th>
-          <th style="width:180px" id="thRpAmount">المبلغ (د.ب)</th>
-          <th class="noprint" style="width:80px">⚙️</th>
-        </tr></thead>
-        <tbody id="reportPurchasesBody"></tbody>
-        <tfoot><tr>
-          <td colspan="2" style="text-align:end;font-weight:700;color:var(--accent2)">📦 إجمالي المشتريات</td>
-          <td class="num" id="rpPurchasesTotal" style="font-weight:800;color:var(--accent);font-size:15px"></td>
-          <td class="noprint"></td>
-        </tr></tfoot>
-      </table>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2 id="lblReportResults">📊 النتائج</h2>
-    <div class="grid g4" id="reportResults"></div>
-  </div>
-
-  <div class="card">
-    <h2 id="lblReportNotes">📝 ملاحظات</h2>
-    <div class="field">
-      <textarea id="rpNotes" rows="3" oninput="updReport('notes', this.value)" placeholder="..."></textarea>
-    </div>
-  </div>
-
-  <div class="print-section">
-    <button class="btn primary" onclick="printCurrentView(false, 'portrait')" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
-    <button class="btn share" onclick="shareViewPDF('report', false, 'portrait')" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
-    <button class="btn excel" onclick="exportReportExcel()">📊 Excel</button>
   </div>
 </section>
 
@@ -2100,6 +2070,92 @@ html[dir="ltr"] .confirm-reset-details li::before{
   </div>
 </section>
 
+<!-- ⭐ [تعديل] قسم report الآن في الموضع الأخير + إضافة حقل اسم قابل للتعديل -->
+<section id="report" class="view">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
+      <h2 id="lblReportTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none">⚙️ المدخلات الأساسية</h2>
+      <button class="btn danger" onclick="resetReport()" style="font-size:12px;padding:6px 12px">🗑 تصفير التقرير</button>
+    </div>
+    <div class="grid g2">
+      <div class="field">
+        <!-- ⭐ [جديد] حقل اسم البند القابل للتعديل -->
+        <label id="lblReportFatherName">📝 اسم البند (اكتبه بنفسك)</label>
+        <input type="text" id="rpFatherLabel" class="report-label-input" oninput="updReport('fatherDebtLabel', this.value)" placeholder="مثال: محمد" maxlength="60">
+        <input type="number" id="rpFather" step="0.001" oninput="updReport('fatherDebt', this.value)" placeholder="0.000">
+      </div>
+      <div class="field">
+        <label id="lblReportProfitToggle">حالة الربح</label>
+        <button type="button" id="rpProfitToggle" class="profit-toggle-btn profit-yes" onclick="toggleProfitStatus()">✅ انت ربحت</button>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:linear-gradient(180deg,rgba(59,130,246,.08),rgba(234,179,8,.04));border:2px solid rgba(59,130,246,.4);border-radius:12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px dashed rgba(59,130,246,.35)">
+        <span style="font-size:16px">⚡</span>
+        <span style="font-weight:800;color:var(--accent2);font-size:13px" id="lblReportElecBox">⚡ الكهرباء</span>
+      </div>
+      <div class="grid g2" style="gap:14px">
+        <div class="field">
+          <label id="lblReportElecBill">⚡ مبلغ بيل الكهرباء كامل (مرجع فقط)</label>
+          <input type="number" id="rpElecBill" step="0.001" oninput="updReport('electricityBill', this.value)" placeholder="0.000">
+        </div>
+        <div class="field">
+          <label id="lblReportShePays">💸 تدفع لي</label>
+          <div style="display:flex;gap:8px;align-items:stretch">
+            <select id="rpShePaysToggle" onchange="onShePaysToggle(this.value)" style="flex:1;min-width:130px">
+              <option value="yes" data-i18n="rp_she_pays_yes">تدفع لي</option>
+              <option value="no" data-i18n="rp_she_pays_no">لا ما تدفع لي</option>
+            </select>
+            <input type="number" id="rpShePaysAmount" step="0.001" min="0" oninput="updReport('shePaysMe', this.value)" placeholder="0.000" style="flex:1">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
+      <h2 style="margin-bottom:0;padding-bottom:0;border-bottom:none" id="lblReportPurchases">🛒 تفاصيل الشراء</h2>
+      <button class="btn primary" onclick="addReportPurchase()" id="btnAddReportPurchase">➕ إضافة بند</button>
+    </div>
+    <div class="expense-table-wrap">
+      <table class="expense-table">
+        <thead><tr>
+          <th style="width:60px" id="thRpIndex">#</th>
+          <th id="thRpName">الاسم</th>
+          <th style="width:180px" id="thRpAmount">المبلغ (د.ب)</th>
+          <th class="noprint" style="width:80px">⚙️</th>
+        </tr></thead>
+        <tbody id="reportPurchasesBody"></tbody>
+        <tfoot><tr>
+          <td colspan="2" style="text-align:end;font-weight:700;color:var(--accent2)">📦 إجمالي المشتريات</td>
+          <td class="num" id="rpPurchasesTotal" style="font-weight:800;color:var(--accent);font-size:15px"></td>
+          <td class="noprint"></td>
+        </tr></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 id="lblReportResults">📊 النتائج</h2>
+    <div class="grid g4" id="reportResults"></div>
+  </div>
+
+  <div class="card">
+    <h2 id="lblReportNotes">📝 ملاحظات</h2>
+    <div class="field">
+      <textarea id="rpNotes" rows="3" oninput="updReport('notes', this.value)" placeholder="..."></textarea>
+    </div>
+  </div>
+
+  <div class="print-section">
+    <button class="btn primary" onclick="printCurrentView(false, 'portrait')" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn share" onclick="shareViewPDF('report', false, 'portrait')" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
+    <button class="btn excel" onclick="exportReportExcel()">📊 Excel</button>
+  </div>
+</section>
+
 </main>
 
 <footer class="site-footer">
@@ -2128,8 +2184,8 @@ html[dir="ltr"] .confirm-reset-details li::before{
         <li><strong>20%</strong> للمدخرات وسداد الديون.</li>
       </ul>
       <div class="note">هرم الأمان المالي يقع بالكامل داخل الـ <strong>20%</strong> المخصصة للمدخرات.</div>
-      <h3>💳 القروض و📋 الالتزامات (تلقائية)</h3>
-      <div class="note">بند <strong>القروض</strong> يُحسب تلقائياً من الأقساط، وبند <strong>الالتزامات</strong> يُحسب تلقائياً من الالتزامات.</div>
+      <h3>💳 القروض و📋 الالتزامات و🔴 الدائنون (تلقائية)</h3>
+      <div class="note">بند <strong>القروض</strong> يُحسب تلقائياً من الأقساط، وبند <strong>الالتزامات</strong> يُحسب تلقائياً من الالتزامات، وبند <strong>دائن</strong> يُحسب تلقائياً من الديون الدائنة (التي أنا مدين بها لأشخاص آخرين).</div>
       <h3>📊 توزيع نسبي مقترح</h3>
       <table>
         <thead><tr><th>البند</th><th>النسبة</th><th>ملاحظات</th></tr></thead>
@@ -2137,6 +2193,7 @@ html[dir="ltr"] .confirm-reset-details li::before{
           <tr><td><strong>🚨 الطوارئ</strong></td><td><strong class="hl">30% - 50%</strong></td><td>أولوية قصوى - 3-6 أشهر من المصاريف.</td></tr>
           <tr><td><strong>💳 القروض</strong></td><td>تلقائي</td><td>يُحسب من الأقساط — سلبي.</td></tr>
           <tr><td><strong>📋 الالتزامات</strong></td><td>تلقائي</td><td>يُحسب من الالتزامات — سلبي.</td></tr>
+          <tr><td><strong>🔴 دائن</strong></td><td>تلقائي</td><td>يُحسب من الديون الدائنة — سلبي.</td></tr>
           <tr><td><strong>🕋 الحج</strong></td><td><strong class="hl">حسب القدرة</strong></td><td>مبلغ يُدَّخر لأداء فريضة الحج.</td></tr>
           <tr><td><strong>🛡️ تأمين وتسجيل</strong></td><td><strong class="hl">5% - 10%</strong></td><td>مبلغ سنوي يُقسم على 12.</td></tr>
           <tr><td><strong>👕 ثياب العيد</strong></td><td><strong class="hl">2% - 5%</strong></td><td>مبلغ موسمي.</td></tr>
@@ -2149,7 +2206,7 @@ html[dir="ltr"] .confirm-reset-details li::before{
       <h3>🎯 خلاصة للبدء</h3>
       <div class="success">
         <div>
-          <strong>70%</strong> → صندوق الطوارئ والقروض والالتزامات.<br>
+          <strong>70%</strong> → صندوق الطوارئ والقروض والالتزامات والدائنين.<br>
           <strong>30%</strong> → باقي البنود.<br>
           <strong>0%</strong> → عيادي مؤقتًا.
         </div>
@@ -2222,9 +2279,7 @@ html[dir="ltr"] .confirm-reset-details li::before{
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     ⭐ [جديد] نافذة تأكيد التصفير مع حفظ نسخة احتياطية
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- ⭐ نافذة تأكيد التصفير مع حفظ نسخة احتياطية -->
 <div class="modal-overlay" id="confirmResetModal" onclick="if(event.target===this)closeConfirmReset()">
   <div class="modal-content" style="max-width:560px">
     <div class="modal-header" style="background:linear-gradient(90deg,rgba(239,68,68,.18),rgba(239,68,68,.05));border-bottom:2px solid var(--danger)">
@@ -2256,7 +2311,10 @@ html[dir="ltr"] .confirm-reset-details li::before{
 
 
 <script>
-
+/* ═══════════════════════════════════════════════════════════════
+   Capital Manager — JavaScript (القسم 3 من 3)
+   يشمل: بند "دائن" الجديد في الهرم + اسم بند التقرير القابل للتعديل
+   ═══════════════════════════════════════════════════════════════ */
 
 const I18N = {
   ar: {
@@ -2343,7 +2401,7 @@ const I18N = {
     print_total:"الإجمالي",print_total_withdrawn:"إجمالي المسحوب",print_year_total:"إجمالي سنة",print_month:"الشهر",
     print_day_month:"تاريخ",print_no_data:"لا توجد بيانات مسجلة",print_no_withdrawals:"لا توجد سحوبات",
     print_auto_hint:"🔗 بند تلقائي",print_savings_source:"مصدر: إدارة الشهور",
-    print_debt_source_loans:"مصدر: الأقساط",print_debt_source_obligations:"مصدر: الالتزامات",
+    print_debt_source_loans:"مصدر: الأقساط",print_debt_source_obligations:"مصدر: الالتزامات",print_debt_source_credit:"مصدر: الديون الدائنة (أنا مدين بها)",
     print_error_popup:"⚠️ الرجاء السماح بالنوافذ المنبثقة",print_index:"م",print_debt_name:"البند",print_no_deposits_year:"لا إيداعات",
     debts_summary:"📊 ملخص الديون والأقساط والالتزامات",add_debt:"➕ إضافة",
     lbl_debt_name:"الاسم",lbl_debt_type:"النوع",lbl_debt_cat:"فئة القسط",lbl_debt_total:"المبلغ الكلي (د.ب)",
@@ -2375,7 +2433,7 @@ const I18N = {
     tgt_withdraw_success:"✅ تم السحب: ",tgt_withdraw_exceeds:"⚠️ أكبر من الرصيد",tgt_withdraw_no_balance:"لا يوجد رصيد",
     tgt_withdraw_invalid:"⚠️ مبلغ غير صحيح",tgt_saving_disabled:"✅ الهدف مكتمل",tgt_saving_target_hint:"🎯 الهدف: ",
     tgt_history_title:"📜 سجل سحوبات: ",tgt_history_empty:"لا يوجد سجل",tgt_history_total:"الإجمالي المسحوب: ",
-    tgt_auto_badge:"تلقائي",tgt_auto_hint_loans:"🔗 من الأقساط",tgt_auto_hint_obligations:"🔗 من الالتزامات",tgt_no_installments:"لا توجد أقساط",
+    tgt_auto_badge:"تلقائي",tgt_auto_hint_loans:"🔗 من الأقساط",tgt_auto_hint_obligations:"🔗 من الالتزامات",tgt_auto_hint_credit:"🔗 من الدائنين",tgt_no_installments:"لا توجد أقساط",
     pyr_remaining_label:"متبقي",pyr_done_label:"✅ تم",pyr_negative_hint:"سلبي",
     inst_title:"📖 تعليمات",close_btn:"إغلاق",add_extra_title:"إضافة فرعي",remove_extra_title:"حذف الفرعي",
     collapse_all_title:"طي",expand_all_title:"توسيع",
@@ -2399,6 +2457,7 @@ const I18N = {
     eid_fitar:"🎉 عيد الفطر",eid_adha:"🐑 عيد الأضحى",
     p_emergencyFund:"مبلغ الطوارئ",p_eidMoneySaving:"عيادي العيد",p_eidClothes:"ثياب العيد",p_hajj:"الحج",
     p_insuranceSaving:"تأمين سيارات",p_assembly:"جمعية",p_obligationsSaving:"التزامات أخرى",p_travelSaving:"سفر",p_investment:"الاستثمار",p_loans:"قروض",
+    p_credit:"دائن",
     es_total:"الإجمالي",es_counted:"✅ المحتسب",es_excluded:"⛔ المستثنى",es_by_bank:"🏦 حسب البنك",
     dt_credit:"دائن",dt_debit:"مدين",dt_inst:"قسط",dt_obligation:"التزام",
     dt_credit_label:"دائن",dt_debit_label:"مدين",dt_inst_label:"قسط",dt_obligation_label:"التزام",
@@ -2429,7 +2488,7 @@ const I18N = {
     avg_kpi_total_inc:"متوسط الدخل",avg_kpi_total_exp:"متوسط المصاريف",avg_kpi_total_sav:"متوسط الادخار",
     avg_kpi_total_rem:"متوسط المتبقي",avg_kpi_yearly_inc:"متوسط الدخل السنوي",avg_kpi_yearly_exp:"متوسط المصاريف السنوية",
     avg_kpi_yearly_rem:"متوسط المتبقي السنوي",
-    rp_title:"⚙️ المدخلات",rp_father:"ابوي يرجع لي",rp_elec_bill:"⚡ بيل الكهرباء",rp_she_pays:"💸 تدفع لي",
+    rp_title:"⚙️ المدخلات",rp_father:"ابوي يرجع لي",rp_father_label:"📝 اسم البند (اكتبه بنفسك)",rp_elec_bill:"⚡ بيل الكهرباء",rp_she_pays:"💸 تدفع لي",
     rp_purchases:"🛒 تفاصيل الشراء",rp_add_purchase:"➕ إضافة",rp_name:"الاسم",rp_amount:"المبلغ",
     rp_results:"📊 النتائج",rp_item:"البند",rp_value:"القيمة",rp_notes:"ملاحظات",
     rp_kpi_full:"💰 المبلغ كامل",rp_kpi_profit:"✅ الربح",rp_kpi_final:"📌 المبلغ النهائي",
@@ -2534,7 +2593,7 @@ const I18N = {
     print_total:"Total",print_total_withdrawn:"Total Withdrawn",print_year_total:"Year Total",print_month:"Month",
     print_day_month:"Date",print_no_data:"No data",print_no_withdrawals:"No withdrawals",
     print_auto_hint:"🔗 Auto",print_savings_source:"Source: Month",print_debt_source_loans:"Source: Installments",
-    print_debt_source_obligations:"Source: Obligations",print_error_popup:"⚠️ Allow pop-ups",print_index:"#",print_debt_name:"Item",print_no_deposits_year:"No deposits",
+    print_debt_source_obligations:"Source: Obligations",print_debt_source_credit:"Source: Creditors (I owe them)",print_error_popup:"⚠️ Allow pop-ups",print_index:"#",print_debt_name:"Item",print_no_deposits_year:"No deposits",
     debts_summary:"📊 Debts Summary",add_debt:"➕ Add",lbl_debt_name:"Name",lbl_debt_type:"Type",lbl_debt_cat:"Category",
     lbl_debt_total:"Total",lbl_debt_paidbefore:"Paid Before",lbl_debt_start:"Start",lbl_debt_end:"End",lbl_debt_notes:"Notes",btn_add_debt:"➕ Add",
     dbt_credit:"🔴 Creditor",dbt_debit:"🟢 Debtor",dbt_inst:"🏦 Installment",dbt_obligation:"📋 Obligation",
@@ -2562,7 +2621,7 @@ const I18N = {
     tgt_withdraw_success:"✅ Withdrawn: ",tgt_withdraw_exceeds:"⚠️ Exceeds",tgt_withdraw_no_balance:"No balance",
     tgt_withdraw_invalid:"⚠️ Invalid",tgt_saving_disabled:"✅ Reached",tgt_saving_target_hint:"🎯 Target: ",
     tgt_history_title:"📜 History: ",tgt_history_empty:"No history",tgt_history_total:"Total: ",
-    tgt_auto_badge:"Auto",tgt_auto_hint_loans:"🔗 Installments",tgt_auto_hint_obligations:"🔗 Obligations",tgt_no_installments:"No installments",
+    tgt_auto_badge:"Auto",tgt_auto_hint_loans:"🔗 Installments",tgt_auto_hint_obligations:"🔗 Obligations",tgt_auto_hint_credit:"🔗 Creditors",tgt_no_installments:"No installments",
     pyr_remaining_label:"Left",pyr_done_label:"✅ Done",pyr_negative_hint:"Negative",
     inst_title:"📖 Instructions",close_btn:"Close",add_extra_title:"Add",remove_extra_title:"Delete",
     collapse_all_title:"Collapse",expand_all_title:"Expand",
@@ -2586,6 +2645,7 @@ const I18N = {
     eid_fitar:"🎉 Eid Al-Fitr",eid_adha:"🐑 Eid Al-Adha",
     p_emergencyFund:"Emergency",p_eidMoneySaving:"Eid Money",p_eidClothes:"Eid Clothes",p_hajj:"Hajj",
     p_insuranceSaving:"Insurance",p_assembly:"Assembly",p_obligationsSaving:"Obligations",p_travelSaving:"Travel",p_investment:"Investment",p_loans:"Loans",
+    p_credit:"Creditor",
     es_total:"Total",es_counted:"✅ Counted",es_excluded:"⛔ Excluded",es_by_bank:"🏦 By Bank",
     dt_credit:"Credit",dt_debit:"Debit",dt_inst:"Installment",dt_obligation:"Obligation",
     dt_credit_label:"Credit",dt_debit_label:"Debit",dt_inst_label:"Installment",dt_obligation_label:"Obligation",
@@ -2614,7 +2674,7 @@ const I18N = {
     avg_kpi_total_inc:"Avg Income",avg_kpi_total_exp:"Avg Expenses",avg_kpi_total_sav:"Avg Savings",
     avg_kpi_total_rem:"Avg Remaining",avg_kpi_yearly_inc:"Yearly Income",avg_kpi_yearly_exp:"Yearly Expenses",
     avg_kpi_yearly_rem:"Yearly Remaining",
-    rp_title:"⚙️ Basic Inputs",rp_father:"Father owes me",rp_elec_bill:"⚡ Electricity",rp_she_pays:"💸 She pays me",
+    rp_title:"⚙️ Basic Inputs",rp_father:"Father owes me",rp_father_label:"📝 Item name (write it yourself)",rp_elec_bill:"⚡ Electricity",rp_she_pays:"💸 She pays me",
     rp_purchases:"🛒 Purchases",rp_add_purchase:"➕ Add",rp_name:"Name",rp_amount:"Amount",
     rp_results:"📊 Results",rp_item:"Item",rp_value:"Value",rp_notes:"Notes",
     rp_kpi_full:"💰 Full Amount",rp_kpi_profit:"✅ Profit",rp_kpi_final:"📌 Final",
@@ -2726,10 +2786,12 @@ const getSavingFields = () => [
   ["travelSaving", t('s_travelSaving')],["eidMoneySaving", t('s_eidMoneySaving'), "eidDropdown"],
 ];
 
+/* ⭐ [تعديل] إضافة بند "credit" (🔴 دائن) كثالث بند تلقائي بعد loans و obligationsSaving */
 const getPyramidLevels = () => [
   {key:"emergencyFund",label:t('p_emergencyFund'),color:"#ef4444",subtitle:"🚨"},
   {key:"loans",label:t('p_loans'),color:"#64748b",subtitle:"💳",auto:true,negative:true},
   {key:"obligationsSaving",label:t('p_obligationsSaving'),color:"#3b82f6",subtitle:"📋",auto:true,negative:true},
+  {key:"credit",label:t('p_credit'),color:"#dc2626",subtitle:"🔴",auto:true,negative:true},
   {key:"hajj",label:t('p_hajj'),color:"#0284c7",subtitle:"🕋"},
   {key:"insuranceSaving",label:t('p_insuranceSaving'),color:"#eab308",subtitle:"🛡️"},
   {key:"eidClothes",label:t('p_eidClothes'),color:"#ec4899",subtitle:"👕"},
@@ -2739,9 +2801,31 @@ const getPyramidLevels = () => [
   {key:"eidMoneySaving",label:t('p_eidMoneySaving'),color:"#f97316",subtitle:"🎉"},
 ];
 
-function isPyramidNegativeLevel(key){ return key === "loans" || key === "obligationsSaving"; }
+/* ⭐ [تعديل] إضافة credit كبند سلبي */
+function isPyramidNegativeLevel(key){ return key === "loans" || key === "obligationsSaving" || key === "credit"; }
 function isPyramidInvestmentLevel(key){ return key === "investment"; }
 function isPyramidBankSavingsLevel(key){ return !isPyramidNegativeLevel(key) && !isPyramidInvestmentLevel(key); }
+
+/* ⭐ [جديد] دوال مساعدة للتعامل مع البنود التلقائية */
+function getDebtTypeForKey(key){
+  if(key === "loans") return "installment";
+  if(key === "obligationsSaving") return "obligation";
+  if(key === "credit") return "credit";
+  return null;
+}
+function isDebtAutoKey(key){ return getDebtTypeForKey(key) !== null; }
+function getAutoHintForKey(key){
+  if(key === "loans") return t('tgt_auto_hint_loans');
+  if(key === "obligationsSaving") return t('tgt_auto_hint_obligations');
+  if(key === "credit") return t('tgt_auto_hint_credit');
+  return "";
+}
+function getPrintSourceForKey(key){
+  if(key === "loans") return t('print_debt_source_loans');
+  if(key === "obligationsSaving") return t('print_debt_source_obligations');
+  if(key === "credit") return t('print_debt_source_credit');
+  return t('print_savings_source');
+}
 
 function makeEmptyMonth(){
   const base = {
@@ -2759,6 +2843,7 @@ function makeEmptyMonth(){
 const EMPTY_MONTH = makeEmptyMonth;
 const emptyYear = () => Array.from({length:12}, EMPTY_MONTH);
 
+/* ⭐ [تعديل] إضافة fatherDebtLabel (اسم البند القابل للتعديل) */
 let state = {
   years: {}, yearList: [], activeYear: new Date().getFullYear(), activeMonth: 0,
   debts: [], yearExtras: {}, pyramidTargets: {}, pyramidNotes: {}, pyramidWithdrawals: {},
@@ -2777,12 +2862,13 @@ let state = {
     shePaysToggle: true, profitToggle: true,
     purchases: [],
     purchaseNames: [...DEFAULT_PURCHASE_NAMES],
+    fatherDebtLabel: "",
     notes: ""
   }
 };
 
 /* ═══════════════════════════════════════════════════════════════
-   ⭐ [جديد] نظام تأكيد التصفير الاحترافي
+   ⭐ نظام تأكيد التصفير الاحترافي
    ═══════════════════════════════════════════════════════════════ */
 
 function openConfirmReset(config){
@@ -2851,25 +2937,26 @@ function closeConfirmReset(){
   _confirmResetCallback = null;
 }
 
-/* ── تعديلات دوال التصفير لتستخدم النافذة الجديدة ── */
-
 /* ── 1) تصفير تقرير الشراكة ── */
 function resetReport(){
   const L = LANG === 'ar';
+  const currentLabel = state.report?.fatherDebtLabel || (L ? 'ابوي يرجع لي' : 'Father owes me');
   openConfirmReset({
     title: L ? "تصفير تقرير الشراكة" : "Reset Partnership Report",
     warning: L
       ? "سيتم تصفير تقرير الشراكة بالكامل — جميع الحقول والمشتريات ستعود إلى الصفر. لا يمكن التراجع عن هذه العملية!"
       : "The Partnership Report will be fully reset — all fields and purchases will return to zero. This cannot be undone!",
     details: L ? [
-      "<strong>ابوي يرجع لي</strong> → 0",
+      `<strong>${esc(currentLabel)}</strong> → 0`,
+      "<strong>اسم البند</strong> سيعود للوضع الافتراضي (فارغ)",
       "<strong>بيل الكهرباء</strong> → 0",
       "<strong>تدفع لي</strong> → 0",
       "جميع <strong>بنود المشتريات</strong> ستُحذف",
       "<strong>الملاحظات</strong> ستُمسح",
       "حالة الربح ستعود إلى الوضع الافتراضي"
     ] : [
-      "<strong>Father owes me</strong> → 0",
+      `<strong>${esc(currentLabel)}</strong> → 0`,
+      "<strong>Item Name</strong> will reset to default (empty)",
       "<strong>Electricity bill</strong> → 0",
       "<strong>She pays me</strong> → 0",
       "All <strong>purchase items</strong> will be deleted",
@@ -2884,6 +2971,7 @@ function resetReport(){
         shePaysToggle: true, profitToggle: true,
         purchases: [],
         purchaseNames: [...DEFAULT_PURCHASE_NAMES, ...customNames],
+        fatherDebtLabel: "",
         notes: ""
       };
       ensureReport();
@@ -3018,7 +3106,7 @@ function resetBanks(){
   });
 }
 
-/* ── 6) تصفير كل شيء (الزر الرئيسي) ── */
+/* ── 6) تصفير كل شيء ── */
 function resetAll(){
   const L = LANG === 'ar';
   openConfirmReset({
@@ -3028,7 +3116,7 @@ function resetAll(){
       : "⚠️ CRITICAL WARNING! All your data will be permanently deleted — this action absolutely cannot be undone! Make sure to save a backup first.",
     details: L ? [
       "جميع <strong>السنوات والشهور</strong> ستُحذف",
-      "جميع <strong>الديون والأقساط والالتزامات</strong> ستُحذف",
+      "جميع <strong>الديون والأقساط والالتزامات والدائنين</strong> ستُحذف",
       "جميع <strong>الادخارات وأهداف الهرم</strong> ستُحذف",
       "جميع <strong>بيانات تقرير الشراكة</strong> ستُحذف",
       "جميع <strong>بيانات توزيع العيادي</strong> ستُحذف",
@@ -3039,7 +3127,7 @@ function resetAll(){
       "سيتم <strong>إعادة تحميل</strong> التطبيق كأنك تستخدمه لأول مرة"
     ] : [
       "All <strong>years and months</strong> will be deleted",
-      "All <strong>debts, installments, obligations</strong> will be deleted",
+      "All <strong>debts, installments, obligations, creditors</strong> will be deleted",
       "All <strong>savings and pyramid targets</strong> will be deleted",
       "All <strong>Partnership Report</strong> data will be deleted",
       "All <strong>Eidi distribution</strong> data will be deleted",
@@ -3602,9 +3690,21 @@ function getLoansTotalAmount(){ let total = 0; (state.debts || []).filter(d => d
 function getObligationsTotalAmount(){ let total = 0; (state.debts || []).filter(d => d.type === "obligation" && !isDebtFullyPaid(d)).forEach(d => { total += (+d.total || 0); }); return total; }
 function getObligationsCumulativePaid(){ let total = 0; (state.debts || []).filter(d => d.type === "obligation" && !isDebtFullyPaid(d)).forEach(d => { total += debtPaidAllYears(d); }); return total; }
 
+/* ⭐ [جديد] دوال الدائنين (credit) — مثل الأقساط والالتزامات */
+function getCreditsTotalAmount(){ let total = 0; (state.debts || []).filter(d => d.type === "credit" && !isDebtFullyPaid(d)).forEach(d => { total += (+d.total || 0); }); return total; }
+function getCreditsCumulativePaid(){ let total = 0; (state.debts || []).filter(d => d.type === "credit" && !isDebtFullyPaid(d)).forEach(d => { total += debtPaidAllYears(d); }); return total; }
+
 function ensurePyramidTargets(){ if(!state.pyramidTargets) state.pyramidTargets = {}; return state.pyramidTargets; }
-function getPyramidTarget(key){ if(key === "loans") return getLoansTotalAmount(); if(key === "obligationsSaving") return getObligationsTotalAmount(); return +(ensurePyramidTargets()[key]) || 0; }
-function setPyramidTarget(key, val){ if(key === "loans" || key === "obligationsSaving") return; ensurePyramidTargets()[key] = Math.max(0, parseFloat(val) || 0); }
+function getPyramidTarget(key){
+  if(key === "loans") return getLoansTotalAmount();
+  if(key === "obligationsSaving") return getObligationsTotalAmount();
+  if(key === "credit") return getCreditsTotalAmount();
+  return +(ensurePyramidTargets()[key]) || 0;
+}
+function setPyramidTarget(key, val){
+  if(key === "loans" || key === "obligationsSaving" || key === "credit") return;
+  ensurePyramidTargets()[key] = Math.max(0, parseFloat(val) || 0);
+}
 function ensurePyramidNotes(){ if(!state.pyramidNotes) state.pyramidNotes = {}; return state.pyramidNotes; }
 function getPyramidNote(key){ return ensurePyramidNotes()[key] || ""; }
 function setPyramidNote(key, val){ ensurePyramidNotes()[key] = String(val || ""); }
@@ -3612,12 +3712,14 @@ function ensurePyramidWithdrawals(){ if(!state.pyramidWithdrawals) state.pyramid
 function getWithdrawals(key){ const w = ensurePyramidWithdrawals(); if(!w[key]) w[key] = []; return w[key]; }
 function getWithdrawnTotal(key){ return getWithdrawals(key).reduce((s,x)=>s+(+x.amount||0),0); }
 
+/* ⭐ [تعديل] ensureReport — إضافة fatherDebtLabel */
 function ensureReport(){
   if(!state.report) state.report = {
     fatherDebt: 0, electricityBill: 0, shePaysMe: 0,
     shePaysToggle: true, profitToggle: true,
     purchases: [],
     purchaseNames: [...DEFAULT_PURCHASE_NAMES],
+    fatherDebtLabel: "",
     notes: ""
   };
   if(!Array.isArray(state.report.purchases)) state.report.purchases = [];
@@ -3627,6 +3729,7 @@ function ensureReport(){
   if(typeof state.report.shePaysToggle !== 'boolean') state.report.shePaysToggle = true;
   if(typeof state.report.profitToggle !== 'boolean') state.report.profitToggle = true;
   if(typeof state.report.notes !== 'string') state.report.notes = "";
+  if(typeof state.report.fatherDebtLabel !== 'string') state.report.fatherDebtLabel = "";
   if(!Array.isArray(state.report.purchaseNames)) state.report.purchaseNames = [...DEFAULT_PURCHASE_NAMES];
   DEFAULT_PURCHASE_NAMES.forEach(n => { if(!state.report.purchaseNames.includes(n)) state.report.purchaseNames.unshift(n); });
   state.report.purchases.forEach(p => { if(p.name && !state.report.purchaseNames.includes(p.name)) state.report.purchaseNames.push(p.name); });
@@ -3637,13 +3740,14 @@ function ensureReport(){
 function getCumulativeSaved(key){
   if(key === "loans") return getLoansCumulativePaid();
   if(key === "obligationsSaving") return getObligationsCumulativePaid();
+  if(key === "credit") return getCreditsCumulativePaid();
   const extraKey = key + "Extra"; let total = 0;
   Object.keys(state.years || {}).forEach(y => { (state.years[y] || []).forEach(m => { if(!isSavingExcluded(m, key)) total += (+m[key] || 0); total += sumSavingExtrasCounted(m, extraKey); }); });
   return total;
 }
 function getCumulativeSavedExcluding(key, excludeYear, excludeMonth){
-  if(key === "loans" || key === "obligationsSaving"){
-    const type = key === "loans" ? "installment" : "obligation"; let total = 0;
+  if(key === "loans" || key === "obligationsSaving" || key === "credit"){
+    const type = getDebtTypeForKey(key); let total = 0;
     (state.debts || []).filter(d => d.type === type && !isDebtFullyPaid(d)).forEach(d => { Object.keys(d.monthlyByYear || {}).forEach(y => { (d.monthlyByYear[y] || []).forEach((v, i) => { if(parseInt(y) === excludeYear && i === excludeMonth) return; total += (+v || 0); }); }); });
     return total;
   }
@@ -3900,7 +4004,6 @@ function addYear(){
   save(); renderYearSelect(); renderAll(); toast(t('y_added') + y, 'success');
 }
 
-/* ⭐ [معدّلة] deleteYear — تستخدم النافذة الجديدة */
 function deleteYear(){
   const L = LANG === 'ar';
   if(state.yearList.length <= 1){ toast(t('y_cant_del')); return; }
@@ -3981,7 +4084,7 @@ function applyLang(){
     thZKItem:'th_item',thZKAmount:'th_amount',thZKBank:'th_bank',thZKNote:'th_note',thZKRef:'th_ref',
     thIncItem:'th_income_item',thIncAmount:'th_income_amount',thIncNote:'th_income_note',lblMeatSupport:'f_meat_support',lblMeatAmount:'f_meat_amount',
     avgAllTitle:'avg_all_title',avgAllHint:'avg_all_hint',avgTitle:'avg_title',
-    lblReportTitle:'rp_title',lblReportFather:'rp_father',lblReportElecBill:'rp_elec_bill',
+    lblReportTitle:'rp_title',lblReportFather:'rp_father',lblReportFatherName:'rp_father_label',lblReportElecBill:'rp_elec_bill',
     lblReportElecBox:'lblReportElecBox',lblReportProfitToggle:'rp_profit_toggle',
     lblReportShePays:'rp_she_pays',lblReportPurchases:'rp_purchases',
     btnAddReportPurchase:'rp_add_purchase',thRpIndex:'print_index',thRpName:'rp_name',thRpAmount:'rp_amount',
@@ -4227,10 +4330,10 @@ function renderDebtsMonthSection(){
   tfoot.innerHTML = `<tr><td colspan="5">${t('dms_total')} (${t('es_counted')})</td><td class="num" style="color:var(--accent2);font-weight:700">${money(totalAll)}</td><td colspan="4"></td></tr>` + (totalExcl > 0 ? `<tr><td colspan="5" style="color:var(--danger)">${t('es_excluded')}</td><td class="num" style="color:var(--danger);font-weight:700">${money(totalExcl)}</td><td colspan="4"></td></tr>` : "");
   summary.innerHTML = `${kpi(t('dms_recv'), money(recv), "pos")}${kpi(t('dms_pay'), money(pay), "neg")}${kpi(t('dms_net'), money(recv - pay), (recv - pay) >= 0 ? "pos" : "neg")}${kpi(t('dms_remaining'), money(state.debts.reduce((s,d)=>s+debtRemaining(d),0)), "gold")}`;
 }
-function updDebtBank(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.bank = val; save(); renderDebtsMonthSection(); renderMonthResults(); renderMonthPills(); renderDashboard(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); } }
+function updDebtBank(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.bank = val; save(); renderDebtsMonthSection(); renderMonthResults(); renderMonthPills(); renderDashboard(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); updatePyramidTargetRow("credit"); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); } }
 function updDebtNoteInline(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.notes = val; save(); }
 function updDebtRef(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDebtRef(d, state.activeYear, state.activeMonth, val); save(); }
-function updDebtMonthInEntry(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDm(d, state.activeYear, state.activeMonth, Math.max(0, parseFloat(val)||0)); save(); refreshDebtsMonthCells(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderDebts(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); }
+function updDebtMonthInEntry(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDm(d, state.activeYear, state.activeMonth, Math.max(0, parseFloat(val)||0)); save(); refreshDebtsMonthCells(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderDebts(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); updatePyramidTargetRow("credit"); }
 function refreshDebtsMonthCells(){
   const mi = state.activeMonth, y = state.activeYear;
   let recv = 0, pay = 0, recvExcl = 0, payExcl = 0;
@@ -4349,14 +4452,14 @@ function renderPyramidTargets(){
     const wCount = getWithdrawals(lvl.key).length; const note = getPyramidNote(lvl.key);
     const levelLabel = `<span style="display:inline-block;min-width:22px;padding:1px 6px;border-radius:6px;background:rgba(143,163,184,.15);color:var(--muted);font-size:10px;font-weight:700;text-align:center;margin-inline-end:6px">${idx+1}</span>`;
     const autoBadge = isAuto ? `<span class="badge auto">🔗 ${t('tgt_auto_badge')}</span>` : '';
-    let autoHint = ''; if(lvl.key === "loans") autoHint = t('tgt_auto_hint_loans'); else if(lvl.key === "obligationsSaving") autoHint = t('tgt_auto_hint_obligations');
+    const autoHint = getAutoHintForKey(lvl.key);
     const targetCell = isAuto ? `<div style="display:flex;flex-direction:column;gap:2px"><input type="number" class="target-input auto-input" value="${target}" readonly title="${autoHint}"><span class="target-hint">${autoHint}</span></div>` : `<input type="number" class="target-input" value="${inVal(target)}" min="0" step="0.001" oninput="updPyramidTarget('${lvl.key}', this.value)" placeholder="0">`;
     const withdrawBtn = isAuto ? '' : `<button class="icon-btn withdraw" onclick="withdrawFromPyramid('${lvl.key}')" title="${t('tgt_withdraw_btn')}">⬇</button>`;
     return `<tr data-target-key="${lvl.key}" class="${isAuto?'auto-row':''}"><td><div class="target-name">${levelLabel}<span class="target-dot" style="background:${lvl.color}"></span>${lvl.subtitle} ${lvl.label} ${autoBadge}</div></td><td>${targetCell}</td><td class="num tgt-saved">${saved > 0 ? money(saved) : '—'}</td><td class="num tgt-withdrawn ${withdrawn > 0 ? 'neg' : 'muted'}">${withdrawn > 0 ? money(withdrawn) : '—'}</td><td class="num tgt-net" style="color:${lvl.color};font-weight:800">${money(net)}</td><td><div class="progress-bar"><div class="progress-fill tgt-progress-fill" style="width:${pct}%;background:${lvl.color}"></div></div><div class="progress-text tgt-progress-text">${noTarget ? '—' : `${pct.toFixed(0)}% • ${LANG==='ar'?'متبقي':'Left'}: ${fmt(remaining)}`}</div></td><td><span class="badge ${statusClass} tgt-status">${status}</span></td><td><input type="text" class="target-note" value="${esc(note)}" oninput="updPyramidNote('${lvl.key}', this.value)" placeholder="${t('tgt_note_placeholder')}"></td><td><div class="target-actions tgt-actions">${withdrawBtn}${wCount > 0 ? `<button class="icon-btn history" onclick="showWithdrawHistory('${lvl.key}')" title="${t('tgt_history_btn')}">📜</button>` : ''}</div></td></tr>`;
   }).join("");
 }
 function updPyramidTarget(key, val){
-  if(key === "loans" || key === "obligationsSaving") return;
+  if(isDebtAutoKey(key)) return;
   setPyramidTarget(key, val); save(); updatePyramidTargetRow(key); debounceMonthSavingRefresh();
   if(_pyramidTargetTimer) clearTimeout(_pyramidTargetTimer);
   _pyramidTargetTimer = setTimeout(() => { if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); } }, 300);
@@ -4382,7 +4485,7 @@ function updatePyramidTargetRow(key){
 }
 function debounceMonthSavingRefresh(){ if(_monthRefreshTimer) clearTimeout(_monthRefreshTimer); _monthRefreshTimer = setTimeout(() => { const activeTab = document.querySelector('nav.tabs button.active'); if(activeTab && activeTab.dataset.view === "month"){ renderSavingFields(); } }, 600); }
 function withdrawFromPyramid(key){
-  if(key === "loans" || key === "obligationsSaving"){ toast(LANG==='ar'?'⚠️ تلقائي':'⚠️ Auto', 'warn'); return; }
+  if(isDebtAutoKey(key)){ toast(LANG==='ar'?'⚠️ تلقائي':'⚠️ Auto', 'warn'); return; }
   const lvl = getPyramidLevels().find(l => l.key === key); const name = lvl ? `${lvl.subtitle} ${lvl.label}` : key;
   const net = getNetSaved(key); if(net <= 0){ toast(t('tgt_withdraw_no_balance'), 'warn'); return; }
   const amountStr = prompt(`${t('tgt_withdraw_prompt')} "${name}"?\n${LANG==='ar'?'الرصيد الصافي:':'Net:'} ${fmt(net)}`, '');
@@ -4405,10 +4508,9 @@ function showWithdrawHistory(key){
 function openInstructions(){ const modal = document.getElementById("instructionsModal"); if(modal){ modal.classList.add("show"); document.body.style.overflow = "hidden"; } }
 function closeInstructions(){ const modal = document.getElementById("instructionsModal"); if(modal){ modal.classList.remove("show"); document.body.style.overflow = ""; } }
 function getAllPyramidYears(key){
-  const years = new Set(); const isAuto = (key === "loans" || key === "obligationsSaving");
-  if(isAuto){
-    const filterType = key === "loans" ? "installment" : "obligation";
-    (state.debts || []).filter(d => d.type === filterType && !isDebtFullyPaid(d)).forEach(d => { Object.keys(d.monthlyByYear || {}).forEach(y => { if((d.monthlyByYear[y]||[]).some(v => +v > 0)) years.add(parseInt(y)); }); });
+  const years = new Set(); const debtType = getDebtTypeForKey(key);
+  if(debtType){
+    (state.debts || []).filter(d => d.type === debtType && !isDebtFullyPaid(d)).forEach(d => { Object.keys(d.monthlyByYear || {}).forEach(y => { if((d.monthlyByYear[y]||[]).some(v => +v > 0)) years.add(parseInt(y)); }); });
   } else {
     Object.keys(state.years || {}).forEach(y => { const months = state.years[y] || []; const hasData = months.some(m => { if(!isSavingExcluded(m, key) && +m[key] > 0) return true; return getSavingExtras(m, key + "Extra").some(x => x.bank !== EXCLUDED_BANK && +x.amount > 0); }); if(hasData) years.add(parseInt(y)); });
   }
@@ -4416,8 +4518,8 @@ function getAllPyramidYears(key){
   return Array.from(years).sort((a,b)=>a-b);
 }
 function getPyramidLevelMonthValue(key, year, mi){
-  const isAuto = (key === "loans" || key === "obligationsSaving");
-  if(isAuto){ const filterType = key === "loans" ? "installment" : "obligation"; return (state.debts || []).filter(d => d.type === filterType && !isDebtFullyPaid(d)).reduce((s, d) => s + dm(d, year, mi), 0); }
+  const debtType = getDebtTypeForKey(key);
+  if(debtType){ return (state.debts || []).filter(d => d.type === debtType && !isDebtFullyPaid(d)).reduce((s, d) => s + dm(d, year, mi), 0); }
   const m = (state.years[year] || [])[mi]; if(!m) return 0;
   let v = isSavingExcluded(m, key) ? 0 : (+m[key] || 0);
   v += sumSavingExtrasCounted(m, key + "Extra");
@@ -4426,15 +4528,14 @@ function getPyramidLevelMonthValue(key, year, mi){
 function getPyramidLevelMainValue(key, year, mi){ const m = (state.years[year] || [])[mi]; if(!m) return 0; return isSavingExcluded(m, key) ? 0 : (+m[key] || 0); }
 function getPyramidLevelYearTotal(key, year){ let total = 0; for(let i = 0; i < 12; i++) total += getPyramidLevelMonthValue(key, year, i); return total; }
 function getPyramidLevelCumulativeUpTo(key, uptoYear){
-  const isAuto = (key === "loans" || key === "obligationsSaving");
-  if(isAuto){ const filterType = key === "loans" ? "installment" : "obligation"; let total = 0; (state.debts || []).filter(d => d.type === filterType && !isDebtFullyPaid(d)).forEach(d => { Object.keys(d.monthlyByYear || {}).forEach(y => { if(parseInt(y) <= uptoYear){ total += (d.monthlyByYear[y] || []).reduce((a,b)=>a+(+b||0),0); } }); }); return total; }
+  const debtType = getDebtTypeForKey(key);
+  if(debtType){ let total = 0; (state.debts || []).filter(d => d.type === debtType && !isDebtFullyPaid(d)).forEach(d => { Object.keys(d.monthlyByYear || {}).forEach(y => { if(parseInt(y) <= uptoYear){ total += (d.monthlyByYear[y] || []).reduce((a,b)=>a+(+b||0),0); } }); }); return total; }
   let total = 0;
   Object.keys(state.years || {}).forEach(y => { if(parseInt(y) > uptoYear) return; (state.years[y] || []).forEach(m => { if(!isSavingExcluded(m, key)) total += (+m[key] || 0); total += sumSavingExtrasCounted(m, key + "Extra"); }); });
   return total;
 }
 function updPyramidLevelMonthYear(key, year, mi, val){
-  const isAuto = (key === "loans" || key === "obligationsSaving");
-  if(isAuto){ toast(LANG==='ar'?'⚠️ تلقائي':'⚠️ Auto', 'warn'); return; }
+  if(isDebtAutoKey(key)){ toast(LANG==='ar'?'⚠️ تلقائي':'⚠️ Auto', 'warn'); return; }
   if(!state.years[year]) state.years[year] = emptyYear();
   if(!state.years[year][mi]) state.years[year][mi] = EMPTY_MONTH();
   const m = state.years[year][mi]; m[key] = Math.max(0, parseFloat(val) || 0); m.lastModified = new Date().toISOString();
@@ -4508,7 +4609,7 @@ function renderPyramidSvg(){
     const target = getPyramidTarget(lvl.key); const isNegative = isPyramidNegativeLevel(lvl.key);
     const remaining = target > 0 ? Math.max(0, target - netSaved) : null; const reached = target > 0 && netSaved >= target;
     const pct = allPositiveTotal > 0 ? (netSaved/allPositiveTotal*100) : 0;
-    const fs = 11 - i * 0.35; const afs = 10 - i * 0.3;
+    const fs = 11 - i * 0.3; const afs = 10 - i * 0.25;
     const note = getPyramidNote(lvl.key); const maxChars = Math.max(10, 30 - i * 2);
     const truncatedNote = note.length > maxChars ? note.substring(0, maxChars) + '…' : note; const hasNote = note.length > 0;
     const remBhd = LANG === 'ar' ? 'د.ب' : 'BHD';
@@ -4522,7 +4623,7 @@ function renderPyramidSvg(){
     if(remaining !== null){ lines.push({ text: remText, font: afs - 1.5, weight: '800', fill: remColor, family: 'monospace', italic: false, opacity: 1 }); }
     if(isNegative){ lines.push({ text: `⚠ ${t('pyr_negative_hint')}`, font: 8, weight: '700', fill: '#fca5a5', family: 'inherit', italic: false, opacity: 1 }); }
     else if(hasNote){ lines.push({ text: `📝 ${truncatedNote}`, font: 8, weight: 'normal', fill: '#fff', family: 'inherit', italic: true, opacity: 0.95 }); }
-    const lineH = 14; const totalTextH = (lines.length - 1) * lineH; const startY = cy - totalTextH / 2;
+    const lineH = 13; const totalTextH = (lines.length - 1) * lineH; const startY = cy - totalTextH / 2;
     svg += `<polygon points="${x1},${yTop} ${x2},${yTop} ${x3},${yBot} ${x4},${yBot}" fill="${lvl.color}" fill-opacity="${isNegative ? 0.55 : 0.88}" stroke="${lvl.color}" stroke-width="1.5" ${isNegative ? 'stroke-dasharray="4,2"' : ''}/>`;
     lines.forEach((line, idx) => { const y = startY + idx * lineH; const italicAttr = line.italic ? ' font-style="italic"' : ''; svg += `<text x="${cx}" y="${y}" text-anchor="middle" fill="${line.fill}" font-size="${line.font}" font-weight="${line.weight}" font-family="${line.family}" opacity="${line.opacity}"${italicAttr}>${line.text}</text>`; });
   });
@@ -4561,7 +4662,18 @@ function rpProfit(){ const r = ensureReport(); if(!r.profitToggle) return 0; ret
 function getShePaysAmount(){ const r = ensureReport(); if(!r.shePaysToggle) return 0; return +r.shePaysMe || 0; }
 function rpFinalAmount(){ return rpFullAmount() - rpProfit(); }
 function toggleProfitStatus(){ const r = ensureReport(); r.profitToggle = !r.profitToggle; save(); renderReport(); toast(r.profitToggle ? (LANG==='ar' ? '✅ ربحت' : '✅ Profited') : (LANG==='ar' ? '❌ ما ربحت' : '❌ NOT profited'), r.profitToggle ? 'success' : 'warn'); }
-function updReport(field, value){ const r = ensureReport(); if(field === "notes") r[field] = value; else r[field] = Math.max(0, parseFloat(value) || 0); save(); refreshReportTotals(); }
+
+/* ⭐ [تعديل] updReport — دعم fatherDebtLabel كحقل نصي */
+function updReport(field, value){
+  const r = ensureReport();
+  if(field === "notes" || field === "fatherDebtLabel"){
+    r[field] = value;
+  } else {
+    r[field] = Math.max(0, parseFloat(value) || 0);
+  }
+  save();
+  refreshReportTotals();
+}
 function onShePaysToggle(value){ const r = ensureReport(); r.shePaysToggle = (value === 'yes'); save(); const amountInput = document.getElementById("rpShePaysAmount"); if(amountInput){ amountInput.disabled = !r.shePaysToggle; amountInput.style.opacity = r.shePaysToggle ? '1' : '0.5'; } refreshReportTotals(); }
 function addReportPurchase(){ const r = ensureReport(); r.purchases.push({ id: Date.now() + Math.floor(Math.random()*10000), name: "", amount: 0 }); save(); renderReport(); }
 function removeReportPurchase(id){ const r = ensureReport(); r.purchases = r.purchases.filter(p => p.id !== id); save(); renderReport(); }
@@ -4590,8 +4702,11 @@ function refreshReportTotals(){
   const resultsEl = document.getElementById("reportResults");
   if(resultsEl){ resultsEl.innerHTML = `${kpi(t('rp_kpi_full'), money(fullAmt), "acc")}${kpi(t('rp_kpi_points'), fmt(points), "gold")}${kpi(t('rp_kpi_profit_status'), profitStatus, r.profitToggle ? "pos" : "neg")}${kpi(t('rp_kpi_profit'), money(profit), r.profitToggle ? "pos" : "neg")}${kpi(t('rp_kpi_final'), money(finalAmt), "neg")}`; }
 }
+/* ⭐ [تعديل] renderReport — ملء حقل الاسم القابل للتعديل */
 function renderReport(){
   ensureReport(); const r = state.report; if(!document.getElementById("rpFather")) return;
+  const labelEl = document.getElementById("rpFatherLabel");
+  if(labelEl) labelEl.value = r.fatherDebtLabel || "";
   document.getElementById("rpFather").value = inVal(r.fatherDebt);
   const notesEl = document.getElementById("rpNotes"); if(notesEl) notesEl.value = r.notes || "";
   const elecEl = document.getElementById("rpElecBill");
@@ -4755,7 +4870,7 @@ function renderDebts(){
   foot += `<td class="paid-cell">${fmt(tp)}</td><td class="remain-cell">${fmt(tr)}</td><td class="noprint"></td></tr></tfoot>`;
   el.innerHTML = head + body + foot;
 }
-function onDebtMonthBlur(){ renderDebtsSummary(); renderDashboard(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); } }
+function onDebtMonthBlur(){ renderDebtsSummary(); renderDashboard(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); updatePyramidTargetRow("credit"); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); } }
 function togglePaidDebtsSection(){ PAID_DEBTS_EXPANDED = !PAID_DEBTS_EXPANDED; renderDebts(); }
 function toggleDebtYearsExpand(id){ if(EXPANDED_DEBTS.has(id)) EXPANDED_DEBTS.delete(id); else EXPANDED_DEBTS.add(id); renderDebts(); }
 function toggleAllDebtsYears(){ const allExpanded = state.debts.length > 0 && state.debts.every(d => EXPANDED_DEBTS.has(d.id)); if(allExpanded) EXPANDED_DEBTS.clear(); else state.debts.forEach(d => EXPANDED_DEBTS.add(d.id)); renderDebts(); }
@@ -4787,9 +4902,9 @@ function addDebt(){
 }
 function delDebt(id){ if(!confirm(t('confirm_delete'))) return; state.debts = state.debts.filter(d => d.id !== id); save(); renderDebts(); renderDebtsMonthSection(); renderDashboard(); renderMonthPills(); }
 function updDebtName(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.name = val; save(); renderDebtsMonthSection(); }
-function updDebtType(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.type = val; save(); renderDebts(); renderDebtsMonthSection(); renderDashboard(); renderMonthPills(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); }
+function updDebtType(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.type = val; save(); renderDebts(); renderDebtsMonthSection(); renderDashboard(); renderMonthPills(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); updatePyramidTargetRow("credit"); }
 function updDebtCategory(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.category = val; save(); }
-function updDebtTotal(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.total = Math.max(0, parseFloat(val)||0); save(); renderDebts(); renderDebtsMonthSection(); renderDashboard(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); }
+function updDebtTotal(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.total = Math.max(0, parseFloat(val)||0); save(); renderDebts(); renderDebtsMonthSection(); renderDashboard(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); updatePyramidTargetRow("credit"); }
 function updDebtPaidBefore(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.paidBefore = Math.max(0, parseFloat(val)||0); save(); renderDebts(); renderDebtsMonthSection(); renderDashboard(); }
 function updDebtNotes(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.notes = val; save(); renderDebtsMonthSection(); }
 function updDebtMonth(id, mi, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDm(d, state.activeYear, mi, Math.max(0, parseFloat(val)||0)); save(); refreshDebtsMonthCells(); }
@@ -5451,6 +5566,7 @@ function exportAvgYearExcel(year){
     toast(LANG === 'ar' ? '✅ تم تصدير Excel بنجاح' : '✅ Excel exported', 'success');
   } catch(err){ console.error(err); toast((LANG === 'ar' ? '⚠️ فشل التصدير: ' : '⚠️ Failed: ') + (err.message||''), 'error'); }
 }
+/* ⭐ [تعديل] exportReportExcel — استخدام fatherDebtLabel */
 function exportReportExcel(){
   try {
     if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
@@ -5463,7 +5579,8 @@ function exportReportExcel(){
     xlTitleRow(ws, row, cols, `${L ? 'التاريخ' : 'Date'}: ${todayStr()}`, { sz: 10, h: 20, fill: 'E2E8F0', color: '334155' }); row++; row++;
     xlSectionRow(ws, row, cols, '⚙️ المدخلات الأساسية', '0EA5E9'); row++;
     xlHeaderRow(ws, row, ['البند', 'القيمة', ''], '1E3A5F'); row++;
-    xlDataRow(ws, row, ['ابوي يرجع لي', +rpt.fatherDebt||0, ''], cols, { fill: 'FEF3C7', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '78350F' }, name: 'Segoe UI' }, height: 26 }); row++; row++;
+    const fatherLabelText = (rpt.fatherDebtLabel && rpt.fatherDebtLabel.trim()) ? rpt.fatherDebtLabel : (L ? 'ابوي يرجع لي' : 'Father owes me');
+    xlDataRow(ws, row, [fatherLabelText, +rpt.fatherDebt||0, ''], cols, { fill: 'FEF3C7', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '78350F' }, name: 'Segoe UI' }, height: 26 }); row++; row++;
     xlDataRow(ws, row, ['⚡ الكهرباء', +rpt.electricityBill||0, ''], cols, { fill: 'E2E8F0', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '334155' }, name: 'Segoe UI' }, height: 26 }); row++;
     xlDataRow(ws, row, ['💸 تدفع لي', getShePaysAmount(), ''], cols, { fill: rpt.shePaysToggle ? 'DCFCE7' : 'FEE2E2', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: rpt.shePaysToggle ? '166534' : '991B1B' }, name: 'Segoe UI' }, height: 26 }); row++; row++;
     xlSectionRow(ws, row, cols, '🛒 تفاصيل الشراء', '8B5CF6'); row++;
@@ -5508,11 +5625,11 @@ function exportPyramidLevelExcel(key){
     xlHeaderRow(ws, r, ['السنة','الشهر','المبلغ ('+cur+')','مرجع','ملاحظة',''], XL.inputHdr); r++;
     const sortedYears = state.yearList.slice().sort((a,b)=>a-b);
     let grandTotal = 0; let hasAny = false;
+    const debtType = getDebtTypeForKey(key);
     sortedYears.forEach(y => {
       const monthsArr = Mof(y); const yearRows = [];
-      if(key === "loans" || key === "obligationsSaving"){
-        const filterType = key === "loans" ? "installment" : "obligation";
-        const relevantDebts = (state.debts || []).filter(d => d.type === filterType && !isDebtFullyPaid(d));
+      if(debtType){
+        const relevantDebts = (state.debts || []).filter(d => d.type === debtType && !isDebtFullyPaid(d));
         monthsArr.forEach((m, mi) => { let monthTotal = 0; const refs = []; relevantDebts.forEach(d => { const v = dm(d, y, mi); if(v > 0){ monthTotal += v; const rf = getDebtRef(d, y, mi); if(rf) refs.push(rf); } }); if(monthTotal > 0){ yearRows.push({ mi, amount: monthTotal, ref: refs.join(', '), note: '' }); } });
       } else {
         monthsArr.forEach((m, mi) => { const mainExcluded = isSavingExcluded(m, key); const mainAmt = mainExcluded ? 0 : (+m[key] || 0); const meta = m.savingMeta?.[key] || {}; const monthNote = meta.note || ''; const refVal = m.savingRefMeta?.[key] || ''; const extras = getSavingExtras(m, key + "Extra").filter(x => x.bank !== EXCLUDED_BANK && (+x.amount||0) > 0); const totalAmt = mainAmt + extras.reduce((s,x)=>s+(+x.amount||0),0); if(totalAmt > 0 || monthNote){ yearRows.push({ mi, amount: totalAmt, ref: refVal, note: monthNote }); } });
@@ -5691,6 +5808,7 @@ function generateViewHTML(viewId, includeMonthName, orientation){
     .pyramid-active-badge{display:inline-block;padding:2px 7px;border-radius:8px;font-size:7.5pt;font-weight:700;background:#16a34a;color:#fff;margin-inline-start:4px}
     .profit-toggle-btn{background:#f5f5f5 !important;color:#000 !important;border:1px solid #666 !important;box-shadow:none !important;font-size:8pt !important;padding:4pt !important}
     .rp-points-cell{color:#78350f !important;font-weight:800 !important;font-family:monospace !important}
+    .report-label-input{display:block;width:100%;border:1px solid #666 !important;background:#fff !important;color:#000 !important;font-weight:800 !important;font-size:10pt !important;padding:4pt 6pt !important;margin-bottom:4pt;text-align:center;border-radius:4px}
     @page{size:A4 ${orientation};margin:8mm}`;
   let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${activeTabName} — ${metaExtra}</title><style>${printStyles}</style></head><body>`;
   html += `<div style="text-align:center;padding:8px 0 10px;margin-bottom:10px;border-bottom:3px double #333"><div style="display:inline-block;width:42px;height:42px;line-height:42px;border-radius:50%;background:#0e7490;color:#fff;font-weight:900;font-size:20px;text-align:center;margin-bottom:6px">M</div><h1 style="color:#000;font-size:15pt;margin:0 0 4px;font-weight:700">${t('print_title')}</h1><div style="color:#444;font-size:10pt;margin-bottom:3px">${activeTabName} — ${metaExtra}</div><div style="color:#666;font-size:9pt">${t('print_generated')}: ${dateStr} — ${timeStr}</div></div>`;
@@ -5855,14 +5973,15 @@ function generatePyramidLevelReportHTML(key){
   const target = getPyramidTarget(key); const cumulativeSaved = getCumulativeSaved(key); const withdrawn = getWithdrawnTotal(key); const net = cumulativeSaved - withdrawn;
   const note = getPyramidNote(key); const remaining = target > 0 ? Math.max(0, target - net) : null; const reached = target > 0 && net >= target;
   const sortedYears = state.yearList.slice().sort((a,b)=>a-b); const detailedYears = [];
+  const debtType = getDebtTypeForKey(key);
   sortedYears.forEach(y => {
     const monthsArr = Mof(y); const monthRows = [];
-    if(key === "loans" || key === "obligationsSaving"){ const filterType = key === "loans" ? "installment" : "obligation"; const relevantDebts = (state.debts || []).filter(d => d.type === filterType && !isDebtFullyPaid(d)); monthsArr.forEach((m, mi) => { const entries = []; let monthTotal = 0; relevantDebts.forEach(d => { const v = dm(d, y, mi); if(v > 0){ monthTotal += v; entries.push({ name: d.name, amount: v, ref: getDebtRef(d, y, mi) || '', notes: d.notes || '', dateDisplay: formatDebtDate(d) }); } }); if(monthTotal > 0) monthRows.push({ mi, dateDisplay: formatPrintDate(m, mi), monthName: monthNames[mi], amount: monthTotal, entries, note: '' }); }); }
+    if(debtType){ const relevantDebts = (state.debts || []).filter(d => d.type === debtType && !isDebtFullyPaid(d)); monthsArr.forEach((m, mi) => { const entries = []; let monthTotal = 0; relevantDebts.forEach(d => { const v = dm(d, y, mi); if(v > 0){ monthTotal += v; entries.push({ name: d.name, amount: v, ref: getDebtRef(d, y, mi) || '', notes: d.notes || '', dateDisplay: formatDebtDate(d) }); } }); if(monthTotal > 0) monthRows.push({ mi, dateDisplay: formatPrintDate(m, mi), monthName: monthNames[mi], amount: monthTotal, entries, note: '' }); }); }
     else { monthsArr.forEach((m, mi) => { const mainExcluded = isSavingExcluded(m, key); const mainAmt = mainExcluded ? 0 : (+m[key] || 0); const meta = m.savingMeta?.[key] || {}; const monthNote = meta.note || ''; const refVal = m.savingRefMeta?.[key] || ''; const extras = getSavingExtras(m, key + "Extra").filter(x => x.bank !== EXCLUDED_BANK && (+x.amount||0) > 0); const totalAmt = mainAmt + extras.reduce((s,x)=>s+(+x.amount||0),0); if(totalAmt > 0 || monthNote){ const entries = extras.map((ex, i) => ({ name: `${lvl.label} #${i+2}`, amount: +ex.amount||0, ref: ex.ref || '', notes: ex.note || '' })); monthRows.push({ mi, dateDisplay: formatPrintDate(m, mi), monthName: monthNames[mi], amount: totalAmt, entries, note: monthNote, ref: refVal }); } }); }
     if(monthRows.length){ const yearTotal = monthRows.reduce((s, r) => s + r.amount, 0); detailedYears.push({ year: y, months: monthRows, total: yearTotal }); }
   });
   const ws = getWithdrawals(key).slice().sort((a,b) => new Date(a.date) - new Date(b.date));
-  let sourceText = ''; if(key === "loans") sourceText = t('print_debt_source_loans'); else if(key === "obligationsSaving") sourceText = t('print_debt_source_obligations'); else sourceText = t('print_savings_source');
+  const sourceText = getPrintSourceForKey(key);
   const now = new Date();
   const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
   const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
@@ -5875,8 +5994,7 @@ function generatePyramidLevelReportHTML(key){
   if(detailedYears.length){
     detailedYears.forEach(yb => {
       html += `<div class="year-block"><div class="year-header"><span>📅 ${t('print_year')} ${yb.year}</span><span class="year-total">${fmt(yb.total)} ${cur}</span></div>`;
-      const isDebtType = (key === "loans" || key === "obligationsSaving");
-      if(isDebtType){ html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th style="width:110px">${t('print_day_month')}</th><th style="width:90px">${t('print_month')}</th><th>${t('print_debt_name')}</th><th style="width:100px">${t('print_amount')} (${cur})</th><th style="width:70px">${t('th_ref')}</th></tr></thead><tbody>`; let counter = 0; yb.months.forEach(mr => { mr.entries.forEach((en, idx) => { counter++; html += `<tr><td class="num">${counter}</td><td class="date" dir="ltr">${idx === 0 ? en.dateDisplay : ''}</td><td class="month-name">${idx === 0 ? mr.monthName : ''}</td><td>${esc(en.name)}</td><td class="num">${fmt(en.amount)}</td><td style="text-align:center">${esc(en.ref) || '—'}</td></tr>`; if(en.notes && idx === 0){ html += `<tr class="sub-row"><td></td><td></td><td></td><td colspan="3">📝 ${esc(en.notes)}</td></tr>`; } }); }); html += `<tr class="total-row"><td colspan="4"><strong>${t('print_year_total')} ${yb.year}</strong></td><td class="num">${fmt(yb.total)}</td><td></td></tr></tbody></table>`; }
+      if(debtType){ html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th style="width:110px">${t('print_day_month')}</th><th style="width:90px">${t('print_month')}</th><th>${t('print_debt_name')}</th><th style="width:100px">${t('print_amount')} (${cur})</th><th style="width:70px">${t('th_ref')}</th></tr></thead><tbody>`; let counter = 0; yb.months.forEach(mr => { mr.entries.forEach((en, idx) => { counter++; html += `<tr><td class="num">${counter}</td><td class="date" dir="ltr">${idx === 0 ? en.dateDisplay : ''}</td><td class="month-name">${idx === 0 ? mr.monthName : ''}</td><td>${esc(en.name)}</td><td class="num">${fmt(en.amount)}</td><td style="text-align:center">${esc(en.ref) || '—'}</td></tr>`; if(en.notes && idx === 0){ html += `<tr class="sub-row"><td></td><td></td><td></td><td colspan="3">📝 ${esc(en.notes)}</td></tr>`; } }); }); html += `<tr class="total-row"><td colspan="4"><strong>${t('print_year_total')} ${yb.year}</strong></td><td class="num">${fmt(yb.total)}</td><td></td></tr></tbody></table>`; }
       else { html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th style="width:110px">${t('print_day_month')}</th><th style="width:100px">${t('print_month')}</th><th>${t('print_debt_name')}</th><th style="width:120px">${t('print_amount')} (${cur})</th><th style="width:60px">${t('th_ref')}</th></tr></thead><tbody>`; let counter = 0; yb.months.forEach(mr => { const hasEntries = mr.entries && mr.entries.length > 0; counter++; html += `<tr><td class="num">${counter}</td><td class="date" dir="ltr">${mr.dateDisplay}</td><td class="month-name">${mr.monthName}</td><td>${esc(lvl.label)}</td><td class="num">${fmt(mr.amount - mr.entries.reduce((s,x)=>s+x.amount,0))}</td><td style="text-align:center">${esc(mr.ref || '') || '—'}</td></tr>`; if(mr.note){ html += `<tr class="sub-row"><td></td><td></td><td></td><td colspan="3">📝 ${esc(mr.note)}</td></tr>`; } if(hasEntries){ mr.entries.forEach(en => { html += `<tr class="sub-row"><td></td><td></td><td></td><td>${esc(en.name)}</td><td class="num">${fmt(en.amount)}</td><td style="text-align:center">${esc(en.ref) || '—'}</td></tr>`; if(en.notes){ html += `<tr class="sub-row"><td></td><td></td><td></td><td colspan="3">📝 ${esc(en.notes)}</td></tr>`; } }); } }); html += `<tr class="total-row"><td colspan="4"><strong>${t('print_year_total')} ${yb.year}</strong></td><td class="num">${fmt(yb.total)}</td><td></td></tr></tbody></table>`; }
       html += `</div>`;
     });
