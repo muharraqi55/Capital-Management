@@ -3398,12 +3398,12 @@ function isExtraExcludedM(m, key){ const data = key === "carInsurance" ? getCarI
 function getYearExtras(year){ if(!state.yearExtras) state.yearExtras = {}; if(!state.yearExtras[year]) state.yearExtras[year] = { carInsurance: DEFAULT_EXTRA(), zakat: DEFAULT_EXTRA() }; return state.yearExtras[year]; }
 
 /* ════════ الديون التلقائية للبيراميد ════════ */
-function getLoansCumulativePaid(){ let total = 0; (state.debts || []).filter(d => d.type === "installment" && !isDebtFullyPaid(d)).forEach(d => { total += debtPaidAllYears(d); }); return total; }
+function getLoansCumulativePaid(){ let total = 0; (state.debts || []).filter(d => d.type === "installment" && !isDebtFullyPaid(d)).forEach(d => { total += debtPaidTotal(d); }); return total; }
 function getLoansTotalAmount(){ let total = 0; (state.debts || []).filter(d => d.type === "installment" && !isDebtFullyPaid(d)).forEach(d => { total += (+d.total || 0); }); return total; }
 function getObligationsTotalAmount(){ let total = 0; (state.debts || []).filter(d => d.type === "obligation" && !isDebtFullyPaid(d)).forEach(d => { total += (+d.total || 0); }); return total; }
-function getObligationsCumulativePaid(){ let total = 0; (state.debts || []).filter(d => d.type === "obligation" && !isDebtFullyPaid(d)).forEach(d => { total += debtPaidAllYears(d); }); return total; }
+function getObligationsCumulativePaid(){ let total = 0; (state.debts || []).filter(d => d.type === "obligation" && !isDebtFullyPaid(d)).forEach(d => { total += debtPaidTotal(d); }); return total; }
 function getCreditsTotalAmount(){ let total = 0; (state.debts || []).filter(d => d.type === "credit" && !isDebtFullyPaid(d)).forEach(d => { total += (+d.total || 0); }); return total; }
-function getCreditsCumulativePaid(){ let total = 0; (state.debts || []).filter(d => d.type === "credit" && !isDebtFullyPaid(d)).forEach(d => { total += debtPaidAllYears(d); }); return total; }
+function getCreditsCumulativePaid(){ let total = 0; (state.debts || []).filter(d => d.type === "credit" && !isDebtFullyPaid(d)).forEach(d => { total += debtPaidTotal(d); }); return total; }
 
 /* ════════ البيراميد ════════ */
 function getPyramidTarget(key){
@@ -3432,7 +3432,7 @@ function getCumulativeSaved(key){
 function getCumulativeSavedExcluding(key, excludeYear, excludeMonth){
   if(key === "loans" || key === "obligationsSaving" || key === "credit"){
     const type = getDebtTypeForKey(key); let total = 0;
-    (state.debts || []).filter(d => d.type === type && !isDebtFullyPaid(d)).forEach(d => { Object.keys(d.monthlyByYear || {}).forEach(y => { (d.monthlyByYear[y] || []).forEach((v, i) => { if(parseInt(y) === excludeYear && i === excludeMonth) return; total += (+v || 0); }); }); });
+    (state.debts || []).filter(d => d.type === type && !isDebtFullyPaid(d)).forEach(d => { total += (+d.paidBefore || 0); Object.keys(d.monthlyByYear || {}).forEach(y => { (d.monthlyByYear[y] || []).forEach((v, i) => { if(parseInt(y) === excludeYear && i === excludeMonth) return; total += (+v || 0); }); }); });
     return total;
   }
   const extraKey = key + "Extra"; let total = 0;
