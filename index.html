@@ -5,10 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>إدارة رأس المال | Capital Manager</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
-
-
 <style>
-
 
 :root{--bg:#0f1720;--panel:#17212b;--panel2:#1e2b38;--line:#2a3a4a;--txt:#e6eef7;--muted:#8fa3b8;--accent:#22c1a4;--accent2:#3b82f6;--danger:#ef4444;--ok:#22c55e;--gold:#eab308;--shadow:rgba(0,0,0,.35);}
 html[data-theme="light"]{--bg:#f0f4f8;--panel:#ffffff;--panel2:#e8eef5;--line:#94a3b8;--txt:#0f172a;--muted:#475569;--accent:#0891b2;--accent2:#2563eb;--danger:#dc2626;--ok:#16a34a;--gold:#d97706;--shadow:rgba(0,0,0,.12);}
@@ -1566,7 +1563,6 @@ html[dir="ltr"] .confirm-reset-details li::before{
 </header>
 
 <nav class="tabs">
-  <!-- ⭐ [تعديل] إعادة ترتيب التبويبات: pyramid في الموضع #4، report في الأخير -->
   <button data-view="dashboard" class="active" data-i18n="t_dash">📊 اللوحة الرئيسية</button>
   <button data-view="month" data-i18n="t_month">📅 إدارة الشهور</button>
   <button data-view="debts" data-i18n="t_debts">🤝 السلف والديون و الالتزامات</button>
@@ -1770,9 +1766,7 @@ html[dir="ltr"] .confirm-reset-details li::before{
   </div>
 </section>
 
-<!-- ⭐ [تعديل] قسم pyramid الآن في الموضع #4 (الترتيب: chart → targets → details) -->
 <section id="pyramid" class="view">
-  <!-- 🔺 #4-الرسم البياني -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
       <h2 id="lblPyrTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none"></h2>
@@ -1782,7 +1776,6 @@ html[dir="ltr"] .confirm-reset-details li::before{
     <div class="pyramid-wrap"><svg class="pyramid-svg" viewBox="0 0 500 460" xmlns="http://www.w3.org/2000/svg" id="pyramidSvg"></svg></div>
     <div class="pyramid-legend" id="pyramidLegend"></div>
   </div>
-  <!-- 🎯 #4-أهداف الهرم -->
   <div class="card target-card">
     <h2 id="lblPyramidTargets">🎯 أهداف هرم الأمان المالي</h2>
     <p class="muted" style="margin-bottom:14px" id="lblPyramidTargetsHint">أدخل المبلغ المستهدف لكل بند، وأضف ملاحظاتك. عند وصول المجموع المُدَّخر للهدف، يتم تعطيل خانة الإدخال تلقائياً في تبويب «إدارة الشهور». استخدم زر ⬇ للسحب.</p>
@@ -1803,7 +1796,6 @@ html[dir="ltr"] .confirm-reset-details li::before{
       </table>
     </div>
   </div>
-  <!-- 📊 التفاصيل -->
   <div class="card">
     <h2 id="lblPyrDetail"></h2>
     <div class="pyramid-toggle-bar noprint">
@@ -1873,7 +1865,8 @@ html[dir="ltr"] .confirm-reset-details li::before{
   <div class="card" style="border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.06),transparent)">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
       <h2 id="lblCashTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none;color:var(--gold)">💰 كم لدي كاش في التجوري</h2>
-      <button class="btn danger" onclick="resetCash()" style="font-size:12px;padding:6px 12px">🗑 تصفير التجوري</button>
+      <!-- ⭐ [تعديل] data-i18n="cash_reset_btn" للترجمة التلقائية -->
+      <button class="btn danger" onclick="resetCash()" data-i18n="cash_reset_btn" style="font-size:12px;padding:6px 12px">🗑 تصفير التجوري</button>
     </div>
     <p class="muted" style="margin-bottom:14px" id="lblCashHint">أدخل <strong>العدد (كم حبة لديك)</strong> لكل فئة — يُحسب المبلغ تلقائياً (العدد × قيمة الفئة). الترتيب من الأصغر إلى الأكبر.</p>
     <div class="expense-table-wrap">
@@ -1937,8 +1930,8 @@ html[dir="ltr"] .confirm-reset-details li::before{
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
       <h2 id="lblEidiTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none;color:var(--gold)">🎁 توزيع العيادي</h2>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="btn primary" onclick="addEidiItem()" style="font-size:12px;padding:6px 12px">➕ إضافة اسم</button>
-        <button class="btn danger" onclick="resetEidi()" style="font-size:12px;padding:6px 12px">🗑 تصفير المبالغ</button>
+        <button class="btn primary" onclick="addEidiItem()" id="btnAddEidi" style="font-size:12px;padding:6px 12px">➕ إضافة اسم</button>
+        <button class="btn danger" onclick="resetEidi()" id="btnResetEidi" style="font-size:12px;padding:6px 12px">🗑 تصفير المبالغ</button>
       </div>
     </div>
     <p class="muted" style="margin-bottom:14px" id="lblEidiHint">أدخل اسم كل مستفيد ومبلغ العيدية الخاص به. يمكنك إضافة أو حذف أسماء بحرية. المجموع يُحسب تلقائياً.</p>
@@ -2036,15 +2029,15 @@ html[dir="ltr"] .confirm-reset-details li::before{
     <div class="grid g3">
       <div class="field">
         <label id="lblStolenOrigAfter">💰 اصل الموجود في البطاقة</label>
-        <input type="number" step="0.001" id="stolenOrigAfter" oninput="updStolenAfter('original', this.value)">
-      </div>
-      <div class="field">
-        <label id="lblStolenMustPayAfter">💸 يجب الدفع للبنك بعد التعديل</label>
-        <input type="number" step="0.001" id="stolenMustPayAfter" oninput="updStolenAfter('mustPay', this.value)">
+        <input type="text" id="stolenOrigAfter" readonly>
       </div>
       <div class="field">
         <label id="lblStolenRemAfter">💰 المتبقي في البطاقة بعد التعديل</label>
         <input type="text" id="stolenRemAfter" readonly>
+      </div>
+      <div class="field">
+        <label id="lblStolenMustPayAfter">💸 يجب الدفع للبنك بعد التعديل</label>
+        <input type="number" step="0.001" id="stolenMustPayAfter" oninput="updStolenAfter('mustPay', this.value)">
       </div>
     </div>
   </div>
@@ -2064,13 +2057,13 @@ html[dir="ltr"] .confirm-reset-details li::before{
   </div>
 
   <div class="print-section">
-    <button class="btn primary" onclick="printCurrentView(false, 'portrait')" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
-    <button class="btn share" onclick="shareViewPDF('stolen', false, 'portrait')" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
+    <!-- ⭐ [تعديل] طباعة موحّدة مع تنسيق PDF المخصص -->
+    <button class="btn primary" onclick="printStolen()" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
+    <button class="btn share" onclick="shareStolenPDF()" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
     <button class="btn excel" onclick="exportStolenExcel()">📊 Excel</button>
   </div>
 </section>
 
-<!-- ⭐ [تعديل] قسم report الآن في الموضع الأخير + إضافة حقل اسم قابل للتعديل -->
 <section id="report" class="view">
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
@@ -2079,7 +2072,6 @@ html[dir="ltr"] .confirm-reset-details li::before{
     </div>
     <div class="grid g2">
       <div class="field">
-        <!-- ⭐ [جديد] حقل اسم البند القابل للتعديل -->
         <label id="lblReportFatherName">📝 اسم البند (اكتبه بنفسك)</label>
         <input type="text" id="rpFatherLabel" class="report-label-input" oninput="updReport('fatherDebtLabel', this.value)" placeholder="مثال: محمد" maxlength="60">
         <input type="number" id="rpFather" step="0.001" oninput="updReport('fatherDebt', this.value)" placeholder="0.000">
@@ -2279,7 +2271,6 @@ html[dir="ltr"] .confirm-reset-details li::before{
   </div>
 </div>
 
-<!-- ⭐ نافذة تأكيد التصفير مع حفظ نسخة احتياطية -->
 <div class="modal-overlay" id="confirmResetModal" onclick="if(event.target===this)closeConfirmReset()">
   <div class="modal-content" style="max-width:560px">
     <div class="modal-header" style="background:linear-gradient(90deg,rgba(239,68,68,.18),rgba(239,68,68,.05));border-bottom:2px solid var(--danger)">
@@ -2309,11 +2300,11 @@ html[dir="ltr"] .confirm-reset-details li::before{
 
 <div class="toast" id="toast"></div>
 
-
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   Capital Manager — JavaScript (القسم 3 من 3)
-   يشمل: بند "دائن" الجديد في الهرم + اسم بند التقرير القابل للتعديل
+   Capital Manager — JavaScript (3-A من 3)
+   الأساس: I18N + State + Confirm Reset + Helpers
+   يشمل التعديلات: esc() المُصلح، ensureBanks() المُصلح، ترجمة التجوري
    ═══════════════════════════════════════════════════════════════ */
 
 const I18N = {
@@ -2322,7 +2313,14 @@ const I18N = {
     t_dash:"📊 اللوحة الرئيسية",t_month:"📅 إدارة الشهور",t_years:"📆 مقارنة السنوات",
     t_avg:"📊 المتوسط السعري",t_pyr:"🔺 هرم الأمان المالي",t_debts:"🤝 السلف والديون و الالتزامات",
     t_annual:"📈 الملخص السنوي",t_report:"📊 تقرير الشراكة",t_cash:"💰 كم لدي كاش في التجوري",
-    t_banks:"🏦 احتياطي البنوك",t_eidi:"🎁 توزيع العيادي",
+    t_banks:"🏦 احتياطي البنوك",t_eidi:"🎁 توزيع العيادي",lblEidiTitle:"🎁 توزيع العيادي",
+lblEidiHint:"أدخل اسم كل مستفيد ومبلغ العيدية الخاص به. يمكنك إضافة أو حذف أسماء بحرية. المجموع يُحسب تلقائياً.",
+lblEidiSummary:"📊 ملخص توزيع العيادي",
+thEidiIndex:"#",thEidiName:"الاسم",thEidiAmount:"المبلغ (د.ب)",
+eidi_add_btn:"➕ إضافة اسم",eidi_reset_btn:"🗑 تصفير المبالغ",
+eidi_no_items:"لا توجد بنود — اضغط ➕ إضافة اسم",
+eidi_total_row:"📊 المجموع",
+eidi_kpi_total:"💰 إجمالي العيادي",eidi_kpi_count:"📋 عدد المستفيدين",eidi_kpi_avg:"📊 متوسط العطية",
     t_stolen:"🚨 كم تم السرقه مني",
     lblStolenTitle:"🚨 كم تم السرقه مني",
     lblStolenHint:"أدخل كل عملية سرقة أو رسوم تحويل. سيتم حساب المجاميع تلقائياً.",
@@ -2513,13 +2511,31 @@ const I18N = {
     bank_add_name_prompt:"أدخل اسم البنك الجديد:",bank_add_name_ok:"✅ تمت إضافة: ",
     bank_remove_name_confirm:"حذف هذا الاسم؟",bank_remove_name_ok:"🗑 تم حذف: ",
     bank_cannot_delete_default:"⚠️ لا يمكن حذف الأسماء الافتراضية",bank_invalid_name:"⚠️ أدخل اسم صحيح",
+    /* ⭐ [جديد] ترجمة تبويب التجوري */
+    cash_title:"💰 كم لدي كاش في التجوري",
+    cash_reset_btn:"🗑 تصفير التجوري",
+    cash_hint:"أدخل <strong>العدد (كم حبة لديك)</strong> لكل فئة — يُحسب المبلغ تلقائياً (العدد × قيمة الفئة). الترتيب من الأصغر إلى الأكبر.",
+    cash_th_item:"الفئة",
+    cash_th_value:"قيمة الفئة",
+    cash_th_count:"كم حبة لديك (العدد)",
+    cash_th_amount:"المبلغ (د.ب)",
+    cash_summary:"📊 ملخص التجوري",
+    cash_kpi_total:"💰 إجمالي الكاش",
+    cash_total_row:"📊 المجموع الكلي للتجوري",
   },
   en: {
     app_title:"Capital Manager",footer:"All rights reserved to Muharraqi",
     t_dash:"📊 Dashboard",t_month:"📅 Month Management",t_years:"📆 Years Comparison",
     t_avg:"📊 Average Pricing",t_pyr:"🔺 Financial Safety Pyramid",t_debts:"🤝 Debts & Obligations",
     t_annual:"📈 Annual Summary",t_report:"📊 Partnership Report",t_cash:"💰 Cash in Safe",
-    t_banks:"🏦 Bank Reserves",t_eidi:"🎁 Eidi Distribution",
+    t_banks:"🏦 Bank Reserves",t_eidi:"🎁 Eidi Distribution",lblEidiTitle:"🎁 Eidi Distribution",
+lblEidiHint:"Enter each beneficiary's name and Eidi amount. You can add or delete names freely. Total is calculated automatically.",
+lblEidiSummary:"📊 Eidi Distribution Summary",
+thEidiIndex:"#",thEidiName:"Name",thEidiAmount:"Amount (BHD)",
+eidi_add_btn:"➕ Add Name",eidi_reset_btn:"🗑 Reset Amounts",
+eidi_no_items:"No items — click ➕ Add Name",
+eidi_total_row:"📊 Total",
+eidi_kpi_total:"💰 Total Eidi",eidi_kpi_count:"📋 Beneficiaries",eidi_kpi_avg:"📊 Average",
     t_stolen:"🚨 How much was stolen from me",
     lblStolenTitle:"🚨 How much was stolen from me",
     lblStolenHint:"Enter each theft or transfer fee. Totals are calculated automatically.",
@@ -2699,6 +2715,17 @@ const I18N = {
     bank_add_name_prompt:"Enter new bank name:",bank_add_name_ok:"✅ Added: ",
     bank_remove_name_confirm:"Delete this name?",bank_remove_name_ok:"🗑 Deleted: ",
     bank_cannot_delete_default:"⚠️ Cannot delete default names",bank_invalid_name:"⚠️ Enter valid name",
+    /* ⭐ [جديد] Cash tab translations */
+    cash_title:"💰 Cash in Safe",
+    cash_reset_btn:"🗑 Reset Safe",
+    cash_hint:"Enter the <strong>count (how many bills/coins)</strong> for each denomination — amount is calculated automatically (count × value). Sorted from smallest to largest.",
+    cash_th_item:"Denomination",
+    cash_th_value:"Denomination Value",
+    cash_th_count:"How Many You Have (Count)",
+    cash_th_amount:"Amount (BHD)",
+    cash_summary:"📊 Safe Summary",
+    cash_kpi_total:"💰 Total Cash",
+    cash_total_row:"📊 Grand Total of Safe",
   }
 };
 
@@ -2786,7 +2813,6 @@ const getSavingFields = () => [
   ["travelSaving", t('s_travelSaving')],["eidMoneySaving", t('s_eidMoneySaving'), "eidDropdown"],
 ];
 
-/* ⭐ [تعديل] إضافة بند "credit" (🔴 دائن) كثالث بند تلقائي بعد loans و obligationsSaving */
 const getPyramidLevels = () => [
   {key:"emergencyFund",label:t('p_emergencyFund'),color:"#ef4444",subtitle:"🚨"},
   {key:"loans",label:t('p_loans'),color:"#64748b",subtitle:"💳",auto:true,negative:true},
@@ -2801,12 +2827,10 @@ const getPyramidLevels = () => [
   {key:"eidMoneySaving",label:t('p_eidMoneySaving'),color:"#f97316",subtitle:"🎉"},
 ];
 
-/* ⭐ [تعديل] إضافة credit كبند سلبي */
 function isPyramidNegativeLevel(key){ return key === "loans" || key === "obligationsSaving" || key === "credit"; }
 function isPyramidInvestmentLevel(key){ return key === "investment"; }
 function isPyramidBankSavingsLevel(key){ return !isPyramidNegativeLevel(key) && !isPyramidInvestmentLevel(key); }
 
-/* ⭐ [جديد] دوال مساعدة للتعامل مع البنود التلقائية */
 function getDebtTypeForKey(key){
   if(key === "loans") return "installment";
   if(key === "obligationsSaving") return "obligation";
@@ -2843,7 +2867,6 @@ function makeEmptyMonth(){
 const EMPTY_MONTH = makeEmptyMonth;
 const emptyYear = () => Array.from({length:12}, EMPTY_MONTH);
 
-/* ⭐ [تعديل] إضافة fatherDebtLabel (اسم البند القابل للتعديل) */
 let state = {
   years: {}, yearList: [], activeYear: new Date().getFullYear(), activeMonth: 0,
   debts: [], yearExtras: {}, pyramidTargets: {}, pyramidNotes: {}, pyramidWithdrawals: {},
@@ -2867,28 +2890,16 @@ let state = {
   }
 };
 
-/* ═══════════════════════════════════════════════════════════════
-   ⭐ نظام تأكيد التصفير الاحترافي
-   ═══════════════════════════════════════════════════════════════ */
-
+/* ════════ نظام تأكيد التصفير ════════ */
 function openConfirmReset(config){
   const modal = document.getElementById("confirmResetModal");
   if(!modal){ console.error("confirmResetModal not found"); return; }
-
   _confirmResetCallback = config.onConfirm || null;
-
   const L = LANG === 'ar';
-
   const titleEl = document.getElementById("confirmResetTitle");
   if(titleEl) titleEl.textContent = "⚠️ " + (config.title || (L ? "تأكيد الحذف" : "Confirm Deletion"));
-
   const warnEl = document.getElementById("confirmResetWarning");
-  if(warnEl){
-    warnEl.textContent = config.warning || (L
-      ? "هل أنت متأكد؟ سيتم حذف البيانات نهائياً ولا يمكن التراجع عن هذه العملية!"
-      : "Are you sure? Data will be permanently deleted and cannot be undone!");
-  }
-
+  if(warnEl){ warnEl.textContent = config.warning || (L ? "هل أنت متأكد؟ سيتم حذف البيانات نهائياً ولا يمكن التراجع عن هذه العملية!" : "Are you sure? Data will be permanently deleted and cannot be undone!"); }
   const detailsEl = document.getElementById("confirmResetDetails");
   if(detailsEl){
     if(Array.isArray(config.details) && config.details.length > 0){
@@ -2896,56 +2907,38 @@ function openConfirmReset(config){
       const listItems = config.details.map(d => `<li>${d}</li>`).join("");
       detailsEl.innerHTML = `<div class="confirm-reset-details-title">${detailTitle}</div><ul>${listItems}</ul>`;
       detailsEl.style.display = "block";
-    } else {
-      detailsEl.style.display = "none";
-    }
+    } else { detailsEl.style.display = "none"; }
   }
-
   const backupBtn = document.getElementById("confirmResetSaveBackup");
   if(backupBtn){
     backupBtn.onclick = function(){
-      try {
-        exportData();
-        toast(L ? '💾 تم حفظ نسخة احتياطية من بياناتك' : '💾 Backup saved', 'success');
-      } catch(e){
-        console.error(e);
-        toast(L ? '⚠️ فشل حفظ النسخة' : '⚠️ Backup failed', 'error');
-      }
+      try { exportData(); toast(L ? '💾 تم حفظ نسخة احتياطية من بياناتك' : '💾 Backup saved', 'success'); }
+      catch(e){ console.error(e); toast(L ? '⚠️ فشل حفظ النسخة' : '⚠️ Backup failed', 'error'); }
     };
   }
-
   const confirmBtn = document.getElementById("confirmResetConfirm");
   if(confirmBtn){
     confirmBtn.onclick = function(){
-      if(typeof _confirmResetCallback === 'function'){
-        try { _confirmResetCallback(); } catch(e){ console.error(e); }
-      }
+      if(typeof _confirmResetCallback === 'function'){ try { _confirmResetCallback(); } catch(e){ console.error(e); } }
       closeConfirmReset();
     };
   }
-
   modal.classList.add("show");
   document.body.style.overflow = "hidden";
 }
 
 function closeConfirmReset(){
   const modal = document.getElementById("confirmResetModal");
-  if(modal){
-    modal.classList.remove("show");
-    document.body.style.overflow = "";
-  }
+  if(modal){ modal.classList.remove("show"); document.body.style.overflow = ""; }
   _confirmResetCallback = null;
 }
 
-/* ── 1) تصفير تقرير الشراكة ── */
 function resetReport(){
   const L = LANG === 'ar';
   const currentLabel = state.report?.fatherDebtLabel || (L ? 'ابوي يرجع لي' : 'Father owes me');
   openConfirmReset({
     title: L ? "تصفير تقرير الشراكة" : "Reset Partnership Report",
-    warning: L
-      ? "سيتم تصفير تقرير الشراكة بالكامل — جميع الحقول والمشتريات ستعود إلى الصفر. لا يمكن التراجع عن هذه العملية!"
-      : "The Partnership Report will be fully reset — all fields and purchases will return to zero. This cannot be undone!",
+    warning: L ? "سيتم تصفير تقرير الشراكة بالكامل — جميع الحقول والمشتريات ستعود إلى الصفر. لا يمكن التراجع عن هذه العملية!" : "The Partnership Report will be fully reset — all fields and purchases will return to zero. This cannot be undone!",
     details: L ? [
       `<strong>${esc(currentLabel)}</strong> → 0`,
       "<strong>اسم البند</strong> سيعود للوضع الافتراضي (فارغ)",
@@ -2974,182 +2967,80 @@ function resetReport(){
         fatherDebtLabel: "",
         notes: ""
       };
-      ensureReport();
-      save();
-      renderReport();
+      ensureReport(); save(); renderReport();
       toast(L ? '✅ تم تصفير تقرير الشراكة' : '✅ Partnership Report reset', 'success');
     }
   });
 }
 
-/* ── 2) تصفير توزيع العيادي ── */
 function resetEidi(){
   const L = LANG === 'ar';
   openConfirmReset({
     title: L ? "تصفير توزيع العيادي" : "Reset Eidi Distribution",
-    warning: L
-      ? "سيتم حذف جميع الأسماء والمبالغ من توزيع العيادي — القائمة ستعود فارغة تماماً!"
-      : "All names and amounts will be deleted from the Eidi distribution — the list will be completely empty!",
-    details: L ? [
-      "جميع <strong>الأسماء</strong> ستُحذف",
-      "جميع <strong>المبالغ</strong> ستُمسح",
-      "عدد المستفيدين سيصبح <strong>صفر</strong>",
-      "المجموع الكلي سيصبح <strong>0</strong>"
-    ] : [
-      "All <strong>names</strong> will be deleted",
-      "All <strong>amounts</strong> will be cleared",
-      "Beneficiaries count will be <strong>zero</strong>",
-      "Total will become <strong>0</strong>"
-    ],
+    warning: L ? "سيتم حذف جميع الأسماء والمبالغ من توزيع العيادي — القائمة ستعود فارغة تماماً!" : "All names and amounts will be deleted from the Eidi distribution — the list will be completely empty!",
+    details: L ? ["جميع <strong>الأسماء</strong> ستُحذف","جميع <strong>المبالغ</strong> ستُمسح","عدد المستفيدين سيصبح <strong>صفر</strong>","المجموع الكلي سيصبح <strong>0</strong>"] : ["All <strong>names</strong> will be deleted","All <strong>amounts</strong> will be cleared","Beneficiaries count will be <strong>zero</strong>","Total will become <strong>0</strong>"],
     onConfirm: function(){
-      state.eidi = { items: [] };
-      save();
-      renderEidi();
+      state.eidi = { items: [] }; save(); renderEidi();
       toast(L ? '✅ تم تصفير توزيع العيادي' : '✅ Eidi distribution reset', 'success');
     }
   });
 }
 
-/* ── 3) تصفير كم تم السرقه مني ── */
 function resetStolen(){
   const L = LANG === 'ar';
   openConfirmReset({
     title: L ? "تصفير بيانات السرقة" : "Reset Stolen Data",
-    warning: L
-      ? "سيتم حذف جميع الحركات والبيانات المالية لتبويب «كم تم السرقه مني» — كل شيء سيعود إلى الصفر!"
-      : "All transactions and financial data in 'How much was stolen' will be deleted — everything will return to zero!",
-    details: L ? [
-      "جميع <strong>الحركات</strong> (مبالغ + رسوم) ستُحذف",
-      "<strong>اسم البنك</strong> سيُمسح",
-      "بيانات <strong>قبل الترجيع</strong> (الأصل + المتبقي) → 0",
-      "بيانات <strong>بعد الترجيع</strong> (الأصل + يجب الدفع) → 0",
-      "جميع <strong>المجاميع</strong> ستصبح 0"
-    ] : [
-      "All <strong>transactions</strong> (amounts + fees) will be deleted",
-      "<strong>Bank name</strong> will be cleared",
-      "<strong>Before reversal</strong> data → 0",
-      "<strong>After reversal</strong> data → 0",
-      "All <strong>totals</strong> will become 0"
-    ],
+    warning: L ? "سيتم حذف جميع الحركات والبيانات المالية لتبويب «كم تم السرقه مني» — كل شيء سيعود إلى الصفر!" : "All transactions and financial data in 'How much was stolen' will be deleted — everything will return to zero!",
+    details: L ? ["جميع <strong>الحركات</strong> (مبالغ + رسوم) ستُحذف","<strong>اسم البنك</strong> سيُمسح","بيانات <strong>قبل الترجيع</strong> (الأصل + المتبقي) → 0","بيانات <strong>بعد الترجيع</strong> (الأصل + يجب الدفع) → 0","جميع <strong>المجاميع</strong> ستصبح 0"] : ["All <strong>transactions</strong> (amounts + fees) will be deleted","<strong>Bank name</strong> will be cleared","<strong>Before reversal</strong> data → 0","<strong>After reversal</strong> data → 0","All <strong>totals</strong> will become 0"],
     onConfirm: function(){
-      state.stolen = {
-        bank: "",
-        transactions: [],
-        before: { original: 0, remaining: 0 },
-        after: { original: 0, mustPay: 0 }
-      };
-      save();
-      renderStolen();
+      state.stolen = { bank: "", transactions: [], before: { original: 0, remaining: 0 }, after: { original: 0, mustPay: 0 } };
+      save(); renderStolen();
       toast(L ? '✅ تم تصفير بيانات السرقة' : '✅ Stolen data reset', 'success');
     }
   });
 }
 
-/* ── 4) تصفير التجوري ── */
 function resetCash(){
   const L = LANG === 'ar';
   openConfirmReset({
     title: L ? "تصفير التجوري" : "Reset Cash",
-    warning: L
-      ? "سيتم تصفير جميع أعداد العملات الورقية والمعدنية في التجوري — المجموع الكلي سيصبح صفر!"
-      : "All banknote and coin counts in the safe will be reset — total will become zero!",
-    details: L ? [
-      "جميع <strong>فئات النصف دينار</strong> → 0",
-      "جميع <strong>فئات الدينار</strong> → 0",
-      "جميع <strong>فئات الخمسة</strong> → 0",
-      "جميع <strong>فئات العشرة</strong> → 0",
-      "جميع <strong>فئات العشرين</strong> → 0",
-      "المجموع الكلي → <strong>0 د.ب</strong>"
-    ] : [
-      "All <strong>Half Dinar</strong> counts → 0",
-      "All <strong>One Dinar</strong> counts → 0",
-      "All <strong>Five Dinar</strong> counts → 0",
-      "All <strong>Ten Dinar</strong> counts → 0",
-      "All <strong>Twenty Dinar</strong> counts → 0",
-      "Grand total → <strong>0 BHD</strong>"
-    ],
+    warning: L ? "سيتم تصفير جميع أعداد العملات الورقية والمعدنية في التجوري — المجموع الكلي سيصبح صفر!" : "All banknote and coin counts in the safe will be reset — total will become zero!",
+    details: L ? ["جميع <strong>فئات النصف دينار</strong> → 0","جميع <strong>فئات الدينار</strong> → 0","جميع <strong>فئات الخمسة</strong> → 0","جميع <strong>فئات العشرة</strong> → 0","جميع <strong>فئات العشرين</strong> → 0","المجموع الكلي → <strong>0 د.ب</strong>"] : ["All <strong>Half Dinar</strong> counts → 0","All <strong>One Dinar</strong> counts → 0","All <strong>Five Dinar</strong> counts → 0","All <strong>Ten Dinar</strong> counts → 0","All <strong>Twenty Dinar</strong> counts → 0","Grand total → <strong>0 BHD</strong>"],
     onConfirm: function(){
-      ensureCash();
-      CASH_DENOMINATIONS.forEach(d => { state.cash.counts[d.key] = 0; });
-      save();
-      renderCash();
+      ensureCash(); CASH_DENOMINATIONS.forEach(d => { state.cash.counts[d.key] = 0; }); save(); renderCash();
       toast(L ? '✅ تم تصفير التجوري' : '✅ Cash reset', 'success');
     }
   });
 }
 
-/* ── 5) تصفير احتياطي البنوك ── */
 function resetBanks(){
   const L = LANG === 'ar';
   openConfirmReset({
     title: L ? "تصفير احتياطي البنوك" : "Reset Banks Reserves",
-    warning: L
-      ? "سيتم تصفير جميع المبالغ المودعة في البنوك — أسماء البنوك ستبقى لكن المبالغ ستعود إلى صفر!"
-      : "All deposited bank amounts will be reset — bank names remain but amounts return to zero!",
-    details: L ? [
-      "جميع <strong>المبالغ</strong> في كل البنوك → 0",
-      "<strong>أسماء البنوك</strong> ستبقى محفوظة",
-      "<strong>المجموع الكلي للاحتياطي</strong> → 0 د.ب",
-      "يمكنك إدخال مبالغ جديدة في أي وقت"
-    ] : [
-      "All <strong>amounts</strong> in all banks → 0",
-      "<strong>Bank names</strong> will be preserved",
-      "<strong>Total reserves</strong> → 0 BHD",
-      "You can enter new amounts anytime"
-    ],
+    warning: L ? "سيتم تصفير جميع المبالغ المودعة في البنوك — أسماء البنوك ستبقى لكن المبالغ ستعود إلى صفر!" : "All deposited bank amounts will be reset — bank names remain but amounts return to zero!",
+    details: L ? ["جميع <strong>المبالغ</strong> في كل البنوك → 0","<strong>أسماء البنوك</strong> ستبقى محفوظة","<strong>المجموع الكلي للاحتياطي</strong> → 0 د.ب","يمكنك إدخال مبالغ جديدة في أي وقت"] : ["All <strong>amounts</strong> in all banks → 0","<strong>Bank names</strong> will be preserved","<strong>Total reserves</strong> → 0 BHD","You can enter new amounts anytime"],
     onConfirm: function(){
-      ensureBanks().items.forEach(x => { x.amount = 0; });
-      save();
-      renderBanks();
+      ensureBanks().items.forEach(x => { x.amount = 0; }); save(); renderBanks();
       toast(L ? '✅ تم تصفير مبالغ البنوك' : '✅ Bank amounts reset', 'success');
     }
   });
 }
 
-/* ── 6) تصفير كل شيء ── */
 function resetAll(){
   const L = LANG === 'ar';
   openConfirmReset({
     title: L ? "🚨 تصفير جميع البيانات" : "🚨 Reset ALL Data",
-    warning: L
-      ? "⚠️ تحذير خطير! سيتم حذف جميع بياناتك نهائياً — لا يمكن التراجع عن هذه العملية إطلاقاً! تأكد من حفظ نسخة احتياطية أولاً."
-      : "⚠️ CRITICAL WARNING! All your data will be permanently deleted — this action absolutely cannot be undone! Make sure to save a backup first.",
-    details: L ? [
-      "جميع <strong>السنوات والشهور</strong> ستُحذف",
-      "جميع <strong>الديون والأقساط والالتزامات والدائنين</strong> ستُحذف",
-      "جميع <strong>الادخارات وأهداف الهرم</strong> ستُحذف",
-      "جميع <strong>بيانات تقرير الشراكة</strong> ستُحذف",
-      "جميع <strong>بيانات توزيع العيادي</strong> ستُحذف",
-      "جميع <strong>بيانات السرقة</strong> ستُحذف",
-      "جميع <strong>بيانات التجوري</strong> ستُحذف",
-      "جميع <strong>بيانات البنوك</strong> ستُحذف",
-      "جميع <strong>التذكيرات</strong> ستُحذف",
-      "سيتم <strong>إعادة تحميل</strong> التطبيق كأنك تستخدمه لأول مرة"
-    ] : [
-      "All <strong>years and months</strong> will be deleted",
-      "All <strong>debts, installments, obligations, creditors</strong> will be deleted",
-      "All <strong>savings and pyramid targets</strong> will be deleted",
-      "All <strong>Partnership Report</strong> data will be deleted",
-      "All <strong>Eidi distribution</strong> data will be deleted",
-      "All <strong>stolen data</strong> will be deleted",
-      "All <strong>cash data</strong> will be deleted",
-      "All <strong>banks data</strong> will be deleted",
-      "All <strong>reminders</strong> will be deleted",
-      "The app will <strong>reload</strong> as if used for the first time"
-    ],
+    warning: L ? "⚠️ تحذير خطير! سيتم حذف جميع بياناتك نهائياً — لا يمكن التراجع عن هذه العملية إطلاقاً! تأكد من حفظ نسخة احتياطية أولاً." : "⚠️ CRITICAL WARNING! All your data will be permanently deleted — this action absolutely cannot be undone! Make sure to save a backup first.",
+    details: L ? ["جميع <strong>السنوات والشهور</strong> ستُحذف","جميع <strong>الديون والأقساط والالتزامات والدائنين</strong> ستُحذف","جميع <strong>الادخارات وأهداف الهرم</strong> ستُحذف","جميع <strong>بيانات تقرير الشراكة</strong> ستُحذف","جميع <strong>بيانات توزيع العيادي</strong> ستُحذف","جميع <strong>بيانات السرقة</strong> ستُحذف","جميع <strong>بيانات التجوري</strong> ستُحذف","جميع <strong>بيانات البنوك</strong> ستُحذف","جميع <strong>التذكيرات</strong> ستُحذف","سيتم <strong>إعادة تحميل</strong> التطبيق كأنك تستخدمه لأول مرة"] : ["All <strong>years and months</strong> will be deleted","All <strong>debts, installments, obligations, creditors</strong> will be deleted","All <strong>savings and pyramid targets</strong> will be deleted","All <strong>Partnership Report</strong> data will be deleted","All <strong>Eidi distribution</strong> data will be deleted","All <strong>stolen data</strong> will be deleted","All <strong>cash data</strong> will be deleted","All <strong>banks data</strong> will be deleted","All <strong>reminders</strong> will be deleted","The app will <strong>reload</strong> as if used for the first time"],
     onConfirm: function(){
-      localStorage.removeItem(KEY);
-      localStorage.removeItem(BACKUP_KEY);
+      localStorage.removeItem(KEY); localStorage.removeItem(BACKUP_KEY);
       OLD_KEYS.forEach(k => localStorage.removeItem(k));
       location.reload();
     }
   });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ← نهاية نظام تأكيد التصفير
-   ═══════════════════════════════════════════════════════════════ */
-
+/* ════════ ensure* دوال ════════ */
 function ensureStolen(){
   if(!state.stolen) state.stolen = {};
   const s = state.stolen;
@@ -3167,358 +3058,10 @@ function ensureStolen(){
   if(typeof s.before.original !== 'number') s.before.original = 0;
   if(typeof s.before.remaining !== 'number') s.before.remaining = 0;
   if(!s.after) s.after = { original: 0, mustPay: 0 };
-  if(typeof s.after.original !== 'number') s.after.original = 0;
+  s.after.original = s.before.original;
   if(typeof s.after.mustPay !== 'number') s.after.mustPay = 0;
   return s;
 }
-
-function stolenTotalFees(){
-  return ensureStolen().transactions.filter(x => x.type === "fee").reduce((s, x) => s + (+x.amount || 0), 0);
-}
-function stolenTotalAmounts(){
-  return ensureStolen().transactions.filter(x => x.type === "amount").reduce((s, x) => s + (+x.amount || 0), 0);
-}
-function stolenTotalWithFees(){
-  return ensureStolen().transactions.reduce((s, x) => s + (+x.amount || 0), 0);
-}
-function stolenTotalWithoutFees(){ return stolenTotalAmounts(); }
-function stolenMustPayBefore(){
-  const b = ensureStolen().before;
-  return Math.max(0, (+b.original || 0) - (+b.remaining || 0));
-}
-function stolenRemAfter(){
-  const a = ensureStolen().after;
-  return Math.max(0, (+a.original || 0) - (+a.mustPay || 0));
-}
-function stolenRecoveredAmount(){
-  const before = stolenMustPayBefore();
-  const after = +ensureStolen().after.mustPay || 0;
-  return before - after;
-}
-function stolenNetLoss(){
-  return (+ensureStolen().after.mustPay || 0) - stolenTotalFees();
-}
-function stolenTypeLabel(type){
-  return type === "fee" ? t('stolen_type_fee') : t('stolen_type_amount');
-}
-function stolenCount(){ return ensureStolen().transactions.length; }
-
-function addStolenTransaction(){
-  const s = ensureStolen();
-  const now = new Date();
-  const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-  s.transactions.push({
-    id: Date.now() + Math.floor(Math.random() * 10000),
-    type: "amount",
-    amount: 0,
-    date: dateStr,
-    note: ""
-  });
-  save();
-  renderStolen();
-  toast(t('stolen_add_ok'), 'success');
-}
-function updStolenTransaction(id, field, val){
-  const s = ensureStolen();
-  const item = s.transactions.find(x => x.id === id);
-  if(!item) return;
-  if(field === "amount"){
-    item.amount = Math.max(0, parseFloat(val) || 0);
-  } else if(field === "type"){
-    item.type = (val === "fee") ? "fee" : "amount";
-  } else {
-    item[field] = val;
-  }
-  save();
-  updateStolenSummaryCards();
-  updateStolenTotalsInline();
-}
-function delStolenTransaction(id){
-  if(!confirm(t('stolen_delete_confirm'))) return;
-  state.stolen.transactions = ensureStolen().transactions.filter(x => x.id !== id);
-  save();
-  renderStolen();
-  toast(t('stolen_delete_ok'), 'success');
-}
-function updStolenBank(val){
-  ensureStolen().bank = String(val || "");
-  save();
-}
-function updStolenBefore(field, val){
-  const s = ensureStolen();
-  if(field === "original") s.before.original = Math.max(0, parseFloat(val) || 0);
-  else if(field === "remaining") s.before.remaining = Math.max(0, parseFloat(val) || 0);
-  save();
-  updateStolenSummaryCards();
-  updateStolenTotalsInline();
-}
-function updStolenAfter(field, val){
-  const s = ensureStolen();
-  if(field === "original") s.after.original = Math.max(0, parseFloat(val) || 0);
-  else if(field === "mustPay") s.after.mustPay = Math.max(0, parseFloat(val) || 0);
-  save();
-  updateStolenSummaryCards();
-  updateStolenTotalsInline();
-}
-
-function renderStolen(){
-  ensureStolen();
-  const s = state.stolen;
-  const body = document.getElementById("stolenBody");
-  if(!body) return;
-
-  const bankInput = document.getElementById("stolenBankInput");
-  if(bankInput) bankInput.value = s.bank || "";
-
-  const typeOptsFor = val => `
-    <option value="amount" ${val === 'amount' ? 'selected' : ''}>💵 ${t('stolen_amount')}</option>
-    <option value="fee" ${val === 'fee' ? 'selected' : ''}>📊 ${t('stolen_fee')}</option>
-  `;
-  if(!s.transactions.length){
-    body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted);font-style:italic">${LANG==='ar'?'لا توجد بنود — اضغط ➕':'No items — click ➕'}</td></tr>`;
-  } else {
-    body.innerHTML = s.transactions.map((tr, idx) => {
-      const isFee = tr.type === 'fee';
-      const rowCls = isFee ? 'stolen-row-fee' : 'stolen-row-main';
-      const rowBg = isFee ? 'background:rgba(234,179,8,.06)' : 'background:rgba(239,68,68,.03)';
-      return `<tr class="${rowCls}" style="${rowBg}">
-        <td class="num" style="text-align:center;font-family:monospace;font-weight:700;color:var(--muted);width:50px">${idx + 1}</td>
-        <td>
-          <select onchange="updStolenTransaction(${tr.id}, 'type', this.value)"
-                  style="width:100%;background:var(--panel2);border:1px solid var(--line);color:${isFee ? 'var(--gold)' : 'var(--danger)'};padding:8px 10px;border-radius:6px;font-size:13px;font-weight:700;font-family:inherit">
-            ${typeOptsFor(tr.type)}
-          </select>
-        </td>
-        <td>
-          <input type="number" value="${inVal(tr.amount)}" step="0.001" min="0"
-                 oninput="updStolenTransaction(${tr.id}, 'amount', this.value)"
-                 style="width:100%;text-align:center;font-family:monospace;font-weight:800;font-size:15px;color:${isFee ? 'var(--gold)' : 'var(--danger)'};background:var(--panel2);border:2px solid ${isFee ? 'var(--gold)' : 'var(--danger)'};padding:9px 12px;border-radius:6px">
-        </td>
-        <td>
-          <input type="date" value="${esc(tr.date)}"
-                 oninput="updStolenTransaction(${tr.id}, 'date', this.value)"
-                 style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:8px 10px;border-radius:6px;font-size:13px;font-family:monospace;text-align:center">
-        </td>
-        <td>
-          <input type="text" value="${esc(tr.note)}"
-                 oninput="updStolenTransaction(${tr.id}, 'note', this.value)"
-                 placeholder="..."
-                 style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:8px 10px;border-radius:6px;font-size:13px;font-family:inherit">
-        </td>
-        <td class="noprint" style="text-align:center;width:60px">
-          <button class="icon-btn remove-btn" onclick="delStolenTransaction(${tr.id})" title="${LANG==='ar'?'حذف':'Delete'}">✕</button>
-        </td>
-      </tr>`;
-    }).join("");
-  }
-
-  const foot = document.getElementById("stolenFoot");
-  if(foot){
-    foot.innerHTML = `
-      <tr style="background:rgba(234,179,8,.12);font-weight:800">
-        <td colspan="2" style="color:var(--gold);font-size:14px">📊 ${LANG==='ar'?'الرسوم فقط':'Fees Only'}</td>
-        <td class="num" style="color:var(--gold);font-family:monospace;font-size:15px;text-align:center">${fmt(stolenTotalFees())}</td>
-        <td colspan="3" style="text-align:${LANG==='ar'?'left':'right'};font-size:11px;color:var(--muted);font-style:italic">= مجموع رسوم التحويل</td>
-      </tr>
-      <tr style="background:rgba(59,130,246,.12);font-weight:800">
-        <td colspan="2" style="color:var(--accent2);font-size:14px">💵 ${LANG==='ar'?'المبلغ الكلي مع الرسوم':'Total with Fees'}</td>
-        <td class="num" style="color:var(--accent2);font-family:monospace;font-size:15px;text-align:center">${fmt(stolenTotalWithFees())}</td>
-        <td colspan="3" style="text-align:${LANG==='ar'?'left':'right'};font-size:11px;color:var(--muted);font-style:italic">= مجموع كل البنود</td>
-      </tr>
-      <tr style="background:rgba(34,197,94,.12);font-weight:800">
-        <td colspan="2" style="color:var(--ok);font-size:14px">💰 ${LANG==='ar'?'المبلغ الكلي بدون الرسوم':'Total without Fees'}</td>
-        <td class="num" style="color:var(--ok);font-family:monospace;font-size:15px;text-align:center">${fmt(stolenTotalWithoutFees())}</td>
-        <td colspan="3" style="text-align:${LANG==='ar'?'left':'right'};font-size:11px;color:var(--muted);font-style:italic">= مجموع المبالغ فقط</td>
-      </tr>
-    `;
-  }
-
-  updateStolenSummaryCards();
-  updateStolenTotalsInline();
-}
-
-function updateStolenSummaryCards(){
-  const s = ensureStolen();
-
-  const kpis = document.getElementById("stolenKpis");
-  if(kpis){
-    kpis.innerHTML = `
-      ${kpi(t('stolen_kpi_fees'), money(stolenTotalFees()), "gold")}
-      ${kpi(t('stolen_kpi_with_fees'), money(stolenTotalWithFees()), "neg")}
-      ${kpi(t('stolen_kpi_without_fees'), money(stolenTotalWithoutFees()), "pos")}
-      ${kpi(t('stolen_kpi_count'), String(stolenCount()), "acc")}
-      ${kpi(t('stolen_kpi_bank'), s.bank || "—", "acc")}
-      ${kpi(t('stolen_kpi_must_pay_before'), money(stolenMustPayBefore()), "neg")}
-    `;
-  }
-
-  const mustPayBeforeEl = document.getElementById("stolenMustPayBefore");
-  if(mustPayBeforeEl){
-    mustPayBeforeEl.value = fmt(stolenMustPayBefore()) + " " + (LANG==='ar'?'د.ب':'BHD');
-  }
-
-  const remAfterEl = document.getElementById("stolenRemAfter");
-  if(remAfterEl){
-    remAfterEl.value = fmt(stolenRemAfter()) + " " + (LANG==='ar'?'د.ب':'BHD');
-  }
-
-  const beforeKpis = document.getElementById("stolenLossBeforeKpis");
-  if(beforeKpis){
-    beforeKpis.innerHTML = `
-      ${kpi(LANG==='ar'?'💸 يجب الدفع قبل':'💸 Must Pay Before', money(stolenMustPayBefore()), "neg")}
-      ${kpi(LANG==='ar'?'💵 الرسوم فقط':'💵 Fees Only', money(stolenTotalFees()), "gold")}
-      ${kpi(LANG==='ar'?'📦 إجمالي المسروق':'📦 Total Stolen', money(stolenTotalWithFees()), "neg")}
-      ${kpi(LANG==='ar'?'📋 عدد العمليات':'📋 Count', String(stolenCount()), "acc")}
-    `;
-  }
-
-  const afterKpis = document.getElementById("stolenLossAfterKpis");
-  if(afterKpis){
-    afterKpis.innerHTML = `
-      ${kpi(LANG==='ar'?'💰 يجب الدفع بعد':'💰 Must Pay After', money(+s.after.mustPay || 0), "neg")}
-      ${kpi(LANG==='ar'?'💸 المتبقي بعد':'💸 Remaining After', money(stolenRemAfter()), "pos")}
-      ${kpi(LANG==='ar'?'✅ تم استرجاع':'✅ Recovered', money(stolenRecoveredAmount()), "pos")}
-      ${kpi(LANG==='ar'?'🎯 صافي الخسارة':'🎯 Net Loss', money(stolenNetLoss()), "gold")}
-    `;
-  }
-}
-
-function updateStolenTotalsInline(){
-  const s = ensureStolen();
-
-  const origBeforeEl = document.getElementById("stolenOrigBefore");
-  if(origBeforeEl && document.activeElement !== origBeforeEl) origBeforeEl.value = inVal(s.before.original);
-  const remBeforeEl = document.getElementById("stolenRemBefore");
-  if(remBeforeEl && document.activeElement !== remBeforeEl) remBeforeEl.value = inVal(s.before.remaining);
-  const mustPayBeforeEl = document.getElementById("stolenMustPayBefore");
-  if(mustPayBeforeEl) mustPayBeforeEl.value = fmt(stolenMustPayBefore()) + " " + (LANG==='ar'?'د.ب':'BHD');
-
-  const origAfterEl = document.getElementById("stolenOrigAfter");
-  if(origAfterEl && document.activeElement !== origAfterEl) origAfterEl.value = inVal(s.after.original);
-  const mustPayAfterEl = document.getElementById("stolenMustPayAfter");
-  if(mustPayAfterEl && document.activeElement !== mustPayAfterEl) mustPayAfterEl.value = inVal(s.after.mustPay);
-  const remAfterEl = document.getElementById("stolenRemAfter");
-  if(remAfterEl) remAfterEl.value = fmt(stolenRemAfter()) + " " + (LANG==='ar'?'د.ب':'BHD');
-}
-
-function exportStolenExcel(){
-  try {
-    if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
-    syncFromDOM();
-    const s = ensureStolen();
-    const L = LANG === 'ar'; const cur = L ? 'د.ب' : 'BHD';
-    const wb = XLSX.utils.book_new(); wb.Workbook = { Views: [{ RTL: true }] };
-    const ws = {}; const cols = 4;
-    let r = 0;
-    xlTitleRow(ws, r, cols, L ? '🚨 كم تم السرقه مني' : '🚨 How much was stolen', { sz: 16, h: 34 }); r++;
-    xlTitleRow(ws, r, cols, 'Muharraqi — Capital Manager', { fill: XL.header, sz: 11, h: 22 }); r++;
-    xlTitleRow(ws, r, cols, `${L ? 'التاريخ' : 'Date'}: ${todayStr()} | ${L ? 'البنك' : 'Bank'}: ${s.bank || '—'}`, { sz: 10, h: 20, fill: 'E2E8F0', color: '334155' }); r++; r++;
-
-    xlSectionRow(ws, r, cols, L ? '📋 الحركات' : '📋 Transactions', XL.header); r++;
-    xlHeaderRow(ws, r, [L ? 'النوع' : 'Type', L ? 'المبلغ' : 'Amount', L ? 'التاريخ' : 'Date', L ? 'ملاحظة' : 'Note'], XL.header); r++;
-    s.transactions.forEach((tr, idx) => {
-      const typeLabel = tr.type === 'fee' ? (L ? 'رسوم التحويل الى العمله' : 'Transfer Fee') : (L ? 'المبلغ' : 'Amount');
-      xlDataRow(ws, r, [typeLabel, +tr.amount || 0, tr.date || '—', tr.note || '—'], cols, { fill: tr.type === 'fee' ? XL.goldBg : XL.rowAlt, numFmt: '#,##0.000' }); r++;
-    });
-    r++;
-
-    xlSectionRow(ws, r, cols, L ? '📊 المجاميع' : '📊 Totals', XL.inputHdr); r++;
-    xlHeaderRow(ws, r, [L ? 'البند' : 'Item', L ? 'القيمة (' + cur + ')' : 'Value (BHD)', '', ''], XL.inputHdr); r++;
-    xlDataRow(ws, r, [L ? 'الرسوم فقط' : 'Fees Only', stolenTotalFees(), '', ''], cols, { fill: XL.goldBg, numFmt: '#,##0.000' }); r++;
-    xlDataRow(ws, r, [L ? 'المبلغ الكلي مع الرسوم' : 'Total with Fees', stolenTotalWithFees(), '', ''], cols, { fill: XL.cyanBg, numFmt: '#,##0.000' }); r++;
-    xlDataRow(ws, r, [L ? 'المبلغ الكلي بدون الرسوم' : 'Total without Fees', stolenTotalWithoutFees(), '', ''], cols, { fill: XL.greenBg, numFmt: '#,##0.000' }); r++;
-    r++;
-
-    xlSectionRow(ws, r, cols, L ? '💳 الوضع قبل الترجيع' : '💳 Before Reversal', XL.header); r++;
-    xlHeaderRow(ws, r, [L ? 'البند' : 'Item', L ? 'القيمة (' + cur + ')' : 'Value (BHD)', '', ''], XL.header); r++;
-    xlDataRow(ws, r, [L ? 'اصل الموجود في البطاقة' : 'Original Card Balance', +s.before.original || 0, '', ''], cols, { fill: XL.rowAlt, numFmt: '#,##0.000' }); r++;
-    xlDataRow(ws, r, [L ? 'المتبقي في البطاقة' : 'Remaining Card Balance', +s.before.remaining || 0, '', ''], cols, { fill: XL.rowAlt, numFmt: '#,##0.000' }); r++;
-    xlDataRow(ws, r, [L ? 'يجب الدفع للبنك' : 'Must Pay Bank', stolenMustPayBefore(), '', ''], cols, { fill: XL.redBg, numFmt: '#,##0.000' }); r++;
-    r++;
-
-    xlSectionRow(ws, r, cols, L ? '✅ الوضع بعد الترجيع' : '✅ After Reversal', XL.header); r++;
-    xlHeaderRow(ws, r, [L ? 'البند' : 'Item', L ? 'القيمة (' + cur + ')' : 'Value (BHD)', '', ''], XL.header); r++;
-    xlDataRow(ws, r, [L ? 'اصل الموجود في البطاقة' : 'Original Card Balance', +s.after.original || 0, '', ''], cols, { fill: XL.rowAlt, numFmt: '#,##0.000' }); r++;
-    xlDataRow(ws, r, [L ? 'يجب الدفع للبنك بعد التعديل' : 'Must Pay After Adjustment', +s.after.mustPay || 0, '', ''], cols, { fill: XL.redBg, numFmt: '#,##0.000' }); r++;
-    xlDataRow(ws, r, [L ? 'المتبقي بعد التعديل' : 'Remaining After Adjustment', stolenRemAfter(), '', ''], cols, { fill: XL.greenBg, numFmt: '#,##0.000' }); r++;
-    r++;
-
-    xlSectionRow(ws, r, cols, L ? '⚖️ المقارنة' : '⚖️ Comparison', XL.convHdr); r++;
-    xlHeaderRow(ws, r, [L ? 'البند' : 'Item', L ? 'خسران (قبل)' : 'Loss (Before)', L ? 'بعد الترجيع' : 'After Reversal', ''], XL.convHdr); r++;
-    xlDataRow(ws, r, [L ? 'يجب الدفع / المتبقي' : 'Must Pay / Remaining', stolenMustPayBefore(), stolenRemAfter(), ''], cols, { fill: XL.rowAlt, numFmt: '#,##0.000' }); r++;
-    xlDataRow(ws, r, [L ? 'الرسوم فقط' : 'Fees Only', stolenTotalFees(), +s.after.mustPay || 0, ''], cols, { fill: XL.goldBg, numFmt: '#,##0.000' }); r++;
-    xlDataRow(ws, r, [L ? 'إجمالي المسروق' : 'Total Stolen', stolenTotalWithFees(), stolenRecoveredAmount(), ''], cols, { fill: XL.cyanBg, numFmt: '#,##0.000' }); r++;
-    xlTotalRow(ws, r, [L ? '🎯 صافي الخسارة' : '🎯 Net Loss', stolenNetLoss(), '', ''], cols); r++;
-
-    ws['!cols'] = [{wch:32}, {wch:18}, {wch:18}, {wch:24}];
-    ws['!ref'] = XLSX.utils.encode_range({s:{r:0,c:0},e:{r, c:cols-1}});
-    applySheetRTL(ws, wb);
-    XLSX.utils.book_append_sheet(wb, ws, L ? 'السرقة' : 'Stolen');
-    XLSX.writeFile(wb, `stolen_${todayStr()}.xlsx`, { bookType: 'xlsx', cellStyles: true });
-    toast(t('stolen_excel_ok'), 'success');
-  } catch(err){ console.error(err); toast((LANG==='ar'?'⚠️ فشل التصدير: ':'⚠️ Failed: ') + (err.message||''), 'error'); }
-}
-
-async function shareStolenPDF(){
-  try {
-    toast(t('creating_pdf'));
-    const s = ensureStolen();
-    const L = LANG === 'ar'; const cur = L ? 'د.ب' : 'BHD';
-    const now = new Date();
-    const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
-    const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-    let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('lblStolenTitle')}</title><style>@page{size:A4;margin:12mm}*{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:10px;line-height:1.6;margin:0;direction:${L?'rtl':'ltr'}}.header{text-align:center;margin-bottom:20px;padding-bottom:10px;border-bottom:3px double #333}.header .logo{display:inline-block;width:54px;height:54px;line-height:54px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;font-weight:900;font-size:24px;text-align:center}.header h2{margin:10px 0 4px;color:#b91c1c;font-size:20px}.header .meta{color:#666;font-size:12px}.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 20px}.kpi{border:2px solid #ccc;border-radius:8px;padding:10px 8px;text-align:center;background:#f9fafb}.kpi .lbl{font-size:11px;color:#666;margin-bottom:5px;font-weight:600}.kpi .val{font-size:15px;font-weight:800;font-family:monospace}.kpi.gold{border-color:#d97706;background:#fffbeb}.kpi.gold .val{color:#d97706}.kpi.red{border-color:#dc2626;background:#fef2f2}.kpi.red .val{color:#dc2626}.kpi.green{border-color:#16a34a;background:#f0fdf4}.kpi.green .val{color:#16a34a}.kpi.blue{border-color:#2563eb;background:#eff6ff}.kpi.blue .val{color:#2563eb}.section-title{background:#f0f4f8;padding:8px 12px;border-right:5px solid #b91c1c;font-weight:700;margin:18px 0 8px;font-size:13px;color:#1e293b}table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px}th{background:#e5e7eb;color:#111;padding:7px 8px;text-align:${L?'right':'left'};border:1px solid #999;font-size:10px;font-weight:700}td{padding:6px 8px;border:1px solid #ccc;text-align:${L?'right':'left'}}td.num{font-family:monospace;text-align:center;font-weight:700}tbody tr:nth-child(even){background:#f9fafb}.total-row{background:#fef3c7 !important;font-weight:800}.total-row td{border:2px solid #d97706;font-family:monospace;font-size:13px}.footer{text-align:center;margin-top:28px;padding-top:10px;border-top:2px solid #999;color:#666;font-size:10px;line-height:1.6}.footer strong{color:#b91c1c}</style></head><body>`;
-    html += `<div class="header"><div class="logo">M</div><h2>🚨 ${t('lblStolenTitle')}</h2><div class="meta">${L ? 'البنك' : 'Bank'}: <strong>${esc(s.bank) || '—'}</strong> — ${t('print_generated')}: ${dateStr} — ${timeStr}</div></div>`;
-
-    html += `<div class="kpis"><div class="kpi gold"><div class="lbl">💸 ${L?'الرسوم فقط':'Fees Only'}</div><div class="val">${fmt(stolenTotalFees())} ${cur}</div></div><div class="kpi red"><div class="lbl">💵 ${L?'المبلغ الكلي مع الرسوم':'Total with Fees'}</div><div class="val">${fmt(stolenTotalWithFees())} ${cur}</div></div><div class="kpi green"><div class="lbl">💰 ${L?'المبلغ الكلي بدون الرسوم':'Total without Fees'}</div><div class="val">${fmt(stolenTotalWithoutFees())} ${cur}</div></div></div>`;
-
-    html += `<div class="section-title">📋 ${L?'الحركات':'Transactions'}</div>`;
-    if(!s.transactions.length){ html += `<div style="text-align:center;padding:20px;color:#888;font-style:italic">${L?'لا توجد بنود':'No items'}</div>`; }
-    else {
-      html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th>${t('thStolenType')}</th><th style="width:120px">${t('thStolenAmount')} (${cur})</th><th style="width:110px">${t('thStolenDate')}</th><th>${t('thStolenNote')}</th></tr></thead><tbody>`;
-      s.transactions.forEach((tr, idx) => {
-        html += `<tr><td class="num">${idx+1}</td><td>${tr.type === 'fee' ? '📊 ' + t('stolen_fee') : '💵 ' + t('stolen_amount')}</td><td class="num">${fmt(+tr.amount||0)}</td><td class="num" dir="ltr">${esc(tr.date) || '—'}</td><td>${esc(tr.note) || '—'}</td></tr>`;
-      });
-      html += `</tbody></table>`;
-    }
-
-    html += `<div class="section-title">💳 ${t('lblStolenBeforeTitle')}</div>`;
-    html += `<table><thead><tr><th>${L?'البند':'Item'}</th><th style="width:140px">${L?'القيمة':'Value'} (${cur})</th></tr></thead><tbody>`;
-    html += `<tr><td>${t('lblStolenOrigBefore')}</td><td class="num">${fmt(+s.before.original||0)}</td></tr>`;
-    html += `<tr><td>${t('lblStolenRemBefore')}</td><td class="num">${fmt(+s.before.remaining||0)}</td></tr>`;
-    html += `<tr class="total-row"><td>${t('lblStolenMustPayBefore')}</td><td class="num">${fmt(stolenMustPayBefore())}</td></tr>`;
-    html += `</tbody></table>`;
-
-    html += `<div class="section-title">✅ ${t('lblStolenAfterTitle')}</div>`;
-    html += `<table><thead><tr><th>${L?'البند':'Item'}</th><th style="width:140px">${L?'القيمة':'Value'} (${cur})</th></tr></thead><tbody>`;
-    html += `<tr><td>${t('lblStolenOrigAfter')}</td><td class="num">${fmt(+s.after.original||0)}</td></tr>`;
-    html += `<tr><td>${t('lblStolenMustPayAfter')}</td><td class="num">${fmt(+s.after.mustPay||0)}</td></tr>`;
-    html += `<tr class="total-row"><td>${t('lblStolenRemAfter')}</td><td class="num">${fmt(stolenRemAfter())}</td></tr>`;
-    html += `</tbody></table>`;
-
-    html += `<div class="section-title">⚖️ ${t('lblStolenCompareTitle')}</div>`;
-    html += `<table><thead><tr><th>${L?'البند':'Item'}</th><th>${L?'خسران (قبل)':'Loss (Before)'}</th><th>${L?'بعد الترجيع':'After Reversal'}</th></tr></thead><tbody>`;
-    html += `<tr><td>${L?'يجب الدفع / المتبقي':'Must Pay / Remaining'}</td><td class="num">${fmt(stolenMustPayBefore())}</td><td class="num">${fmt(stolenRemAfter())}</td></tr>`;
-    html += `<tr><td>${L?'الرسوم فقط':'Fees Only'}</td><td class="num">${fmt(stolenTotalFees())}</td><td class="num">${fmt(+s.after.mustPay||0)}</td></tr>`;
-    html += `<tr><td>${L?'إجمالي المسروق':'Total Stolen'}</td><td class="num">${fmt(stolenTotalWithFees())}</td><td class="num">${fmt(stolenRecoveredAmount())}</td></tr>`;
-    html += `<tr class="total-row"><td>🎯 ${L?'صافي الخسارة':'Net Loss'}</td><td class="num" colspan="2">${fmt(stolenNetLoss())} ${cur}</td></tr>`;
-    html += `</tbody></table>`;
-
-    html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div></body></html>`;
-
-    const filename = `stolen_${todayStr()}.pdf`;
-    const blob = await generatePdfInWindow(html, filename, 'portrait');
-    if(!blob){ toast(t('share_failed'), 'error'); return; }
-    await sharePdfBlob(blob, filename);
-  } catch(err){
-    if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; }
-    toast(t('share_failed'), 'error');
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   ← نهاية إضافات تبويب السرقة
-   ═══════════════════════════════════════════════════════════════ */
 
 function ensureCash(){
   if(!state.cash) state.cash = { counts: {} };
@@ -3526,193 +3069,35 @@ function ensureCash(){
   CASH_DENOMINATIONS.forEach(d => { if(typeof state.cash.counts[d.key] !== 'number') state.cash.counts[d.key] = 0; });
   return state.cash;
 }
-function cashRowAmount(key){ const d = CASH_DENOMINATIONS.find(x => x.key === key); if(!d) return 0; return (+ensureCash().counts[key] || 0) * d.value; }
-function cashTotal(){ return CASH_DENOMINATIONS.reduce((s, d) => s + cashRowAmount(d.key), 0); }
-function updCashCount(key, val){
-  ensureCash(); state.cash.counts[key] = Math.max(0, parseInt(val) || 0); save();
-  const row = document.querySelector(`tr[data-cash-key="${key}"]`);
-  if(row){
-    const d = CASH_DENOMINATIONS.find(x => x.key === key); const amtCell = row.querySelector('.cash-amount-cell');
-    if(amtCell && d){ const amt = (state.cash.counts[key] || 0) * d.value; amtCell.textContent = amt > 0 ? fmt(amt) : '—'; amtCell.style.color = amt > 0 ? 'var(--ok)' : 'var(--muted)'; }
-    if(state.cash.counts[key] > 0){ row.style.background = 'rgba(34,193,164,.05)'; row.style.opacity = '1'; } else { row.style.background = ''; row.style.opacity = '.75'; }
-  }
-  const total = cashTotal();
-  const tCell = document.getElementById('cashTotalCell'); if(tCell) tCell.textContent = `${fmt(total)} ${LANG === 'ar' ? 'د.ب' : 'BHD'}`;
-  const kpiVal = document.querySelector('#cashKpis .kpi .val'); if(kpiVal) kpiVal.textContent = money(total);
-}
 
 function ensureEidi(){
   if(!state.eidi) state.eidi = { items: [] };
   if(!Array.isArray(state.eidi.items)) state.eidi.items = [];
   return state.eidi;
 }
-function eidiTotal(){ return ensureEidi().items.reduce((s, x) => s + (+x.amount || 0), 0); }
-function updEidiAmount(id, val){ const e = ensureEidi(); const item = e.items.find(x => x.id === id); if(!item) return; item.amount = Math.max(0, parseFloat(val) || 0); save(); renderEidi(); }
-function updEidiName(id, val){ const e = ensureEidi(); const item = e.items.find(x => x.id === id); if(!item) return; item.name = val; save(); }
-function addEidiItem(){ const e = ensureEidi(); e.items.push({ id: Date.now() + Math.floor(Math.random()*10000), name: "", amount: 0 }); save(); renderEidi(); toast(LANG === 'ar' ? '✅ تمت إضافة بند' : '✅ Added', 'success'); }
-function removeEidiItem(id){ if(!confirm(LANG === 'ar' ? 'حذف هذا البند؟' : 'Delete?')) return; const e = ensureEidi(); e.items = e.items.filter(x => x.id !== id); save(); renderEidi(); toast(LANG === 'ar' ? '🗑 تم الحذف' : '🗑 Deleted', 'success'); }
 
 function ensureReminders(){ if(!Array.isArray(state.reminders)) state.reminders = []; return state.reminders; }
 
+/* ⭐ [إصلاح #2] منع إعادة توليد البنوك بعد الحذف الكامل */
 function ensureBanks(){
   if(!state.banks) state.banks = { items: [], customNames: [] };
   if(!Array.isArray(state.banks.items)) state.banks.items = [];
   if(!Array.isArray(state.banks.customNames)) state.banks.customNames = [];
   DEFAULT_BANK_NAMES.forEach(n => { if(!state.banks.customNames.includes(n)) state.banks.customNames.unshift(n); });
-  if(state.banks.items.length === 0){
-    state.banks.items = DEFAULT_BANK_NAMES.map((n, i) => ({ id: Date.now() + i * 1000 + Math.floor(Math.random() * 100), name: n, amount: 0 }));
+  // ⭐ أول مرة فقط: ولّد الصفوف الافتراضية + ضع علامة التهيئة
+  if(state.banks._initialized === undefined){
+    if(state.banks.items.length === 0){
+      state.banks.items = DEFAULT_BANK_NAMES.map((n, i) => ({ id: Date.now() + i * 1000 + Math.floor(Math.random() * 100), name: n, amount: 0 }));
+    }
+    state.banks._initialized = true;
   }
   return state.banks;
 }
-function banksTotal(){ return ensureBanks().items.reduce((s, x) => s + (+x.amount || 0), 0); }
-function updBankName(id, val){ const item = ensureBanks().items.find(x => x.id === id); if(!item) return; item.name = val; save(); }
-function updBankAmount(id, val){
-  const item = ensureBanks().items.find(x => x.id === id); if(!item) return;
-  item.amount = Math.max(0, parseFloat(val) || 0); save();
-  const row = document.querySelector(`tr[data-bank-row="${id}"]`);
-  if(row){
-    row.classList.toggle('has-amount', item.amount > 0);
-    const tCell = document.getElementById('banksTotalCell'); if(tCell) tCell.textContent = `${fmt(banksTotal())} ${LANG === 'ar' ? 'د.ب' : 'BHD'}`;
-    const kpis = document.getElementById('banksKpis'); if(kpis) kpis.innerHTML = getBanksKpisHTML();
-  }
-}
-function addBankRow(){ const b = ensureBanks(); b.items.push({ id: Date.now() + Math.floor(Math.random() * 10000), name: b.customNames[0] || "NBK", amount: 0 }); save(); renderBanks(); toast(t('bank_add_row_ok'), 'success'); }
-function removeBankRow(id){ if(!confirm(t('bank_delete_row_confirm'))) return; state.banks.items = ensureBanks().items.filter(x => x.id !== id); save(); renderBanks(); toast(t('bank_delete_row_ok'), 'success'); }
-function addCustomBankName(targetId){
-  const newName = prompt(t('bank_add_name_prompt'), ''); if(newName === null) return;
-  const trimmed = newName.trim(); if(!trimmed){ toast(t('bank_invalid_name'), 'warn'); return; }
-  const b = ensureBanks(); if(!b.customNames.includes(trimmed)){ b.customNames.push(trimmed); }
-  if(targetId){ const item = b.items.find(x => x.id === targetId); if(item){ item.name = trimmed; } }
-  save(); renderBanks(); toast(t('bank_add_name_ok') + trimmed, 'success');
-}
-function removeCustomBankName(name){
-  if(DEFAULT_BANK_NAMES.includes(name)){ toast(t('bank_cannot_delete_default'), 'warn'); return; }
-  if(!confirm(t('bank_remove_name_confirm'))) return;
-  const b = ensureBanks(); b.customNames = b.customNames.filter(n => n !== name);
-  b.items.forEach(x => { if(x.name === name) x.name = b.customNames[0] || "NBK"; });
-  save(); renderBanks(); toast(t('bank_remove_name_ok') + name, 'success');
-}
-function getBanksKpisHTML(){
-  const total = banksTotal(); const items = ensureBanks().items;
-  const nonZero = items.filter(x => (+x.amount || 0) > 0).length;
-  return `
-    ${kpi(t('bank_kpi_total'), money(total), total > 0 ? 'gold' : '')}
-    ${kpi(t('bank_kpi_count'), items.length.toString(), 'acc')}
-    ${kpi(t('bank_kpi_active'), nonZero.toString(), nonZero > 0 ? 'pos' : '')}
-  `;
-}
-
-function getRepeatableExtras(m, extraKey){ if(!Array.isArray(m[extraKey])) m[extraKey] = []; return m[extraKey]; }
-function sumRepeatableExtras(m, extraKey){ return getRepeatableExtras(m, extraKey).reduce((s,x)=>s+(+x.amount||0),0); }
-function sumRepeatableExtrasCounted(m, extraKey){ return getRepeatableExtras(m, extraKey).filter(x => x.bank !== EXCLUDED_BANK).reduce((s,x)=>s+(+x.amount||0),0); }
-function sumRepeatableExtrasExcluded(m, extraKey){ return getRepeatableExtras(m, extraKey).filter(x => x.bank === EXCLUDED_BANK).reduce((s,x)=>s+(+x.amount||0),0); }
-function getExpenseRowValue(m, row){ let v = +m[row.key]||0; if(row.type === "repeatable") v += sumRepeatableExtras(m, row.extraKey); return v; }
-function isGroupCollapsed(m, extraKey){ if(!m.extraCollapsedMap) m.extraCollapsedMap = {}; return !!m.extraCollapsedMap[extraKey]; }
-function toggleAllExtras(extraKey){
-  const m = M()[state.activeMonth]; if(!m.extraCollapsedMap) m.extraCollapsedMap = {};
-  m.extraCollapsedMap[extraKey] = !m.extraCollapsedMap[extraKey]; m.lastModified = new Date().toISOString();
-  save(); renderExpenseFields(); renderMonthDate();
-}
-function addRepeatableExtra(extraKey, isBirthday){
-  const m = M()[state.activeMonth]; const arr = getRepeatableExtras(m, extraKey);
-  const newEx = { id: Date.now() + Math.floor(Math.random()*10000), amount: 0, bank: "بطاقة صراف الالي", note: "", ref: "" };
-  if(isBirthday) newEx.person = "none"; arr.push(newEx);
-  if(!m.extraCollapsedMap) m.extraCollapsedMap = {}; m.extraCollapsedMap[extraKey] = false; m.lastModified = new Date().toISOString();
-  save(); renderExpenseFields(); renderExpenseSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderMonthDate();
-}
-function removeRepeatableExtra(extraKey, id){
-  const m = M()[state.activeMonth]; const arr = getRepeatableExtras(m, extraKey); const idx = arr.findIndex(x => x.id === id);
-  if(idx === -1) return; arr.splice(idx, 1); m.lastModified = new Date().toISOString();
-  save(); renderExpenseFields(); renderExpenseSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderMonthDate();
-}
-function updExtraField(extraKey, id, field, val){
-  const m = M()[state.activeMonth]; const arr = getRepeatableExtras(m, extraKey); const item = arr.find(x => x.id === id);
-  if(!item) return;
-  if(field === "amount") item.amount = Math.max(0, parseFloat(val) || 0); else item[field] = val;
-  m.lastModified = new Date().toISOString(); save();
-  if(field === "amount" || field === "bank"){
-    renderExpenseSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderYears();
-    if(field === "bank"){ renderExpenseFields(); }
-    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
-  }
-  renderMonthDate();
-}
-
-function getSavingExtras(m, extraKey){ if(!Array.isArray(m[extraKey])) m[extraKey] = []; return m[extraKey]; }
-function sumSavingExtras(m, extraKey){ return getSavingExtras(m, extraKey).reduce((s,x)=>s+(+x.amount||0),0); }
-function sumSavingExtrasCounted(m, extraKey){ return getSavingExtras(m, extraKey).filter(x => x.bank !== EXCLUDED_BANK).reduce((s,x)=>s+(+x.amount||0),0); }
-function sumSavingExtrasExcluded(m, extraKey){ return getSavingExtras(m, extraKey).filter(x => x.bank === EXCLUDED_BANK).reduce((s,x)=>s+(+x.amount||0),0); }
-function isSavingGroupCollapsed(m, extraKey){ if(!m.savingExtraCollapsedMap) m.savingExtraCollapsedMap = {}; return !!m.savingExtraCollapsedMap[extraKey]; }
-function toggleAllSavingExtras(extraKey){
-  const m = M()[state.activeMonth]; if(!m.savingExtraCollapsedMap) m.savingExtraCollapsedMap = {};
-  m.savingExtraCollapsedMap[extraKey] = !m.savingExtraCollapsedMap[extraKey]; m.lastModified = new Date().toISOString();
-  save(); renderSavingFields(); renderMonthDate();
-}
-function addSavingExtra(extraKey){
-  const m = M()[state.activeMonth]; const arr = getSavingExtras(m, extraKey);
-  arr.push({ id: Date.now() + Math.floor(Math.random()*10000), amount: 0, bank: "بطاقة صراف الالي", note: "", ref: "" });
-  if(!m.savingExtraCollapsedMap) m.savingExtraCollapsedMap = {}; m.savingExtraCollapsedMap[extraKey] = false; m.lastModified = new Date().toISOString();
-  save(); renderSavingFields(); renderSavingSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderMonthDate();
-  const baseKey = extraKey.replace(/Extra$/, "");
-  if(document.getElementById("pyramidTargetsBody")) updatePyramidTargetRow(baseKey);
-  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
-}
-function removeSavingExtra(extraKey, id){
-  const m = M()[state.activeMonth]; const arr = getSavingExtras(m, extraKey); const idx = arr.findIndex(x => x.id === id);
-  if(idx === -1) return; arr.splice(idx, 1); m.lastModified = new Date().toISOString();
-  save(); renderSavingFields(); renderSavingSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderMonthDate();
-  const baseKey = extraKey.replace(/Extra$/, "");
-  if(document.getElementById("pyramidTargetsBody")) updatePyramidTargetRow(baseKey);
-  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
-}
-function updSavingExtraField(extraKey, id, field, val){
-  const m = M()[state.activeMonth]; const arr = getSavingExtras(m, extraKey); const item = arr.find(x => x.id === id);
-  if(!item) return;
-  if(field === "amount") item.amount = Math.max(0, parseFloat(val) || 0); else item[field] = val;
-  m.lastModified = new Date().toISOString(); save();
-  if(field === "amount" || field === "bank"){
-    renderSavingSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderYears();
-    if(field === "bank"){ renderSavingFields(); }
-    const baseKey = extraKey.replace(/Extra$/, "");
-    if(document.getElementById("pyramidTargetsBody")) updatePyramidTargetRow(baseKey);
-    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
-  }
-  renderMonthDate();
-}
-
-function getCarInsurance(m){ if(!m.carInsurance) m.carInsurance = DEFAULT_EXTRA(); return m.carInsurance; }
-function getZakat(m){ if(!m.zakat) m.zakat = DEFAULT_EXTRA(); return m.zakat; }
-function isExtraExcludedM(m, key){ const data = key === "carInsurance" ? getCarInsurance(m) : getZakat(m); return data.bank === EXCLUDED_BANK; }
-function getYearExtras(year){ if(!state.yearExtras) state.yearExtras = {}; if(!state.yearExtras[year]) state.yearExtras[year] = { carInsurance: DEFAULT_EXTRA(), zakat: DEFAULT_EXTRA() }; return state.yearExtras[year]; }
-
-function getLoansCumulativePaid(){ let total = 0; (state.debts || []).filter(d => d.type === "installment" && !isDebtFullyPaid(d)).forEach(d => { total += debtPaidAllYears(d); }); return total; }
-function getLoansTotalAmount(){ let total = 0; (state.debts || []).filter(d => d.type === "installment" && !isDebtFullyPaid(d)).forEach(d => { total += (+d.total || 0); }); return total; }
-function getObligationsTotalAmount(){ let total = 0; (state.debts || []).filter(d => d.type === "obligation" && !isDebtFullyPaid(d)).forEach(d => { total += (+d.total || 0); }); return total; }
-function getObligationsCumulativePaid(){ let total = 0; (state.debts || []).filter(d => d.type === "obligation" && !isDebtFullyPaid(d)).forEach(d => { total += debtPaidAllYears(d); }); return total; }
-
-/* ⭐ [جديد] دوال الدائنين (credit) — مثل الأقساط والالتزامات */
-function getCreditsTotalAmount(){ let total = 0; (state.debts || []).filter(d => d.type === "credit" && !isDebtFullyPaid(d)).forEach(d => { total += (+d.total || 0); }); return total; }
-function getCreditsCumulativePaid(){ let total = 0; (state.debts || []).filter(d => d.type === "credit" && !isDebtFullyPaid(d)).forEach(d => { total += debtPaidAllYears(d); }); return total; }
 
 function ensurePyramidTargets(){ if(!state.pyramidTargets) state.pyramidTargets = {}; return state.pyramidTargets; }
-function getPyramidTarget(key){
-  if(key === "loans") return getLoansTotalAmount();
-  if(key === "obligationsSaving") return getObligationsTotalAmount();
-  if(key === "credit") return getCreditsTotalAmount();
-  return +(ensurePyramidTargets()[key]) || 0;
-}
-function setPyramidTarget(key, val){
-  if(key === "loans" || key === "obligationsSaving" || key === "credit") return;
-  ensurePyramidTargets()[key] = Math.max(0, parseFloat(val) || 0);
-}
 function ensurePyramidNotes(){ if(!state.pyramidNotes) state.pyramidNotes = {}; return state.pyramidNotes; }
-function getPyramidNote(key){ return ensurePyramidNotes()[key] || ""; }
-function setPyramidNote(key, val){ ensurePyramidNotes()[key] = String(val || ""); }
 function ensurePyramidWithdrawals(){ if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {}; return state.pyramidWithdrawals; }
-function getWithdrawals(key){ const w = ensurePyramidWithdrawals(); if(!w[key]) w[key] = []; return w[key]; }
-function getWithdrawnTotal(key){ return getWithdrawals(key).reduce((s,x)=>s+(+x.amount||0),0); }
 
-/* ⭐ [تعديل] ensureReport — إضافة fatherDebtLabel */
 function ensureReport(){
   if(!state.report) state.report = {
     fatherDebt: 0, electricityBill: 0, shePaysMe: 0,
@@ -3737,40 +3122,22 @@ function ensureReport(){
   return state.report;
 }
 
-function getCumulativeSaved(key){
-  if(key === "loans") return getLoansCumulativePaid();
-  if(key === "obligationsSaving") return getObligationsCumulativePaid();
-  if(key === "credit") return getCreditsCumulativePaid();
-  const extraKey = key + "Extra"; let total = 0;
-  Object.keys(state.years || {}).forEach(y => { (state.years[y] || []).forEach(m => { if(!isSavingExcluded(m, key)) total += (+m[key] || 0); total += sumSavingExtrasCounted(m, extraKey); }); });
-  return total;
-}
-function getCumulativeSavedExcluding(key, excludeYear, excludeMonth){
-  if(key === "loans" || key === "obligationsSaving" || key === "credit"){
-    const type = getDebtTypeForKey(key); let total = 0;
-    (state.debts || []).filter(d => d.type === type && !isDebtFullyPaid(d)).forEach(d => { Object.keys(d.monthlyByYear || {}).forEach(y => { (d.monthlyByYear[y] || []).forEach((v, i) => { if(parseInt(y) === excludeYear && i === excludeMonth) return; total += (+v || 0); }); }); });
-    return total;
-  }
-  const extraKey = key + "Extra"; let total = 0;
-  Object.keys(state.years || {}).forEach(y => { (state.years[y] || []).forEach((m, i) => { if(parseInt(y) === excludeYear && i === excludeMonth) return; if(!isSavingExcluded(m, key)) total += (+m[key] || 0); total += sumSavingExtrasCounted(m, extraKey); }); });
-  return total;
-}
-function getNetSaved(key){ return getCumulativeSaved(key) - getWithdrawnTotal(key); }
-function isTargetSet(key){ return getPyramidTarget(key) > 0; }
-function isSavingDisabledForMonth(key){
-  const target = getPyramidTarget(key); if(target <= 0) return false;
-  const totalExcl = getCumulativeSavedExcluding(key, state.activeYear, state.activeMonth);
-  const withdrawn = getWithdrawnTotal(key);
-  return (totalExcl - withdrawn) >= target;
-}
-function getPyramidBankSavingsTotal(){ const levels = getPyramidLevels(); return levels.filter(l => isPyramidBankSavingsLevel(l.key)).reduce((s, l) => s + getCumulativeSaved(l.key), 0); }
-function getPyramidInvestmentTotal(){ return getCumulativeSaved("investment"); }
-function getPyramidNegativeTotal(){ const levels = getPyramidLevels(); return levels.filter(l => isPyramidNegativeLevel(l.key)).reduce((s, l) => s + getCumulativeSaved(l.key), 0); }
-function getPyramidAllPositiveTotal(){ return getPyramidBankSavingsTotal() + getPyramidInvestmentTotal(); }
-function getPyramidAllPositiveTotalNet(){ const levels = getPyramidLevels(); return levels.filter(l => !isPyramidNegativeLevel(l.key)).reduce((s, l) => s + getNetSaved(l.key), 0); }
-function getPyramidBankSavingsTotalNet(){ const levels = getPyramidLevels(); return levels.filter(l => isPyramidBankSavingsLevel(l.key)).reduce((s, l) => s + getNetSaved(l.key), 0); }
-function getPyramidBankSavingsTargetTotal(){ const levels = getPyramidLevels(); return levels.filter(l => isPyramidBankSavingsLevel(l.key)).reduce((s, l) => s + getPyramidTarget(l.key), 0); }
+/* ════════ Helpers ════════ */
+const fmt = n => (Number(n)||0).toLocaleString("en-US",{minimumFractionDigits:3,maximumFractionDigits:3});
+const money = n => fmt(n) + " " + (LANG==='ar'?'د.ب':'BHD');
+function inVal(v){ if(v === 0 || v === '0' || v === '' || v === undefined || v === null) return ''; const n = Number(v); if(isNaN(n) || n === 0) return ''; return v; }
+function toast(msg, type){ const el = document.getElementById("toast"); el.textContent = msg; el.classList.remove('success','error','warn'); if(type) el.classList.add(type); el.classList.add("show"); clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove("show"), type === 'success' ? 2800 : 3500); }
+function kpi(lbl,val,cls=""){ return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val ${cls}">${val}</div></div>`; }
 
+/* ⭐ [إصلاح #1] esc() — تهريب علامة التنصيص المفردة والشرطة المائلة العكسية */
+function esc(s){ 
+  return String(s||"")
+    .replace(/\\/g,'\\\\')
+    .replace(/'/g,"\\'")
+    .replace(/"/g,'&quot;'); 
+}
+
+/* ════════ Save/Load ════════ */
 function testStorage(){ try{ const k = "__test_"+Date.now(); localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }catch(e){ return false; } }
 
 function saveNow(){
@@ -3894,7 +3261,30 @@ function initIfEmpty(){
   ensureCash(); ensureEidi(); ensureReminders(); ensureBanks(); ensureStolen();
   if(typeof updateRemindersBadge === 'function') updateRemindersBadge();
 }
+/* ═══════════════════════════════════════════════════════════════
+   Capital Manager — JavaScript (3-B من 3)
+   الحسابات + الديون + البيراميد + التقرير + renderCash + renderIncomeFields
+   ═══════════════════════════════════════════════════════════════ */
 
+/* ════════ ⭐ [إصلاح #3] selectMonth — ينقل تعديل state خارج render ════════ */
+function selectMonth(i){ 
+  state.activeMonth = i; 
+  // ⭐ نقل منطق "hasMeatSupport" من renderIncomeFields إلى هنا
+  const m = state.years[state.activeYear][i];
+  if(m){
+    const isMeat = isMeatMonth(i);
+    if(m.hasMeatSupport !== isMeat){
+      m.hasMeatSupport = isMeat;
+      if(!isMeat) m.meat = 0;
+    }
+  }
+  renderMonthPills(); 
+  renderMonth(); 
+  updateMonthPrintBtn(); 
+  save(); 
+}
+
+/* ════════ دوال M / Mof / Meta ════════ */
 function M(){ return state.years[state.activeYear] || emptyYear(); }
 function Mof(year){ return state.years[year] || []; }
 function ensureMeta(m){ if(!m.expenseMeta) m.expenseMeta = {}; return m.expenseMeta; }
@@ -3914,6 +3304,7 @@ function getDebtRef(d, year, mi){ const rby = ensureDebtRefByYear(d); if(!rby[ye
 function setDebtRef(d, year, mi, val){ const rby = ensureDebtRefByYear(d); if(!rby[year]) rby[year] = Array(12).fill(""); rby[year][mi] = val; }
 function dm(d, year, mi){ return ((d.monthlyByYear?.[year]) || [])[mi] || 0; }
 function setDm(d, year, mi, val){ if(!d.monthlyByYear) d.monthlyByYear = {}; if(!d.monthlyByYear[year]) d.monthlyByYear[year] = Array(12).fill(0); d.monthlyByYear[year][mi] = val; }
+
 function debtPaidInYear(d, year){ return (d.monthlyByYear?.[year] || []).reduce((a,b)=>a+(+b||0),0); }
 function debtPaidAllYears(d){ if(!d.monthlyByYear) return 0; return Object.values(d.monthlyByYear).reduce((s,arr)=>s+arr.reduce((a,b)=>a+(+b||0),0),0); }
 function debtPaidTotal(d){ return (+d.paidBefore||0) + debtPaidAllYears(d); }
@@ -3940,6 +3331,8 @@ function totalDebtReceiptsYear(year){ let s=0; for(let i=0;i<12;i++) s+=totalDeb
 function totalDebtPaymentsYear(year){ let s=0; for(let i=0;i<12;i++) s+=totalDebtPayments(year, i); return s; }
 function totalDebtReceiptsExcluded(year, mi){ return state.debts.filter(d=>d.type==="debit" && isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0); }
 function totalDebtPaymentsExcluded(year, mi){ return state.debts.filter(d=>(d.type==="credit"||d.type==="installment"||d.type==="obligation") && isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0); }
+
+/* ════════ دوال الحسابات ════════ */
 function totalIncomeCore(m, mi){
   let sum = +m.salary || 0;
   sum += getIncomeFields().reduce((s,[k])=>s+(+m[k]||0),0);
@@ -3985,13 +3378,426 @@ function debtTotals(){
   return { receiveThisYear:recv, payThisYear:pay, netThisYear:recv-pay, remainingToReceive:remToMe, remainingOnMe:remOnMe, remainingToPay:remOnMe, netRemaining:remToMe-remOnMe, totalDebt: totalDebtAll, obligationsTotal };
 }
 
-const fmt = n => (Number(n)||0).toLocaleString("en-US",{minimumFractionDigits:3,maximumFractionDigits:3});
-const money = n => fmt(n) + " " + (LANG==='ar'?'د.ب':'BHD');
-function inVal(v){ if(v === 0 || v === '0' || v === '' || v === undefined || v === null) return ''; const n = Number(v); if(isNaN(n) || n === 0) return ''; return v; }
-function toast(msg, type){ const el = document.getElementById("toast"); el.textContent = msg; el.classList.remove('success','error','warn'); if(type) el.classList.add(type); el.classList.add("show"); clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove("show"), type === 'success' ? 2800 : 3500); }
-function kpi(lbl,val,cls=""){ return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val ${cls}">${val}</div></div>`; }
-function esc(s){ return String(s||"").replace(/"/g,'&quot;'); }
+/* ════════ دوال الـ repeatable extras ════════ */
+function getRepeatableExtras(m, extraKey){ if(!Array.isArray(m[extraKey])) m[extraKey] = []; return m[extraKey]; }
+function sumRepeatableExtras(m, extraKey){ return getRepeatableExtras(m, extraKey).reduce((s,x)=>s+(+x.amount||0),0); }
+function sumRepeatableExtrasCounted(m, extraKey){ return getRepeatableExtras(m, extraKey).filter(x => x.bank !== EXCLUDED_BANK).reduce((s,x)=>s+(+x.amount||0),0); }
+function sumRepeatableExtrasExcluded(m, extraKey){ return getRepeatableExtras(m, extraKey).filter(x => x.bank === EXCLUDED_BANK).reduce((s,x)=>s+(+x.amount||0),0); }
+function getExpenseRowValue(m, row){ let v = +m[row.key]||0; if(row.type === "repeatable") v += sumRepeatableExtras(m, row.extraKey); return v; }
+function isGroupCollapsed(m, extraKey){ if(!m.extraCollapsedMap) m.extraCollapsedMap = {}; return !!m.extraCollapsedMap[extraKey]; }
 
+function getSavingExtras(m, extraKey){ if(!Array.isArray(m[extraKey])) m[extraKey] = []; return m[extraKey]; }
+function sumSavingExtras(m, extraKey){ return getSavingExtras(m, extraKey).reduce((s,x)=>s+(+x.amount||0),0); }
+function sumSavingExtrasCounted(m, extraKey){ return getSavingExtras(m, extraKey).filter(x => x.bank !== EXCLUDED_BANK).reduce((s,x)=>s+(+x.amount||0),0); }
+function sumSavingExtrasExcluded(m, extraKey){ return getSavingExtras(m, extraKey).filter(x => x.bank === EXCLUDED_BANK).reduce((s,x)=>s+(+x.amount||0),0); }
+function isSavingGroupCollapsed(m, extraKey){ if(!m.savingExtraCollapsedMap) m.savingExtraCollapsedMap = {}; return !!m.savingExtraCollapsedMap[extraKey]; }
+
+function getCarInsurance(m){ if(!m.carInsurance) m.carInsurance = DEFAULT_EXTRA(); return m.carInsurance; }
+function getZakat(m){ if(!m.zakat) m.zakat = DEFAULT_EXTRA(); return m.zakat; }
+function isExtraExcludedM(m, key){ const data = key === "carInsurance" ? getCarInsurance(m) : getZakat(m); return data.bank === EXCLUDED_BANK; }
+function getYearExtras(year){ if(!state.yearExtras) state.yearExtras = {}; if(!state.yearExtras[year]) state.yearExtras[year] = { carInsurance: DEFAULT_EXTRA(), zakat: DEFAULT_EXTRA() }; return state.yearExtras[year]; }
+
+/* ════════ الديون التلقائية للبيراميد ════════ */
+function getLoansCumulativePaid(){ let total = 0; (state.debts || []).filter(d => d.type === "installment" && !isDebtFullyPaid(d)).forEach(d => { total += debtPaidAllYears(d); }); return total; }
+function getLoansTotalAmount(){ let total = 0; (state.debts || []).filter(d => d.type === "installment" && !isDebtFullyPaid(d)).forEach(d => { total += (+d.total || 0); }); return total; }
+function getObligationsTotalAmount(){ let total = 0; (state.debts || []).filter(d => d.type === "obligation" && !isDebtFullyPaid(d)).forEach(d => { total += (+d.total || 0); }); return total; }
+function getObligationsCumulativePaid(){ let total = 0; (state.debts || []).filter(d => d.type === "obligation" && !isDebtFullyPaid(d)).forEach(d => { total += debtPaidAllYears(d); }); return total; }
+function getCreditsTotalAmount(){ let total = 0; (state.debts || []).filter(d => d.type === "credit" && !isDebtFullyPaid(d)).forEach(d => { total += (+d.total || 0); }); return total; }
+function getCreditsCumulativePaid(){ let total = 0; (state.debts || []).filter(d => d.type === "credit" && !isDebtFullyPaid(d)).forEach(d => { total += debtPaidAllYears(d); }); return total; }
+
+/* ════════ البيراميد ════════ */
+function getPyramidTarget(key){
+  if(key === "loans") return getLoansTotalAmount();
+  if(key === "obligationsSaving") return getObligationsTotalAmount();
+  if(key === "credit") return getCreditsTotalAmount();
+  return +(ensurePyramidTargets()[key]) || 0;
+}
+function setPyramidTarget(key, val){
+  if(key === "loans" || key === "obligationsSaving" || key === "credit") return;
+  ensurePyramidTargets()[key] = Math.max(0, parseFloat(val) || 0);
+}
+function getPyramidNote(key){ return ensurePyramidNotes()[key] || ""; }
+function setPyramidNote(key, val){ ensurePyramidNotes()[key] = String(val || ""); }
+function getWithdrawals(key){ const w = ensurePyramidWithdrawals(); if(!w[key]) w[key] = []; return w[key]; }
+function getWithdrawnTotal(key){ return getWithdrawals(key).reduce((s,x)=>s+(+x.amount||0),0); }
+
+function getCumulativeSaved(key){
+  if(key === "loans") return getLoansCumulativePaid();
+  if(key === "obligationsSaving") return getObligationsCumulativePaid();
+  if(key === "credit") return getCreditsCumulativePaid();
+  const extraKey = key + "Extra"; let total = 0;
+  Object.keys(state.years || {}).forEach(y => { (state.years[y] || []).forEach(m => { if(!isSavingExcluded(m, key)) total += (+m[key] || 0); total += sumSavingExtrasCounted(m, extraKey); }); });
+  return total;
+}
+function getCumulativeSavedExcluding(key, excludeYear, excludeMonth){
+  if(key === "loans" || key === "obligationsSaving" || key === "credit"){
+    const type = getDebtTypeForKey(key); let total = 0;
+    (state.debts || []).filter(d => d.type === type && !isDebtFullyPaid(d)).forEach(d => { Object.keys(d.monthlyByYear || {}).forEach(y => { (d.monthlyByYear[y] || []).forEach((v, i) => { if(parseInt(y) === excludeYear && i === excludeMonth) return; total += (+v || 0); }); }); });
+    return total;
+  }
+  const extraKey = key + "Extra"; let total = 0;
+  Object.keys(state.years || {}).forEach(y => { (state.years[y] || []).forEach((m, i) => { if(parseInt(y) === excludeYear && i === excludeMonth) return; if(!isSavingExcluded(m, key)) total += (+m[key] || 0); total += sumSavingExtrasCounted(m, extraKey); }); });
+  return total;
+}
+function getNetSaved(key){ return getCumulativeSaved(key) - getWithdrawnTotal(key); }
+function isTargetSet(key){ return getPyramidTarget(key) > 0; }
+function isSavingDisabledForMonth(key){
+  const target = getPyramidTarget(key); if(target <= 0) return false;
+  const totalExcl = getCumulativeSavedExcluding(key, state.activeYear, state.activeMonth);
+  const withdrawn = getWithdrawnTotal(key);
+  return (totalExcl - withdrawn) >= target;
+}
+function getPyramidBankSavingsTotal(){ const levels = getPyramidLevels(); return levels.filter(l => isPyramidBankSavingsLevel(l.key)).reduce((s, l) => s + getCumulativeSaved(l.key), 0); }
+function getPyramidInvestmentTotal(){ return getCumulativeSaved("investment"); }
+function getPyramidNegativeTotal(){ const levels = getPyramidLevels(); return levels.filter(l => isPyramidNegativeLevel(l.key)).reduce((s, l) => s + getCumulativeSaved(l.key), 0); }
+function getPyramidAllPositiveTotal(){ return getPyramidBankSavingsTotal() + getPyramidInvestmentTotal(); }
+function getPyramidAllPositiveTotalNet(){ const levels = getPyramidLevels(); return levels.filter(l => !isPyramidNegativeLevel(l.key)).reduce((s, l) => s + getNetSaved(l.key), 0); }
+function getPyramidBankSavingsTotalNet(){ const levels = getPyramidLevels(); return levels.filter(l => isPyramidBankSavingsLevel(l.key)).reduce((s, l) => s + getNetSaved(l.key), 0); }
+function getPyramidBankSavingsTargetTotal(){ const levels = getPyramidLevels(); return levels.filter(l => isPyramidBankSavingsLevel(l.key)).reduce((s, l) => s + getPyramidTarget(l.key), 0); }
+
+/* ════════ دوال report ════════ */
+function rpPurchasesTotal(){ const r = ensureReport(); return (r.purchases || []).reduce((s, p) => s + (+p.amount || 0), 0); }
+function rpFullAmount(){ const r = ensureReport(); let shePays = 0; if(r.shePaysToggle) shePays = +r.shePaysMe || 0; return rpPurchasesTotal() + shePays; }
+function rpPoints(){ return rpPurchasesTotal() * 2; }
+function rpProfit(){ const r = ensureReport(); if(!r.profitToggle) return 0; return (rpPoints() / 25) * 0.25; }
+function getShePaysAmount(){ const r = ensureReport(); if(!r.shePaysToggle) return 0; return +r.shePaysMe || 0; }
+function rpFinalAmount(){ return rpFullAmount() - rpProfit(); }
+
+/* ════════ دوال stolen حسابات ════════ */
+function stolenTotalFees(){ return ensureStolen().transactions.filter(x => x.type === "fee").reduce((s, x) => s + (+x.amount || 0), 0); }
+function stolenTotalAmounts(){ return ensureStolen().transactions.filter(x => x.type === "amount").reduce((s, x) => s + (+x.amount || 0), 0); }
+function stolenTotalWithFees(){ return ensureStolen().transactions.reduce((s, x) => s + (+x.amount || 0), 0); }
+function stolenTotalWithoutFees(){ return stolenTotalAmounts(); }
+function stolenMustPayBefore(){ const b = ensureStolen().before; return Math.max(0, (+b.original || 0) - (+b.remaining || 0)); }
+function stolenRemAfter(){ const a = ensureStolen().after; return Math.max(0, (+a.original || 0) - (+a.mustPay || 0)); }
+function stolenRecoveredAmount(){ const before = stolenMustPayBefore(); const after = +ensureStolen().after.mustPay || 0; return before - after; }
+function stolenNetLoss(){ return (+ensureStolen().after.mustPay || 0) - stolenTotalFees(); }
+function stolenTypeLabel(type){ return type === "fee" ? t('stolen_type_fee') : t('stolen_type_amount'); }
+function stolenCount(){ return ensureStolen().transactions.length; }
+
+/* ════════ دوال cash ════════ */
+function cashRowAmount(key){ const d = CASH_DENOMINATIONS.find(x => x.key === key); if(!d) return 0; return (+ensureCash().counts[key] || 0) * d.value; }
+function cashTotal(){ return CASH_DENOMINATIONS.reduce((s, d) => s + cashRowAmount(d.key), 0); }
+function updCashCount(key, val){
+  ensureCash(); state.cash.counts[key] = Math.max(0, parseInt(val) || 0); save();
+  const row = document.querySelector(`tr[data-cash-key="${key}"]`);
+  if(row){
+    const d = CASH_DENOMINATIONS.find(x => x.key === key); const amtCell = row.querySelector('.cash-amount-cell');
+    if(amtCell && d){ const amt = (state.cash.counts[key] || 0) * d.value; amtCell.textContent = amt > 0 ? fmt(amt) : '—'; amtCell.style.color = amt > 0 ? 'var(--ok)' : 'var(--muted)'; }
+    if(state.cash.counts[key] > 0){ row.style.background = 'rgba(34,193,164,.05)'; row.style.opacity = '1'; } else { row.style.background = ''; row.style.opacity = '.75'; }
+  }
+  const total = cashTotal();
+  const tCell = document.getElementById('cashTotalCell'); if(tCell) tCell.textContent = `${fmt(total)} ${LANG === 'ar' ? 'د.ب' : 'BHD'}`;
+  const kpiVal = document.querySelector('#cashKpis .kpi .val'); if(kpiVal) kpiVal.textContent = money(total);
+}
+
+/* ════════ دوال eidi ════════ */
+function eidiTotal(){ return ensureEidi().items.reduce((s, x) => s + (+x.amount || 0), 0); }
+function updEidiAmount(id, val){
+  const e = ensureEidi();
+  const item = e.items.find(x => x.id === id);
+  if(!item) return;
+  item.amount = Math.max(0, parseFloat(val) || 0);
+  save();
+  updateEidiTotalsInline();
+}
+function updateEidiTotalsInline(){
+  const items = ensureEidi().items;
+  const total = items.reduce((s, x) => s + (+x.amount || 0), 0);
+  const L = LANG === 'ar';
+  const tfoot = document.getElementById("eidiFoot");
+  if(tfoot){
+    tfoot.innerHTML = `<tr style="background:linear-gradient(90deg,rgba(234,179,8,.18),rgba(34,193,164,.12))"><td colspan="2" style="font-size:16px;color:var(--gold);font-weight:800;text-align:center">📊 ${L ? 'المجموع' : 'Total'}</td><td class="num" style="font-family:monospace;font-size:20px;color:var(--gold);font-weight:900;text-align:center">${fmt(total)} ${L ? 'د.ب' : 'BHD'}</td><td class="noprint"></td></tr>`;
+  }
+  const kpis = document.getElementById("eidiKpis");
+  if(kpis){
+    kpis.innerHTML = `${kpi(L ? '💰 إجمالي العيادي' : '💰 Total', money(total), total > 0 ? 'gold' : '')}${kpi(L ? '📋 عدد المستفيدين' : '📋 Beneficiaries', items.length.toString(), 'acc')}${kpi(L ? '📊 متوسط العطية' : '📊 Average', items.length > 0 ? money(total / items.length) : money(0), 'acc')}`;
+  }
+}
+function updEidiName(id, val){ const e = ensureEidi(); const item = e.items.find(x => x.id === id); if(!item) return; item.name = val; save(); }
+function addEidiItem(){ const e = ensureEidi(); e.items.push({ id: Date.now() + Math.floor(Math.random()*10000), name: "", amount: 0 }); save(); renderEidi(); toast(LANG === 'ar' ? '✅ تمت إضافة بند' : '✅ Added', 'success'); }
+function removeEidiItem(id){ if(!confirm(LANG === 'ar' ? 'حذف هذا البند؟' : 'Delete?')) return; const e = ensureEidi(); e.items = e.items.filter(x => x.id !== id); save(); renderEidi(); toast(LANG === 'ar' ? '🗑 تم الحذف' : '🗑 Deleted', 'success'); }
+
+/* ════════ دوال banks ════════ */
+function banksTotal(){ return ensureBanks().items.reduce((s, x) => s + (+x.amount || 0), 0); }
+function updBankName(id, val){ const item = ensureBanks().items.find(x => x.id === id); if(!item) return; item.name = val; save(); }
+function updBankAmount(id, val){
+  const item = ensureBanks().items.find(x => x.id === id); if(!item) return;
+  item.amount = Math.max(0, parseFloat(val) || 0); save();
+  const row = document.querySelector(`tr[data-bank-row="${id}"]`);
+  if(row){
+    row.classList.toggle('has-amount', item.amount > 0);
+    const tCell = document.getElementById('banksTotalCell'); if(tCell) tCell.textContent = `${fmt(banksTotal())} ${LANG === 'ar' ? 'د.ب' : 'BHD'}`;
+    const kpis = document.getElementById('banksKpis'); if(kpis) kpis.innerHTML = getBanksKpisHTML();
+  }
+}
+function addBankRow(){ const b = ensureBanks(); b.items.push({ id: Date.now() + Math.floor(Math.random() * 10000), name: b.customNames[0] || "NBK", amount: 0 }); save(); renderBanks(); toast(t('bank_add_row_ok'), 'success'); }
+function removeBankRow(id){ if(!confirm(t('bank_delete_row_confirm'))) return; state.banks.items = ensureBanks().items.filter(x => x.id !== id); save(); renderBanks(); toast(t('bank_delete_row_ok'), 'success'); }
+function addCustomBankName(targetId){
+  const newName = prompt(t('bank_add_name_prompt'), ''); if(newName === null) return;
+  const trimmed = newName.trim(); if(!trimmed){ toast(t('bank_invalid_name'), 'warn'); return; }
+  const b = ensureBanks(); if(!b.customNames.includes(trimmed)){ b.customNames.push(trimmed); }
+  if(targetId){ const item = b.items.find(x => x.id === targetId); if(item){ item.name = trimmed; } }
+  save(); renderBanks(); toast(t('bank_add_name_ok') + trimmed, 'success');
+}
+function removeCustomBankName(name){
+  if(DEFAULT_BANK_NAMES.includes(name)){ toast(t('bank_cannot_delete_default'), 'warn'); return; }
+  if(!confirm(t('bank_remove_name_confirm'))) return;
+  const b = ensureBanks(); b.customNames = b.customNames.filter(n => n !== name);
+  b.items.forEach(x => { if(x.name === name) x.name = b.customNames[0] || "NBK"; });
+  save(); renderBanks(); toast(t('bank_remove_name_ok') + name, 'success');
+}
+function getBanksKpisHTML(){
+  const total = banksTotal(); const items = ensureBanks().items;
+  const nonZero = items.filter(x => (+x.amount || 0) > 0).length;
+  return `
+    ${kpi(t('bank_kpi_total'), money(total), total > 0 ? 'gold' : '')}
+    ${kpi(t('bank_kpi_count'), items.length.toString(), 'acc')}
+    ${kpi(t('bank_kpi_active'), nonZero.toString(), nonZero > 0 ? 'pos' : '')}
+  `;
+}
+
+/* ════════ دوال التعديل الأساسية ════════ */
+function upd(key, val){ const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
+function updateMonthNotes(v){ const m = M()[state.activeMonth]; m.notes = v; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+function updIncomeNote(key, val){ const m = M()[state.activeMonth]; ensureIncomeNotes(m)[key] = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+function updExpenseAmount(key, val){ const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderExpenseSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills(); renderDashboard(); renderYears(); }
+function updExpenseBank(key, val){ const m = M()[state.activeMonth]; getMeta(m, key).bank = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); renderDashboard(); renderYears(); }
+function updExpenseNote(key, val){ const m = M()[state.activeMonth]; getMeta(m, key).note = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+function updBirthdayPerson(val){ const m = M()[state.activeMonth]; m.birthdayPerson = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
+function updRef(key, val){ const m = M()[state.activeMonth]; ensureRefMeta(m)[key] = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+function updSavingNote(key, val){ const m = M()[state.activeMonth]; getSavingMeta(m, key).note = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+function updSavingBank(key, val){ const m = M()[state.activeMonth]; getSavingMeta(m, key).bank = val; m.lastModified = new Date().toISOString(); save(); renderSavingFields(); renderMonthResults(); renderMonthPills(); renderDashboard(); if(document.getElementById("pyramidTargetsBody")){ updatePyramidTargetRow(key); } if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); } }
+function updSavingRef(key, val){ const m = M()[state.activeMonth]; ensureSavingRefMeta(m)[key] = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+function updSaving(key, val){
+  const m = M()[state.activeMonth]; m[key] = Math.max(0, parseFloat(val) || 0); m.lastModified = new Date().toISOString(); save();
+  renderSavingSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills();
+  if(document.getElementById("pyramidTargetsBody")){ updatePyramidTargetRow(key); }
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
+  updateSavingHintInPlace(key);
+}
+function updEidMoneyType(val){ const m = M()[state.activeMonth]; m.eidMoneyType = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+function onEidChange(val){ const m = M()[state.activeMonth]; m.eidType = val; m.lastModified = new Date().toISOString(); save(); renderMonth(); }
+function setMonthDate(value){ const m = M()[state.activeMonth]; if(!value) return; m.customDate = value; m.lastModified = new Date().toISOString(); save(); toast(t('saved_date') + value); }
+function setMonthTime(value){ const m = M()[state.activeMonth]; m.customTime = value || ""; m.lastModified = new Date().toISOString(); save(); toast(t('saved_time')); }
+
+function toggleAllExtras(extraKey){
+  const m = M()[state.activeMonth]; if(!m.extraCollapsedMap) m.extraCollapsedMap = {};
+  m.extraCollapsedMap[extraKey] = !m.extraCollapsedMap[extraKey]; m.lastModified = new Date().toISOString();
+  save(); renderExpenseFields(); renderMonthDate();
+}
+function addRepeatableExtra(extraKey, isBirthday){
+  const m = M()[state.activeMonth]; const arr = getRepeatableExtras(m, extraKey);
+  const newEx = { id: Date.now() + Math.floor(Math.random()*10000), amount: 0, bank: "بطاقة صراف الالي", note: "", ref: "" };
+  if(isBirthday) newEx.person = "none"; arr.push(newEx);
+  if(!m.extraCollapsedMap) m.extraCollapsedMap = {}; m.extraCollapsedMap[extraKey] = false; m.lastModified = new Date().toISOString();
+  save(); renderExpenseFields(); renderExpenseSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderMonthDate();
+}
+function removeRepeatableExtra(extraKey, id){
+  const m = M()[state.activeMonth]; const arr = getRepeatableExtras(m, extraKey); const idx = arr.findIndex(x => x.id === id);
+  if(idx === -1) return; arr.splice(idx, 1); m.lastModified = new Date().toISOString();
+  save(); renderExpenseFields(); renderExpenseSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderMonthDate();
+}
+function updExtraField(extraKey, id, field, val){
+  const m = M()[state.activeMonth]; const arr = getRepeatableExtras(m, extraKey); const item = arr.find(x => x.id === id);
+  if(!item) return;
+  if(field === "amount") item.amount = Math.max(0, parseFloat(val) || 0); else item[field] = val;
+  m.lastModified = new Date().toISOString(); save();
+  if(field === "amount" || field === "bank"){
+    renderExpenseSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderYears();
+    if(field === "bank"){ renderExpenseFields(); }
+    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
+  }
+  renderMonthDate();
+}
+
+function toggleAllSavingExtras(extraKey){
+  const m = M()[state.activeMonth]; if(!m.savingExtraCollapsedMap) m.savingExtraCollapsedMap = {};
+  m.savingExtraCollapsedMap[extraKey] = !m.savingExtraCollapsedMap[extraKey]; m.lastModified = new Date().toISOString();
+  save(); renderSavingFields(); renderMonthDate();
+}
+function addSavingExtra(extraKey){
+  const m = M()[state.activeMonth]; const arr = getSavingExtras(m, extraKey);
+  arr.push({ id: Date.now() + Math.floor(Math.random()*10000), amount: 0, bank: "بطاقة صراف الالي", note: "", ref: "" });
+  if(!m.savingExtraCollapsedMap) m.savingExtraCollapsedMap = {}; m.savingExtraCollapsedMap[extraKey] = false; m.lastModified = new Date().toISOString();
+  save(); renderSavingFields(); renderSavingSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderMonthDate();
+  const baseKey = extraKey.replace(/Extra$/, "");
+  if(document.getElementById("pyramidTargetsBody")) updatePyramidTargetRow(baseKey);
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
+}
+function removeSavingExtra(extraKey, id){
+  const m = M()[state.activeMonth]; const arr = getSavingExtras(m, extraKey); const idx = arr.findIndex(x => x.id === id);
+  if(idx === -1) return; arr.splice(idx, 1); m.lastModified = new Date().toISOString();
+  save(); renderSavingFields(); renderSavingSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderMonthDate();
+  const baseKey = extraKey.replace(/Extra$/, "");
+  if(document.getElementById("pyramidTargetsBody")) updatePyramidTargetRow(baseKey);
+  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
+}
+function updSavingExtraField(extraKey, id, field, val){
+  const m = M()[state.activeMonth]; const arr = getSavingExtras(m, extraKey); const item = arr.find(x => x.id === id);
+  if(!item) return;
+  if(field === "amount") item.amount = Math.max(0, parseFloat(val) || 0); else item[field] = val;
+  m.lastModified = new Date().toISOString(); save();
+  if(field === "amount" || field === "bank"){
+    renderSavingSummary(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderYears();
+    if(field === "bank"){ renderSavingFields(); }
+    const baseKey = extraKey.replace(/Extra$/, "");
+    if(document.getElementById("pyramidTargetsBody")) updatePyramidTargetRow(baseKey);
+    if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
+  }
+  renderMonthDate();
+}
+
+function updCarInsuranceAmount(v){ const m = M()[state.activeMonth]; getCarInsurance(m).amount = Math.max(0, parseFloat(v)||0); m.lastModified = new Date().toISOString(); save(); renderDashboard(); renderMonthResults(); renderYears(); renderMonthPills(); }
+function updCarInsuranceBank(v){ const m = M()[state.activeMonth]; getCarInsurance(m).bank = v; m.lastModified = new Date().toISOString(); save(); renderCarInsuranceOT(); renderMonthResults(); renderDashboard(); renderYears(); renderMonthPills(); }
+function updCarInsuranceNote(v){ getCarInsurance(M()[state.activeMonth]).note = v; save(); }
+function updCarInsuranceRef(v){ getCarInsurance(M()[state.activeMonth]).ref = v; save(); }
+function updZakatAmount(v){ const m = M()[state.activeMonth]; getZakat(m).amount = Math.max(0, parseFloat(v)||0); m.lastModified = new Date().toISOString(); save(); renderDashboard(); renderMonthResults(); renderYears(); renderMonthPills(); }
+function updZakatBank(v){ const m = M()[state.activeMonth]; getZakat(m).bank = v; m.lastModified = new Date().toISOString(); save(); renderZakatOT(); renderMonthResults(); renderDashboard(); renderYears(); renderMonthPills(); }
+function updZakatNote(v){ getZakat(M()[state.activeMonth]).note = v; save(); }
+function updZakatRef(v){ getZakat(M()[state.activeMonth]).ref = v; save(); }
+
+/* ════════ دوال السرقة ════════ */
+function addStolenTransaction(){
+  const s = ensureStolen();
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  s.transactions.push({ id: Date.now() + Math.floor(Math.random() * 10000), type: "amount", amount: 0, date: dateStr, note: "" });
+  save(); renderStolen(); toast(t('stolen_add_ok'), 'success');
+}
+function updStolenTransaction(id, field, val){
+  const s = ensureStolen(); const item = s.transactions.find(x => x.id === id); if(!item) return;
+  if(field === "amount"){ item.amount = Math.max(0, parseFloat(val) || 0); }
+  else if(field === "type"){ item.type = (val === "fee") ? "fee" : "amount"; }
+  else { item[field] = val; }
+  save(); updateStolenSummaryCards(); updateStolenTotalsInline();
+}
+function delStolenTransaction(id){
+  if(!confirm(t('stolen_delete_confirm'))) return;
+  state.stolen.transactions = ensureStolen().transactions.filter(x => x.id !== id);
+  save(); renderStolen(); toast(t('stolen_delete_ok'), 'success');
+}
+function updStolenBank(val){ ensureStolen().bank = String(val || ""); save(); }
+function updStolenBefore(field, val){
+  const s = ensureStolen();
+  if(field === "original"){ s.before.original = Math.max(0, parseFloat(val) || 0); s.after.original = s.before.original; }
+  else if(field === "remaining") s.before.remaining = Math.max(0, parseFloat(val) || 0);
+  save(); updateStolenSummaryCards(); updateStolenTotalsInline();
+}
+function updStolenAfter(field, val){
+  const s = ensureStolen();
+  if(field === "mustPay") s.after.mustPay = Math.max(0, parseFloat(val) || 0);
+  save(); updateStolenSummaryCards(); updateStolenTotalsInline();
+}
+function updateStolenSummaryCards(){
+  const s = ensureStolen();
+  const kpis = document.getElementById("stolenKpis");
+  if(kpis){
+    kpis.innerHTML = `
+      ${kpi(t('stolen_kpi_fees'), money(stolenTotalFees()), "gold")}
+      ${kpi(t('stolen_kpi_with_fees'), money(stolenTotalWithFees()), "neg")}
+      ${kpi(t('stolen_kpi_without_fees'), money(stolenTotalWithoutFees()), "pos")}
+      ${kpi(t('stolen_kpi_count'), String(stolenCount()), "acc")}
+      ${kpi(t('stolen_kpi_bank'), s.bank || "—", "acc")}
+      ${kpi(t('stolen_kpi_must_pay_before'), money(stolenMustPayBefore()), "neg")}
+    `;
+  }
+  const mustPayBeforeEl = document.getElementById("stolenMustPayBefore");
+  if(mustPayBeforeEl){ mustPayBeforeEl.value = fmt(stolenMustPayBefore()) + " " + (LANG==='ar'?'د.ب':'BHD'); }
+  const remAfterEl = document.getElementById("stolenRemAfter");
+  if(remAfterEl){ remAfterEl.value = fmt(stolenRemAfter()) + " " + (LANG==='ar'?'د.ب':'BHD'); }
+  const beforeKpis = document.getElementById("stolenLossBeforeKpis");
+  if(beforeKpis){
+    beforeKpis.innerHTML = `
+      ${kpi(LANG==='ar'?'💸 يجب الدفع قبل':'💸 Must Pay Before', money(stolenMustPayBefore()), "neg")}
+      ${kpi(LANG==='ar'?'💵 الرسوم فقط':'💵 Fees Only', money(stolenTotalFees()), "gold")}
+      ${kpi(LANG==='ar'?'📦 إجمالي المسروق':'📦 Total Stolen', money(stolenTotalWithFees()), "neg")}
+      ${kpi(LANG==='ar'?'📋 عدد العمليات':'📋 Count', String(stolenCount()), "acc")}
+    `;
+  }
+  const afterKpis = document.getElementById("stolenLossAfterKpis");
+  if(afterKpis){
+    afterKpis.innerHTML = `
+      ${kpi(LANG==='ar'?'💰 يجب الدفع بعد':'💰 Must Pay After', money(+s.after.mustPay || 0), "neg")}
+      ${kpi(LANG==='ar'?'💸 المتبقي بعد':'💸 Remaining After', money(stolenRemAfter()), "pos")}
+      ${kpi(LANG==='ar'?'✅ تم استرجاع':'✅ Recovered', money(stolenRecoveredAmount()), "pos")}
+      ${kpi(LANG==='ar'?'🎯 صافي الخسارة':'🎯 Net Loss', money(stolenNetLoss()), "gold")}
+    `;
+  }
+}
+function updateStolenTotalsInline(){
+  const s = ensureStolen();
+  s.after.original = s.before.original;
+  const origBeforeEl = document.getElementById("stolenOrigBefore");
+  if(origBeforeEl && document.activeElement !== origBeforeEl) origBeforeEl.value = inVal(s.before.original);
+  const remBeforeEl = document.getElementById("stolenRemBefore");
+  if(remBeforeEl && document.activeElement !== remBeforeEl) remBeforeEl.value = inVal(s.before.remaining);
+  const mustPayBeforeEl = document.getElementById("stolenMustPayBefore");
+  if(mustPayBeforeEl) mustPayBeforeEl.value = fmt(stolenMustPayBefore()) + " " + (LANG==='ar'?'د.ب':'BHD');
+  const origAfterEl = document.getElementById("stolenOrigAfter");
+  if(origAfterEl) origAfterEl.value = fmt(s.before.original) + " " + (LANG==='ar'?'د.ب':'BHD');
+  const remAfterEl = document.getElementById("stolenRemAfter");
+  if(remAfterEl) remAfterEl.value = fmt(stolenRemAfter()) + " " + (LANG==='ar'?'د.ب':'BHD');
+  const mustPayAfterEl = document.getElementById("stolenMustPayAfter");
+  if(mustPayAfterEl && document.activeElement !== mustPayAfterEl) mustPayAfterEl.value = inVal(s.after.mustPay);
+}
+
+/* ════════ ⭐ [إصلاح #3] renderIncomeFields — بدون تعديل state ════════ */
+function renderIncomeFields(){
+  const m = M()[state.activeMonth]; const mi = state.activeMonth; const isMeat = isMeatMonth(mi);
+  // ⭐ لا نعدل m.hasMeatSupport هنا — selectMonth يتولى ذلك
+  const incN = ensureIncomeNotes(m);
+  document.getElementById("incomeFields").innerHTML = getIncomeFields().map(([k,l])=>{
+    return `<tr><td>${l}</td><td><input type="number" value="${inVal(m[k])}" oninput="upd('${k}',this.value)" step="0.001"></td><td><input type="text" value="${esc(incN[k]||'')}" oninput="updIncomeNote('${k}', this.value)" placeholder="ملاحظة..."></td></tr>`;
+  }).join("");
+  const meatBox = document.getElementById("meatStatusBox");
+  meatBox.className = "meat-status " + (isMeat?'meat-status-yes':'meat-status-no');
+  meatBox.textContent = isMeat ? '🟢 ' + t('f_meat_yes') : '🔴 ' + t('f_meat_no');
+  document.getElementById("meatAmountWrap").style.display = isMeat ? "flex" : "none";
+  document.getElementById("meatAmountInput").value = inVal(m.meat);
+  document.getElementById("meatNote").value = incN.meat || "";
+}
+
+/* ════════ ⭐ [إصلاح] renderCash — الترجمة الكاملة ════════ */
+function renderCash(){
+  ensureCash(); const L = LANG === 'ar';
+  const tbody = document.getElementById("cashBody"); const tfoot = document.getElementById("cashFoot"); const kpis = document.getElementById("cashKpis");
+  if(!tbody) return; let total = 0;
+
+  // ⭐ ترجمة العنوان الرئيسي
+  const titleEl = document.getElementById("lblCashTitle");
+  if(titleEl) titleEl.textContent = t('cash_title');
+
+  // ⭐ ترجمة الـ hint (يحتوي HTML داخلي)
+  const hintEl = document.getElementById("lblCashHint");
+  if(hintEl) hintEl.innerHTML = t('cash_hint');
+
+  // ⭐ ترجمة رؤوس الجدول
+  const thItem = document.getElementById("thCashItem"); if(thItem) thItem.textContent = t('cash_th_item');
+  const thValue = document.getElementById("thCashValue"); if(thValue) thValue.textContent = t('cash_th_value');
+  const thCount = document.getElementById("thCashCount"); if(thCount) thCount.textContent = t('cash_th_count');
+  const thAmount = document.getElementById("thCashAmount"); if(thAmount) thAmount.textContent = t('cash_th_amount');
+
+  // ⭐ ترجمة ملخص التجوري
+  const summaryEl = document.getElementById("lblCashSummary");
+  if(summaryEl) summaryEl.textContent = t('cash_summary');
+
+  tbody.innerHTML = CASH_DENOMINATIONS.map(d => {
+    const count = +ensureCash().counts[d.key] || 0; const amount = count * d.value; total += amount;
+    const label = L ? d.labelAr : d.labelEn;
+    return `<tr data-cash-key="${d.key}" style="${count > 0 ? 'background:rgba(34,193,164,.05)' : 'opacity:.75'}"><td style="font-weight:700"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${d.color};margin-inline-end:8px;vertical-align:middle"></span>${d.icon} ${label}</td><td class="num" style="font-family:monospace;font-weight:700;color:${d.color};font-size:15px">× ${fmt(d.value)}</td><td><input type="number" value="${count || ''}" min="0" step="1" placeholder="0" oninput="updCashCount('${d.key}', this.value)" style="width:100%;max-width:140px;text-align:center;font-family:monospace;font-weight:700;font-size:18px;background:var(--panel2);border:2px solid var(--line);color:var(--txt);padding:10px 12px;border-radius:8px;margin:0 auto;display:block"></td><td class="num cash-amount-cell" style="font-family:monospace;font-weight:800;font-size:16px;color:${amount > 0 ? 'var(--ok)' : 'var(--muted)'}">${amount > 0 ? fmt(amount) : '—'}</td></tr>`;
+  }).join("");
+  // ⭐ الترجمة الكاملة لـ tfoot
+  tfoot.innerHTML = `<tr style="background:linear-gradient(90deg,rgba(234,179,8,.18),rgba(34,193,164,.12))"><td colspan="3" style="font-size:16px;color:var(--gold);font-weight:800">${t('cash_total_row')}</td><td class="num" id="cashTotalCell" style="font-family:monospace;font-size:22px;color:var(--gold);font-weight:900">${fmt(total)} ${L ? 'د.ب' : 'BHD'}</td></tr>`;
+  // ⭐ ترجمة KPI
+  if(kpis){ kpis.innerHTML = `${kpi(t('cash_kpi_total'), money(total), total > 0 ? 'gold' : '')}`; }
+}
+/* ═══════════════════════════════════════════════════════════════
+   Capital Manager — JavaScript (3-C من 3)
+   render* + printStolen + Excel + PDF + applyLang + Events
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ════════ السنة / الشهر ════════ */
 function renderYearSelect(){ const sel = document.getElementById("yearSelect"); sel.innerHTML = state.yearList.map(y => `<option value="${y}" ${y===state.activeYear?'selected':''}>${y}</option>`).join(""); }
 function selectYear(y){ state.activeYear = y; if(!state.years[y]) state.years[y] = emptyYear(); save(); renderYearSelect(); renderAll(); }
 function yearPrev(){ const idx = state.yearList.indexOf(state.activeYear); if(idx > 0) selectYear(state.yearList[idx-1]); else toast(LANG==='ar'?'لا توجد سنوات أقدم':'No earlier year'); }
@@ -4003,133 +3809,31 @@ function addYear(){
   state.years[y] = emptyYear(); state.yearList.push(y); state.yearList.sort((a,b)=>a-b); state.activeYear = y;
   save(); renderYearSelect(); renderAll(); toast(t('y_added') + y, 'success');
 }
-
 function deleteYear(){
   const L = LANG === 'ar';
   if(state.yearList.length <= 1){ toast(t('y_cant_del')); return; }
-
   const yearToDelete = state.activeYear;
   const yearData = state.years[yearToDelete] || [];
-  const filledMonths = yearData.filter(m => {
-    if(!m) return false;
-    return (+m.salary || 0) > 0 || (+m.costOfLiving || 0) > 0 || (+m.housing || 0) > 0 ||
-           getExpenseRows().some(r => (+m[r.key] || 0) > 0) ||
-           getSavingFields().some(f => (+m[f[0]] || 0) > 0);
-  }).length;
+  const filledMonths = yearData.filter(m => { if(!m) return false; return (+m.salary||0)>0||(+m.costOfLiving||0)>0||(+m.housing||0)>0||getExpenseRows().some(r=>(+m[r.key]||0)>0)||getSavingFields().some(f=>(+m[f[0]]||0)>0); }).length;
   const debtsCount = state.debts.length;
-
   openConfirmReset({
     title: L ? `حذف سنة ${yearToDelete}` : `Delete Year ${yearToDelete}`,
-    warning: L
-      ? `سيتم حذف سنة ${yearToDelete} بالكامل — جميع الشهور والبيانات المالية داخلها ستُفقد نهائياً!`
-      : `Year ${yearToDelete} will be fully deleted — all months and financial data will be permanently lost!`,
-    details: L ? [
-      `سيتم حذف <strong>12 شهراً</strong> من سنة ${yearToDelete}`,
-      `يحتوي على <strong>${filledMonths} شهر</strong> فيه بيانات مسجلة`,
-      `دفعات الديون المسجلة في هذه السنة ستُحذف من <strong>${debtsCount} بند</strong>`,
-      "بيانات <strong>الادخار</strong> لهذه السنة ستُحذف",
-      "بيانات <strong>تقرير الشراكة</strong> و<strong>العيادي</strong> و<strong>السرقة</strong> لن تتأثر",
-      "السنة السابقة في القائمة ستصبح النشطة"
-    ] : [
-      `<strong>12 months</strong> of year ${yearToDelete} will be deleted`,
-      `Contains <strong>${filledMonths} months</strong> with data`,
-      `Debt payments in this year will be removed from <strong>${debtsCount} item(s)</strong>`,
-      "<strong>Savings</strong> data for this year will be deleted",
-      "<strong>Partnership Report</strong>, <strong>Eidi</strong>, and <strong>Stolen</strong> data will NOT be affected",
-      "The previous year will become active"
-    ],
+    warning: L ? `سيتم حذف سنة ${yearToDelete} بالكامل — جميع الشهور والبيانات المالية داخلها ستُفقد نهائياً!` : `Year ${yearToDelete} will be fully deleted — all months and financial data will be permanently lost!`,
+    details: L ? [`سيتم حذف <strong>12 شهراً</strong> من سنة ${yearToDelete}`,`يحتوي على <strong>${filledMonths} شهر</strong> فيه بيانات مسجلة`,`دفعات الديون المسجلة في هذه السنة ستُحذف من <strong>${debtsCount} بند</strong>`,"بيانات <strong>الادخار</strong> لهذه السنة ستُحذف","بيانات <strong>تقرير الشراكة</strong> و<strong>العيادي</strong> و<strong>السرقة</strong> لن تتأثر","السنة السابقة في القائمة ستصبح النشطة"] : [`<strong>12 months</strong> of year ${yearToDelete} will be deleted`,`Contains <strong>${filledMonths} months</strong> with data`,`Debt payments in this year will be removed from <strong>${debtsCount} item(s)</strong>`,"<strong>Savings</strong> data for this year will be deleted","<strong>Partnership Report</strong>, <strong>Eidi</strong>, and <strong>Stolen</strong> data will NOT be affected","The previous year will become active"],
     onConfirm: function(){
       delete state.years[yearToDelete];
       if(state.yearExtras) delete state.yearExtras[yearToDelete];
       state.yearList = state.yearList.filter(x => x !== yearToDelete);
       state.activeYear = state.yearList[state.yearList.length - 1];
-      save();
-      renderYearSelect();
-      renderAll();
+      save(); renderYearSelect(); renderAll();
       toast((L ? '✅ تم حذف: ' : '✅ Deleted: ') + yearToDelete, 'success');
     }
   });
 }
 
-function applyLang(){
-  document.documentElement.lang = LANG;
-  document.documentElement.dir = LANG === 'ar' ? 'rtl' : 'ltr';
-  document.getElementById('langBtn').textContent = LANG === 'ar' ? '🌐 EN' : '🌐 عربي';
-  document.getElementById('appTitle').textContent = t('app_title');
-  document.getElementById('btnExport').textContent = t('btn_export');
-  document.getElementById('btnImport').textContent = t('btn_import');
-  document.getElementById('btnReset').textContent = t('btn_reset');
-  document.getElementById('btnSaveManual').textContent = t('btn_save');
-  document.getElementById('btnInstructions').textContent = t('btn_instructions');
-  document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.dataset.i18n; if(I18N[LANG][k]) el.textContent = I18N[LANG][k]; });
-  const ids = {
-    dashTitle1:'dash_title1',dashTitle2:'dash_title2',dashTitle3:'dash_title3',dashTitle4:'dash_title4',
-    noticeBhd:'notice_bhd',dateTitle:'date_title',lblDate:'lbl_date',lblTime:'lbl_time',lblLastMod:'lbl_lastmod',
-    lblSalarySection:'lbl_salary_section',thSalItem:'th_income_item',thSalAmount:'th_income_amount',thSalNote:'th_income_note',
-    lblIncome:'lbl_income',eidTitle:'eid_title',lblEidState:'lbl_eid_state',lblEidAmount:'lbl_eid_amount',
-    lblExpenses:'lbl_expenses',thItem:'th_item',thAmount:'th_amount',thBank:'th_bank',thNote:'th_note',thRef:'th_ref',
-    lblDebtsMonth:'lbl_debts_month',debtsMonthHelp:'debts_month_help',thDebtName:'th_debt_name',thDebtType:'th_debt_type',
-    thDebtTotal:'th_debt_total',thDebtRemBefore:'th_debt_rem_before',thDebtThisMonth:'th_debt_this_month',thDebtRemAfter:'th_debt_rem_after',
-    thDebtNote:'th_debt_note',thDebtBank:'th_debt_bank',thDebtRef:'th_debt_ref',lblSavings:'lbl_savings',savingsHint:'savings_hint',
-    thSavItem:'th_sav_item',thSavAmount:'th_sav_amount',thSavBank:'th_sav_bank',thSavNote:'th_sav_note',thSavRef:'th_sav_ref',
-    lblMonthResult:'lbl_month_result',lblMonthNotes:'lbl_month_notes',lblPyrTitle:'pyr_title',lblPyrDesc:'pyr_desc',lblPyrDetail:'pyr_detail',
-    lblPyramidTargets:'lbl_pyramid_targets',lblPyramidTargetsHint:'lbl_pyramid_targets_hint',thTgtItem:'th_tgt_item',thTgtTarget:'th_tgt_target',
-    thTgtSaved:'th_tgt_saved',thTgtWithdrawn:'th_tgt_withdrawn',thTgtNet:'th_tgt_net',thTgtProgress:'th_tgt_progress',thTgtStatus:'th_tgt_status',
-    thTgtNote:'th_tgt_note',thTgtActions:'th_tgt_actions',instTitle:'inst_title',lblDebtsSummary:'debts_summary',lblAddDebt:'add_debt',
-    lblDebtName:'lbl_debt_name',lblDebtType:'lbl_debt_type',lblDebtCat:'lbl_debt_cat',lblDebtTotal:'lbl_debt_total',lblDebtPaidBefore:'lbl_debt_paidbefore',
-    lblDebtStart:'lbl_debt_start',lblDebtEnd:'lbl_debt_end',lblDebtNotes:'lbl_debt_notes',btnAddDebt:'btn_add_debt',lblDebtsTable:'debts_table',
-    lblDebtsTableHint:'debts_table_hint',lblAnnualTitle:'lbl_annual',lblYearsKpi:'y_title_kpi',lblYearsChart:'y_title_chart',lblYearsTable:'y_title_table',
-    lblYearsDist:'y_title_dist',footerLocalized:'footer',phTitle:'print_title',phSubtitle:'print_subtitle',lblCarInsuranceOT:'lbl_car_insurance_ot',
-    lblZakatOT:'lbl_zakat_ot',thCIItem:'th_item',thCIAmount:'th_amount',thCIBank:'th_bank',thCINote:'th_note',thCIRef:'th_ref',
-    thZKItem:'th_item',thZKAmount:'th_amount',thZKBank:'th_bank',thZKNote:'th_note',thZKRef:'th_ref',
-    thIncItem:'th_income_item',thIncAmount:'th_income_amount',thIncNote:'th_income_note',lblMeatSupport:'f_meat_support',lblMeatAmount:'f_meat_amount',
-    avgAllTitle:'avg_all_title',avgAllHint:'avg_all_hint',avgTitle:'avg_title',
-    lblReportTitle:'rp_title',lblReportFather:'rp_father',lblReportFatherName:'rp_father_label',lblReportElecBill:'rp_elec_bill',
-    lblReportElecBox:'lblReportElecBox',lblReportProfitToggle:'rp_profit_toggle',
-    lblReportShePays:'rp_she_pays',lblReportPurchases:'rp_purchases',
-    btnAddReportPurchase:'rp_add_purchase',thRpIndex:'print_index',thRpName:'rp_name',thRpAmount:'rp_amount',
-    lblReportResults:'rp_results',thRpItem:'rp_item',thRpValue:'rp_value',lblReportNotes:'rp_notes',
-    remindersTitle:'reminders_title',remDateLabel:'reminders_date',remTimeLabel:'reminders_time',remNoteLabel:'reminders_note',remAddBtn:'reminders_add_btn',
-    lblBanksTitle:'bank_title',lblBanksHint:'bank_hint',thBankName:'bank_th_name',thBankAmount:'bank_th_amount',
-    btnAddBankRow:'bank_btn_add_row',btnResetBanks:'bank_btn_reset',lblBanksSummary:'bank_summary',
-    lblStolenTitle:'lblStolenTitle',lblStolenHint:'lblStolenHint',lblStolenBank:'lblStolenBank',
-    thStolenIndex:'thStolenIndex',thStolenType:'thStolenType',thStolenAmount:'thStolenAmount',
-    thStolenDate:'thStolenDate',thStolenNote:'thStolenNote',
-    lblStolenSummaryTitle:'lblStolenSummaryTitle',lblStolenBeforeTitle:'lblStolenBeforeTitle',
-    lblStolenBeforeHint:'lblStolenBeforeHint',lblStolenOrigBefore:'lblStolenOrigBefore',
-    lblStolenRemBefore:'lblStolenRemBefore',lblStolenMustPayBefore:'lblStolenMustPayBefore',
-    lblStolenAfterTitle:'lblStolenAfterTitle',lblStolenAfterHint:'lblStolenAfterHint',
-    lblStolenOrigAfter:'lblStolenOrigAfter',lblStolenMustPayAfter:'lblStolenMustPayAfter',
-    lblStolenRemAfter:'lblStolenRemAfter',lblStolenCompareTitle:'lblStolenCompareTitle',
-    lblStolenLossBefore:'lblStolenLossBefore',lblStolenLossAfter:'lblStolenLossAfter',
-    btnAddStolen:'stolen_btn_add',btnResetStolen:'stolen_btn_reset',
-  };
-  Object.keys(ids).forEach(id => { const el = document.getElementById(id); if(el) el.textContent = t(ids[id]); });
-  renderAll();
-  if(document.getElementById("remindersModal")?.classList.contains("show")) renderReminders();
-  if(typeof updateRemindersBadge === 'function') updateRemindersBadge();
-  if(typeof updateReminderFormMode === 'function') updateReminderFormMode();
-}
-function toggleLang(){ LANG = LANG === 'ar' ? 'en' : 'ar'; localStorage.setItem('cm_lang', LANG); applyLang(); toast(LANG === 'ar' ? '✅ تم التبديل للعربية' : '✅ Switched to English'); }
-function applyTheme(){ document.documentElement.dataset.theme = THEME; document.getElementById('themeBtn').textContent = THEME === 'dark' ? '🌙' : '☀️'; }
-function toggleTheme(){ THEME = THEME === 'dark' ? 'light' : 'dark'; localStorage.setItem('cm_theme', THEME); applyTheme(); toast(THEME === 'dark' ? (LANG==='ar'?'🌙 ليلي':'🌙 Dark') : (LANG==='ar'?'☀️ نهاري':'☀️ Light')); }
-function applyFontScale(){ document.getElementById('mainContent').style.zoom = FONT_SCALE; }
-function changeFontSize(delta){ FONT_SCALE = Math.max(0.75, Math.min(1.6, FONT_SCALE + delta * 0.1)); localStorage.setItem('cm_font', FONT_SCALE); applyFontScale(); toast((LANG==='ar'?'🔠 ':'🔠 ') + Math.round(FONT_SCALE*100) + '%'); }
-function setPrintOrientation(orientation){
-  let styleEl = document.getElementById('print-orientation-style');
-  if(!styleEl){ styleEl = document.createElement('style'); styleEl.id = 'print-orientation-style'; document.head.appendChild(styleEl); }
-  if(orientation === 'landscape'){ document.documentElement.classList.add('print-landscape'); styleEl.textContent = '@media print { @page { size: A4 landscape !important; margin: 8mm 6mm !important; } }'; }
-  else { document.documentElement.classList.remove('print-landscape'); styleEl.textContent = '@media print { @page { size: A4 portrait !important; margin: 8mm 6mm !important; } }'; }
-}
-function syncFromDOM(){ if(SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; } if(typeof saveNow === 'function') saveNow(); }
-function updateMonthPrintBtn(){
-  const btn = document.getElementById('btnPrintMonth'); const btnShare = document.getElementById('btnShareMonth');
-  const monthName = getMonths()[state.activeMonth]; const label = `${monthName} ${state.activeYear}`;
-  if(btn) btn.textContent = `🖨️ ${t('btn_print_month')} — ${label}`;
-  if(btnShare) btnShare.textContent = `📤 ${t('btn_share_pdf')} — ${label}`;
-}
 function renderAll(){ renderYearSelect(); renderMonthPills(); renderMonth(); renderDashboard(); renderDebts(); renderPyramid(); renderYears(); renderAverage(); renderAnnual(); renderReport(); renderCash(); renderBanks(); renderEidi(); renderStolen(); updateMonthPrintBtn(); }
 
+/* ════════ Dashboard ════════ */
 function renderDashboard(){
   const months = M(); const y = state.activeYear;
   let totInc=0, totExp=0, totSav=0, totOneTime=0;
@@ -4167,6 +3871,7 @@ function renderDashboard(){
   document.getElementById("dashTable").innerHTML = html + `</tbody>`;
 }
 
+/* ════════ Month Pills ════════ */
 function renderMonthPills(){
   const months = getMonths(); const y = state.activeYear;
   document.getElementById("monthPills").innerHTML = months.map((m,i)=>{
@@ -4175,26 +3880,13 @@ function renderMonthPills(){
     return `<button class="${i===state.activeMonth?'active':''} ${hasData?'hasData':''}" onclick="selectMonth(${i})">${m}</button>`;
   }).join("");
 }
-function selectMonth(i){ state.activeMonth=i; renderMonthPills(); renderMonth(); updateMonthPrintBtn(); save(); }
+
+/* ════════ Salary / Income / Expenses / Savings ════════ */
 function renderSalaryFields(){
   const m = M()[state.activeMonth]; const incN = ensureIncomeNotes(m);
   document.getElementById("salaryFields").innerHTML = `<tr><td>${t('f_salary')}</td><td><input type="number" value="${inVal(m.salary)}" oninput="upd('salary',this.value)" step="0.001"></td><td><input type="text" value="${esc(incN.salary||'')}" oninput="updIncomeNote('salary', this.value)" placeholder="ملاحظة..."></td></tr>`;
 }
-function renderIncomeFields(){
-  const m = M()[state.activeMonth]; const mi = state.activeMonth; const isMeat = isMeatMonth(mi);
-  m.hasMeatSupport = isMeat; if(!isMeat) m.meat = 0;
-  const incN = ensureIncomeNotes(m);
-  document.getElementById("incomeFields").innerHTML = getIncomeFields().map(([k,l])=>{
-    return `<tr><td>${l}</td><td><input type="number" value="${inVal(m[k])}" oninput="upd('${k}',this.value)" step="0.001"></td><td><input type="text" value="${esc(incN[k]||'')}" oninput="updIncomeNote('${k}', this.value)" placeholder="ملاحظة..."></td></tr>`;
-  }).join("");
-  const meatBox = document.getElementById("meatStatusBox");
-  meatBox.className = "meat-status " + (isMeat?'meat-status-yes':'meat-status-no');
-  meatBox.textContent = isMeat ? '🟢 ' + t('f_meat_yes') : '🔴 ' + t('f_meat_no');
-  document.getElementById("meatAmountWrap").style.display = isMeat ? "flex" : "none";
-  document.getElementById("meatAmountInput").value = inVal(m.meat);
-  document.getElementById("meatNote").value = incN.meat || "";
-}
-function updIncomeNote(key, val){ const m = M()[state.activeMonth]; ensureIncomeNotes(m)[key] = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+
 function renderExpenseFields(){
   const m = M()[state.activeMonth]; const rows = getExpenseRows();
   const refOptsFor = val => REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${val===o.v?'selected':''}>${o.l}</option>`).join('');
@@ -4246,6 +3938,7 @@ function renderExpenseSummary(){
   const bankHtml = BANKS.map(b => { const amt = bankTotals[b] || 0; return `<div class="exp-sum-item bank-item ${bankColors[b]}"><span>${bankIcons[b]} ${bankLabel(b)}:</span><b>${money(amt)}</b></div>`; }).join("");
   document.getElementById("expenseSummary").innerHTML = `<div class="exp-sum-item"><span>${t('es_total')}:</span><b>${money(total)}</b></div><div class="exp-sum-item green"><span>${t('es_counted')}:</span><b>${money(counted)}</b></div><div class="exp-sum-item red"><span>${t('es_excluded')}:</span><b>${money(excluded)}</b></div><div class="exp-sum-divider"></div><div class="exp-sum-title">${t('es_by_bank')}</div>${bankHtml}`;
 }
+
 function renderSavingFields(){
   const m = M()[state.activeMonth];
   const refOptsFor = val => REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${val===o.v?'selected':''}>${o.l}</option>`).join('');
@@ -4302,10 +3995,8 @@ function renderSavingSummary(){
   const el = document.getElementById("savingSummary"); if(!el) return;
   el.innerHTML = `<div class="exp-sum-item"><span>${t('es_total')}:</span><b>${money(raw)}</b></div><div class="exp-sum-item green"><span>${t('es_counted')}:</span><b>${money(counted)}</b></div><div class="exp-sum-item red"><span>${t('es_excluded')}:</span><b>${money(excluded)}</b></div>`;
 }
-function updSavingNote(key, val){ const m = M()[state.activeMonth]; getSavingMeta(m, key).note = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
-function updSavingBank(key, val){ const m = M()[state.activeMonth]; getSavingMeta(m, key).bank = val; m.lastModified = new Date().toISOString(); save(); renderSavingFields(); renderMonthResults(); renderMonthPills(); renderDashboard(); if(document.getElementById("pyramidTargetsBody")){ updatePyramidTargetRow(key); } if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); } }
-function updSavingRef(key, val){ const m = M()[state.activeMonth]; ensureSavingRefMeta(m)[key] = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
-function updRef(key, val){ const m = M()[state.activeMonth]; ensureRefMeta(m)[key] = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
+
+/* ════════ Debts Month Section ════════ */
 function renderDebtsMonthSection(){
   const mi = state.activeMonth; const y = state.activeYear;
   const tbody = document.getElementById("debtsMonthBody"); const tfoot = document.getElementById("debtsMonthFoot"); const summary = document.getElementById("debtsMonthSummary");
@@ -4330,10 +4021,6 @@ function renderDebtsMonthSection(){
   tfoot.innerHTML = `<tr><td colspan="5">${t('dms_total')} (${t('es_counted')})</td><td class="num" style="color:var(--accent2);font-weight:700">${money(totalAll)}</td><td colspan="4"></td></tr>` + (totalExcl > 0 ? `<tr><td colspan="5" style="color:var(--danger)">${t('es_excluded')}</td><td class="num" style="color:var(--danger);font-weight:700">${money(totalExcl)}</td><td colspan="4"></td></tr>` : "");
   summary.innerHTML = `${kpi(t('dms_recv'), money(recv), "pos")}${kpi(t('dms_pay'), money(pay), "neg")}${kpi(t('dms_net'), money(recv - pay), (recv - pay) >= 0 ? "pos" : "neg")}${kpi(t('dms_remaining'), money(state.debts.reduce((s,d)=>s+debtRemaining(d),0)), "gold")}`;
 }
-function updDebtBank(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.bank = val; save(); renderDebtsMonthSection(); renderMonthResults(); renderMonthPills(); renderDashboard(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); updatePyramidTargetRow("credit"); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); } }
-function updDebtNoteInline(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.notes = val; save(); }
-function updDebtRef(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDebtRef(d, state.activeYear, state.activeMonth, val); save(); }
-function updDebtMonthInEntry(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDm(d, state.activeYear, state.activeMonth, Math.max(0, parseFloat(val)||0)); save(); refreshDebtsMonthCells(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderDebts(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); updatePyramidTargetRow("credit"); }
 function refreshDebtsMonthCells(){
   const mi = state.activeMonth, y = state.activeYear;
   let recv = 0, pay = 0, recvExcl = 0, payExcl = 0;
@@ -4348,38 +4035,26 @@ function refreshDebtsMonthCells(){
   const sm = document.getElementById("debtsMonthSummary");
   if(sm) sm.innerHTML = `${kpi(t('dms_recv'), money(recv), "pos")}${kpi(t('dms_pay'), money(pay), "neg")}${kpi(t('dms_net'), money(recv - pay), (recv - pay) >= 0 ? "pos" : "neg")}${kpi(t('dms_remaining'), money(state.debts.reduce((s,d)=>s+debtRemaining(d),0)), "gold")}`;
 }
+function updDebtBank(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.bank = val; save(); renderDebtsMonthSection(); renderMonthResults(); renderMonthPills(); renderDashboard(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); updatePyramidTargetRow("credit"); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); } }
+function updDebtNoteInline(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.notes = val; save(); }
+function updDebtRef(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDebtRef(d, state.activeYear, state.activeMonth, val); save(); }
+function updDebtMonthInEntry(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDm(d, state.activeYear, state.activeMonth, Math.max(0, parseFloat(val)||0)); save(); refreshDebtsMonthCells(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderDebts(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); updatePyramidTargetRow("credit"); }
+
+/* ════════ One-Time (Insurance + Zakat) ════════ */
 function renderCarInsuranceOT(){
   const m = M()[state.activeMonth]; const ci = getCarInsurance(m); const excluded = ci.bank === EXCLUDED_BANK;
   const bankOpts = BANKS.map(b => `<option value="${b}" ${ci.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
   const refOpts = REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${ci.ref===o.v?'selected':''}>${o.l}</option>`).join('');
   document.getElementById("carInsuranceBody").innerHTML = `<tr class="${excluded?'excluded':''}"><td>${t('ot_car_insurance')}</td><td><input type="number" value="${inVal(ci.amount)}" oninput="updCarInsuranceAmount(this.value)" min="0" step="0.001"></td><td><select class="${excluded?'bank-excluded':''}" onchange="updCarInsuranceBank(this.value)">${bankOpts}</select></td><td><input type="text" value="${esc(ci.note)}" oninput="updCarInsuranceNote(this.value)" placeholder="..."></td><td><select onchange="updCarInsuranceRef(this.value)">${refOpts}</select></td></tr>`;
 }
-function updCarInsuranceAmount(v){ const m = M()[state.activeMonth]; getCarInsurance(m).amount = Math.max(0, parseFloat(v)||0); m.lastModified = new Date().toISOString(); save(); renderDashboard(); renderMonthResults(); renderYears(); renderMonthPills(); }
-function updCarInsuranceBank(v){ const m = M()[state.activeMonth]; getCarInsurance(m).bank = v; m.lastModified = new Date().toISOString(); save(); renderCarInsuranceOT(); renderMonthResults(); renderDashboard(); renderYears(); renderMonthPills(); }
-function updCarInsuranceNote(v){ getCarInsurance(M()[state.activeMonth]).note = v; save(); }
-function updCarInsuranceRef(v){ getCarInsurance(M()[state.activeMonth]).ref = v; save(); }
 function renderZakatOT(){
   const m = M()[state.activeMonth]; const zk = getZakat(m); const excluded = zk.bank === EXCLUDED_BANK;
   const bankOpts = BANKS.map(b => `<option value="${b}" ${zk.bank===b?'selected':''}>${bankLabel(b)}</option>`).join('');
   const refOpts = REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${zk.ref===o.v?'selected':''}>${o.l}</option>`).join('');
   document.getElementById("zakatBody").innerHTML = `<tr class="${excluded?'excluded':''}"><td>${t('ot_zakat')}</td><td><input type="number" value="${inVal(zk.amount)}" oninput="updZakatAmount(this.value)" min="0" step="0.001"></td><td><select class="${excluded?'bank-excluded':''}" onchange="updZakatBank(this.value)">${bankOpts}</select></td><td><input type="text" value="${esc(zk.note)}" oninput="updZakatNote(this.value)" placeholder="..."></td><td><select onchange="updZakatRef(this.value)">${refOpts}</select></td></tr>`;
 }
-function updZakatAmount(v){ const m = M()[state.activeMonth]; getZakat(m).amount = Math.max(0, parseFloat(v)||0); m.lastModified = new Date().toISOString(); save(); renderDashboard(); renderMonthResults(); renderYears(); renderMonthPills(); }
-function updZakatBank(v){ const m = M()[state.activeMonth]; getZakat(m).bank = v; m.lastModified = new Date().toISOString(); save(); renderZakatOT(); renderMonthResults(); renderDashboard(); renderYears(); renderMonthPills(); }
-function updZakatNote(v){ getZakat(M()[state.activeMonth]).note = v; save(); }
-function updZakatRef(v){ getZakat(M()[state.activeMonth]).ref = v; save(); }
-function updEidMoneyType(val){ const m = M()[state.activeMonth]; m.eidMoneyType = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
-function updExpenseAmount(key, val){ const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderExpenseSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills(); renderDashboard(); renderYears(); }
-function updExpenseBank(key, val){ const m = M()[state.activeMonth]; getMeta(m, key).bank = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); renderDashboard(); renderYears(); }
-function updExpenseNote(key, val){ const m = M()[state.activeMonth]; getMeta(m, key).note = val; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
-function updBirthdayPerson(val){ const m = M()[state.activeMonth]; m.birthdayPerson = val; m.lastModified = new Date().toISOString(); save(); renderExpenseFields(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
-function updSaving(key, val){
-  const m = M()[state.activeMonth]; m[key] = Math.max(0, parseFloat(val) || 0); m.lastModified = new Date().toISOString(); save();
-  renderSavingSummary(); renderMonthResults(); renderMonthDate(); renderMonthPills();
-  if(document.getElementById("pyramidTargetsBody")){ updatePyramidTargetRow(key); }
-  if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramidSvg(); renderPyramidLegend(); }
-  updateSavingHintInPlace(key);
-}
+
+/* ════════ renderMonth ════════ */
 function renderMonth(){
   const m = M()[state.activeMonth];
   document.getElementById("monthTitle").textContent = getMonths()[state.activeMonth] + " " + state.activeYear;
@@ -4392,9 +4067,6 @@ function renderMonth(){
   document.getElementById("monthNotes").value = m.notes || "";
   renderMonthDate(); renderMonthResults();
 }
-function onEidChange(val){ const m = M()[state.activeMonth]; m.eidType = val; m.lastModified = new Date().toISOString(); save(); renderMonth(); }
-function upd(key, val){ const m = M()[state.activeMonth]; m[key] = parseFloat(val)||0; m.lastModified = new Date().toISOString(); save(); renderMonthResults(); renderMonthDate(); renderMonthPills(); }
-function updateMonthNotes(v){ const m = M()[state.activeMonth]; m.notes = v; m.lastModified = new Date().toISOString(); save(); renderMonthDate(); }
 function renderMonthResults(){
   const m = M()[state.activeMonth]; const mi = state.activeMonth, y = state.activeYear;
   const salaryOnly = +m.salary || 0; const incCore = totalIncomeCore(m, mi); const incDebt = totalDebtReceipts(y, mi); const inc = incCore + incDebt;
@@ -4428,8 +4100,6 @@ function renderMonthResults(){
     ${kpi(t('mr_once_excl'), money(oneTimeExcl), "gold")}
     ${kpi(t('mr_eid_ref'), money(m.eidAmount||0), "gold")}`;
 }
-function setMonthDate(value){ const m = M()[state.activeMonth]; if(!value) return; m.customDate = value; m.lastModified = new Date().toISOString(); save(); toast(t('saved_date') + value); }
-function setMonthTime(value){ const m = M()[state.activeMonth]; m.customTime = value || ""; m.lastModified = new Date().toISOString(); save(); toast(t('saved_time')); }
 function renderMonthDate(){
   const m = M()[state.activeMonth];
   document.getElementById("monthDatePicker").value = m.customDate || "";
@@ -4438,6 +4108,7 @@ function renderMonthDate(){
   if(m.lastModified){ const d = new Date(m.lastModified); disp.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; } else disp.value = "—";
 }
 
+/* ════════ Pyramid ════════ */
 function renderPyramidTargets(){
   const body = document.getElementById("pyramidTargetsBody"); if(!body) return;
   const levels = getPyramidLevels();
@@ -4655,24 +4326,13 @@ function renderPyramidLegend(){
   document.getElementById("pyramidLegend").innerHTML = itemsHtml + totalCard;
 }
 
-function rpPurchasesTotal(){ const r = ensureReport(); return (r.purchases || []).reduce((s, p) => s + (+p.amount || 0), 0); }
-function rpFullAmount(){ const r = ensureReport(); let shePays = 0; if(r.shePaysToggle) shePays = +r.shePaysMe || 0; return rpPurchasesTotal() + shePays; }
-function rpPoints(){ return rpPurchasesTotal() * 2; }
-function rpProfit(){ const r = ensureReport(); if(!r.profitToggle) return 0; return (rpPoints() / 25) * 0.25; }
-function getShePaysAmount(){ const r = ensureReport(); if(!r.shePaysToggle) return 0; return +r.shePaysMe || 0; }
-function rpFinalAmount(){ return rpFullAmount() - rpProfit(); }
+/* ════════ Report ════════ */
 function toggleProfitStatus(){ const r = ensureReport(); r.profitToggle = !r.profitToggle; save(); renderReport(); toast(r.profitToggle ? (LANG==='ar' ? '✅ ربحت' : '✅ Profited') : (LANG==='ar' ? '❌ ما ربحت' : '❌ NOT profited'), r.profitToggle ? 'success' : 'warn'); }
-
-/* ⭐ [تعديل] updReport — دعم fatherDebtLabel كحقل نصي */
 function updReport(field, value){
   const r = ensureReport();
-  if(field === "notes" || field === "fatherDebtLabel"){
-    r[field] = value;
-  } else {
-    r[field] = Math.max(0, parseFloat(value) || 0);
-  }
-  save();
-  refreshReportTotals();
+  if(field === "notes" || field === "fatherDebtLabel"){ r[field] = value; }
+  else { r[field] = Math.max(0, parseFloat(value) || 0); }
+  save(); refreshReportTotals();
 }
 function onShePaysToggle(value){ const r = ensureReport(); r.shePaysToggle = (value === 'yes'); save(); const amountInput = document.getElementById("rpShePaysAmount"); if(amountInput){ amountInput.disabled = !r.shePaysToggle; amountInput.style.opacity = r.shePaysToggle ? '1' : '0.5'; } refreshReportTotals(); }
 function addReportPurchase(){ const r = ensureReport(); r.purchases.push({ id: Date.now() + Math.floor(Math.random()*10000), name: "", amount: 0 }); save(); renderReport(); }
@@ -4702,7 +4362,6 @@ function refreshReportTotals(){
   const resultsEl = document.getElementById("reportResults");
   if(resultsEl){ resultsEl.innerHTML = `${kpi(t('rp_kpi_full'), money(fullAmt), "acc")}${kpi(t('rp_kpi_points'), fmt(points), "gold")}${kpi(t('rp_kpi_profit_status'), profitStatus, r.profitToggle ? "pos" : "neg")}${kpi(t('rp_kpi_profit'), money(profit), r.profitToggle ? "pos" : "neg")}${kpi(t('rp_kpi_final'), money(finalAmt), "neg")}`; }
 }
-/* ⭐ [تعديل] renderReport — ملء حقل الاسم القابل للتعديل */
 function renderReport(){
   ensureReport(); const r = state.report; if(!document.getElementById("rpFather")) return;
   const labelEl = document.getElementById("rpFatherLabel");
@@ -4728,6 +4387,7 @@ function renderReport(){
   refreshReportTotals();
 }
 
+/* ════════ Average ════════ */
 function getAvgMonthValue(m, mi, item){
   if(item.type === 'salary') return +m.salary || 0;
   if(item.type === 'income') return +m[item.key] || 0;
@@ -4809,6 +4469,7 @@ function renderAverage(){
   if(gBtn) gBtn.textContent = allExpanded ? t('avg_hide_all') : t('avg_show_all');
 }
 
+/* ════════ Debts Table ════════ */
 function renderDebtsSummary(){
   const dt = debtTotals(); const el = document.getElementById("debtsSummary"); if(!el) return;
   el.innerHTML = `${kpi(t('kpi_recv_year_d'), money(dt.receiveThisYear), "pos")}${kpi(t('kpi_pay_year_d'), money(dt.payThisYear), "neg")}${kpi(t('kpi_net_year_d'), money(dt.netThisYear), dt.netThisYear>=0?"pos":"neg")}${kpi(t('kpi_rem_to_me'), money(dt.remainingToReceive), "pos")}${kpi(t('kpi_rem_on_me'), money(dt.remainingOnMe), "neg")}${kpi(t('kpi_net_remaining'), money(dt.netRemaining), dt.netRemaining>=0?"pos":"neg")}${kpi(t('kpi_total_debt'), money(dt.totalDebt), "acc")}${kpi(t('kpi_obligations_total'), money(dt.obligationsTotal), "gold")}`;
@@ -4910,6 +4571,7 @@ function updDebtNotes(id, val){ const d = state.debts.find(x=>x.id===id); if(!d)
 function updDebtMonth(id, mi, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDm(d, state.activeYear, mi, Math.max(0, parseFloat(val)||0)); save(); refreshDebtsMonthCells(); }
 function updDebtMonthYear(id, yy, mi, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDm(d, yy, mi, Math.max(0, parseFloat(val)||0)); save(); }
 
+/* ════════ Years ════════ */
 function renderYears(){
   const all = allYearsTotals(); const totalY = state.yearList.length;
   let bestYear = null, bestRem = -Infinity;
@@ -4948,6 +4610,8 @@ function renderYears(){
   dhtml += `</tbody>`;
   document.getElementById("yearsDistTable").innerHTML = dhtml;
 }
+
+/* ════════ Annual ════════ */
 function renderAnnual(){
   const months = getMonths(); const y = state.activeYear; const monthsData = M();
   const sections = [
@@ -5003,19 +4667,7 @@ function renderAnnual(){
   document.getElementById("annualTable").innerHTML = html + `</tbody>`;
 }
 
-function renderCash(){
-  ensureCash(); const L = LANG === 'ar';
-  const tbody = document.getElementById("cashBody"); const tfoot = document.getElementById("cashFoot"); const kpis = document.getElementById("cashKpis");
-  if(!tbody) return; let total = 0;
-  tbody.innerHTML = CASH_DENOMINATIONS.map(d => {
-    const count = +ensureCash().counts[d.key] || 0; const amount = count * d.value; total += amount;
-    const label = L ? d.labelAr : d.labelEn;
-    return `<tr data-cash-key="${d.key}" style="${count > 0 ? 'background:rgba(34,193,164,.05)' : 'opacity:.75'}"><td style="font-weight:700"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${d.color};margin-inline-end:8px;vertical-align:middle"></span>${d.icon} ${label}</td><td class="num" style="font-family:monospace;font-weight:700;color:${d.color};font-size:15px">× ${fmt(d.value)}</td><td><input type="number" value="${count || ''}" min="0" step="1" placeholder="0" oninput="updCashCount('${d.key}', this.value)" style="width:100%;max-width:140px;text-align:center;font-family:monospace;font-weight:700;font-size:18px;background:var(--panel2);border:2px solid var(--line);color:var(--txt);padding:10px 12px;border-radius:8px;margin:0 auto;display:block"></td><td class="num cash-amount-cell" style="font-family:monospace;font-weight:800;font-size:16px;color:${amount > 0 ? 'var(--ok)' : 'var(--muted)'}">${amount > 0 ? fmt(amount) : '—'}</td></tr>`;
-  }).join("");
-  tfoot.innerHTML = `<tr style="background:linear-gradient(90deg,rgba(234,179,8,.18),rgba(34,193,164,.12))"><td colspan="3" style="font-size:16px;color:var(--gold);font-weight:800">📊 المجموع الكلي للتجوري</td><td class="num" id="cashTotalCell" style="font-family:monospace;font-size:22px;color:var(--gold);font-weight:900">${fmt(total)} ${L ? 'د.ب' : 'BHD'}</td></tr>`;
-  if(kpis){ kpis.innerHTML = `${kpi(L ? '💰 إجمالي الكاش' : '💰 Total Cash', money(total), total > 0 ? 'gold' : '')}`; }
-}
-
+/* ════════ Banks ════════ */
 function renderBanks(){
   ensureBanks(); const L = LANG === 'ar';
   const tbody = document.getElementById("banksBody"); const tfoot = document.getElementById("banksFoot"); const kpis = document.getElementById("banksKpis");
@@ -5034,6 +4686,7 @@ function renderBanks(){
   if(kpis){ kpis.innerHTML = getBanksKpisHTML(); }
 }
 
+/* ════════ Eidi ════════ */
 function renderEidi(){
   ensureEidi(); const L = LANG === 'ar';
   const tbody = document.getElementById("eidiBody"); const tfoot = document.getElementById("eidiFoot"); const kpis = document.getElementById("eidiKpis");
@@ -5050,42 +4703,75 @@ function renderEidi(){
   if(kpis){ kpis.innerHTML = `${kpi(L ? '💰 إجمالي العيادي' : '💰 Total', money(total), total > 0 ? 'gold' : '')}${kpi(L ? '📋 عدد المستفيدين' : '📋 Beneficiaries', items.length.toString(), 'acc')}${kpi(L ? '📊 متوسط العطية' : '📊 Average', items.length > 0 ? money(total / items.length) : money(0), 'acc')}`; }
 }
 
-/* ════════ ⏰ Reminders System ════════ */
+/* ════════ Stolen ════════ */
+function renderStolen(){
+  ensureStolen();
+  const s = state.stolen;
+  const body = document.getElementById("stolenBody");
+  if(!body) return;
+  const bankInput = document.getElementById("stolenBankInput");
+  if(bankInput) bankInput.value = s.bank || "";
+  const typeOptsFor = val => `
+    <option value="amount" ${val === 'amount' ? 'selected' : ''}>💵 ${t('stolen_amount')}</option>
+    <option value="fee" ${val === 'fee' ? 'selected' : ''}>📊 ${t('stolen_fee')}</option>
+  `;
+  if(!s.transactions.length){
+    body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted);font-style:italic">${LANG==='ar'?'لا توجد بنود — اضغط ➕':'No items — click ➕'}</td></tr>`;
+  } else {
+    body.innerHTML = s.transactions.map((tr, idx) => {
+      const isFee = tr.type === 'fee';
+      const rowCls = isFee ? 'stolen-row-fee' : 'stolen-row-main';
+      const rowBg = isFee ? 'background:rgba(234,179,8,.06)' : 'background:rgba(239,68,68,.03)';
+      return `<tr class="${rowCls}" style="${rowBg}">
+        <td class="num" style="text-align:center;font-family:monospace;font-weight:700;color:var(--muted);width:50px">${idx + 1}</td>
+        <td>
+          <select onchange="updStolenTransaction(${tr.id}, 'type', this.value)" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:${isFee ? 'var(--gold)' : 'var(--danger)'};padding:8px 10px;border-radius:6px;font-size:13px;font-weight:700;font-family:inherit">${typeOptsFor(tr.type)}</select>
+        </td>
+        <td><input type="number" value="${inVal(tr.amount)}" step="0.001" min="0" oninput="updStolenTransaction(${tr.id}, 'amount', this.value)" style="width:100%;text-align:center;font-family:monospace;font-weight:800;font-size:15px;color:${isFee ? 'var(--gold)' : 'var(--danger)'};background:var(--panel2);border:2px solid ${isFee ? 'var(--gold)' : 'var(--danger)'};padding:9px 12px;border-radius:6px"></td>
+        <td><input type="date" value="${esc(tr.date)}" oninput="updStolenTransaction(${tr.id}, 'date', this.value)" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:8px 10px;border-radius:6px;font-size:13px;font-family:monospace;text-align:center"></td>
+        <td><input type="text" value="${esc(tr.note)}" oninput="updStolenTransaction(${tr.id}, 'note', this.value)" placeholder="..." style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:8px 10px;border-radius:6px;font-size:13px;font-family:inherit"></td>
+        <td class="noprint" style="text-align:center;width:60px"><button class="icon-btn remove-btn" onclick="delStolenTransaction(${tr.id})" title="${LANG==='ar'?'حذف':'Delete'}">✕</button></td>
+      </tr>`;
+    }).join("");
+  }
+  const foot = document.getElementById("stolenFoot");
+  if(foot){
+    foot.innerHTML = `
+      <tr style="background:rgba(234,179,8,.12);font-weight:800"><td colspan="2" style="color:var(--gold);font-size:14px">📊 ${LANG==='ar'?'الرسوم فقط':'Fees Only'}</td><td class="num" style="color:var(--gold);font-family:monospace;font-size:15px;text-align:center">${fmt(stolenTotalFees())}</td><td colspan="3" style="text-align:${LANG==='ar'?'left':'right'};font-size:11px;color:var(--muted);font-style:italic">= مجموع رسوم التحويل</td></tr>
+      <tr style="background:rgba(59,130,246,.12);font-weight:800"><td colspan="2" style="color:var(--accent2);font-size:14px">💵 ${LANG==='ar'?'المبلغ الكلي مع الرسوم':'Total with Fees'}</td><td class="num" style="color:var(--accent2);font-family:monospace;font-size:15px;text-align:center">${fmt(stolenTotalWithFees())}</td><td colspan="3" style="text-align:${LANG==='ar'?'left':'right'};font-size:11px;color:var(--muted);font-style:italic">= مجموع كل البنود</td></tr>
+      <tr style="background:rgba(34,197,94,.12);font-weight:800"><td colspan="2" style="color:var(--ok);font-size:14px">💰 ${LANG==='ar'?'المبلغ الكلي بدون الرسوم':'Total without Fees'}</td><td class="num" style="color:var(--ok);font-family:monospace;font-size:15px;text-align:center">${fmt(stolenTotalWithoutFees())}</td><td colspan="3" style="text-align:${LANG==='ar'?'left':'right'};font-size:11px;color:var(--muted);font-style:italic">= مجموع المبالغ فقط</td></tr>
+    `;
+  }
+  updateStolenSummaryCards();
+  updateStolenTotalsInline();
+}
+
+/* ════════ Reminders ════════ */
 function updateReminderFormMode(){
-  const btn = document.getElementById("remAddBtn");
-  if(!btn) return;
+  const btn = document.getElementById("remAddBtn"); if(!btn) return;
   const existingCancel = document.getElementById("remCancelEditBtn");
   const hintEl = document.getElementById("remEditHint");
   if(_editingReminderId != null){
-    btn.textContent = t('reminders_save_edit');
-    btn.className = "btn success";
-    btn.style.width = "100%";
+    btn.textContent = t('reminders_save_edit'); btn.className = "btn success"; btn.style.width = "100%";
     if(!existingCancel){
       const cancelBtn = document.createElement("button");
-      cancelBtn.id = "remCancelEditBtn";
-      cancelBtn.className = "btn danger";
+      cancelBtn.id = "remCancelEditBtn"; cancelBtn.className = "btn danger";
       cancelBtn.style.cssText = "width:100%;margin-top:6px;";
-      cancelBtn.textContent = t('reminders_cancel_edit');
-      cancelBtn.onclick = cancelEditReminder;
+      cancelBtn.textContent = t('reminders_cancel_edit'); cancelBtn.onclick = cancelEditReminder;
       btn.parentNode.insertBefore(cancelBtn, btn.nextSibling);
     }
     if(!hintEl){
       const hint = document.createElement("div");
-      hint.id = "remEditHint";
-      hint.style.cssText = "margin-top:10px;padding:8px 12px;background:rgba(59,130,246,.12);border:1px solid var(--accent2);border-radius:8px;color:var(--accent2);font-size:12px;font-weight:700;text-align:center;";
+      hint.id = "remEditHint"; hint.style.cssText = "margin-top:10px;padding:8px 12px;background:rgba(59,130,246,.12);border:1px solid var(--accent2);border-radius:8px;color:var(--accent2);font-size:12px;font-weight:700;text-align:center;";
       hint.textContent = t('reminders_edit_hint');
       btn.parentNode.insertBefore(hint, btn);
     }
   } else {
-    btn.textContent = t('reminders_add_btn');
-    btn.className = "btn primary";
-    btn.style.width = "100%";
+    btn.textContent = t('reminders_add_btn'); btn.className = "btn primary"; btn.style.width = "100%";
     if(existingCancel) existingCancel.remove();
-    const hint = document.getElementById("remEditHint");
-    if(hint) hint.remove();
+    const hint = document.getElementById("remEditHint"); if(hint) hint.remove();
   }
 }
-
 function startEditReminder(id){
   const r = ensureReminders().find(x => x.id === id);
   if(!r){ toast(LANG==='ar'?'⚠️ التذكير غير موجود':'⚠️ Not found', 'error'); return; }
@@ -5100,17 +4786,14 @@ function startEditReminder(id){
   if(form) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
   renderReminders();
 }
-
 function cancelEditReminder(){
   _editingReminderId = null;
   const dateEl = document.getElementById("remDate"); if(dateEl) dateEl.value = "";
   const timeEl = document.getElementById("remTime"); if(timeEl) timeEl.value = "";
   const noteEl = document.getElementById("remNote"); if(noteEl) noteEl.value = "";
-  updateReminderFormMode();
-  renderReminders();
+  updateReminderFormMode(); renderReminders();
   toast(LANG==='ar'?'↺ تم إلغاء التعديل':'↺ Edit cancelled');
 }
-
 function editCurrentPopup(){
   const id = _currentPopupReminderId; if(id == null) return;
   const popup = document.getElementById("reminderPopup"); if(popup) popup.classList.remove("show");
@@ -5118,7 +4801,6 @@ function editCurrentPopup(){
   openReminders();
   setTimeout(() => startEditReminder(id), 150);
 }
-
 function openReminders(){
   const modal = document.getElementById("remindersModal"); if(!modal) return;
   const dateEl = document.getElementById("remDate");
@@ -5126,7 +4808,6 @@ function openReminders(){
   renderReminders(); updateReminderFormMode();
   modal.classList.add("show"); document.body.style.overflow = "hidden";
 }
-
 function closeReminders(){
   const modal = document.getElementById("remindersModal"); if(!modal) return;
   modal.classList.remove("show"); document.body.style.overflow = "";
@@ -5138,14 +4819,12 @@ function closeReminders(){
     updateReminderFormMode();
   }
 }
-
 function addReminder(){
   const dateEl = document.getElementById("remDate"); const timeEl = document.getElementById("remTime"); const noteEl = document.getElementById("remNote");
   const date = (dateEl?.value || "").trim(); const time = (timeEl?.value || "").trim(); const note = (noteEl?.value || "").trim();
   if(!date){ toast(t('reminders_need_date'), 'error'); return; }
   if(!note){ toast(t('reminders_need_note'), 'error'); return; }
   const target = new Date(`${date}T${time || "00:00"}:00`); if(isNaN(target.getTime())){ toast(t('reminders_need_date'), 'error'); return; }
-
   if(_editingReminderId != null){
     const r = ensureReminders().find(x => x.id === _editingReminderId);
     if(!r){ _editingReminderId = null; updateReminderFormMode(); return; }
@@ -5159,14 +4838,12 @@ function addReminder(){
     setTimeout(() => checkReminders(), 100);
     return;
   }
-
   ensureReminders().push({ id: Date.now() + Math.floor(Math.random()*10000), date, time: time || "", note, status: "pending", createdAt: new Date().toISOString() });
   if(dateEl) dateEl.value = ""; if(timeEl) timeEl.value = ""; if(noteEl) noteEl.value = "";
   save(); renderReminders(); updateRemindersBadge();
   toast(t('reminders_saved'), 'success');
   setTimeout(() => checkReminders(), 100);
 }
-
 function deleteReminder(id){ if(!confirm(t('reminders_confirm_delete'))) return; state.reminders = ensureReminders().filter(r => r.id !== id); save(); renderReminders(); updateRemindersBadge(); toast(t('reminders_deleted'), 'success'); }
 function markReminderDone(id){ const r = ensureReminders().find(x => x.id === id); if(!r) return; r.status = "done"; r.doneAt = new Date().toISOString(); save(); renderReminders(); updateRemindersBadge(); toast(t('reminders_marked_done'), 'success'); }
 function toggleReminderStatus(id){ const r = ensureReminders().find(x => x.id === id); if(!r) return; if(r.status === "done"){ r.status = "pending"; delete r.doneAt; } else { r.status = "done"; r.doneAt = new Date().toISOString(); } save(); renderReminders(); updateRemindersBadge(); }
@@ -5179,7 +4856,6 @@ function getReminderDatetimeString(r){
   let timeStr = ""; if(r.time){ timeStr = dt.toLocaleTimeString(L ? 'ar-BH' : 'en-GB', { hour:'2-digit', minute:'2-digit', hour12: true }); }
   return timeStr ? `${dateStr} — ${timeStr}` : dateStr;
 }
-
 function renderReminders(){
   const listEl = document.getElementById("remindersList"); if(!listEl) return;
   const L = LANG === 'ar';
@@ -5201,7 +4877,6 @@ function renderReminders(){
     return `<div class="reminder-item ${cls}" style="${isEditing ? 'outline:2px solid var(--accent2);outline-offset:2px;' : ''}"><div class="reminder-icon">${icon}</div><div class="reminder-content"><div class="reminder-datetime">${esc(getReminderDatetimeString(r))}</div><div class="reminder-note-text">${esc(r.note)}</div><span class="reminder-status-badge ${badgeCls}">${badgeText}${isEditing ? ' ✏️' : ''}</span></div><div class="reminder-actions"><button class="icon-btn" onclick="startEditReminder(${r.id})" title="${t('reminders_edit')}" style="color:var(--accent2);border-color:var(--accent2);font-size:12px">✏️</button>${!isDone ? `<button class="icon-btn" onclick="markReminderDone(${r.id})" title="${t('reminders_popup_done')}" style="color:var(--ok);border-color:var(--ok)">✓</button>` : `<button class="icon-btn" onclick="toggleReminderStatus(${r.id})" title="${L?'إعادة':'Undo'}" style="color:var(--gold);border-color:var(--gold)">↺</button>`}<button class="icon-btn remove-btn" onclick="deleteReminder(${r.id})" title="${t('reminders_confirm_delete')}">✕</button></div></div>`;
   }).join("");
 }
-
 function updateRemindersBadge(){
   const badge = document.getElementById("remindersBadge"); if(!badge) return;
   const pending = ensureReminders().filter(r => r.status === "pending").length;
@@ -5253,6 +4928,7 @@ function xlTotalRow(ws, r, values, cols, numFmt){ values.forEach((v, c) => { con
 function applySheetRTL(ws, wb){ ws['!views'] = [{ RTL: true }]; if(!wb.Workbook) wb.Workbook = {}; wb.Workbook = { Views: [{ RTL: true }] }; }
 function todayStr(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 
+/* ════════ Excel Exports ════════ */
 function exportDashboardExcel(){
   try {
     if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
@@ -5566,7 +5242,6 @@ function exportAvgYearExcel(year){
     toast(LANG === 'ar' ? '✅ تم تصدير Excel بنجاح' : '✅ Excel exported', 'success');
   } catch(err){ console.error(err); toast((LANG === 'ar' ? '⚠️ فشل التصدير: ' : '⚠️ Failed: ') + (err.message||''), 'error'); }
 }
-/* ⭐ [تعديل] exportReportExcel — استخدام fatherDebtLabel */
 function exportReportExcel(){
   try {
     if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
@@ -5671,6 +5346,57 @@ function exportBanksExcel(){
     XLSX.writeFile(wb, `banks_${todayStr()}.xlsx`, { bookType: 'xlsx', cellStyles: true });
     toast(LANG === 'ar' ? '✅ تم تصدير Excel بنجاح' : '✅ Excel exported', 'success');
   } catch(err){ console.error(err); toast((LANG === 'ar' ? '⚠️ فشل: ' : '⚠️ Failed: ') + (err.message || ''), 'error'); }
+}
+function exportStolenExcel(){
+  try {
+    if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
+    syncFromDOM();
+    const s = ensureStolen();
+    const L = LANG === 'ar'; const cur = L ? 'د.ب' : 'BHD';
+    const wb = XLSX.utils.book_new(); wb.Workbook = { Views: [{ RTL: true }] };
+    const ws = {}; const cols = 4;
+    let r = 0;
+    xlTitleRow(ws, r, cols, L ? '🚨 كم تم السرقه مني' : '🚨 How much was stolen', { sz: 16, h: 34 }); r++;
+    xlTitleRow(ws, r, cols, 'Muharraqi — Capital Manager', { fill: XL.header, sz: 11, h: 22 }); r++;
+    xlTitleRow(ws, r, cols, `${L ? 'التاريخ' : 'Date'}: ${todayStr()} | ${L ? 'البنك' : 'Bank'}: ${s.bank || '—'}`, { sz: 10, h: 20, fill: 'E2E8F0', color: '334155' }); r++; r++;
+    xlSectionRow(ws, r, cols, L ? '📋 الحركات' : '📋 Transactions', XL.header); r++;
+    xlHeaderRow(ws, r, [L ? 'النوع' : 'Type', L ? 'المبلغ' : 'Amount', L ? 'التاريخ' : 'Date', L ? 'ملاحظة' : 'Note'], XL.header); r++;
+    s.transactions.forEach((tr, idx) => {
+      const typeLabel = tr.type === 'fee' ? (L ? 'رسوم التحويل الى العمله' : 'Transfer Fee') : (L ? 'المبلغ' : 'Amount');
+      xlDataRow(ws, r, [typeLabel, +tr.amount || 0, tr.date || '—', tr.note || '—'], cols, { fill: tr.type === 'fee' ? XL.goldBg : XL.rowAlt, numFmt: '#,##0.000' }); r++;
+    });
+    r++;
+    xlSectionRow(ws, r, cols, L ? '📊 المجاميع' : '📊 Totals', XL.inputHdr); r++;
+    xlHeaderRow(ws, r, [L ? 'البند' : 'Item', L ? 'القيمة (' + cur + ')' : 'Value (BHD)', '', ''], XL.inputHdr); r++;
+    xlDataRow(ws, r, [L ? 'الرسوم فقط' : 'Fees Only', stolenTotalFees(), '', ''], cols, { fill: XL.goldBg, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'المبلغ الكلي مع الرسوم' : 'Total with Fees', stolenTotalWithFees(), '', ''], cols, { fill: XL.cyanBg, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'المبلغ الكلي بدون الرسوم' : 'Total without Fees', stolenTotalWithoutFees(), '', ''], cols, { fill: XL.greenBg, numFmt: '#,##0.000' }); r++;
+    r++;
+    xlSectionRow(ws, r, cols, L ? '💳 الوضع قبل الترجيع' : '💳 Before Reversal', XL.header); r++;
+    xlHeaderRow(ws, r, [L ? 'البند' : 'Item', L ? 'القيمة (' + cur + ')' : 'Value (BHD)', '', ''], XL.header); r++;
+    xlDataRow(ws, r, [L ? 'اصل الموجود في البطاقة' : 'Original Card Balance', +s.before.original || 0, '', ''], cols, { fill: XL.rowAlt, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'المتبقي في البطاقة' : 'Remaining Card Balance', +s.before.remaining || 0, '', ''], cols, { fill: XL.rowAlt, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'يجب الدفع للبنك' : 'Must Pay Bank', stolenMustPayBefore(), '', ''], cols, { fill: XL.redBg, numFmt: '#,##0.000' }); r++;
+    r++;
+    xlSectionRow(ws, r, cols, L ? '✅ الوضع بعد الترجيع' : '✅ After Reversal', XL.header); r++;
+    xlHeaderRow(ws, r, [L ? 'البند' : 'Item', L ? 'القيمة (' + cur + ')' : 'Value (BHD)', '', ''], XL.header); r++;
+    xlDataRow(ws, r, [L ? 'اصل الموجود في البطاقة' : 'Original Card Balance', +s.after.original || 0, '', ''], cols, { fill: XL.rowAlt, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'يجب الدفع للبنك بعد التعديل' : 'Must Pay After Adjustment', +s.after.mustPay || 0, '', ''], cols, { fill: XL.redBg, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'المتبقي بعد التعديل' : 'Remaining After Adjustment', stolenRemAfter(), '', ''], cols, { fill: XL.greenBg, numFmt: '#,##0.000' }); r++;
+    r++;
+    xlSectionRow(ws, r, cols, L ? '⚖️ المقارنة' : '⚖️ Comparison', XL.convHdr); r++;
+    xlHeaderRow(ws, r, [L ? 'البند' : 'Item', L ? 'خسران (قبل)' : 'Loss (Before)', L ? 'بعد الترجيع' : 'After Reversal', ''], XL.convHdr); r++;
+    xlDataRow(ws, r, [L ? 'يجب الدفع / المتبقي' : 'Must Pay / Remaining', stolenMustPayBefore(), stolenRemAfter(), ''], cols, { fill: XL.rowAlt, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'الرسوم فقط' : 'Fees Only', stolenTotalFees(), +s.after.mustPay || 0, ''], cols, { fill: XL.goldBg, numFmt: '#,##0.000' }); r++;
+    xlDataRow(ws, r, [L ? 'إجمالي المسروق' : 'Total Stolen', stolenTotalWithFees(), stolenRecoveredAmount(), ''], cols, { fill: XL.cyanBg, numFmt: '#,##0.000' }); r++;
+    xlTotalRow(ws, r, [L ? '🎯 صافي الخسارة' : '🎯 Net Loss', stolenNetLoss(), '', ''], cols); r++;
+    ws['!cols'] = [{wch:32}, {wch:18}, {wch:18}, {wch:24}];
+    ws['!ref'] = XLSX.utils.encode_range({s:{r:0,c:0},e:{r, c:cols-1}});
+    applySheetRTL(ws, wb);
+    XLSX.utils.book_append_sheet(wb, ws, L ? 'السرقة' : 'Stolen');
+    XLSX.writeFile(wb, `stolen_${todayStr()}.xlsx`, { bookType: 'xlsx', cellStyles: true });
+    toast(t('stolen_excel_ok'), 'success');
+  } catch(err){ console.error(err); toast((LANG==='ar'?'⚠️ فشل التصدير: ':'⚠️ Failed: ') + (err.message||''), 'error'); }
 }
 
 /* ════════ PDF ════════ */
@@ -5920,9 +5646,84 @@ function generateDebtsTablePrintHTML(){
 }
 function printDebtsTable(){ const html = generateDebtsTablePrintHTML(); const w = window.open('', '_blank', 'width=1200,height=800'); if(w){ w.document.open(); w.document.write(html); w.document.close(); setTimeout(() => { try { w.focus(); w.print(); } catch(e){} }, 500); } else { toast(t('print_error_popup'), 'error'); } }
 async function shareDebtsTablePDF(){ try { toast(t('creating_pdf')); const htmlStr = generateDebtsTablePrintHTML(); const filename = `debts_table_${todayStr()}.pdf`; const blob = await generatePdfInWindow(htmlStr, filename, 'landscape'); if(!blob){ toast(t('share_failed'), 'error'); return; } await sharePdfBlob(blob, filename); } catch(err){ if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; } toast(t('share_failed'), 'error'); } }
+
+/* ════════ ⭐ [جديد] printStolen + generateStolenHTML ════════ */
+function generateStolenHTML(){
+  const s = ensureStolen();
+  const L = LANG === 'ar'; const cur = L ? 'د.ب' : 'BHD';
+  const now = new Date();
+  const dateStr = now.toLocaleDateString(L ? 'ar-BH' : 'en-GB', {year:'numeric', month:'long', day:'numeric'});
+  const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+  let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${t('lblStolenTitle')}</title><style>@page{size:A4;margin:12mm}*{box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}body{font-family:'Segoe UI',Tahoma,sans-serif;color:#000;background:#fff;padding:10px;line-height:1.6;margin:0;direction:${L?'rtl':'ltr'}}.header{text-align:center;margin-bottom:20px;padding-bottom:10px;border-bottom:3px double #333}.header .logo{display:inline-block;width:54px;height:54px;line-height:54px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;font-weight:900;font-size:24px;text-align:center}.header h2{margin:10px 0 4px;color:#b91c1c;font-size:20px}.header .meta{color:#666;font-size:12px}.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 20px}.kpi{border:2px solid #ccc;border-radius:8px;padding:10px 8px;text-align:center;background:#f9fafb}.kpi .lbl{font-size:11px;color:#666;margin-bottom:5px;font-weight:600}.kpi .val{font-size:15px;font-weight:800;font-family:monospace}.kpi.gold{border-color:#d97706;background:#fffbeb}.kpi.gold .val{color:#d97706}.kpi.red{border-color:#dc2626;background:#fef2f2}.kpi.red .val{color:#dc2626}.kpi.green{border-color:#16a34a;background:#f0fdf4}.kpi.green .val{color:#16a34a}.kpi.blue{border-color:#2563eb;background:#eff6ff}.kpi.blue .val{color:#2563eb}.section-title{background:#f0f4f8;padding:8px 12px;border-right:5px solid #b91c1c;font-weight:700;margin:18px 0 8px;font-size:13px;color:#1e293b}table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px}th{background:#e5e7eb;color:#111;padding:7px 8px;text-align:${L?'right':'left'};border:1px solid #999;font-size:10px;font-weight:700}td{padding:6px 8px;border:1px solid #ccc;text-align:${L?'right':'left'}}td.num{font-family:monospace;text-align:center;font-weight:700}tbody tr:nth-child(even){background:#f9fafb}.total-row{background:#fef3c7 !important;font-weight:800}.total-row td{border:2px solid #d97706;font-family:monospace;font-size:13px}.footer{text-align:center;margin-top:28px;padding-top:10px;border-top:2px solid #999;color:#666;font-size:10px;line-height:1.6}.footer strong{color:#b91c1c}</style></head><body>`;
+  html += `<div class="header"><div class="logo">M</div><h2>🚨 ${t('lblStolenTitle')}</h2><div class="meta">${L ? 'البنك' : 'Bank'}: <strong>${esc(s.bank) || '—'}</strong> — ${t('print_generated')}: ${dateStr} — ${timeStr}</div></div>`;
+  html += `<div class="kpis"><div class="kpi gold"><div class="lbl">💸 ${L?'الرسوم فقط':'Fees Only'}</div><div class="val">${fmt(stolenTotalFees())} ${cur}</div></div><div class="kpi red"><div class="lbl">💵 ${L?'المبلغ الكلي مع الرسوم':'Total with Fees'}</div><div class="val">${fmt(stolenTotalWithFees())} ${cur}</div></div><div class="kpi green"><div class="lbl">💰 ${L?'المبلغ الكلي بدون الرسوم':'Total without Fees'}</div><div class="val">${fmt(stolenTotalWithoutFees())} ${cur}</div></div></div>`;
+  html += `<div class="section-title">📋 ${L?'الحركات':'Transactions'}</div>`;
+  if(!s.transactions.length){ html += `<div style="text-align:center;padding:20px;color:#888;font-style:italic">${L?'لا توجد بنود':'No items'}</div>`; }
+  else {
+    html += `<table><thead><tr><th style="width:36px">${t('print_index')}</th><th>${t('thStolenType')}</th><th style="width:120px">${t('thStolenAmount')} (${cur})</th><th style="width:110px">${t('thStolenDate')}</th><th>${t('thStolenNote')}</th></tr></thead><tbody>`;
+    s.transactions.forEach((tr, idx) => {
+      html += `<tr><td class="num">${idx+1}</td><td>${tr.type === 'fee' ? '📊 ' + t('stolen_fee') : '💵 ' + t('stolen_amount')}</td><td class="num">${fmt(+tr.amount||0)}</td><td class="num" dir="ltr">${esc(tr.date) || '—'}</td><td>${esc(tr.note) || '—'}</td></tr>`;
+    });
+    html += `</tbody></table>`;
+  }
+  html += `<div class="section-title">💳 ${t('lblStolenBeforeTitle')}</div>`;
+  html += `<table><thead><tr><th>${L?'البند':'Item'}</th><th style="width:140px">${L?'القيمة':'Value'} (${cur})</th></tr></thead><tbody>`;
+  html += `<tr><td>${t('lblStolenOrigBefore')}</td><td class="num">${fmt(+s.before.original||0)}</td></tr>`;
+  html += `<tr><td>${t('lblStolenRemBefore')}</td><td class="num">${fmt(+s.before.remaining||0)}</td></tr>`;
+  html += `<tr class="total-row"><td>${t('lblStolenMustPayBefore')}</td><td class="num">${fmt(stolenMustPayBefore())}</td></tr>`;
+  html += `</tbody></table>`;
+  html += `<div class="section-title">✅ ${t('lblStolenAfterTitle')}</div>`;
+  html += `<table><thead><tr><th>${L?'البند':'Item'}</th><th style="width:140px">${L?'القيمة':'Value'} (${cur})</th></tr></thead><tbody>`;
+  html += `<tr><td>${t('lblStolenOrigAfter')}</td><td class="num">${fmt(+s.after.original||0)}</td></tr>`;
+  html += `<tr><td>${t('lblStolenMustPayAfter')}</td><td class="num">${fmt(+s.after.mustPay||0)}</td></tr>`;
+  html += `<tr class="total-row"><td>${t('lblStolenRemAfter')}</td><td class="num">${fmt(stolenRemAfter())}</td></tr>`;
+  html += `</tbody></table>`;
+  html += `<div class="section-title">⚖️ ${t('lblStolenCompareTitle')}</div>`;
+  html += `<table><thead><tr><th>${L?'البند':'Item'}</th><th>${L?'خسران (قبل)':'Loss (Before)'}</th><th>${L?'بعد الترجيع':'After Reversal'}</th></tr></thead><tbody>`;
+  html += `<tr><td>${L?'يجب الدفع / المتبقي':'Must Pay / Remaining'}</td><td class="num">${fmt(stolenMustPayBefore())}</td><td class="num">${fmt(stolenRemAfter())}</td></tr>`;
+  html += `<tr><td>${L?'الرسوم فقط':'Fees Only'}</td><td class="num">${fmt(stolenTotalFees())}</td><td class="num">${fmt(+s.after.mustPay||0)}</td></tr>`;
+  html += `<tr><td>${L?'إجمالي المسروق':'Total Stolen'}</td><td class="num">${fmt(stolenTotalWithFees())}</td><td class="num">${fmt(stolenRecoveredAmount())}</td></tr>`;
+  html += `<tr class="total-row"><td>🎯 ${L?'صافي الخسارة':'Net Loss'}</td><td class="num" colspan="2">${fmt(stolenNetLoss())} ${cur}</td></tr>`;
+  html += `</tbody></table>`;
+  html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div></body></html>`;
+  return html;
+}
+function printStolen(){
+  const htmlStr = generateStolenHTML();
+  if(!htmlStr) return;
+  const w = window.open('', '_blank', 'width=900,height=900');
+  if(w){ w.document.open(); w.document.write(htmlStr); w.document.close(); setTimeout(() => { try { w.focus(); w.print(); } catch(e){} }, 500); }
+  else { toast(t('print_error_popup'), 'error'); }
+}
+async function shareStolenPDF(){
+  try {
+    toast(t('creating_pdf'));
+    const htmlStr = generateStolenHTML();
+    const filename = `stolen_${todayStr()}.pdf`;
+    const blob = await generatePdfInWindow(htmlStr, filename, 'portrait');
+    if(!blob){ toast(t('share_failed'), 'error'); return; }
+    await sharePdfBlob(blob, filename);
+  } catch(err){ if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; } toast(t('share_failed'), 'error'); }
+}
+
+/* ════════ Print / Orientation ════════ */
+function setPrintOrientation(orientation){
+  let styleEl = document.getElementById('print-orientation-style');
+  if(!styleEl){ styleEl = document.createElement('style'); styleEl.id = 'print-orientation-style'; document.head.appendChild(styleEl); }
+  if(orientation === 'landscape'){ document.documentElement.classList.add('print-landscape'); styleEl.textContent = '@media print { @page { size: A4 landscape !important; margin: 8mm 6mm !important; } }'; }
+  else { document.documentElement.classList.remove('print-landscape'); styleEl.textContent = '@media print { @page { size: A4 portrait !important; margin: 8mm 6mm !important; } }'; }
+}
+function syncFromDOM(){ if(SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; } if(typeof saveNow === 'function') saveNow(); }
+function updateMonthPrintBtn(){
+  const btn = document.getElementById('btnPrintMonth'); const btnShare = document.getElementById('btnShareMonth');
+  const monthName = getMonths()[state.activeMonth]; const label = `${monthName} ${state.activeYear}`;
+  if(btn) btn.textContent = `🖨️ ${t('btn_print_month')} — ${label}`;
+  if(btnShare) btnShare.textContent = `📤 ${t('btn_share_pdf')} — ${label}`;
+}
 function printCurrentView(includeMonthName, orientation){
   const view = document.querySelector('nav.tabs button.active')?.dataset.view;
   if(view === 'debts'){ printDebtsTable(); return; }
+  if(view === 'stolen'){ printStolen(); return; }
   const now = new Date();
   const dateStr = now.toLocaleDateString(LANG === 'ar' ? 'ar-BH' : 'en-GB', { year:'numeric', month:'long', day:'numeric' });
   const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
@@ -5936,6 +5737,8 @@ function printCurrentView(includeMonthName, orientation){
   setTimeout(() => { window.print(); setTimeout(() => setPrintOrientation('portrait'), 800); }, 120);
 }
 function printPage(){ const view = document.querySelector('nav.tabs button.active')?.dataset.view; const landscapeViews = ['annual','years','pyramid','avg']; const orientation = landscapeViews.includes(view) ? 'landscape' : 'portrait'; printCurrentView(view === 'month', orientation); }
+
+/* ════════ Avg Year Report ════════ */
 function generateAvgYearReportHTML(year){
   const L = LANG === 'ar'; const cur = L ? 'د.ب' : 'BHD'; const months = getMonths(); const monthsArr = Mof(year); const sections = getAvgSections();
   const now = new Date();
@@ -5967,6 +5770,8 @@ function generateAvgYearReportHTML(year){
 }
 function printAvgYear(year){ const htmlStr = generateAvgYearReportHTML(year); if(!htmlStr) return; const w = window.open('', '_blank', 'width=1200,height=900'); if(w){ w.document.open(); w.document.write(htmlStr); w.document.close(); setTimeout(() => { try { w.focus(); w.print(); } catch(e){} }, 500); } else { toast(t('print_error_popup'), 'error'); } }
 async function shareAvgYearPDF(year){ try { toast(t('creating_pdf')); const htmlStr = generateAvgYearReportHTML(year); if(!htmlStr){ toast(t('share_failed'), 'error'); return; } const filename = `avg-year-${year}_${todayStr()}.pdf`; const blob = await generatePdfInWindow(htmlStr, filename, 'landscape'); if(!blob){ toast(t('share_failed'), 'error'); return; } await sharePdfBlob(blob, filename); } catch(err){ if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; } toast(t('share_failed'), 'error'); } }
+
+/* ════════ Pyramid Level Report ════════ */
 function generatePyramidLevelReportHTML(key){
   const lvl = getPyramidLevels().find(l => l.key === key); if(!lvl) return '';
   const L = LANG === 'ar'; const cur = L ? 'د.ب' : 'BHD'; const monthNames = getMonths();
@@ -6007,6 +5812,83 @@ function generatePyramidLevelReportHTML(key){
 }
 function printPyramidLevelDetail(key){ const htmlStr = generatePyramidLevelReportHTML(key); if(!htmlStr) return; const w = window.open('', '_blank', 'width=900,height=900'); if(w){ w.document.open(); w.document.write(htmlStr); w.document.close(); setTimeout(() => { try { w.focus(); w.print(); } catch(e){} }, 500); } else { toast(t('print_error_popup'), 'error'); } }
 async function sharePyramidLevelPDF(key){ try { const lvl = getPyramidLevels().find(l => l.key === key); if(!lvl){ toast(t('share_failed'), 'error'); return; } toast(t('creating_pdf')); const htmlStr = generatePyramidLevelReportHTML(key); const safeName = lvl.label.replace(/[^\w\u0600-\u06FF]/g, '_'); const filename = `pyramid_${safeName}_${todayStr()}.pdf`; const blob = await generatePdfInWindow(htmlStr, filename, 'portrait'); if(!blob){ toast(t('share_failed'), 'error'); return; } await sharePdfBlob(blob, filename); } catch(err){ if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; } toast(t('share_failed'), 'error'); } }
+
+/* ════════ ⭐ [تحديث] applyLang — يشمل ترجمة التجوري ════════ */
+function applyLang(){
+  document.documentElement.lang = LANG;
+  document.documentElement.dir = LANG === 'ar' ? 'rtl' : 'ltr';
+  document.getElementById('langBtn').textContent = LANG === 'ar' ? '🌐 EN' : '🌐 عربي';
+  document.getElementById('appTitle').textContent = t('app_title');
+  document.getElementById('btnExport').textContent = t('btn_export');
+  document.getElementById('btnImport').textContent = t('btn_import');
+  document.getElementById('btnReset').textContent = t('btn_reset');
+  document.getElementById('btnSaveManual').textContent = t('btn_save');
+  document.getElementById('btnInstructions').textContent = t('btn_instructions');
+  document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.dataset.i18n; if(I18N[LANG][k]) el.textContent = I18N[LANG][k]; });
+  const ids = {
+    dashTitle1:'dash_title1',dashTitle2:'dash_title2',dashTitle3:'dash_title3',dashTitle4:'dash_title4',
+    noticeBhd:'notice_bhd',dateTitle:'date_title',lblDate:'lbl_date',lblTime:'lbl_time',lblLastMod:'lbl_lastmod',
+    lblSalarySection:'lbl_salary_section',thSalItem:'th_income_item',thSalAmount:'th_income_amount',thSalNote:'th_income_note',
+    lblIncome:'lbl_income',eidTitle:'eid_title',lblEidState:'lbl_eid_state',lblEidAmount:'lbl_eid_amount',
+    lblExpenses:'lbl_expenses',thItem:'th_item',thAmount:'th_amount',thBank:'th_bank',thNote:'th_note',thRef:'th_ref',
+    lblDebtsMonth:'lbl_debts_month',debtsMonthHelp:'debts_month_help',thDebtName:'th_debt_name',thDebtType:'th_debt_type',
+    thDebtTotal:'th_debt_total',thDebtRemBefore:'th_debt_rem_before',thDebtThisMonth:'th_debt_this_month',thDebtRemAfter:'th_debt_rem_after',
+    thDebtNote:'th_debt_note',thDebtBank:'th_debt_bank',thDebtRef:'th_debt_ref',lblSavings:'lbl_savings',savingsHint:'savings_hint',
+    thSavItem:'th_sav_item',thSavAmount:'th_sav_amount',thSavBank:'th_sav_bank',thSavNote:'th_sav_note',thSavRef:'th_sav_ref',
+    lblMonthResult:'lbl_month_result',lblMonthNotes:'lbl_month_notes',lblPyrTitle:'pyr_title',lblPyrDesc:'pyr_desc',lblPyrDetail:'pyr_detail',
+    lblPyramidTargets:'lbl_pyramid_targets',lblPyramidTargetsHint:'lbl_pyramid_targets_hint',thTgtItem:'th_tgt_item',thTgtTarget:'th_tgt_target',
+    thTgtSaved:'th_tgt_saved',thTgtWithdrawn:'th_tgt_withdrawn',thTgtNet:'th_tgt_net',thTgtProgress:'th_tgt_progress',thTgtStatus:'th_tgt_status',
+    thTgtNote:'th_tgt_note',thTgtActions:'th_tgt_actions',instTitle:'inst_title',lblDebtsSummary:'debts_summary',lblAddDebt:'add_debt',
+    lblDebtName:'lbl_debt_name',lblDebtType:'lbl_debt_type',lblDebtCat:'lbl_debt_cat',lblDebtTotal:'lbl_debt_total',lblDebtPaidBefore:'lbl_debt_paidbefore',
+    lblDebtStart:'lbl_debt_start',lblDebtEnd:'lbl_debt_end',lblDebtNotes:'lbl_debt_notes',btnAddDebt:'btn_add_debt',lblDebtsTable:'debts_table',
+    lblDebtsTableHint:'debts_table_hint',lblAnnualTitle:'lbl_annual',lblYearsKpi:'y_title_kpi',lblYearsChart:'y_title_chart',lblYearsTable:'y_title_table',
+    lblYearsDist:'y_title_dist',footerLocalized:'footer',phTitle:'print_title',phSubtitle:'print_subtitle',lblCarInsuranceOT:'lbl_car_insurance_ot',
+    lblZakatOT:'lbl_zakat_ot',thCIItem:'th_item',thCIAmount:'th_amount',thCIBank:'th_bank',thCINote:'th_note',thCIRef:'th_ref',
+    thZKItem:'th_item',thZKAmount:'th_amount',thZKBank:'th_bank',thZKNote:'th_note',thZKRef:'th_ref',
+    thIncItem:'th_income_item',thIncAmount:'th_income_amount',thIncNote:'th_income_note',lblMeatSupport:'f_meat_support',lblMeatAmount:'f_meat_amount',
+    avgAllTitle:'avg_all_title',avgAllHint:'avg_all_hint',avgTitle:'avg_title',
+    lblReportTitle:'rp_title',lblReportFather:'rp_father',lblReportFatherName:'rp_father_label',lblReportElecBill:'rp_elec_bill',
+    lblReportElecBox:'lblReportElecBox',lblReportProfitToggle:'rp_profit_toggle',
+    lblReportShePays:'rp_she_pays',lblReportPurchases:'rp_purchases',
+    btnAddReportPurchase:'rp_add_purchase',thRpIndex:'print_index',thRpName:'rp_name',thRpAmount:'rp_amount',
+    lblReportResults:'rp_results',thRpItem:'rp_item',thRpValue:'rp_value',lblReportNotes:'rp_notes',
+    remindersTitle:'reminders_title',remDateLabel:'reminders_date',remTimeLabel:'reminders_time',remNoteLabel:'reminders_note',remAddBtn:'reminders_add_btn',
+    lblBanksTitle:'bank_title',lblBanksHint:'bank_hint',thBankName:'bank_th_name',thBankAmount:'bank_th_amount',
+    btnAddBankRow:'bank_btn_add_row',btnResetBanks:'bank_btn_reset',lblBanksSummary:'bank_summary',
+    lblStolenTitle:'lblStolenTitle',lblStolenHint:'lblStolenHint',lblStolenBank:'lblStolenBank',
+    thStolenIndex:'thStolenIndex',thStolenType:'thStolenType',thStolenAmount:'thStolenAmount',
+    thStolenDate:'thStolenDate',thStolenNote:'thStolenNote',
+    lblStolenSummaryTitle:'lblStolenSummaryTitle',lblStolenBeforeTitle:'lblStolenBeforeTitle',
+    lblStolenBeforeHint:'lblStolenBeforeHint',lblStolenOrigBefore:'lblStolenOrigBefore',
+    lblStolenRemBefore:'lblStolenRemBefore',lblStolenMustPayBefore:'lblStolenMustPayBefore',
+    lblStolenAfterTitle:'lblStolenAfterTitle',lblStolenAfterHint:'lblStolenAfterHint',
+    lblStolenOrigAfter:'lblStolenOrigAfter',lblStolenMustPayAfter:'lblStolenMustPayAfter',
+    lblStolenRemAfter:'lblStolenRemAfter',lblStolenCompareTitle:'lblStolenCompareTitle',
+    lblStolenLossBefore:'lblStolenLossBefore',lblStolenLossAfter:'lblStolenLossAfter',
+    btnAddStolen:'stolen_btn_add',btnResetStolen:'stolen_btn_reset',lblEidiTitle:'lblEidiTitle',lblEidiHint:'lblEidiHint',lblEidiSummary:'lblEidiSummary',
+    thEidiIndex:'thEidiIndex',thEidiName:'thEidiName',thEidiAmount:'thEidiAmount',
+    btnAddEidi:'eidi_add_btn',btnResetEidi:'eidi_reset_btn',
+    /* ⭐ [جديد] ترجمة رؤوس وعناوين تبويب التجوري — lblCashHint يُعالج بـ innerHTML في renderCash */
+    lblCashTitle:'cash_title',
+    lblCashSummary:'cash_summary',
+    thCashItem:'cash_th_item',
+    thCashValue:'cash_th_value',
+    thCashCount:'cash_th_count',
+    thCashAmount:'cash_th_amount',
+  };
+  Object.keys(ids).forEach(id => { const el = document.getElementById(id); if(el) el.textContent = t(ids[id]); });
+  renderAll();
+  if(document.getElementById("remindersModal")?.classList.contains("show")) renderReminders();
+  if(typeof updateRemindersBadge === 'function') updateRemindersBadge();
+  if(typeof updateReminderFormMode === 'function') updateReminderFormMode();
+}
+
+/* ════════ Lang / Theme / Font ════════ */
+function toggleLang(){ LANG = LANG === 'ar' ? 'en' : 'ar'; localStorage.setItem('cm_lang', LANG); applyLang(); toast(LANG === 'ar' ? '✅ تم التبديل للعربية' : '✅ Switched to English'); }
+function applyTheme(){ document.documentElement.dataset.theme = THEME; document.getElementById('themeBtn').textContent = THEME === 'dark' ? '🌙' : '☀️'; }
+function toggleTheme(){ THEME = THEME === 'dark' ? 'light' : 'dark'; localStorage.setItem('cm_theme', THEME); applyTheme(); toast(THEME === 'dark' ? (LANG==='ar'?'🌙 ليلي':'🌙 Dark') : (LANG==='ar'?'☀️ نهاري':'☀️ Light')); }
+function applyFontScale(){ document.getElementById('mainContent').style.zoom = FONT_SCALE; }
+function changeFontSize(delta){ FONT_SCALE = Math.max(0.75, Math.min(1.6, FONT_SCALE + delta * 0.1)); localStorage.setItem('cm_font', FONT_SCALE); applyFontScale(); toast((LANG==='ar'?'🔠 ':'🔠 ') + Math.round(FONT_SCALE*100) + '%'); }
 
 /* ════════ Events + Init ════════ */
 document.querySelectorAll("nav.tabs button").forEach(btn=>{
