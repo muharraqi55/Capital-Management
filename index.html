@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>إدارة رأس المال | Capital Manager</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+
 <style>
 
 :root{--bg:#0f1720;--panel:#17212b;--panel2:#1e2b38;--line:#2a3a4a;--txt:#e6eef7;--muted:#8fa3b8;--accent:#22c1a4;--accent2:#3b82f6;--danger:#ef4444;--ok:#22c55e;--gold:#eab308;--shadow:rgba(0,0,0,.35);}
@@ -414,6 +415,143 @@ html[dir="ltr"] .target-table .num{text-align:right}
 #lblReportFather{font-size:22px !important;font-weight:700;color:var(--gold) !important}
 #rpFather{font-size:22px !important;font-weight:700;text-align:center}
 
+/* ═══════════════════════════════════════════════════════════════
+   🆕 أنماط حاوية "حسبة البطاقة" — جديدة
+   ═══════════════════════════════════════════════════════════════ */
+.card-calc{
+  border:2px solid var(--accent2);
+  background:linear-gradient(180deg,rgba(59,130,246,.10),rgba(34,193,164,.04));
+  box-shadow:0 0 0 3px rgba(59,130,246,.12);
+}
+.card-calc h2{
+  color:var(--accent2) !important;
+  border-bottom-color:rgba(59,130,246,.4) !important;
+}
+.card-calc h2::before{
+  content:"💳" !important;
+  color:var(--accent2) !important;
+  font-size:14px !important;
+}
+.card-calc .field label{
+  color:var(--accent2);
+  font-weight:700;
+  font-size:12px;
+}
+.card-calc .field input[type="number"]{
+  background:var(--panel2);
+  border:2px solid var(--line);
+  color:var(--gold);
+  font-weight:800;
+  font-family:monospace;
+  font-size:16px;
+  text-align:center;
+  padding:12px 14px;
+  border-radius:8px;
+  transition:.2s;
+}
+.card-calc .field input[type="number"]:focus{
+  border-color:var(--accent2);
+  box-shadow:0 0 0 3px rgba(59,130,246,.25);
+  background:var(--bg);
+}
+.card-calc .field input[type="number"]:not(:placeholder-shown){
+  color:var(--gold);
+}
+.card-calc-readonly{
+  font-family:monospace !important;
+  font-weight:900 !important;
+  font-size:18px !important;
+  text-align:center !important;
+  padding:12px 14px !important;
+  border:2px solid !important;
+  border-radius:8px !important;
+  letter-spacing:.3px;
+  direction:ltr;
+  cursor:not-allowed;
+}
+.card-calc-readonly.card-calc-red{
+  background:rgba(239,68,68,.15) !important;
+  color:var(--danger) !important;
+  border-color:var(--danger) !important;
+  box-shadow:0 0 0 2px rgba(239,68,68,.15);
+}
+.card-calc-readonly.card-calc-blue{
+  background:rgba(59,130,246,.15) !important;
+  color:var(--accent2) !important;
+  border-color:var(--accent2) !important;
+  box-shadow:0 0 0 2px rgba(59,130,246,.15);
+}
+.card-calc-readonly.card-calc-green{
+  background:rgba(34,197,94,.15) !important;
+  color:var(--ok) !important;
+  border-color:var(--ok) !important;
+  box-shadow:0 0 0 2px rgba(34,197,94,.15);
+}
+.card-calc-summary{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+  gap:10px;
+  padding:14px;
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:10px;
+}
+.card-calc-summary:empty{
+  display:none;
+}
+.card-calc-summary .calc-kpi{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  padding:12px 10px;
+  border-radius:8px;
+  background:var(--panel);
+  border:2px solid var(--line);
+  text-align:center;
+}
+.card-calc-summary .calc-kpi .lbl{
+  font-size:11px;
+  color:var(--muted);
+  font-weight:700;
+  letter-spacing:.2px;
+}
+.card-calc-summary .calc-kpi .val{
+  font-family:monospace;
+  font-size:18px;
+  font-weight:900;
+  direction:ltr;
+  letter-spacing:-.3px;
+}
+.card-calc-summary .calc-kpi.kpi-red{
+  border-color:rgba(239,68,68,.6);
+  background:rgba(239,68,68,.08);
+}
+.card-calc-summary .calc-kpi.kpi-red .val{color:var(--danger)}
+.card-calc-summary .calc-kpi.kpi-blue{
+  border-color:rgba(59,130,246,.6);
+  background:rgba(59,130,246,.08);
+}
+.card-calc-summary .calc-kpi.kpi-blue .val{color:var(--accent2)}
+.card-calc-summary .calc-kpi.kpi-green{
+  border-color:rgba(34,197,94,.6);
+  background:rgba(34,197,94,.08);
+}
+.card-calc-summary .calc-kpi.kpi-green .val{color:var(--ok)}
+.card-calc-summary .calc-kpi.kpi-gold{
+  border-color:rgba(234,179,8,.6);
+  background:rgba(234,179,8,.08);
+}
+.card-calc-summary .calc-kpi.kpi-gold .val{color:var(--gold)}
+.card-calc-summary .calc-kpi.kpi-neg .val{color:var(--danger) !important}
+.card-calc-summary .calc-kpi.kpi-pos .val{color:var(--ok) !important}
+@media (max-width:600px){
+  .card-calc .field input[type="number"]{font-size:15px;padding:10px 12px}
+  .card-calc-readonly{font-size:16px !important;padding:10px 12px !important}
+  .card-calc-summary{grid-template-columns:1fr 1fr}
+  .card-calc-summary .calc-kpi .val{font-size:15px}
+}
+
 @media print{
   *{-webkit-print-color-adjust: exact !important;print-color-adjust: exact !important;color-adjust: exact !important;}
   @page{size: A4 portrait;margin:10mm 8mm}
@@ -500,6 +638,27 @@ html[dir="ltr"] .target-table .num{text-align:right}
   #avgContainer .pyramid-year-table th,#avgContainer .pyramid-year-table td{padding:1pt 0.5pt !important;font-size:5pt !important;white-space:normal !important}
   .profit-toggle-btn{background:#f5f5f5 !important;color:#000 !important;border:1px solid #666 !important;box-shadow:none !important;font-size:8pt !important;padding:4pt !important}
   .rp-points-cell{color:#78350f !important;font-weight:800 !important}
+  /* 🆕 طباعة حسبة البطاقة */
+  .card-calc{border:2px solid #1e40af !important;background:#eff6ff !important;box-shadow:none !important}
+  .card-calc h2{color:#1e40af !important}
+  .card-calc h2::before{color:#1e40af !important}
+  .card-calc .field label{color:#1e40af !important}
+  .card-calc-readonly{font-size:9pt !important;padding:2pt 4pt !important;background:#fff !important;border:1px solid #666 !important;color:#000 !important;box-shadow:none !important}
+  .card-calc-readonly.card-calc-red{background:#fee2e2 !important;color:#991b1b !important;border-color:#991b1b !important}
+  .card-calc-readonly.card-calc-blue{background:#dbeafe !important;color:#1e40af !important;border-color:#1e40af !important}
+  .card-calc-readonly.card-calc-green{background:#dcfce7 !important;color:#166534 !important;border-color:#166534 !important}
+  .card-calc-summary{background:#f5f5f5 !important;border:1px solid #ccc !important;padding:6pt !important;gap:6pt !important}
+  .card-calc-summary .calc-kpi{background:#fff !important;border:1px solid #999 !important;padding:4pt !important}
+  .card-calc-summary .calc-kpi .lbl{color:#333 !important;font-size:7pt}
+  .card-calc-summary .calc-kpi .val{color:#000 !important;font-size:9pt}
+  .card-calc-summary .calc-kpi.kpi-red{border-color:#991b1b !important;background:#fee2e2 !important}
+  .card-calc-summary .calc-kpi.kpi-red .val{color:#991b1b !important}
+  .card-calc-summary .calc-kpi.kpi-blue{border-color:#1e40af !important;background:#dbeafe !important}
+  .card-calc-summary .calc-kpi.kpi-blue .val{color:#1e40af !important}
+  .card-calc-summary .calc-kpi.kpi-green{border-color:#166534 !important;background:#dcfce7 !important}
+  .card-calc-summary .calc-kpi.kpi-green .val{color:#166534 !important}
+  .card-calc-summary .calc-kpi.kpi-gold{border-color:#78350f !important;background:#fef3c7 !important}
+  .card-calc-summary .calc-kpi.kpi-gold .val{color:#78350f !important}
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1865,7 +2024,6 @@ html[dir="ltr"] .confirm-reset-details li::before{
   <div class="card" style="border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.06),transparent)">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
       <h2 id="lblCashTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none;color:var(--gold)">💰 كم لدي كاش في التجوري</h2>
-      <!-- ⭐ [تعديل] data-i18n="cash_reset_btn" للترجمة التلقائية -->
       <button class="btn danger" onclick="resetCash()" data-i18n="cash_reset_btn" style="font-size:12px;padding:6px 12px">🗑 تصفير التجوري</button>
     </div>
     <p class="muted" style="margin-bottom:14px" id="lblCashHint">أدخل <strong>العدد (كم حبة لديك)</strong> لكل فئة — يُحسب المبلغ تلقائياً (العدد × قيمة الفئة). الترتيب من الأصغر إلى الأكبر.</p>
@@ -2057,13 +2215,16 @@ html[dir="ltr"] .confirm-reset-details li::before{
   </div>
 
   <div class="print-section">
-    <!-- ⭐ [تعديل] طباعة موحّدة مع تنسيق PDF المخصص -->
     <button class="btn primary" onclick="printStolen()" data-i18n="btn_print_page">🖨️ طباعة هذه الصفحة</button>
     <button class="btn share" onclick="shareStolenPDF()" data-i18n="btn_share_pdf">📤 مشاركة PDF</button>
     <button class="btn excel" onclick="exportStolenExcel()">📊 Excel</button>
   </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     📊 قسم تقرير الشراكة
+     ⭐ تمت إضافة حاوية "حسبة البطاقة" الجديدة تحت حاوية النتائج
+     ═══════════════════════════════════════════════════════════════ -->
 <section id="report" class="view">
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
@@ -2132,6 +2293,53 @@ html[dir="ltr"] .confirm-reset-details li::before{
   <div class="card">
     <h2 id="lblReportResults">📊 النتائج</h2>
     <div class="grid g4" id="reportResults"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       🆕 حاوية "حسبة البطاقة" — جديدة
+       تعمل بنفس فكرة ملف الإكسل Book16.xlsx
+       - اصل موجود البطاقة (B1) - متبقي من قبلي (B2) = يجب ان ادفع (B3)
+       - اصل موجود البطاقة (B1) - متبقي من الطرف الثاني (B5) = مجموع الكلي للدفع (B8)
+       - مجموع الكلي للدفع (B8) - يجب ان ادفع (B3) = يجب ان يدفع (B6)
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="card card-calc" id="cardCalcCard">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
+      <h2 id="lblCardCalcTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none;color:var(--accent2)">💳 حسبة البطاقة</h2>
+      <button class="btn danger" onclick="resetCardCalc()" style="font-size:12px;padding:6px 12px" data-i18n="card_calc_reset">🗑 تصفير الحسبة</button>
+    </div>
+    <p class="muted" style="margin-bottom:14px" id="lblCardCalcHint">أدخل القيم التالية — سيتم حساب المتبقي والمطلوب دفعه تلقائياً بنفس فكرة ملف الإكسل.</p>
+
+    <div class="grid g3">
+      <div class="field">
+        <label id="lblCardOriginal">💰 اصل موجود البطاقة</label>
+        <input type="number" id="cardOriginal" step="0.001" min="0" oninput="updCardCalc('original', this.value)" placeholder="0.000">
+      </div>
+      <div class="field">
+        <label id="lblCardMyRemaining">💸 متبقي من قبلي</label>
+        <input type="number" id="cardMyRemaining" step="0.001" min="0" oninput="updCardCalc('myRemaining', this.value)" placeholder="0.000">
+      </div>
+      <div class="field">
+        <label id="lblCardMustPayMe">🏦 يجب ان ادفع</label>
+        <input type="text" id="cardMustPayMe" class="card-calc-readonly card-calc-red" readonly>
+      </div>
+    </div>
+
+    <div class="grid g3" style="margin-top:14px">
+      <div class="field">
+        <label id="lblCardTheirRemaining">💰 متبقي من الطرف الثاني</label>
+        <input type="number" id="cardTheirRemaining" step="0.001" min="0" oninput="updCardCalc('theirRemaining', this.value)" placeholder="0.000">
+      </div>
+      <div class="field">
+        <label id="lblCardTotalPay">📊 مجموع الكلي للدفع</label>
+        <input type="text" id="cardTotalPay" class="card-calc-readonly card-calc-blue" readonly>
+      </div>
+      <div class="field">
+        <label id="lblCardTheyMustPay">💸 يجب ان يدفع</label>
+        <input type="text" id="cardTheyMustPay" class="card-calc-readonly card-calc-green" readonly>
+      </div>
+    </div>
+
+    <div id="cardCalcSummary" class="card-calc-summary" style="margin-top:16px"></div>
   </div>
 
   <div class="card">
@@ -2300,11 +2508,13 @@ html[dir="ltr"] .confirm-reset-details li::before{
 
 <div class="toast" id="toast"></div>
 
+
 <script>
 /* ═══════════════════════════════════════════════════════════════
    Capital Manager — JavaScript (3-A من 3)
    الأساس: I18N + State + Confirm Reset + Helpers
    يشمل التعديلات: esc() المُصلح، ensureBanks() المُصلح، ترجمة التجوري
+   🆕 [إضافة]: نظام حسبة البطاقة — I18N + State + resetCardCalc + ensureReport
    ═══════════════════════════════════════════════════════════════ */
 
 const I18N = {
@@ -2522,6 +2732,29 @@ eidi_kpi_total:"💰 إجمالي العيادي",eidi_kpi_count:"📋 عدد ا
     cash_summary:"📊 ملخص التجوري",
     cash_kpi_total:"💰 إجمالي الكاش",
     cash_total_row:"📊 المجموع الكلي للتجوري",
+    /* 🆕 [جديد] ترجمة حسبة البطاقة */
+    card_calc_title:"💳 حسبة البطاقة",
+    card_calc_reset:"🗑 تصفير الحسبة",
+    card_calc_hint:"أدخل القيم التالية — سيتم حساب المتبقي والمطلوب دفعه تلقائياً بنفس فكرة ملف الإكسل.",
+    lblCardOriginal:"💰 اصل موجود البطاقة",
+    lblCardMyRemaining:"💸 متبقي من قبلي",
+    lblCardMustPayMe:"🏦 يجب ان ادفع",
+    lblCardTheirRemaining:"💰 متبقي من الطرف الثاني",
+    lblCardTotalPay:"📊 مجموع الكلي للدفع",
+    lblCardTheyMustPay:"💸 يجب ان يدفع",
+    card_calc_kpi_original:"💰 اصل الموجود",
+    card_calc_kpi_my_rem:"💸 متبقي من قبلي",
+    card_calc_kpi_their_rem:"💰 متبقي من الطرف الثاني",
+    card_calc_kpi_must_pay_me:"🏦 يجب ان ادفع",
+    card_calc_kpi_total_pay:"📊 المجموع الكلي",
+    card_calc_kpi_they_must_pay:"💸 يجب ان يدفع",
+    card_calc_reset_title:"تصفير حسبة البطاقة",
+    card_calc_reset_warning:"سيتم تصفير جميع القيم المالية في حسبة البطاقة — لا يمكن التراجع!",
+    card_calc_reset_ok:"✅ تم تصفير حسبة البطاقة",
+    card_calc_reset_details_1:"<strong>اصل موجود البطاقة</strong> → 0",
+    card_calc_reset_details_2:"<strong>متبقي من قبلي</strong> → 0",
+    card_calc_reset_details_3:"<strong>متبقي من الطرف الثاني</strong> → 0",
+    card_calc_reset_details_4:"<strong>جميع النتائج التلقائية</strong> ستصبح 0",
   },
   en: {
     app_title:"Capital Manager",footer:"All rights reserved to Muharraqi",
@@ -2726,6 +2959,29 @@ eidi_kpi_total:"💰 Total Eidi",eidi_kpi_count:"📋 Beneficiaries",eidi_kpi_av
     cash_summary:"📊 Safe Summary",
     cash_kpi_total:"💰 Total Cash",
     cash_total_row:"📊 Grand Total of Safe",
+    /* 🆕 [جديد] Card Calculation translations */
+    card_calc_title:"💳 Card Calculation",
+    card_calc_reset:"🗑 Reset Calculation",
+    card_calc_hint:"Enter the following values — remaining and required payment will be calculated automatically.",
+    lblCardOriginal:"💰 Original Card Balance",
+    lblCardMyRemaining:"💸 My Remaining",
+    lblCardMustPayMe:"🏦 I Must Pay",
+    lblCardTheirRemaining:"💰 Other Party's Remaining",
+    lblCardTotalPay:"📊 Grand Total to Pay",
+    lblCardTheyMustPay:"💸 They Must Pay",
+    card_calc_kpi_original:"💰 Original",
+    card_calc_kpi_my_rem:"💸 My Remaining",
+    card_calc_kpi_their_rem:"💰 Their Remaining",
+    card_calc_kpi_must_pay_me:"🏦 I Must Pay",
+    card_calc_kpi_total_pay:"📊 Grand Total",
+    card_calc_kpi_they_must_pay:"💸 They Must Pay",
+    card_calc_reset_title:"Reset Card Calculation",
+    card_calc_reset_warning:"All financial values in the card calculation will be reset — cannot be undone!",
+    card_calc_reset_ok:"✅ Card calculation reset",
+    card_calc_reset_details_1:"<strong>Original Card Balance</strong> → 0",
+    card_calc_reset_details_2:"<strong>My Remaining</strong> → 0",
+    card_calc_reset_details_3:"<strong>Other Party's Remaining</strong> → 0",
+    card_calc_reset_details_4:"<strong>All auto-calculated results</strong> will become 0",
   }
 };
 
@@ -2867,6 +3123,7 @@ function makeEmptyMonth(){
 const EMPTY_MONTH = makeEmptyMonth;
 const emptyYear = () => Array.from({length:12}, EMPTY_MONTH);
 
+/* 🆕 [إضافة] state.report.cardCalc — كائن حسبة البطاقة */
 let state = {
   years: {}, yearList: [], activeYear: new Date().getFullYear(), activeMonth: 0,
   debts: [], yearExtras: {}, pyramidTargets: {}, pyramidNotes: {}, pyramidWithdrawals: {},
@@ -2886,7 +3143,9 @@ let state = {
     purchases: [],
     purchaseNames: [...DEFAULT_PURCHASE_NAMES],
     fatherDebtLabel: "",
-    notes: ""
+    notes: "",
+    /* 🆕 حسبة البطاقة — جديدة */
+    cardCalc: { original: 0, myRemaining: 0, theirRemaining: 0 }
   }
 };
 
@@ -2946,6 +3205,7 @@ function resetReport(){
       "<strong>تدفع لي</strong> → 0",
       "جميع <strong>بنود المشتريات</strong> ستُحذف",
       "<strong>الملاحظات</strong> ستُمسح",
+      "<strong>حسبة البطاقة</strong> ستُصفَّر",
       "حالة الربح ستعود إلى الوضع الافتراضي"
     ] : [
       `<strong>${esc(currentLabel)}</strong> → 0`,
@@ -2954,6 +3214,7 @@ function resetReport(){
       "<strong>She pays me</strong> → 0",
       "All <strong>purchase items</strong> will be deleted",
       "<strong>Notes</strong> will be cleared",
+      "<strong>Card calculation</strong> will be reset",
       "Profit status will return to default"
     ],
     onConfirm: function(){
@@ -2965,10 +3226,37 @@ function resetReport(){
         purchases: [],
         purchaseNames: [...DEFAULT_PURCHASE_NAMES, ...customNames],
         fatherDebtLabel: "",
-        notes: ""
+        notes: "",
+        cardCalc: { original: 0, myRemaining: 0, theirRemaining: 0 }
       };
       ensureReport(); save(); renderReport();
       toast(L ? '✅ تم تصفير تقرير الشراكة' : '✅ Partnership Report reset', 'success');
+    }
+  });
+}
+
+/* 🆕 [إضافة] تصفير حسبة البطاقة فقط */
+function resetCardCalc(){
+  const L = LANG === 'ar';
+  openConfirmReset({
+    title: t('card_calc_reset_title'),
+    warning: t('card_calc_reset_warning'),
+    details: L ? [
+      t('card_calc_reset_details_1'),
+      t('card_calc_reset_details_2'),
+      t('card_calc_reset_details_3'),
+      t('card_calc_reset_details_4')
+    ] : [
+      t('card_calc_reset_details_1'),
+      t('card_calc_reset_details_2'),
+      t('card_calc_reset_details_3'),
+      t('card_calc_reset_details_4')
+    ],
+    onConfirm: function(){
+      ensureReport();
+      state.report.cardCalc = { original: 0, myRemaining: 0, theirRemaining: 0 };
+      save(); renderCardCalc();
+      toast(t('card_calc_reset_ok'), 'success');
     }
   });
 }
@@ -3098,6 +3386,7 @@ function ensurePyramidTargets(){ if(!state.pyramidTargets) state.pyramidTargets 
 function ensurePyramidNotes(){ if(!state.pyramidNotes) state.pyramidNotes = {}; return state.pyramidNotes; }
 function ensurePyramidWithdrawals(){ if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {}; return state.pyramidWithdrawals; }
 
+/* 🆕 [إضافة] ensureReport — يشمل cardCalc */
 function ensureReport(){
   if(!state.report) state.report = {
     fatherDebt: 0, electricityBill: 0, shePaysMe: 0,
@@ -3105,7 +3394,8 @@ function ensureReport(){
     purchases: [],
     purchaseNames: [...DEFAULT_PURCHASE_NAMES],
     fatherDebtLabel: "",
-    notes: ""
+    notes: "",
+    cardCalc: { original: 0, myRemaining: 0, theirRemaining: 0 }
   };
   if(!Array.isArray(state.report.purchases)) state.report.purchases = [];
   if(typeof state.report.fatherDebt !== 'number') state.report.fatherDebt = 0;
@@ -3119,6 +3409,11 @@ function ensureReport(){
   DEFAULT_PURCHASE_NAMES.forEach(n => { if(!state.report.purchaseNames.includes(n)) state.report.purchaseNames.unshift(n); });
   state.report.purchases.forEach(p => { if(p.name && !state.report.purchaseNames.includes(p.name)) state.report.purchaseNames.push(p.name); });
   delete state.report.pointsMultiplier;
+  /* 🆕 ضمان وجود cardCalc بمفاتيحه الثلاثة */
+  if(!state.report.cardCalc) state.report.cardCalc = { original: 0, myRemaining: 0, theirRemaining: 0 };
+  if(typeof state.report.cardCalc.original !== 'number') state.report.cardCalc.original = 0;
+  if(typeof state.report.cardCalc.myRemaining !== 'number') state.report.cardCalc.myRemaining = 0;
+  if(typeof state.report.cardCalc.theirRemaining !== 'number') state.report.cardCalc.theirRemaining = 0;
   return state.report;
 }
 
@@ -3264,9 +3559,10 @@ function initIfEmpty(){
 /* ═══════════════════════════════════════════════════════════════
    Capital Manager — JavaScript (3-B من 3)
    الحسابات + الديون + البيراميد + التقرير + renderCash + renderIncomeFields
+   🆕 [إضافة]: updCardCalc + renderCardCalc (حسبة البطاقة)
    ═══════════════════════════════════════════════════════════════ */
 
-/* ════════ ⭐ [إصلاح #3] selectMonth — ينقل تعديل state خارج render ════════ */
+/* ════════ ⭐ selectMonth — ينقل تعديل state خارج render ════════ */
 function selectMonth(i){ 
   state.activeMonth = i; 
   // ⭐ نقل منطق "hasMeatSupport" من renderIncomeFields إلى هنا
@@ -3463,6 +3759,24 @@ function rpProfit(){ const r = ensureReport(); if(!r.profitToggle) return 0; ret
 function getShePaysAmount(){ const r = ensureReport(); if(!r.shePaysToggle) return 0; return +r.shePaysMe || 0; }
 function rpFinalAmount(){ return rpFullAmount() - rpProfit(); }
 
+/* 🆕 [إضافة] حسابات حسبة البطاقة — تعمل بنفس فكرة ملف الإكسل Book16.xlsx
+   - يجب ان ادفع (B3) = اصل الموجود (B1) - متبقي من قبلي (B2)
+   - مجموع الكلي للدفع (B8) = اصل الموجود (B1) - متبقي من الطرف الثاني (B5)
+   - يجب ان يدفع (B6) = مجموع الكلي للدفع (B8) - يجب ان ادفع (B3)
+                       = متبقي من قبلي (B2) - متبقي من الطرف الثاني (B5)
+*/
+function cardCalcMustPayMe(){
+  const cc = ensureReport().cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
+  return Math.max(0, (+cc.original || 0) - (+cc.myRemaining || 0));
+}
+function cardCalcTotalPay(){
+  const cc = ensureReport().cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
+  return Math.max(0, (+cc.original || 0) - (+cc.theirRemaining || 0));
+}
+function cardCalcTheyMustPay(){
+  return cardCalcTotalPay() - cardCalcMustPayMe();
+}
+
 /* ════════ دوال stolen حسابات ════════ */
 function stolenTotalFees(){ return ensureStolen().transactions.filter(x => x.type === "fee").reduce((s, x) => s + (+x.amount || 0), 0); }
 function stolenTotalAmounts(){ return ensureStolen().transactions.filter(x => x.type === "amount").reduce((s, x) => s + (+x.amount || 0), 0); }
@@ -3657,6 +3971,17 @@ function updZakatBank(v){ const m = M()[state.activeMonth]; getZakat(m).bank = v
 function updZakatNote(v){ getZakat(M()[state.activeMonth]).note = v; save(); }
 function updZakatRef(v){ getZakat(M()[state.activeMonth]).ref = v; save(); }
 
+/* 🆕 [إضافة] تحديث قيمة من قيم حسبة البطاقة + إعادة الرسم */
+function updCardCalc(field, value){
+  ensureReport();
+  const v = Math.max(0, parseFloat(value) || 0);
+  if(field === "original") state.report.cardCalc.original = v;
+  else if(field === "myRemaining") state.report.cardCalc.myRemaining = v;
+  else if(field === "theirRemaining") state.report.cardCalc.theirRemaining = v;
+  save();
+  renderCardCalc();
+}
+
 /* ════════ دوال السرقة ════════ */
 function addStolenTransaction(){
   const s = ensureStolen();
@@ -3742,7 +4067,7 @@ function updateStolenTotalsInline(){
   if(mustPayAfterEl && document.activeElement !== mustPayAfterEl) mustPayAfterEl.value = inVal(s.after.mustPay);
 }
 
-/* ════════ ⭐ [إصلاح #3] renderIncomeFields — بدون تعديل state ════════ */
+/* ════════ ⭐ renderIncomeFields — بدون تعديل state ════════ */
 function renderIncomeFields(){
   const m = M()[state.activeMonth]; const mi = state.activeMonth; const isMeat = isMeatMonth(mi);
   // ⭐ لا نعدل m.hasMeatSupport هنا — selectMonth يتولى ذلك
@@ -3758,7 +4083,7 @@ function renderIncomeFields(){
   document.getElementById("meatNote").value = incN.meat || "";
 }
 
-/* ════════ ⭐ [إصلاح] renderCash — الترجمة الكاملة ════════ */
+/* ════════ ⭐ renderCash — الترجمة الكاملة ════════ */
 function renderCash(){
   ensureCash(); const L = LANG === 'ar';
   const tbody = document.getElementById("cashBody"); const tfoot = document.getElementById("cashFoot"); const kpis = document.getElementById("cashKpis");
@@ -3792,9 +4117,86 @@ function renderCash(){
   // ⭐ ترجمة KPI
   if(kpis){ kpis.innerHTML = `${kpi(t('cash_kpi_total'), money(total), total > 0 ? 'gold' : '')}`; }
 }
+
+/* 🆕 [إضافة] renderCardCalc — عرض حسبة البطاقة ديناميكياً */
+function renderCardCalc(){
+  ensureReport();
+  const L = LANG === 'ar';
+  const cc = state.report.cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
+
+  // ⭐ ترجمة العنوان الرئيسي
+  const titleEl = document.getElementById("lblCardCalcTitle");
+  if(titleEl) titleEl.textContent = t('card_calc_title');
+
+  // ⭐ ترجمة الـ hint
+  const hintEl = document.getElementById("lblCardCalcHint");
+  if(hintEl) hintEl.textContent = t('card_calc_hint');
+
+  // ⭐ ترجمة التسميات
+  const lblOriginal = document.getElementById("lblCardOriginal"); if(lblOriginal) lblOriginal.textContent = t('lblCardOriginal');
+  const lblMyRem = document.getElementById("lblCardMyRemaining"); if(lblMyRem) lblMyRem.textContent = t('lblCardMyRemaining');
+  const lblMustPayMe = document.getElementById("lblCardMustPayMe"); if(lblMustPayMe) lblMustPayMe.textContent = t('lblCardMustPayMe');
+  const lblTheirRem = document.getElementById("lblCardTheirRemaining"); if(lblTheirRem) lblTheirRem.textContent = t('lblCardTheirRemaining');
+  const lblTotalPay = document.getElementById("lblCardTotalPay"); if(lblTotalPay) lblTotalPay.textContent = t('lblCardTotalPay');
+  const lblTheyMustPay = document.getElementById("lblCardTheyMustPay"); if(lblTheyMustPay) lblTheyMustPay.textContent = t('lblCardTheyMustPay');
+
+  // ⭐ تحديث الحقول (بدون الكتابة فوق الحقل النشط)
+  const origEl = document.getElementById("cardOriginal");
+  if(origEl && document.activeElement !== origEl) origEl.value = inVal(cc.original);
+  const myRemEl = document.getElementById("cardMyRemaining");
+  if(myRemEl && document.activeElement !== myRemEl) myRemEl.value = inVal(cc.myRemaining);
+  const theirRemEl = document.getElementById("cardTheirRemaining");
+  if(theirRemEl && document.activeElement !== theirRemEl) theirRemEl.value = inVal(cc.theirRemaining);
+
+  // ⭐ حساب النتائج
+  const mustPayMe = cardCalcMustPayMe();
+  const totalPay = cardCalcTotalPay();
+  const theyMustPay = cardCalcTheyMustPay();
+
+  const mustPayMeEl = document.getElementById("cardMustPayMe");
+  if(mustPayMeEl) mustPayMeEl.value = fmt(mustPayMe) + " " + (L ? 'د.ب' : 'BHD');
+  const totalPayEl = document.getElementById("cardTotalPay");
+  if(totalPayEl) totalPayEl.value = fmt(totalPay) + " " + (L ? 'د.ب' : 'BHD');
+  const theyMustPayEl = document.getElementById("cardTheyMustPay");
+  if(theyMustPayEl) theyMustPayEl.value = fmt(theyMustPay) + " " + (L ? 'د.ب' : 'BHD');
+
+  // ⭐ بناء الملخص السفلي
+  const summaryEl = document.getElementById("cardCalcSummary");
+  if(summaryEl){
+    const cur = L ? 'د.ب' : 'BHD';
+    summaryEl.innerHTML = `
+      <div class="calc-kpi kpi-gold">
+        <div class="lbl">${t('card_calc_kpi_original')}</div>
+        <div class="val">${fmt(cc.original)} ${cur}</div>
+      </div>
+      <div class="calc-kpi kpi-blue">
+        <div class="lbl">${t('card_calc_kpi_my_rem')}</div>
+        <div class="val">${fmt(cc.myRemaining)} ${cur}</div>
+      </div>
+      <div class="calc-kpi kpi-green">
+        <div class="lbl">${t('card_calc_kpi_their_rem')}</div>
+        <div class="val">${fmt(cc.theirRemaining)} ${cur}</div>
+      </div>
+      <div class="calc-kpi kpi-red">
+        <div class="lbl">${t('card_calc_kpi_must_pay_me')}</div>
+        <div class="val">${fmt(mustPayMe)} ${cur}</div>
+      </div>
+      <div class="calc-kpi kpi-blue">
+        <div class="lbl">${t('card_calc_kpi_total_pay')}</div>
+        <div class="val">${fmt(totalPay)} ${cur}</div>
+      </div>
+      <div class="calc-kpi kpi-green">
+        <div class="lbl">${t('card_calc_kpi_they_must_pay')}</div>
+        <div class="val">${fmt(theyMustPay)} ${cur}</div>
+      </div>
+    `;
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════
    Capital Manager — JavaScript (3-C من 3)
-   render* + printStolen + Excel + PDF + applyLang + Events
+   render* + printStolen + Excel + PDF + applyLang + Events + Init + Quick Nav
+   🆕 [إضافة]: renderReport (يستدعي renderCardCalc) + applyLang (ترجمات card_calc)
    ═══════════════════════════════════════════════════════════════ */
 
 /* ════════ السنة / الشهر ════════ */
@@ -4262,7 +4664,6 @@ function renderPyramid(){
   const allExpanded = levels.every(l => EXPANDED_PYRAMID.has(l.key));
   if(gBtn) gBtn.textContent = allExpanded ? t('pyr_hide_all_years') : t('pyr_show_all_years');
 }
-/* ⭐ [جديد] نسخة الهرم للرسم البياني فقط — تدمج القروض + الالتزامات + الدائن في شريحة واحدة */
 function getPyramidLevelsForSvg(){
   const allLevels = getPyramidLevels();
   const negativeKeys = ["loans", "obligationsSaving", "credit"];
@@ -4446,6 +4847,7 @@ function refreshReportTotals(){
   const resultsEl = document.getElementById("reportResults");
   if(resultsEl){ resultsEl.innerHTML = `${kpi(t('rp_kpi_full'), money(fullAmt), "acc")}${kpi(t('rp_kpi_points'), fmt(points), "gold")}${kpi(t('rp_kpi_profit_status'), profitStatus, r.profitToggle ? "pos" : "neg")}${kpi(t('rp_kpi_profit'), money(profit), r.profitToggle ? "pos" : "neg")}${kpi(t('rp_kpi_final'), money(finalAmt), "neg")}`; }
 }
+/* 🆕 [تعديل] renderReport — يستدعي renderCardCalc() في النهاية */
 function renderReport(){
   ensureReport(); const r = state.report; if(!document.getElementById("rpFather")) return;
   const labelEl = document.getElementById("rpFatherLabel");
@@ -4469,6 +4871,8 @@ function renderReport(){
     }).join("");
   }
   refreshReportTotals();
+  /* 🆕 استدعاء عرض حسبة البطاقة بعد رسم التقرير */
+  renderCardCalc();
 }
 
 /* ════════ Average ════════ */
@@ -5353,6 +5757,16 @@ function exportReportExcel(){
     xlDataRow(ws, row, ['🏆 حالة الربح', rpt.profitToggle ? '✅ ربحت' : '❌ ما ربحت', ''], cols, { fill: rpt.profitToggle ? 'DCFCE7' : 'FEE2E2', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: rpt.profitToggle ? '166534' : '991B1B' }, name: 'Segoe UI' }, height: 26 }); row++;
     xlDataRow(ws, row, ['✅ الربح', rpProfit(), ''], cols, { fill: rpt.profitToggle ? 'DCFCE7' : 'FEE2E2', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: rpt.profitToggle ? '166534' : '991B1B' }, name: 'Segoe UI' }, height: 28 }); row++;
     xlDataRow(ws, row, ['📌 المبلغ النهائي', rpFinalAmount(), ''], cols, { fill: '22C55E', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 14, bold: true, color: { rgb: 'FFFFFF' }, name: 'Segoe UI' }, height: 34 }); row++; row++;
+    /* 🆕 قسم حسبة البطاقة في Excel */
+    xlSectionRow(ws, row, cols, '💳 حسبة البطاقة', '3B82F6'); row++;
+    xlHeaderRow(ws, row, ['البند', 'القيمة ('+cur+')', ''], '1E3A5F'); row++;
+    const cc = rpt.cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
+    xlDataRow(ws, row, [t('lblCardOriginal'), +cc.original||0, ''], cols, { fill: 'FEF3C7', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '78350F' }, name: 'Segoe UI' }, height: 26 }); row++;
+    xlDataRow(ws, row, [t('lblCardMyRemaining'), +cc.myRemaining||0, ''], cols, { fill: 'DBEAFE', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '1E40AF' }, name: 'Segoe UI' }, height: 26 }); row++;
+    xlDataRow(ws, row, [t('lblCardTheirRemaining'), +cc.theirRemaining||0, ''], cols, { fill: 'DCFCE7', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '166534' }, name: 'Segoe UI' }, height: 26 }); row++;
+    xlDataRow(ws, row, [t('lblCardMustPayMe'), cardCalcMustPayMe(), ''], cols, { fill: 'FEE2E2', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '991B1B' }, name: 'Segoe UI' }, height: 28 }); row++;
+    xlDataRow(ws, row, [t('lblCardTotalPay'), cardCalcTotalPay(), ''], cols, { fill: 'DBEAFE', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '1E40AF' }, name: 'Segoe UI' }, height: 28 }); row++;
+    xlDataRow(ws, row, [t('lblCardTheyMustPay'), cardCalcTheyMustPay(), ''], cols, { fill: 'DCFCE7', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 13, bold: true, color: { rgb: '166534' }, name: 'Segoe UI' }, height: 30 }); row++; row++;
     if(rpt.notes){ xlSectionRow(ws, row, cols, '📝 ملاحظات', 'EAB308'); row++; ws[XLSX.utils.encode_cell({ r: row, c: 0 })] = { v: rpt.notes, t: 's' }; xlMerge(ws, row, 0, row, cols - 1); xlStyleRow(ws, row, cols, { fill: 'FEF3C7', font: { sz: 11, name: 'Segoe UI', color: { rgb: '78350F' } }, align: { horizontal: 'right', vertical: 'center', wrapText: true }, border: xlBorders('94A3B8') }); if(!ws['!rows']) ws['!rows'] = []; ws['!rows'][row] = { hpt: 44 }; row++; }
     ws['!cols'] = [{ wch: 32 }, { wch: 14 }, { wch: 6 }];
     ws['!pageSetup'] = { fitToWidth: 1, fitToHeight: 1, orientation: 'portrait', paperSize: 9, scale: 100, pageOrder: 'downThenOver', cellComments: 'none', errors: 'displayed', horizontalDpi: 600, verticalDpi: 600, copies: 1 };
@@ -5619,6 +6033,24 @@ function generateViewHTML(viewId, includeMonthName, orientation){
     .profit-toggle-btn{background:#f5f5f5 !important;color:#000 !important;border:1px solid #666 !important;box-shadow:none !important;font-size:8pt !important;padding:4pt !important}
     .rp-points-cell{color:#78350f !important;font-weight:800 !important;font-family:monospace !important}
     .report-label-input{display:block;width:100%;border:1px solid #666 !important;background:#fff !important;color:#000 !important;font-weight:800 !important;font-size:10pt !important;padding:4pt 6pt !important;margin-bottom:4pt;text-align:center;border-radius:4px}
+    .card-calc{border:2px solid #1e40af !important;background:#eff6ff !important;box-shadow:none !important}
+    .card-calc h2{color:#1e40af !important}
+    .card-calc-readonly{font-size:9pt !important;padding:2pt 4pt !important;background:#fff !important;border:1px solid #666 !important;color:#000 !important;box-shadow:none !important}
+    .card-calc-readonly.card-calc-red{background:#fee2e2 !important;color:#991b1b !important;border-color:#991b1b !important}
+    .card-calc-readonly.card-calc-blue{background:#dbeafe !important;color:#1e40af !important;border-color:#1e40af !important}
+    .card-calc-readonly.card-calc-green{background:#dcfce7 !important;color:#166534 !important;border-color:#166534 !important}
+    .card-calc-summary{background:#f5f5f5 !important;border:1px solid #ccc !important;padding:6pt !important;gap:6pt !important;display:grid !important;grid-template-columns:repeat(3,1fr) !important}
+    .card-calc-summary .calc-kpi{background:#fff !important;border:1px solid #999 !important;padding:4pt !important;text-align:center !important}
+    .card-calc-summary .calc-kpi .lbl{color:#333 !important;font-size:7pt !important;margin-bottom:3pt !important}
+    .card-calc-summary .calc-kpi .val{color:#000 !important;font-size:9pt !important;font-family:monospace !important;font-weight:800 !important}
+    .card-calc-summary .calc-kpi.kpi-red{border-color:#991b1b !important;background:#fee2e2 !important}
+    .card-calc-summary .calc-kpi.kpi-red .val{color:#991b1b !important}
+    .card-calc-summary .calc-kpi.kpi-blue{border-color:#1e40af !important;background:#dbeafe !important}
+    .card-calc-summary .calc-kpi.kpi-blue .val{color:#1e40af !important}
+    .card-calc-summary .calc-kpi.kpi-green{border-color:#166534 !important;background:#dcfce7 !important}
+    .card-calc-summary .calc-kpi.kpi-green .val{color:#166534 !important}
+    .card-calc-summary .calc-kpi.kpi-gold{border-color:#78350f !important;background:#fef3c7 !important}
+    .card-calc-summary .calc-kpi.kpi-gold .val{color:#78350f !important}
     @page{size:A4 ${orientation};margin:8mm}`;
   let html = `<!DOCTYPE html><html dir="${L?'rtl':'ltr'}" lang="${LANG}"><head><meta charset="UTF-8"><title>${activeTabName} — ${metaExtra}</title><style>${printStyles}</style></head><body>`;
   html += `<div style="text-align:center;padding:8px 0 10px;margin-bottom:10px;border-bottom:3px double #333"><div style="display:inline-block;width:42px;height:42px;line-height:42px;border-radius:50%;background:#0e7490;color:#fff;font-weight:900;font-size:20px;text-align:center;margin-bottom:6px">M</div><h1 style="color:#000;font-size:15pt;margin:0 0 4px;font-weight:700">${t('print_title')}</h1><div style="color:#444;font-size:10pt;margin-bottom:3px">${activeTabName} — ${metaExtra}</div><div style="color:#666;font-size:9pt">${t('print_generated')}: ${dateStr} — ${timeStr}</div></div>`;
@@ -5731,7 +6163,7 @@ function generateDebtsTablePrintHTML(){
 function printDebtsTable(){ const html = generateDebtsTablePrintHTML(); const w = window.open('', '_blank', 'width=1200,height=800'); if(w){ w.document.open(); w.document.write(html); w.document.close(); setTimeout(() => { try { w.focus(); w.print(); } catch(e){} }, 500); } else { toast(t('print_error_popup'), 'error'); } }
 async function shareDebtsTablePDF(){ try { toast(t('creating_pdf')); const htmlStr = generateDebtsTablePrintHTML(); const filename = `debts_table_${todayStr()}.pdf`; const blob = await generatePdfInWindow(htmlStr, filename, 'landscape'); if(!blob){ toast(t('share_failed'), 'error'); return; } await sharePdfBlob(blob, filename); } catch(err){ if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; } toast(t('share_failed'), 'error'); } }
 
-/* ════════ ⭐ [جديد] printStolen + generateStolenHTML ════════ */
+/* ════════ printStolen ════════ */
 function generateStolenHTML(){
   const s = ensureStolen();
   const L = LANG === 'ar'; const cur = L ? 'د.ب' : 'BHD';
@@ -5897,7 +6329,7 @@ function generatePyramidLevelReportHTML(key){
 function printPyramidLevelDetail(key){ const htmlStr = generatePyramidLevelReportHTML(key); if(!htmlStr) return; const w = window.open('', '_blank', 'width=900,height=900'); if(w){ w.document.open(); w.document.write(htmlStr); w.document.close(); setTimeout(() => { try { w.focus(); w.print(); } catch(e){} }, 500); } else { toast(t('print_error_popup'), 'error'); } }
 async function sharePyramidLevelPDF(key){ try { const lvl = getPyramidLevels().find(l => l.key === key); if(!lvl){ toast(t('share_failed'), 'error'); return; } toast(t('creating_pdf')); const htmlStr = generatePyramidLevelReportHTML(key); const safeName = lvl.label.replace(/[^\w\u0600-\u06FF]/g, '_'); const filename = `pyramid_${safeName}_${todayStr()}.pdf`; const blob = await generatePdfInWindow(htmlStr, filename, 'portrait'); if(!blob){ toast(t('share_failed'), 'error'); return; } await sharePdfBlob(blob, filename); } catch(err){ if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; } toast(t('share_failed'), 'error'); } }
 
-/* ════════ ⭐ [تحديث] applyLang — يشمل ترجمة التجوري ════════ */
+/* ════════ applyLang — يشمل ترجمة التجوري وحسبة البطاقة ════════ */
 function applyLang(){
   document.documentElement.lang = LANG;
   document.documentElement.dir = LANG === 'ar' ? 'rtl' : 'ltr';
@@ -5952,15 +6384,26 @@ function applyLang(){
     btnAddStolen:'stolen_btn_add',btnResetStolen:'stolen_btn_reset',lblEidiTitle:'lblEidiTitle',lblEidiHint:'lblEidiHint',lblEidiSummary:'lblEidiSummary',
     thEidiIndex:'thEidiIndex',thEidiName:'thEidiName',thEidiAmount:'thEidiAmount',
     btnAddEidi:'eidi_add_btn',btnResetEidi:'eidi_reset_btn',
-    /* ⭐ [جديد] ترجمة رؤوس وعناوين تبويب التجوري — lblCashHint يُعالج بـ innerHTML في renderCash */
     lblCashTitle:'cash_title',
     lblCashSummary:'cash_summary',
     thCashItem:'cash_th_item',
     thCashValue:'cash_th_value',
     thCashCount:'cash_th_count',
     thCashAmount:'cash_th_amount',
+    /* 🆕 ترجمة حسبة البطاقة */
+    lblCardCalcTitle:'card_calc_title',
+    lblCardCalcHint:'card_calc_hint',
+    lblCardOriginal:'lblCardOriginal',
+    lblCardMyRemaining:'lblCardMyRemaining',
+    lblCardMustPayMe:'lblCardMustPayMe',
+    lblCardTheirRemaining:'lblCardTheirRemaining',
+    lblCardTotalPay:'lblCardTotalPay',
+    lblCardTheyMustPay:'lblCardTheyMustPay',
   };
   Object.keys(ids).forEach(id => { const el = document.getElementById(id); if(el) el.textContent = t(ids[id]); });
+  /* 🆕 ترجمة زر تصفير حسبة البطاقة (data-i18n) */
+  const resetCardBtn = document.querySelector('[data-i18n="card_calc_reset"]');
+  if(resetCardBtn) resetCardBtn.textContent = t('card_calc_reset');
   renderAll();
   if(document.getElementById("remindersModal")?.classList.contains("show")) renderReminders();
   if(typeof updateRemindersBadge === 'function') updateRemindersBadge();
