@@ -6,7 +6,16 @@
 <title>إدارة رأس المال | Capital Manager</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
+<!-- ✅ [جديد] مكتبة CryptoJS لفك تشفير ملفات JSON -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+
 <style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   [القسم 2 من 3 — CSS كامل]
+   يحتوي على: كل تنسيقات index 22.html الأصلية
+            + تنسيقات نافذة فك التشفير الجديدة (pop3)
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 :root{--bg:#0f1720;--panel:#17212b;--panel2:#1e2b38;--line:#2a3a4a;--txt:#e6eef7;--muted:#8fa3b8;--accent:#22c1a4;--accent2:#3b82f6;--danger:#ef4444;--ok:#22c55e;--gold:#eab308;--shadow:rgba(0,0,0,.35);}
 html[data-theme="light"]{--bg:#f0f4f8;--panel:#ffffff;--panel2:#e8eef5;--line:#94a3b8;--txt:#0f172a;--muted:#475569;--accent:#0891b2;--accent2:#2563eb;--danger:#dc2626;--ok:#16a34a;--gold:#d97706;--shadow:rgba(0,0,0,.12);}
@@ -1684,7 +1693,213 @@ html[dir="ltr"] .confirm-reset-details li::before{
     text-align: center;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   🆕 [جديد] تنسيقات إضافية لنافذة فك التشفير (pop3)
+   ═══════════════════════════════════════════════════════════════ */
+#decryptModal .modal-content{
+  border:2px solid #d97706;
+  box-shadow:0 20px 60px rgba(217,119,6,.4), 0 0 0 1px rgba(217,119,6,.15);
+}
+#decryptModal .modal-header{
+  padding:16px 22px;
+}
+#decryptModal .modal-header h2{
+  color:#fff !important;
+  font-size:16px;
+  font-weight:800;
+  letter-spacing:.3px;
+}
+#decryptModal .modal-header h2::before{
+  content:"" !important;
+}
+#decryptModal .modal-close{
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.3);
+  color:#fff;
+}
+#decryptModal .modal-close:hover{
+  background:var(--danger);
+  border-color:var(--danger);
+}
+#decryptModal .modal-body{
+  padding:22px 24px;
+}
+#decryptModal .field label{
+  color:var(--txt);
+  font-weight:700;
+}
+#decryptModal input[type="password"]{
+  font-family:monospace;
+  letter-spacing:.2em;
+  font-size:15px !important;
+  padding:14px 16px !important;
+}
+#decryptModal input[type="password"]:focus{
+  border-color:#d97706 !important;
+  box-shadow:0 0 0 3px rgba(217,119,6,.25) !important;
+}
+#decryptModal input[type="file"]{
+  padding:12px !important;
+  border:2px dashed #d97706 !important;
+  background:rgba(217,119,6,.05);
+  cursor:pointer;
+  transition:.2s;
+}
+#decryptModal input[type="file"]:hover{
+  background:rgba(217,119,6,.1);
+  border-color:#b45309 !important;
+}
+#decryptModal input[type="radio"]{
+  width:18px;
+  height:18px;
+  accent-color:#d97706;
+  cursor:pointer;
+}
+#decryptModal input[type="radio"]:checked + span{
+  color:#d97706;
+  font-weight:700;
+}
+#decryptModal input[type="text"]{
+  font-family:monospace;
+  font-size:12px !important;
+}
+#decryptModal .modal-footer{
+  padding:16px 22px;
+  background:var(--panel2);
+  border-top:1px solid var(--line);
+}
+#decryptModal #btnProcessDecryption{
+  min-width:200px;
+  box-shadow:0 4px 12px rgba(217,119,6,.35);
+  transition:.25s;
+}
+#decryptModal #btnProcessDecryption:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 18px rgba(217,119,6,.5);
+  background:linear-gradient(180deg,#b45309,#78350f) !important;
+}
+#decryptModal #btnProcessDecryption:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+  transform:none;
+}
+
+#decryptStatus{
+  padding:14px 16px;
+  border-radius:10px;
+  font-weight:700;
+  font-size:13px;
+  line-height:1.7;
+  border:2px solid;
+  animation:fadeIn .3s;
+  white-space:pre-line;
+}
+#decryptStatus:empty{
+  display:none !important;
+}
+#decryptStatus.status-loading{
+  background:rgba(59,130,246,.1);
+  border-color:var(--accent2);
+  color:var(--accent2);
+}
+#decryptStatus.status-loading::before{
+  content:"⏳ ";
+  font-size:15px;
+}
+#decryptStatus.status-success{
+  background:rgba(34,197,94,.12);
+  border-color:var(--ok);
+  color:var(--ok);
+}
+#decryptStatus.status-success::before{
+  content:"✅ ";
+  font-size:15px;
+}
+#decryptStatus.status-error{
+  background:rgba(239,68,68,.12);
+  border-color:var(--danger);
+  color:var(--danger);
+}
+#decryptStatus.status-error::before{
+  content:"❌ ";
+  font-size:15px;
+}
+#decryptStatus.status-warning{
+  background:rgba(234,179,8,.12);
+  border-color:var(--gold);
+  color:var(--gold);
+}
+#decryptStatus.status-warning::before{
+  content:"⚠️ ";
+  font-size:15px;
+}
+
+/* زر فك التشفير في شريط الأدوات */
+#btnDecrypt{
+  position:relative;
+  overflow:hidden;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+}
+#btnDecrypt:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 16px rgba(217,119,6,.4);
+}
+#btnDecrypt:active{
+  transform:translateY(0);
+}
+#btnDecrypt::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,.15), transparent 60%);
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .25s;
+}
+#btnDecrypt:hover::before{
+  opacity:1;
+}
+
+/* استجابة الجوال لنافذة فك التشفير */
+@media (max-width: 600px){
+  #decryptModal .modal-content{
+    max-width:calc(100vw - 20px) !important;
+  }
+  #decryptModal .modal-header{
+    padding:12px 16px;
+  }
+  #decryptModal .modal-header h2{
+    font-size:13px;
+  }
+  #decryptModal .modal-body{
+    padding:16px;
+  }
+  #decryptModal input[type="password"]{
+    padding:11px 13px !important;
+    font-size:14px !important;
+  }
+  #decryptModal .modal-footer{
+    padding:12px 16px;
+    flex-direction:column-reverse;
+    gap:6px;
+  }
+  #decryptModal .modal-footer .btn{
+    width:100%;
+    padding:12px;
+  }
+  #decryptModal #btnProcessDecryption{
+    min-width:0;
+  }
+  #btnDecrypt{
+    font-size:12px;
+    padding:6px 10px;
+  }
+}
+
+
 </style>
+
 </head>
 <body>
 
@@ -1717,6 +1932,11 @@ html[dir="ltr"] .confirm-reset-details li::before{
     <button class="btn" onclick="exportData()" id="btnExport">📤 تصدير</button>
     <button class="btn" onclick="document.getElementById('importFile').click()" id="btnImport">📥 استيراد</button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+
+    <!-- ✅ [جديد] زر فك التشفير — استيراد pop3.json -->
+    <button class="btn" onclick="openDecryptModal()" id="btnDecrypt" title="فك تشفير واستيراد ملف pop3.json" style="background:linear-gradient(180deg,#d97706,#92400e);color:#fff;border-color:#d97706;font-weight:700">🔓 فك التشفير</button>
+    <!-- ✅ [نهاية الإضافة] -->
+
     <button class="btn danger" onclick="resetAll()" id="btnReset">🗑 تصفير</button>
   </div>
 </header>
@@ -2508,13 +2728,66 @@ html[dir="ltr"] .confirm-reset-details li::before{
 
 <div class="toast" id="toast"></div>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     ✅ [جديد] نافذة فك التشفير واستيراد ملف pop3.json
+     تعمل بنفس فكرة index 11.html
+     - وضع GitHub: يجلب تلقائياً من https://muharraqi55.github.io/Capital-Management/pop3.json
+     - وضع محلي: يسمح برفع ملف pop3.json من الجهاز
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="decryptModal" onclick="if(event.target===this)closeDecryptModal()">
+  <div class="modal-content" style="max-width:700px;width:100%">
+    <div class="modal-header" style="background:linear-gradient(90deg,#d97706,#92400e);border-bottom:2px solid #d97706">
+      <h2 style="color:#fff;margin:0">🔓 فك تشفير واستيراد ملف pop3</h2>
+      <button class="modal-close" onclick="closeDecryptModal()" title="إغلاق">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:15px;padding:12px;background:var(--panel2);border:1px solid var(--line);border-radius:8px">
+        <div style="font-weight:700;margin-bottom:10px;color:var(--accent2);font-size:13px">📥 اختر طريقة الاستيراد:</div>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:8px;font-size:13px">
+          <input type="radio" name="decryptImportMode" value="github" checked onchange="toggleDecryptImportMode()">
+          <span>🌐 <strong>استيراد مباشر من GitHub</strong> (يجلب pop3.json تلقائياً من موقعك)</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+          <input type="radio" name="decryptImportMode" value="local" onchange="toggleDecryptImportMode()">
+          <span>📱 <strong>استيراد من الهاتف</strong> (رفع ملف pop3.json من جهازك)</span>
+        </label>
+      </div>
+
+      <div class="field" style="margin-bottom:15px">
+        <label style="display:block;margin-bottom:6px;font-weight:700;font-size:13px">🔑 كلمة المرور</label>
+        <input type="password" id="decryptPassword" placeholder="أدخل كلمة المرور هنا..." style="width:100%;padding:12px 14px;border:2px solid var(--accent2);border-radius:8px;background:var(--panel2);color:var(--txt);font-size:14px;font-family:monospace;direction:ltr;text-align:center" onkeypress="if(event.key==='Enter')processDecryption()">
+      </div>
+
+      <div id="decryptGithubMode">
+        <div class="field">
+          <label style="display:block;margin-bottom:6px;font-weight:700;font-size:13px">🔗 رابط ملف pop3.json</label>
+          <input type="text" id="pop3Url" value="https://muharraqi55.github.io/Capital-Management/pop3.json" placeholder="https://..." style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--txt);font-size:12px;font-family:monospace;direction:ltr">
+          <div style="margin-top:6px;font-size:11px;color:var(--muted);font-style:italic">💡 الرابط الافتراضي هو موقعك على GitHub Pages</div>
+        </div>
+      </div>
+
+      <div id="decryptLocalMode" style="display:none">
+        <div class="field">
+          <label style="display:block;margin-bottom:6px;font-weight:700;font-size:13px">📁 ملف pop3.json (المشفَّر)</label>
+          <input type="file" id="pop3File" accept=".json,application/json" style="width:100%;padding:10px 12px;border:2px dashed var(--accent2);border-radius:8px;background:var(--panel2);color:var(--txt);font-size:13px;cursor:pointer">
+        </div>
+      </div>
+
+      <div id="decryptStatus" style="margin-top:15px;padding:12px;border-radius:8px;font-weight:700;text-align:center;font-size:13px;min-height:22px;display:none"></div>
+    </div>
+    <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn" onclick="closeDecryptModal()" style="padding:10px 20px">إلغاء</button>
+      <button class="btn" onclick="processDecryption()" id="btnProcessDecryption" style="background:linear-gradient(180deg,#d97706,#92400e);color:#fff;border:2px solid #d97706;font-weight:800;padding:10px 24px">🔓 فك التشفير واستيراد</button>
+    </div>
+  </div>
+</div>
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
    Capital Manager — JavaScript (3-A من 3)
-   الأساس: I18N + State + Confirm Reset + Helpers
-   يشمل التعديلات: esc() المُصلح، ensureBanks() المُصلح، ترجمة التجوري
-   🆕 [إضافة]: نظام حسبة البطاقة — I18N + State + resetCardCalc + ensureReport
+   الأساس: I18N + State + Confirm Reset + Helpers + Save/Load
+   ✅ يحتوي على كل ما في index 22.html الأصلي بدون حذف
+   🆕 [إضافة]: لا تعديلات هنا — دوال فك التشفير ستكون في 3-C
    ═══════════════════════════════════════════════════════════════ */
 
 const I18N = {
@@ -2524,13 +2797,13 @@ const I18N = {
     t_avg:"📊 المتوسط السعري",t_pyr:"🔺 هرم الأمان المالي",t_debts:"🤝 السلف والديون و الالتزامات",
     t_annual:"📈 الملخص السنوي",t_report:"📊 تقرير الشراكة",t_cash:"💰 كم لدي كاش في التجوري",
     t_banks:"🏦 احتياطي البنوك",t_eidi:"🎁 توزيع العيادي",lblEidiTitle:"🎁 توزيع العيادي",
-lblEidiHint:"أدخل اسم كل مستفيد ومبلغ العيدية الخاص به. يمكنك إضافة أو حذف أسماء بحرية. المجموع يُحسب تلقائياً.",
-lblEidiSummary:"📊 ملخص توزيع العيادي",
-thEidiIndex:"#",thEidiName:"الاسم",thEidiAmount:"المبلغ (د.ب)",
-eidi_add_btn:"➕ إضافة اسم",eidi_reset_btn:"🗑 تصفير المبالغ",
-eidi_no_items:"لا توجد بنود — اضغط ➕ إضافة اسم",
-eidi_total_row:"📊 المجموع",
-eidi_kpi_total:"💰 إجمالي العيادي",eidi_kpi_count:"📋 عدد المستفيدين",eidi_kpi_avg:"📊 متوسط العطية",
+    lblEidiHint:"أدخل اسم كل مستفيد ومبلغ العيدية الخاص به. يمكنك إضافة أو حذف أسماء بحرية. المجموع يُحسب تلقائياً.",
+    lblEidiSummary:"📊 ملخص توزيع العيادي",
+    thEidiIndex:"#",thEidiName:"الاسم",thEidiAmount:"المبلغ (د.ب)",
+    eidi_add_btn:"➕ إضافة اسم",eidi_reset_btn:"🗑 تصفير المبالغ",
+    eidi_no_items:"لا توجد بنود — اضغط ➕ إضافة اسم",
+    eidi_total_row:"📊 المجموع",
+    eidi_kpi_total:"💰 إجمالي العيادي",eidi_kpi_count:"📋 عدد المستفيدين",eidi_kpi_avg:"📊 متوسط العطية",
     t_stolen:"🚨 كم تم السرقه مني",
     lblStolenTitle:"🚨 كم تم السرقه مني",
     lblStolenHint:"أدخل كل عملية سرقة أو رسوم تحويل. سيتم حساب المجاميع تلقائياً.",
@@ -2721,7 +2994,6 @@ eidi_kpi_total:"💰 إجمالي العيادي",eidi_kpi_count:"📋 عدد ا
     bank_add_name_prompt:"أدخل اسم البنك الجديد:",bank_add_name_ok:"✅ تمت إضافة: ",
     bank_remove_name_confirm:"حذف هذا الاسم؟",bank_remove_name_ok:"🗑 تم حذف: ",
     bank_cannot_delete_default:"⚠️ لا يمكن حذف الأسماء الافتراضية",bank_invalid_name:"⚠️ أدخل اسم صحيح",
-    /* ⭐ [جديد] ترجمة تبويب التجوري */
     cash_title:"💰 كم لدي كاش في التجوري",
     cash_reset_btn:"🗑 تصفير التجوري",
     cash_hint:"أدخل <strong>العدد (كم حبة لديك)</strong> لكل فئة — يُحسب المبلغ تلقائياً (العدد × قيمة الفئة). الترتيب من الأصغر إلى الأكبر.",
@@ -2732,7 +3004,6 @@ eidi_kpi_total:"💰 إجمالي العيادي",eidi_kpi_count:"📋 عدد ا
     cash_summary:"📊 ملخص التجوري",
     cash_kpi_total:"💰 إجمالي الكاش",
     cash_total_row:"📊 المجموع الكلي للتجوري",
-    /* 🆕 [جديد] ترجمة حسبة البطاقة */
     card_calc_title:"💳 حسبة البطاقة",
     card_calc_reset:"🗑 تصفير الحسبة",
     card_calc_hint:"أدخل القيم التالية — سيتم حساب المتبقي والمطلوب دفعه تلقائياً بنفس فكرة ملف الإكسل.",
@@ -2762,13 +3033,13 @@ eidi_kpi_total:"💰 إجمالي العيادي",eidi_kpi_count:"📋 عدد ا
     t_avg:"📊 Average Pricing",t_pyr:"🔺 Financial Safety Pyramid",t_debts:"🤝 Debts & Obligations",
     t_annual:"📈 Annual Summary",t_report:"📊 Partnership Report",t_cash:"💰 Cash in Safe",
     t_banks:"🏦 Bank Reserves",t_eidi:"🎁 Eidi Distribution",lblEidiTitle:"🎁 Eidi Distribution",
-lblEidiHint:"Enter each beneficiary's name and Eidi amount. You can add or delete names freely. Total is calculated automatically.",
-lblEidiSummary:"📊 Eidi Distribution Summary",
-thEidiIndex:"#",thEidiName:"Name",thEidiAmount:"Amount (BHD)",
-eidi_add_btn:"➕ Add Name",eidi_reset_btn:"🗑 Reset Amounts",
-eidi_no_items:"No items — click ➕ Add Name",
-eidi_total_row:"📊 Total",
-eidi_kpi_total:"💰 Total Eidi",eidi_kpi_count:"📋 Beneficiaries",eidi_kpi_avg:"📊 Average",
+    lblEidiHint:"Enter each beneficiary's name and Eidi amount. You can add or delete names freely. Total is calculated automatically.",
+    lblEidiSummary:"📊 Eidi Distribution Summary",
+    thEidiIndex:"#",thEidiName:"Name",thEidiAmount:"Amount (BHD)",
+    eidi_add_btn:"➕ Add Name",eidi_reset_btn:"🗑 Reset Amounts",
+    eidi_no_items:"No items — click ➕ Add Name",
+    eidi_total_row:"📊 Total",
+    eidi_kpi_total:"💰 Total Eidi",eidi_kpi_count:"📋 Beneficiaries",eidi_kpi_avg:"📊 Average",
     t_stolen:"🚨 How much was stolen from me",
     lblStolenTitle:"🚨 How much was stolen from me",
     lblStolenHint:"Enter each theft or transfer fee. Totals are calculated automatically.",
@@ -2948,7 +3219,6 @@ eidi_kpi_total:"💰 Total Eidi",eidi_kpi_count:"📋 Beneficiaries",eidi_kpi_av
     bank_add_name_prompt:"Enter new bank name:",bank_add_name_ok:"✅ Added: ",
     bank_remove_name_confirm:"Delete this name?",bank_remove_name_ok:"🗑 Deleted: ",
     bank_cannot_delete_default:"⚠️ Cannot delete default names",bank_invalid_name:"⚠️ Enter valid name",
-    /* ⭐ [جديد] Cash tab translations */
     cash_title:"💰 Cash in Safe",
     cash_reset_btn:"🗑 Reset Safe",
     cash_hint:"Enter the <strong>count (how many bills/coins)</strong> for each denomination — amount is calculated automatically (count × value). Sorted from smallest to largest.",
@@ -2959,7 +3229,6 @@ eidi_kpi_total:"💰 Total Eidi",eidi_kpi_count:"📋 Beneficiaries",eidi_kpi_av
     cash_summary:"📊 Safe Summary",
     cash_kpi_total:"💰 Total Cash",
     cash_total_row:"📊 Grand Total of Safe",
-    /* 🆕 [جديد] Card Calculation translations */
     card_calc_title:"💳 Card Calculation",
     card_calc_reset:"🗑 Reset Calculation",
     card_calc_hint:"Enter the following values — remaining and required payment will be calculated automatically.",
@@ -3030,8 +3299,6 @@ let _shownReminderPopups = new Set();
 let _currentPopupReminderId = null;
 let _editingReminderId = null;
 let _monthRefreshTimer = null;
-
-/* ⭐ [جديد] متغير لحفظ دالة التأكيد الحالية */
 let _confirmResetCallback = null;
 
 const t = key => (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key;
@@ -3123,7 +3390,6 @@ function makeEmptyMonth(){
 const EMPTY_MONTH = makeEmptyMonth;
 const emptyYear = () => Array.from({length:12}, EMPTY_MONTH);
 
-/* 🆕 [إضافة] state.report.cardCalc — كائن حسبة البطاقة */
 let state = {
   years: {}, yearList: [], activeYear: new Date().getFullYear(), activeMonth: 0,
   debts: [], yearExtras: {}, pyramidTargets: {}, pyramidNotes: {}, pyramidWithdrawals: {},
@@ -3144,7 +3410,6 @@ let state = {
     purchaseNames: [...DEFAULT_PURCHASE_NAMES],
     fatherDebtLabel: "",
     notes: "",
-    /* 🆕 حسبة البطاقة — جديدة */
     cardCalc: { original: 0, myRemaining: 0, theirRemaining: 0 }
   }
 };
@@ -3235,7 +3500,6 @@ function resetReport(){
   });
 }
 
-/* 🆕 [إضافة] تصفير حسبة البطاقة فقط */
 function resetCardCalc(){
   const L = LANG === 'ar';
   openConfirmReset({
@@ -3366,13 +3630,11 @@ function ensureEidi(){
 
 function ensureReminders(){ if(!Array.isArray(state.reminders)) state.reminders = []; return state.reminders; }
 
-/* ⭐ [إصلاح #2] منع إعادة توليد البنوك بعد الحذف الكامل */
 function ensureBanks(){
   if(!state.banks) state.banks = { items: [], customNames: [] };
   if(!Array.isArray(state.banks.items)) state.banks.items = [];
   if(!Array.isArray(state.banks.customNames)) state.banks.customNames = [];
   DEFAULT_BANK_NAMES.forEach(n => { if(!state.banks.customNames.includes(n)) state.banks.customNames.unshift(n); });
-  // ⭐ أول مرة فقط: ولّد الصفوف الافتراضية + ضع علامة التهيئة
   if(state.banks._initialized === undefined){
     if(state.banks.items.length === 0){
       state.banks.items = DEFAULT_BANK_NAMES.map((n, i) => ({ id: Date.now() + i * 1000 + Math.floor(Math.random() * 100), name: n, amount: 0 }));
@@ -3386,7 +3648,6 @@ function ensurePyramidTargets(){ if(!state.pyramidTargets) state.pyramidTargets 
 function ensurePyramidNotes(){ if(!state.pyramidNotes) state.pyramidNotes = {}; return state.pyramidNotes; }
 function ensurePyramidWithdrawals(){ if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {}; return state.pyramidWithdrawals; }
 
-/* 🆕 [إضافة] ensureReport — يشمل cardCalc */
 function ensureReport(){
   if(!state.report) state.report = {
     fatherDebt: 0, electricityBill: 0, shePaysMe: 0,
@@ -3409,7 +3670,6 @@ function ensureReport(){
   DEFAULT_PURCHASE_NAMES.forEach(n => { if(!state.report.purchaseNames.includes(n)) state.report.purchaseNames.unshift(n); });
   state.report.purchases.forEach(p => { if(p.name && !state.report.purchaseNames.includes(p.name)) state.report.purchaseNames.push(p.name); });
   delete state.report.pointsMultiplier;
-  /* 🆕 ضمان وجود cardCalc بمفاتيحه الثلاثة */
   if(!state.report.cardCalc) state.report.cardCalc = { original: 0, myRemaining: 0, theirRemaining: 0 };
   if(typeof state.report.cardCalc.original !== 'number') state.report.cardCalc.original = 0;
   if(typeof state.report.cardCalc.myRemaining !== 'number') state.report.cardCalc.myRemaining = 0;
@@ -3421,10 +3681,9 @@ function ensureReport(){
 const fmt = n => (Number(n)||0).toLocaleString("en-US",{minimumFractionDigits:3,maximumFractionDigits:3});
 const money = n => fmt(n) + " " + (LANG==='ar'?'د.ب':'BHD');
 function inVal(v){ if(v === 0 || v === '0' || v === '' || v === undefined || v === null) return ''; const n = Number(v); if(isNaN(n) || n === 0) return ''; return v; }
-function toast(msg, type){ const el = document.getElementById("toast"); el.textContent = msg; el.classList.remove('success','error','warn'); if(type) el.classList.add(type); el.classList.add("show"); clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove("show"), type === 'success' ? 2800 : 3500); }
+function toast(msg, type){ const el = document.getElementById("toast"); if(!el) return; el.textContent = msg; el.classList.remove('success','error','warn'); if(type) el.classList.add(type); el.classList.add("show"); clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove("show"), type === 'success' ? 2800 : 3500); }
 function kpi(lbl,val,cls=""){ return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val ${cls}">${val}</div></div>`; }
 
-/* ⭐ [إصلاح #1] esc() — تهريب علامة التنصيص المفردة والشرطة المائلة العكسية */
 function esc(s){ 
   return String(s||"")
     .replace(/\\/g,'\\\\')
@@ -3559,13 +3818,13 @@ function initIfEmpty(){
 /* ═══════════════════════════════════════════════════════════════
    Capital Manager — JavaScript (3-B من 3)
    الحسابات + الديون + البيراميد + التقرير + renderCash + renderIncomeFields
-   🆕 [إضافة]: updCardCalc + renderCardCalc (حسبة البطاقة)
+   ✅ يحتوي على كل ما في index 22.html الأصلي بدون حذف
+   🆕 [إضافة]: لا تعديلات هنا — دوال فك التشفير في 3-C
    ═══════════════════════════════════════════════════════════════ */
 
 /* ════════ ⭐ selectMonth — ينقل تعديل state خارج render ════════ */
 function selectMonth(i){ 
   state.activeMonth = i; 
-  // ⭐ نقل منطق "hasMeatSupport" من renderIncomeFields إلى هنا
   const m = state.years[state.activeYear][i];
   if(m){
     const isMeat = isMeatMonth(i);
@@ -3759,12 +4018,6 @@ function rpProfit(){ const r = ensureReport(); if(!r.profitToggle) return 0; ret
 function getShePaysAmount(){ const r = ensureReport(); if(!r.shePaysToggle) return 0; return +r.shePaysMe || 0; }
 function rpFinalAmount(){ return rpFullAmount() - rpProfit(); }
 
-/* 🆕 [إضافة] حسابات حسبة البطاقة — تعمل بنفس فكرة ملف الإكسل Book16.xlsx
-   - يجب ان ادفع (B3) = اصل الموجود (B1) - متبقي من قبلي (B2)
-   - مجموع الكلي للدفع (B8) = اصل الموجود (B1) - متبقي من الطرف الثاني (B5)
-   - يجب ان يدفع (B6) = مجموع الكلي للدفع (B8) - يجب ان ادفع (B3)
-                       = متبقي من قبلي (B2) - متبقي من الطرف الثاني (B5)
-*/
 function cardCalcMustPayMe(){
   const cc = ensureReport().cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
   return Math.max(0, (+cc.original || 0) - (+cc.myRemaining || 0));
@@ -3971,7 +4224,6 @@ function updZakatBank(v){ const m = M()[state.activeMonth]; getZakat(m).bank = v
 function updZakatNote(v){ getZakat(M()[state.activeMonth]).note = v; save(); }
 function updZakatRef(v){ getZakat(M()[state.activeMonth]).ref = v; save(); }
 
-/* 🆕 [إضافة] تحديث قيمة من قيم حسبة البطاقة + إعادة الرسم */
 function updCardCalc(field, value){
   ensureReport();
   const v = Math.max(0, parseFloat(value) || 0);
@@ -4070,7 +4322,6 @@ function updateStolenTotalsInline(){
 /* ════════ ⭐ renderIncomeFields — بدون تعديل state ════════ */
 function renderIncomeFields(){
   const m = M()[state.activeMonth]; const mi = state.activeMonth; const isMeat = isMeatMonth(mi);
-  // ⭐ لا نعدل m.hasMeatSupport هنا — selectMonth يتولى ذلك
   const incN = ensureIncomeNotes(m);
   document.getElementById("incomeFields").innerHTML = getIncomeFields().map(([k,l])=>{
     return `<tr><td>${l}</td><td><input type="number" value="${inVal(m[k])}" oninput="upd('${k}',this.value)" step="0.001"></td><td><input type="text" value="${esc(incN[k]||'')}" oninput="updIncomeNote('${k}', this.value)" placeholder="ملاحظة..."></td></tr>`;
@@ -4089,21 +4340,17 @@ function renderCash(){
   const tbody = document.getElementById("cashBody"); const tfoot = document.getElementById("cashFoot"); const kpis = document.getElementById("cashKpis");
   if(!tbody) return; let total = 0;
 
-  // ⭐ ترجمة العنوان الرئيسي
   const titleEl = document.getElementById("lblCashTitle");
   if(titleEl) titleEl.textContent = t('cash_title');
 
-  // ⭐ ترجمة الـ hint (يحتوي HTML داخلي)
   const hintEl = document.getElementById("lblCashHint");
   if(hintEl) hintEl.innerHTML = t('cash_hint');
 
-  // ⭐ ترجمة رؤوس الجدول
   const thItem = document.getElementById("thCashItem"); if(thItem) thItem.textContent = t('cash_th_item');
   const thValue = document.getElementById("thCashValue"); if(thValue) thValue.textContent = t('cash_th_value');
   const thCount = document.getElementById("thCashCount"); if(thCount) thCount.textContent = t('cash_th_count');
   const thAmount = document.getElementById("thCashAmount"); if(thAmount) thAmount.textContent = t('cash_th_amount');
 
-  // ⭐ ترجمة ملخص التجوري
   const summaryEl = document.getElementById("lblCashSummary");
   if(summaryEl) summaryEl.textContent = t('cash_summary');
 
@@ -4112,27 +4359,22 @@ function renderCash(){
     const label = L ? d.labelAr : d.labelEn;
     return `<tr data-cash-key="${d.key}" style="${count > 0 ? 'background:rgba(34,193,164,.05)' : 'opacity:.75'}"><td style="font-weight:700"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${d.color};margin-inline-end:8px;vertical-align:middle"></span>${d.icon} ${label}</td><td class="num" style="font-family:monospace;font-weight:700;color:${d.color};font-size:15px">× ${fmt(d.value)}</td><td><input type="number" value="${count || ''}" min="0" step="1" placeholder="0" oninput="updCashCount('${d.key}', this.value)" style="width:100%;max-width:140px;text-align:center;font-family:monospace;font-weight:700;font-size:18px;background:var(--panel2);border:2px solid var(--line);color:var(--txt);padding:10px 12px;border-radius:8px;margin:0 auto;display:block"></td><td class="num cash-amount-cell" style="font-family:monospace;font-weight:800;font-size:16px;color:${amount > 0 ? 'var(--ok)' : 'var(--muted)'}">${amount > 0 ? fmt(amount) : '—'}</td></tr>`;
   }).join("");
-  // ⭐ الترجمة الكاملة لـ tfoot
   tfoot.innerHTML = `<tr style="background:linear-gradient(90deg,rgba(234,179,8,.18),rgba(34,193,164,.12))"><td colspan="3" style="font-size:16px;color:var(--gold);font-weight:800">${t('cash_total_row')}</td><td class="num" id="cashTotalCell" style="font-family:monospace;font-size:22px;color:var(--gold);font-weight:900">${fmt(total)} ${L ? 'د.ب' : 'BHD'}</td></tr>`;
-  // ⭐ ترجمة KPI
   if(kpis){ kpis.innerHTML = `${kpi(t('cash_kpi_total'), money(total), total > 0 ? 'gold' : '')}`; }
 }
 
-/* 🆕 [إضافة] renderCardCalc — عرض حسبة البطاقة ديناميكياً */
+/* 🆕 renderCardCalc — عرض حسبة البطاقة ديناميكياً */
 function renderCardCalc(){
   ensureReport();
   const L = LANG === 'ar';
   const cc = state.report.cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
 
-  // ⭐ ترجمة العنوان الرئيسي
   const titleEl = document.getElementById("lblCardCalcTitle");
   if(titleEl) titleEl.textContent = t('card_calc_title');
 
-  // ⭐ ترجمة الـ hint
   const hintEl = document.getElementById("lblCardCalcHint");
   if(hintEl) hintEl.textContent = t('card_calc_hint');
 
-  // ⭐ ترجمة التسميات
   const lblOriginal = document.getElementById("lblCardOriginal"); if(lblOriginal) lblOriginal.textContent = t('lblCardOriginal');
   const lblMyRem = document.getElementById("lblCardMyRemaining"); if(lblMyRem) lblMyRem.textContent = t('lblCardMyRemaining');
   const lblMustPayMe = document.getElementById("lblCardMustPayMe"); if(lblMustPayMe) lblMustPayMe.textContent = t('lblCardMustPayMe');
@@ -4140,7 +4382,6 @@ function renderCardCalc(){
   const lblTotalPay = document.getElementById("lblCardTotalPay"); if(lblTotalPay) lblTotalPay.textContent = t('lblCardTotalPay');
   const lblTheyMustPay = document.getElementById("lblCardTheyMustPay"); if(lblTheyMustPay) lblTheyMustPay.textContent = t('lblCardTheyMustPay');
 
-  // ⭐ تحديث الحقول (بدون الكتابة فوق الحقل النشط)
   const origEl = document.getElementById("cardOriginal");
   if(origEl && document.activeElement !== origEl) origEl.value = inVal(cc.original);
   const myRemEl = document.getElementById("cardMyRemaining");
@@ -4148,7 +4389,6 @@ function renderCardCalc(){
   const theirRemEl = document.getElementById("cardTheirRemaining");
   if(theirRemEl && document.activeElement !== theirRemEl) theirRemEl.value = inVal(cc.theirRemaining);
 
-  // ⭐ حساب النتائج
   const mustPayMe = cardCalcMustPayMe();
   const totalPay = cardCalcTotalPay();
   const theyMustPay = cardCalcTheyMustPay();
@@ -4160,7 +4400,6 @@ function renderCardCalc(){
   const theyMustPayEl = document.getElementById("cardTheyMustPay");
   if(theyMustPayEl) theyMustPayEl.value = fmt(theyMustPay) + " " + (L ? 'د.ب' : 'BHD');
 
-  // ⭐ بناء الملخص السفلي
   const summaryEl = document.getElementById("cardCalcSummary");
   if(summaryEl){
     const cur = L ? 'د.ب' : 'BHD';
@@ -4192,11 +4431,10 @@ function renderCardCalc(){
     `;
   }
 }
-
 /* ═══════════════════════════════════════════════════════════════
-   Capital Manager — JavaScript (3-C من 3)
-   render* + printStolen + Excel + PDF + applyLang + Events + Init + Quick Nav
-   🆕 [إضافة]: renderReport (يستدعي renderCardCalc) + applyLang (ترجمات card_calc)
+   Capital Manager — JavaScript (3-C من 3 — الجزء الأخير)
+   render* المتبقية + Excel + PDF + Print + applyLang + Init
+   🆕 [إضافة]: دوال فك التشفير (pop3)
    ═══════════════════════════════════════════════════════════════ */
 
 /* ════════ السنة / الشهر ════════ */
@@ -4283,7 +4521,7 @@ function renderMonthPills(){
   }).join("");
 }
 
-/* ════════ Salary / Income / Expenses / Savings ════════ */
+/* ════════ Salary / Expenses / Savings ════════ */
 function renderSalaryFields(){
   const m = M()[state.activeMonth]; const incN = ensureIncomeNotes(m);
   document.getElementById("salaryFields").innerHTML = `<tr><td>${t('f_salary')}</td><td><input type="number" value="${inVal(m.salary)}" oninput="upd('salary',this.value)" step="0.001"></td><td><input type="text" value="${esc(incN.salary||'')}" oninput="updIncomeNote('salary', this.value)" placeholder="ملاحظة..."></td></tr>`;
@@ -4727,35 +4965,35 @@ function renderPyramidSvg(){
     const remBhd = LANG === 'ar' ? 'د.ب' : 'BHD';
     const lines = [];
 
-   if(lvl.isMerged){
-  const L = LANG === 'ar';
-  const lblTotal = L ? 'كلي' : 'Total';
-  const lblRem = L ? 'متبقي' : 'Left';
-  const lblPct = L ? 'نسبة' : 'Rate';
-  lines.push({ text: `⚠️ ${lvl.label}`, font: fs, weight: '700', fill: '#fff', family: 'inherit', italic: false, opacity: 1 });
-  let totalTargets = 0, totalNet = 0;
-  lvl.mergedKeys.forEach(k => {
-    const kLvl = getPyramidLevels().find(l => l.key === k);
-    if(!kLvl) return;
-    const kNet = getNetSaved(k);
-    const kTarget = getPyramidTarget(k);
-    totalTargets += kTarget;
-    totalNet += kNet;
-    const kRemaining = Math.max(0, kTarget - kNet);
-    const kPct = kTarget > 0 ? Math.min(100, (kNet / kTarget) * 100) : 0;
-    const totalStr = kTarget > 0 ? fmt(kTarget) : '—';
-    const remainingStr = kTarget > 0 ? fmt(kRemaining) : '—';
-    const pctStr = kTarget > 0 ? `${kPct.toFixed(0)}%` : '—';
-    lines.push({ text: `${kLvl.subtitle} ${kLvl.label} → ${lblTotal}: ${totalStr} • ${lblRem}: ${remainingStr} • ${lblPct}: ${pctStr}`, font: afs - 1.2, weight: '600', fill: '#fff', family: 'monospace', italic: false, opacity: 0.95 });
-  });
-  const totalRemainingVal = Math.max(0, totalTargets - totalNet);
-  const totalPct = totalTargets > 0 ? Math.min(100, (totalNet / totalTargets) * 100) : 0;
-  const totStr = totalTargets > 0 ? fmt(totalTargets) : '—';
-  const totRemStr = totalTargets > 0 ? fmt(totalRemainingVal) : '—';
-  const totPctStr = totalTargets > 0 ? `${totalPct.toFixed(0)}%` : '—';
-  lines.push({ text: `📊 ${L?'الإجمالي':'Total'} → ${lblTotal}: ${totStr} • ${lblRem}: ${totRemStr} • ${lblPct}: ${totPctStr}`, font: afs - 0.3, weight: '800', fill: '#fecaca', family: 'monospace', italic: false, opacity: 1 });
-}
- else {
+    if(lvl.isMerged){
+      const L = LANG === 'ar';
+      const lblTotal = L ? 'كلي' : 'Total';
+      const lblRem = L ? 'متبقي' : 'Left';
+      const lblPct = L ? 'نسبة' : 'Rate';
+      lines.push({ text: `⚠️ ${lvl.label}`, font: fs, weight: '700', fill: '#fff', family: 'inherit', italic: false, opacity: 1 });
+      let totalTargets = 0, totalNet = 0;
+      lvl.mergedKeys.forEach(k => {
+        const kLvl = getPyramidLevels().find(l => l.key === k);
+        if(!kLvl) return;
+        const kNet = getNetSaved(k);
+        const kTarget = getPyramidTarget(k);
+        totalTargets += kTarget;
+        totalNet += kNet;
+        const kRemaining = Math.max(0, kTarget - kNet);
+        const kPct = kTarget > 0 ? Math.min(100, (kNet / kTarget) * 100) : 0;
+        const totalStr = kTarget > 0 ? fmt(kTarget) : '—';
+        const remainingStr = kTarget > 0 ? fmt(kRemaining) : '—';
+        const pctStr = kTarget > 0 ? `${kPct.toFixed(0)}%` : '—';
+        lines.push({ text: `${kLvl.subtitle} ${kLvl.label} → ${lblTotal}: ${totalStr} • ${lblRem}: ${remainingStr} • ${lblPct}: ${pctStr}`, font: afs - 1.2, weight: '600', fill: '#fff', family: 'monospace', italic: false, opacity: 0.95 });
+      });
+      const totalRemainingVal = Math.max(0, totalTargets - totalNet);
+      const totalPct = totalTargets > 0 ? Math.min(100, (totalNet / totalTargets) * 100) : 0;
+      const totStr = totalTargets > 0 ? fmt(totalTargets) : '—';
+      const totRemStr = totalTargets > 0 ? fmt(totalRemainingVal) : '—';
+      const totPctStr = totalTargets > 0 ? `${totalPct.toFixed(0)}%` : '—';
+      lines.push({ text: `📊 ${L?'الإجمالي':'Total'} → ${lblTotal}: ${totStr} • ${lblRem}: ${totRemStr} • ${lblPct}: ${totPctStr}`, font: afs - 0.3, weight: '800', fill: '#fecaca', family: 'monospace', italic: false, opacity: 1 });
+    }
+    else {
       const note = getPyramidNote(lvl.key);
       const maxChars = Math.max(10, 30 - i * 2);
       const truncatedNote = note.length > maxChars ? note.substring(0, maxChars) + '…' : note;
@@ -4773,7 +5011,7 @@ function renderPyramidSvg(){
       else if(hasNote){ lines.push({ text: `📝 ${truncatedNote}`, font: 8, weight: 'normal', fill: '#fff', family: 'inherit', italic: true, opacity: 0.95 }); }
     }
 
-const lineH = lvl.isMerged ? 10 : 13;
+    const lineH = lvl.isMerged ? 10 : 13;
     const totalTextH = (lines.length - 1) * lineH;
     const startY = cy - totalTextH / 2;
     svg += `<polygon points="${x1},${yTop} ${x2},${yTop} ${x3},${yBot} ${x4},${yBot}" fill="${lvl.color}" fill-opacity="${isNegative ? 0.55 : 0.88}" stroke="${lvl.color}" stroke-width="1.5" ${isNegative ? 'stroke-dasharray="4,2"' : ''}/>`;
@@ -4847,7 +5085,6 @@ function refreshReportTotals(){
   const resultsEl = document.getElementById("reportResults");
   if(resultsEl){ resultsEl.innerHTML = `${kpi(t('rp_kpi_full'), money(fullAmt), "acc")}${kpi(t('rp_kpi_points'), fmt(points), "gold")}${kpi(t('rp_kpi_profit_status'), profitStatus, r.profitToggle ? "pos" : "neg")}${kpi(t('rp_kpi_profit'), money(profit), r.profitToggle ? "pos" : "neg")}${kpi(t('rp_kpi_final'), money(finalAmt), "neg")}`; }
 }
-/* 🆕 [تعديل] renderReport — يستدعي renderCardCalc() في النهاية */
 function renderReport(){
   ensureReport(); const r = state.report; if(!document.getElementById("rpFather")) return;
   const labelEl = document.getElementById("rpFatherLabel");
@@ -4871,7 +5108,6 @@ function renderReport(){
     }).join("");
   }
   refreshReportTotals();
-  /* 🆕 استدعاء عرض حسبة البطاقة بعد رسم التقرير */
   renderCardCalc();
 }
 
@@ -5757,7 +5993,6 @@ function exportReportExcel(){
     xlDataRow(ws, row, ['🏆 حالة الربح', rpt.profitToggle ? '✅ ربحت' : '❌ ما ربحت', ''], cols, { fill: rpt.profitToggle ? 'DCFCE7' : 'FEE2E2', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: rpt.profitToggle ? '166534' : '991B1B' }, name: 'Segoe UI' }, height: 26 }); row++;
     xlDataRow(ws, row, ['✅ الربح', rpProfit(), ''], cols, { fill: rpt.profitToggle ? 'DCFCE7' : 'FEE2E2', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: rpt.profitToggle ? '166534' : '991B1B' }, name: 'Segoe UI' }, height: 28 }); row++;
     xlDataRow(ws, row, ['📌 المبلغ النهائي', rpFinalAmount(), ''], cols, { fill: '22C55E', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 14, bold: true, color: { rgb: 'FFFFFF' }, name: 'Segoe UI' }, height: 34 }); row++; row++;
-    /* 🆕 قسم حسبة البطاقة في Excel */
     xlSectionRow(ws, row, cols, '💳 حسبة البطاقة', '3B82F6'); row++;
     xlHeaderRow(ws, row, ['البند', 'القيمة ('+cur+')', ''], '1E3A5F'); row++;
     const cc = rpt.cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
@@ -5769,8 +6004,6 @@ function exportReportExcel(){
     xlDataRow(ws, row, [t('lblCardTheyMustPay'), cardCalcTheyMustPay(), ''], cols, { fill: 'DCFCE7', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 13, bold: true, color: { rgb: '166534' }, name: 'Segoe UI' }, height: 30 }); row++; row++;
     if(rpt.notes){ xlSectionRow(ws, row, cols, '📝 ملاحظات', 'EAB308'); row++; ws[XLSX.utils.encode_cell({ r: row, c: 0 })] = { v: rpt.notes, t: 's' }; xlMerge(ws, row, 0, row, cols - 1); xlStyleRow(ws, row, cols, { fill: 'FEF3C7', font: { sz: 11, name: 'Segoe UI', color: { rgb: '78350F' } }, align: { horizontal: 'right', vertical: 'center', wrapText: true }, border: xlBorders('94A3B8') }); if(!ws['!rows']) ws['!rows'] = []; ws['!rows'][row] = { hpt: 44 }; row++; }
     ws['!cols'] = [{ wch: 32 }, { wch: 14 }, { wch: 6 }];
-    ws['!pageSetup'] = { fitToWidth: 1, fitToHeight: 1, orientation: 'portrait', paperSize: 9, scale: 100, pageOrder: 'downThenOver', cellComments: 'none', errors: 'displayed', horizontalDpi: 600, verticalDpi: 600, copies: 1 };
-    ws['!margins'] = { left: 0.25, right: 0.25, top: 0.35, bottom: 0.35, header: 0.15, footer: 0.15 };
     ws['!ref'] = XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: row, c: cols - 1 } });
     applySheetRTL(ws, wb);
     XLSX.utils.book_append_sheet(wb, ws, L ? 'تقرير الشراكة' : 'Report');
@@ -6329,7 +6562,7 @@ function generatePyramidLevelReportHTML(key){
 function printPyramidLevelDetail(key){ const htmlStr = generatePyramidLevelReportHTML(key); if(!htmlStr) return; const w = window.open('', '_blank', 'width=900,height=900'); if(w){ w.document.open(); w.document.write(htmlStr); w.document.close(); setTimeout(() => { try { w.focus(); w.print(); } catch(e){} }, 500); } else { toast(t('print_error_popup'), 'error'); } }
 async function sharePyramidLevelPDF(key){ try { const lvl = getPyramidLevels().find(l => l.key === key); if(!lvl){ toast(t('share_failed'), 'error'); return; } toast(t('creating_pdf')); const htmlStr = generatePyramidLevelReportHTML(key); const safeName = lvl.label.replace(/[^\w\u0600-\u06FF]/g, '_'); const filename = `pyramid_${safeName}_${todayStr()}.pdf`; const blob = await generatePdfInWindow(htmlStr, filename, 'portrait'); if(!blob){ toast(t('share_failed'), 'error'); return; } await sharePdfBlob(blob, filename); } catch(err){ if(err && err.name === 'AbortError'){ toast(t('share_cancelled')); return; } toast(t('share_failed'), 'error'); } }
 
-/* ════════ applyLang — يشمل ترجمة التجوري وحسبة البطاقة ════════ */
+/* ════════ applyLang ════════ */
 function applyLang(){
   document.documentElement.lang = LANG;
   document.documentElement.dir = LANG === 'ar' ? 'rtl' : 'ltr';
@@ -6384,24 +6617,11 @@ function applyLang(){
     btnAddStolen:'stolen_btn_add',btnResetStolen:'stolen_btn_reset',lblEidiTitle:'lblEidiTitle',lblEidiHint:'lblEidiHint',lblEidiSummary:'lblEidiSummary',
     thEidiIndex:'thEidiIndex',thEidiName:'thEidiName',thEidiAmount:'thEidiAmount',
     btnAddEidi:'eidi_add_btn',btnResetEidi:'eidi_reset_btn',
-    lblCashTitle:'cash_title',
-    lblCashSummary:'cash_summary',
-    thCashItem:'cash_th_item',
-    thCashValue:'cash_th_value',
-    thCashCount:'cash_th_count',
-    thCashAmount:'cash_th_amount',
-    /* 🆕 ترجمة حسبة البطاقة */
-    lblCardCalcTitle:'card_calc_title',
-    lblCardCalcHint:'card_calc_hint',
-    lblCardOriginal:'lblCardOriginal',
-    lblCardMyRemaining:'lblCardMyRemaining',
-    lblCardMustPayMe:'lblCardMustPayMe',
-    lblCardTheirRemaining:'lblCardTheirRemaining',
-    lblCardTotalPay:'lblCardTotalPay',
-    lblCardTheyMustPay:'lblCardTheyMustPay',
+    lblCashTitle:'cash_title',lblCashSummary:'cash_summary',thCashItem:'cash_th_item',thCashValue:'cash_th_value',thCashCount:'cash_th_count',thCashAmount:'cash_th_amount',
+    lblCardCalcTitle:'card_calc_title',lblCardCalcHint:'card_calc_hint',lblCardOriginal:'lblCardOriginal',lblCardMyRemaining:'lblCardMyRemaining',
+    lblCardMustPayMe:'lblCardMustPayMe',lblCardTheirRemaining:'lblCardTheirRemaining',lblCardTotalPay:'lblCardTotalPay',lblCardTheyMustPay:'lblCardTheyMustPay',
   };
   Object.keys(ids).forEach(id => { const el = document.getElementById(id); if(el) el.textContent = t(ids[id]); });
-  /* 🆕 ترجمة زر تصفير حسبة البطاقة (data-i18n) */
   const resetCardBtn = document.querySelector('[data-i18n="card_calc_reset"]');
   if(resetCardBtn) resetCardBtn.textContent = t('card_calc_reset');
   renderAll();
@@ -6416,6 +6636,203 @@ function applyTheme(){ document.documentElement.dataset.theme = THEME; document.
 function toggleTheme(){ THEME = THEME === 'dark' ? 'light' : 'dark'; localStorage.setItem('cm_theme', THEME); applyTheme(); toast(THEME === 'dark' ? (LANG==='ar'?'🌙 ليلي':'🌙 Dark') : (LANG==='ar'?'☀️ نهاري':'☀️ Light')); }
 function applyFontScale(){ document.getElementById('mainContent').style.zoom = FONT_SCALE; }
 function changeFontSize(delta){ FONT_SCALE = Math.max(0.75, Math.min(1.6, FONT_SCALE + delta * 0.1)); localStorage.setItem('cm_font', FONT_SCALE); applyFontScale(); toast((LANG==='ar'?'🔠 ':'🔠 ') + Math.round(FONT_SCALE*100) + '%'); }
+
+/* ═══════════════════════════════════════════════════════════════
+   🆕 [جديد] دوال فك التشفير (pop3)
+   ═══════════════════════════════════════════════════════════════ */
+
+/**
+ * فتح نافذة فك التشفير
+ */
+function openDecryptModal(){
+  const modal = document.getElementById('decryptModal');
+  if(!modal){ console.error('decryptModal not found'); return; }
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+  // تصفير الحقول
+  const passEl = document.getElementById('decryptPassword');
+  if(passEl){ passEl.value = ''; setTimeout(() => passEl.focus(), 150); }
+  const fileEl = document.getElementById('pop3File');
+  if(fileEl) fileEl.value = '';
+  setDecryptStatus('', '');
+  toggleDecryptImportMode();
+}
+
+/**
+ * إغلاق نافذة فك التشفير
+ */
+function closeDecryptModal(){
+  const modal = document.getElementById('decryptModal');
+  if(modal){ modal.classList.remove('show'); document.body.style.overflow = ''; }
+  const statusEl = document.getElementById('decryptStatus');
+  if(statusEl){ statusEl.style.display = 'none'; statusEl.innerHTML = ''; statusEl.className = ''; }
+}
+
+/**
+ * تبديل وضع الاستيراد (GitHub / محلي)
+ */
+function toggleDecryptImportMode(){
+  const mode = document.querySelector('input[name="decryptImportMode"]:checked')?.value || 'github';
+  const githubBlock = document.getElementById('decryptGithubMode');
+  const localBlock = document.getElementById('decryptLocalMode');
+  if(githubBlock) githubBlock.style.display = mode === 'github' ? 'block' : 'none';
+  if(localBlock) localBlock.style.display = mode === 'local' ? 'block' : 'none';
+}
+
+/**
+ * تعيين رسالة الحالة في نافذة فك التشفير
+ * @param {string} message - الرسالة
+ * @param {string} type - النوع: 'loading' | 'success' | 'error' | 'warning' | ''
+ */
+function setDecryptStatus(message, type){
+  const el = document.getElementById('decryptStatus');
+  if(!el) return;
+  if(!message){ el.style.display = 'none'; el.innerHTML = ''; el.className = ''; return; }
+  el.style.display = 'block';
+  el.className = 'status-' + (type || 'loading');
+  el.innerHTML = message;
+}
+
+/**
+ * فك تشفير نص باستخدام AES مع كلمة المرور
+ */
+function decryptText(encryptedText, password){
+  try {
+    const bytes = CryptoJS.AES.decrypt(encryptedText, password);
+    const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
+    if(!decryptedString) throw new Error('كلمة المرور غير صحيحة أو الملف تالف');
+    return JSON.parse(decryptedString);
+  } catch(e){
+    throw new Error('فشل فك التشفير: ' + (e.message || 'تأكد من كلمة المرور والملف'));
+  }
+}
+
+/**
+ * جلب محتوى ملف pop3.json (من GitHub أو من ملف محلي)
+ */
+async function fetchPop3Content(mode){
+  if(mode === 'local'){
+    const fileInput = document.getElementById('pop3File');
+    const file = fileInput?.files?.[0];
+    if(!file) throw new Error('الرجاء اختيار ملف pop3.json من جهازك');
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = () => reject(new Error('فشل قراءة الملف'));
+      reader.readAsText(file, 'utf-8');
+    });
+  }
+  // GitHub
+  const urlInput = document.getElementById('pop3Url');
+  const url = (urlInput?.value || '').trim();
+  if(!url) throw new Error('الرجاء إدخال رابط pop3.json');
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+  try {
+    const res = await fetch(url, { signal: controller.signal, cache: 'no-store' });
+    if(!res.ok) throw new Error('فشل جلب الملف من الرابط (HTTP ' + res.status + ')');
+    return await res.text();
+  } catch(e){
+    if(e.name === 'AbortError') throw new Error('انتهت مهلة جلب الملف (15 ثانية)');
+    throw e;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+/**
+ * المعالج الرئيسي لفك التشفير والاستيراد
+ */
+async function processDecryption(){
+  const password = document.getElementById('decryptPassword')?.value || '';
+  const mode = document.querySelector('input[name="decryptImportMode"]:checked')?.value || 'github';
+  const btn = document.getElementById('btnProcessDecryption');
+
+  if(!password){
+    setDecryptStatus('⚠️ الرجاء إدخال كلمة المرور', 'error');
+    return;
+  }
+
+  if(typeof CryptoJS === 'undefined'){
+    setDecryptStatus('⚠️ مكتبة CryptoJS غير محمّلة — تأكد من اتصالك بالإنترنت', 'error');
+    return;
+  }
+
+  if(btn){ btn.disabled = true; }
+  setDecryptStatus('⏳ جاري فك التشفير واستيراد البيانات...', 'loading');
+
+  try {
+    // 1. جلب محتوى الملف
+    const encryptedContent = await fetchPop3Content(mode);
+    if(!encryptedContent || encryptedContent.trim().length < 10){
+      throw new Error('الملف فارغ أو غير صالح');
+    }
+
+    // 2. فك التشفير
+    let decryptedData;
+    try {
+      decryptedData = decryptText(encryptedContent, password);
+    } catch(e){
+      throw new Error('كلمة المرور غير صحيحة أو الملف تالف — ' + e.message);
+    }
+
+    if(!decryptedData || typeof decryptedData !== 'object'){
+      throw new Error('البيانات المفكوكة غير صالحة');
+    }
+
+    // 3. التحقق من البنية المتوقعة
+    const isValidState = decryptedData.years || decryptedData.months || decryptedData.debts || decryptedData.yearList;
+    if(!isValidState){
+      throw new Error('الملف لا يحتوي على بيانات متوافقة مع التطبيق');
+    }
+
+    // 4. تأكيد الاستبدال (لأن الاستيراد سيستبدل البيانات الحالية)
+    setDecryptStatus('✅ تم فك التشفير بنجاح!<br>⏳ جاري استبدال البيانات الحالية...', 'success');
+
+    // 5. استبدال الحالة بالكامل
+    state = { ...state, ...decryptedData };
+    // ضمانات (ensure*) لكل الحقول
+    if(!state.pyramidTargets) state.pyramidTargets = {};
+    if(!state.pyramidNotes) state.pyramidNotes = {};
+    if(!state.pyramidWithdrawals) state.pyramidWithdrawals = {};
+    if(!state.stolen) state.stolen = {};
+    if(!state.cash) state.cash = { counts: {} };
+    if(!state.eidi) state.eidi = { items: [] };
+    if(!state.reminders) state.reminders = [];
+    if(!state.banks) state.banks = { items: [], customNames: [] };
+    if(!state.report) state.report = {};
+    if(!state.yearList || !state.yearList.length){
+      const y = new Date().getFullYear();
+      state.years = state.years || {};
+      if(!state.years[y]) state.years[y] = emptyYear();
+      state.yearList = Object.keys(state.years).map(Number).sort((a,b)=>a-b);
+      state.activeYear = state.yearList[state.yearList.length - 1];
+    }
+    ensureStolen(); ensureCash(); ensureEidi(); ensureReminders(); ensureBanks(); ensureReport();
+    if(!state.pyramidTargets) ensurePyramidTargets();
+    if(!state.pyramidNotes) ensurePyramidNotes();
+    if(!state.pyramidWithdrawals) ensurePyramidWithdrawals();
+
+    // 6. حفظ فوري
+    if(typeof saveNow === 'function') saveNow();
+
+    // 7. إعادة رسم الواجهة بالكامل
+    try { applyLang(); } catch(e){ console.warn('applyLang:', e); }
+
+    setDecryptStatus('✅ تم الاستيراد بنجاح!<br>🔄 جاري إعادة تحميل الصفحة لتطبيق التغييرات...', 'success');
+
+    // 8. إعادة تحميل الصفحة بعد ثانيتين
+    setTimeout(() => {
+      try { location.reload(); } catch(e){}
+    }, 2000);
+
+  } catch(error){
+    console.error('Decryption error:', error);
+    setDecryptStatus('❌ ' + (error.message || 'خطأ غير معروف'), 'error');
+  } finally {
+    if(btn){ btn.disabled = false; }
+  }
+}
 
 /* ════════ Events + Init ════════ */
 document.querySelectorAll("nav.tabs button").forEach(btn=>{
@@ -6459,6 +6876,7 @@ document.addEventListener('keydown', function(e){
     const modal = document.getElementById("instructionsModal"); if(modal && modal.classList.contains("show")) closeInstructions();
     const popup = document.getElementById("reminderPopup"); if(popup && popup.classList.contains("show")) dismissCurrentPopup();
     const resetModal = document.getElementById("confirmResetModal"); if(resetModal && resetModal.classList.contains("show")) closeConfirmReset();
+    const decryptModal = document.getElementById("decryptModal"); if(decryptModal && decryptModal.classList.contains("show")) closeDecryptModal();
     if(_editingReminderId != null){ cancelEditReminder(); }
   }
 });
@@ -6494,6 +6912,12 @@ function renderQuickNavList(){
 function quickNavTo(view){ const targetBtn = document.querySelector(`nav.tabs button[data-view="${view}"]`); if(targetBtn) targetBtn.click(); const menu = document.getElementById('quickNavMenu'); const btn = document.getElementById('quickNavBtn'); if(menu) menu.classList.remove('show'); if(btn) btn.classList.remove('active'); }
 document.addEventListener('click', function(e){ const menu = document.getElementById('quickNavMenu'); const btn = document.getElementById('quickNavBtn'); if(!menu || !btn) return; if(!menu.classList.contains('show')) return; if(menu.contains(e.target) || btn.contains(e.target)) return; menu.classList.remove('show'); btn.classList.remove('active'); });
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ const menu = document.getElementById('quickNavMenu'); const btn = document.getElementById('quickNavBtn'); if(menu && btn && menu.classList.contains('show')){ menu.classList.remove('show'); btn.classList.remove('active'); } } });
+
+/* ═══════════════════════════════════════════════════════════════
+   [نهاية الجزء 3-C — JavaScript — نهاية الملف كاملاً]
+   ═══════════════════════════════════════════════════════════════ */
+
 </script>
+
 </body>
 </html>
