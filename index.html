@@ -4013,7 +4013,7 @@ function getPyramidBankSavingsTargetTotal(){ const levels = getPyramidLevels(); 
 /* ════════ دوال report ════════ */
 function rpPurchasesTotal(){ const r = ensureReport(); return (r.purchases || []).reduce((s, p) => s + (+p.amount || 0), 0); }
 function rpFullAmount(){ const r = ensureReport(); let shePays = 0; if(r.shePaysToggle) shePays = +r.shePaysMe || 0; return rpPurchasesTotal() + shePays; }
-function rpPoints(){ return rpPurchasesTotal() * 2; }
+function rpPoints(){ return rpPurchasesTotal() / 0.625; }
 function rpProfit(){ const r = ensureReport(); if(!r.profitToggle) return 0; return (rpPoints() / 25) * 0.25; }
 function getShePaysAmount(){ const r = ensureReport(); if(!r.shePaysToggle) return 0; return +r.shePaysMe || 0; }
 function rpFinalAmount(){ return rpFullAmount() - rpProfit(); }
