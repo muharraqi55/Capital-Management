@@ -2660,7 +2660,7 @@ html[dir="ltr"] .confirm-reset-details li::before{
     <div class="grid g3" style="margin-top:14px">
       <div class="field">
         <label id="lblCardTheirRemaining">💰 متبقي من الطرف الثاني</label>
-        <input type="number" id="cardTheirRemaining" step="0.001" min="0" oninput="updCardCalc('theirRemaining', this.value)" placeholder="0.000">
+        <input type="text" id="cardTheirRemaining" class="card-calc-readonly card-calc-green" readonly title="يُحسب تلقائياً = متبقي من قبلي − إجمالي تفاصيل الشراء" placeholder="0.000">
       </div>
       <div class="field">
         <label id="lblCardTotalPay">📊 مجموع الكلي للدفع</label>
@@ -3899,7 +3899,7 @@ function load(){
       });
     }
     if(!state.yearExtras) state.yearExtras = {};
-    state.debts = (state.debts||[]).map(dd => { if(!dd.monthlyByYear){ const y = state.activeYear; dd.monthlyByYear = { [y]: dd.monthly || Array(12).fill(0) }; delete dd.monthly; } if(!dd.bank) dd.bank = "بطاقة صراف الالي"; if(!dd.refByYear) dd.refByYear = {}; return dd; });
+    state.debts = (state.debts||[]).map(dd => { if(!dd.monthlyByYear){ const y = state.activeYear; dd.monthlyByYear = { [y]: dd.monthly || Array(12).fill(0) }; delete dd.monthly; } if(!dd.bank) dd.bank = "بطاقة صراف الالي"; if(!dd.refByYear) dd.refByYear = {}; if(!dd.bankByYear) dd.bankByYear = {}; return dd; });
     ensureReport(); ensureCash(); ensureEidi(); ensureReminders(); ensureBanks();
     LOADED_FROM_DATA = true;
     if(migratedFrom){ setTimeout(() => { save(); toast(t('migrate_ok') + ": " + migratedFrom); }, 400); }
@@ -3966,7 +3966,21 @@ function ensureRefMeta(m){ if(!m.refMeta) m.refMeta = {}; return m.refMeta; }
 function getRefMeta(m, key){ const rm = ensureRefMeta(m); if(!(key in rm)) rm[key] = ""; return rm[key]; }
 function ensureSavingRefMeta(m){ if(!m.savingRefMeta) m.savingRefMeta = {}; return m.savingRefMeta; }
 function getSavingRefMeta(m, key){ const rm = ensureSavingRefMeta(m); if(!(key in rm)) rm[key] = ""; return rm[key]; }
-function isDebtExcluded(d){ return d.bank === EXCLUDED_BANK; }
+/* 🆕 البنك لكل شهر على حدة (bankByYear[سنة][شهر]) — إن لم يُحدد يُستخدم البنك القديم d.bank */
+function ensureDebtBankByYear(d){ if(!d.bankByYear) d.bankByYear = {}; return d.bankByYear; }
+function getDebtBank(d, year, mi){
+  const y = (year === undefined || year === null) ? state.activeYear : year;
+  const m = (mi === undefined || mi === null) ? state.activeMonth : mi;
+  const bby = d.bankByYear;
+  if(bby && bby[y] && bby[y][m]) return bby[y][m];
+  return d.bank || "بطاقة صراف الالي";
+}
+function setDebtBank(d, year, mi, val){
+  const bby = ensureDebtBankByYear(d);
+  if(!bby[year]) bby[year] = Array(12).fill("");
+  bby[year][mi] = val;
+}
+function isDebtExcluded(d, year, mi){ return getDebtBank(d, year, mi) === EXCLUDED_BANK; }
 function ensureDebtRefByYear(d){ if(!d.refByYear) d.refByYear = {}; return d.refByYear; }
 function getDebtRef(d, year, mi){ const rby = ensureDebtRefByYear(d); if(!rby[year]) rby[year] = Array(12).fill(""); return rby[year][mi] || ""; }
 function setDebtRef(d, year, mi, val){ const rby = ensureDebtRefByYear(d); if(!rby[year]) rby[year] = Array(12).fill(""); rby[year][mi] = val; }
@@ -3987,18 +4001,18 @@ function debtRemainingBefore(d, year, mi){
 function isDebtFullyPaid(d){ return debtRemaining(d) === 0; }
 function getAllDebtPayments(d){
   const payments = []; if(!d.monthlyByYear) return payments;
-  Object.keys(d.monthlyByYear).forEach(y => { const arr = d.monthlyByYear[y] || []; arr.forEach((v, mi) => { const amt = +v || 0; if(amt > 0){ payments.push({ year: parseInt(y), month: mi, amount: amt, ref: getDebtRef(d, parseInt(y), mi) || '', bank: d.bank || "بطاقة صراف الالي" }); } }); });
+  Object.keys(d.monthlyByYear).forEach(y => { const arr = d.monthlyByYear[y] || []; arr.forEach((v, mi) => { const amt = +v || 0; if(amt > 0){ payments.push({ year: parseInt(y), month: mi, amount: amt, ref: getDebtRef(d, parseInt(y), mi) || '', bank: getDebtBank(d, parseInt(y), mi) }); } }); });
   payments.sort((a,b) => (a.year - b.year) || (a.month - b.month));
   return payments;
 }
 function lastPaymentInfo(d){ const payments = getAllDebtPayments(d); if(!payments.length) return null; const last = payments[payments.length - 1]; const monthName = getMonths()[last.month]; return { year:last.year, month:last.month, amount:last.amount, monthName, shortLabel: `${monthName} ${last.year}` }; }
 function shouldShowDebtInMonthlyEntry(d, year, mi){ if(debtRemaining(d) > 0) return true; return dm(d, year, mi) > 0; }
-function totalDebtReceipts(year, mi){ return state.debts.filter(d=>d.type==="debit" && !isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0); }
-function totalDebtPayments(year, mi){ return state.debts.filter(d=>(d.type==="credit"||d.type==="installment"||d.type==="obligation") && !isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0); }
+function totalDebtReceipts(year, mi){ return state.debts.filter(d=>d.type==="debit" && !isDebtExcluded(d, year, mi)).reduce((s,d)=>s+dm(d, year, mi), 0); }
+function totalDebtPayments(year, mi){ return state.debts.filter(d=>(d.type==="credit"||d.type==="installment"||d.type==="obligation") && !isDebtExcluded(d, year, mi)).reduce((s,d)=>s+dm(d, year, mi), 0); }
 function totalDebtReceiptsYear(year){ let s=0; for(let i=0;i<12;i++) s+=totalDebtReceipts(year, i); return s; }
 function totalDebtPaymentsYear(year){ let s=0; for(let i=0;i<12;i++) s+=totalDebtPayments(year, i); return s; }
-function totalDebtReceiptsExcluded(year, mi){ return state.debts.filter(d=>d.type==="debit" && isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0); }
-function totalDebtPaymentsExcluded(year, mi){ return state.debts.filter(d=>(d.type==="credit"||d.type==="installment"||d.type==="obligation") && isDebtExcluded(d)).reduce((s,d)=>s+dm(d, year, mi), 0); }
+function totalDebtReceiptsExcluded(year, mi){ return state.debts.filter(d=>d.type==="debit" && isDebtExcluded(d, year, mi)).reduce((s,d)=>s+dm(d, year, mi), 0); }
+function totalDebtPaymentsExcluded(year, mi){ return state.debts.filter(d=>(d.type==="credit"||d.type==="installment"||d.type==="obligation") && isDebtExcluded(d, year, mi)).reduce((s,d)=>s+dm(d, year, mi), 0); }
 
 /* ════════ دوال الحسابات ════════ */
 function totalIncomeCore(m, mi){
@@ -4135,9 +4149,14 @@ function cardCalcMustPayMe(){
   const cc = ensureReport().cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
   return Math.max(0, (+cc.original || 0) - (+cc.myRemaining || 0));
 }
+/* 🆕 متبقي من الطرف الثاني = متبقي من قبلي − إجمالي تفاصيل الشراء (تلقائي) */
+function cardCalcTheirRemaining(){
+  const cc = ensureReport().cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
+  return (+cc.myRemaining || 0) - rpPurchasesTotal();
+}
 function cardCalcTotalPay(){
   const cc = ensureReport().cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
-  return Math.max(0, (+cc.original || 0) - (+cc.theirRemaining || 0));
+  return Math.max(0, (+cc.original || 0) - cardCalcTheirRemaining());
 }
 function cardCalcTheyMustPay(){
   return cardCalcTotalPay() - cardCalcMustPayMe();
@@ -4481,6 +4500,7 @@ function renderCardCalc(){
   ensureReport();
   const L = LANG === 'ar';
   const cc = state.report.cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
+  cc.theirRemaining = cardCalcTheirRemaining(); /* 🆕 تحديث تلقائي */
 
   const titleEl = document.getElementById("lblCardCalcTitle");
   if(titleEl) titleEl.textContent = t('card_calc_title');
@@ -4500,7 +4520,7 @@ function renderCardCalc(){
   const myRemEl = document.getElementById("cardMyRemaining");
   if(myRemEl && document.activeElement !== myRemEl) myRemEl.value = inVal(cc.myRemaining);
   const theirRemEl = document.getElementById("cardTheirRemaining");
-  if(theirRemEl && document.activeElement !== theirRemEl) theirRemEl.value = inVal(cc.theirRemaining);
+  if(theirRemEl) theirRemEl.value = fmt(cc.theirRemaining) + " " + (L ? 'د.ب' : 'BHD');
 
   const mustPayMe = cardCalcMustPayMe();
   const totalPay = cardCalcTotalPay();
@@ -4527,7 +4547,7 @@ function renderCardCalc(){
       </div>
       <div class="calc-kpi kpi-green">
         <div class="lbl">${t('card_calc_kpi_their_rem')}</div>
-        <div class="val">${fmt(cc.theirRemaining)} ${cur}</div>
+        <div class="val">${fmt(cardCalcTheirRemaining())} ${cur}</div>
       </div>
       <div class="calc-kpi kpi-red">
         <div class="lbl">${t('card_calc_kpi_must_pay_me')}</div>
@@ -4763,10 +4783,10 @@ function renderDebtsMonthSection(){
   const refOptsFor = val => REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${val===o.v?'selected':''}>${o.l}</option>`).join('');
   let recv = 0, pay = 0, recvExcl = 0, payExcl = 0;
   tbody.innerHTML = visibleDebts.map(d => {
-    const excluded = isDebtExcluded(d); const remBefore = debtRemainingBefore(d, y, mi); const thisMonth = dm(d, y, mi); const remAfter = Math.max(0, remBefore - thisMonth);
+    const excluded = isDebtExcluded(d, y, mi); const remBefore = debtRemainingBefore(d, y, mi); const thisMonth = dm(d, y, mi); const remAfter = Math.max(0, remBefore - thisMonth);
     if(excluded){ if(d.type === "debit") recvExcl += thisMonth; else payExcl += thisMonth; } else { if(d.type === "debit") recv += thisMonth; else pay += thisMonth; }
     const inputCls = d.type === "debit" ? "input-debit" : (d.type === "obligation" ? "input-obligation" : "input-credit");
-    const bankVal = d.bank || "بطاقة صراف الالي"; const bankOpts = BANKS.map(b => `<option value="${b}" ${bankVal===b?'selected':''}>${bankLabel(b)}</option>`).join('');
+    const bankVal = getDebtBank(d, y, mi); const bankOpts = BANKS.map(b => `<option value="${b}" ${bankVal===b?'selected':''}>${bankLabel(b)}</option>`).join('');
     const refVal = getDebtRef(d, y, mi); const exclBadge = excluded ? `<span class="badge excluded-badge">⛔ ${t('dms_excluded_badge')}</span>` : '';
     return `<tr class="${typeCls[d.type]} ${excluded?'excluded':''}" data-debt-row="${d.id}"><td class="debt-name">${typeIcon[d.type]} ${d.name} ${exclBadge}</td><td><span class="badge ${d.type==='credit'?'red':d.type==='debit'?'green':(d.type==='obligation'?'purple':'blue')}">${typeLabel[d.type]}</span></td><td class="num">${money(d.total)}</td><td class="num muted">${money(remBefore)}</td><td><input type="number" class="${inputCls}" value="${inVal(thisMonth)}" min="0" step="0.001" oninput="updDebtMonthInEntry(${d.id}, this.value)"></td><td><select class="${excluded?'bank-excluded':''}" onchange="updDebtBank(${d.id}, this.value)">${bankOpts}</select></td><td class="num debt-rem-after" style="font-family:monospace;font-weight:700;color:${remAfter===0?'var(--ok)':'var(--txt)'};direction:ltr">${money(remAfter)}</td><td><input type="text" value="${esc(d.notes)}" oninput="updDebtNoteInline(${d.id}, this.value)" placeholder="ملاحظة..."></td><td><select onchange="updDebtRef(${d.id}, this.value)">${refOptsFor(refVal)}</select></td><td class="noprint" style="text-align:center"><button class="icon-btn share-btn" onclick="shareDebtReportPDF(${d.id})" title="${t('btn_share_pdf_row')}">📤</button></td></tr>`;
   }).join("");
@@ -4779,7 +4799,7 @@ function refreshDebtsMonthCells(){
   let recv = 0, pay = 0, recvExcl = 0, payExcl = 0;
   state.debts.forEach(d => {
     const row = document.querySelector(`tr[data-debt-row="${d.id}"]`); if(!row) return;
-    const excluded = isDebtExcluded(d); const thisMonth = dm(d, y, mi); const remBefore = debtRemainingBefore(d, y, mi); const remAfter = Math.max(0, remBefore - thisMonth);
+    const excluded = isDebtExcluded(d, y, mi); const thisMonth = dm(d, y, mi); const remBefore = debtRemainingBefore(d, y, mi); const remAfter = Math.max(0, remBefore - thisMonth);
     if(excluded){ if(d.type === "debit") recvExcl += thisMonth; else payExcl += thisMonth; } else { if(d.type === "debit") recv += thisMonth; else pay += thisMonth; }
     const rc = row.querySelector('.debt-rem-after'); if(rc){ rc.textContent = money(remAfter); rc.style.color = remAfter === 0 ? 'var(--ok)' : 'var(--txt)'; }
   });
@@ -4788,7 +4808,7 @@ function refreshDebtsMonthCells(){
   const sm = document.getElementById("debtsMonthSummary");
   if(sm) sm.innerHTML = `${kpi(t('dms_recv'), money(recv), "pos")}${kpi(t('dms_pay'), money(pay), "neg")}${kpi(t('dms_net'), money(recv - pay), (recv - pay) >= 0 ? "pos" : "neg")}${kpi(t('dms_remaining'), money(state.debts.reduce((s,d)=>s+debtRemaining(d),0)), "gold")}`;
 }
-function updDebtBank(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.bank = val; save(); renderDebtsMonthSection(); renderMonthResults(); renderMonthPills(); renderDashboard(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); updatePyramidTargetRow("credit"); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); } }
+function updDebtBank(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDebtBank(d, state.activeYear, state.activeMonth, val); save(); renderDebtsMonthSection(); renderMonthResults(); renderMonthPills(); renderDashboard(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); updatePyramidTargetRow("credit"); if(document.querySelector('nav.tabs button.active')?.dataset.view === 'pyramid'){ renderPyramid(); } }
 function updDebtNoteInline(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; d.notes = val; save(); }
 function updDebtRef(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDebtRef(d, state.activeYear, state.activeMonth, val); save(); }
 function updDebtMonthInEntry(id, val){ const d = state.debts.find(x=>x.id===id); if(!d) return; setDm(d, state.activeYear, state.activeMonth, Math.max(0, parseFloat(val)||0)); save(); refreshDebtsMonthCells(); renderMonthResults(); renderMonthPills(); renderDashboard(); renderDebts(); updatePyramidTargetRow("loans"); updatePyramidTargetRow("obligationsSaving"); updatePyramidTargetRow("credit"); }
@@ -5193,6 +5213,7 @@ function removeCustomPurchaseName(name){
 function refreshReportTotals(){
   const r = ensureReport(); const totalEl = document.getElementById("rpPurchasesTotal");
   if(totalEl) totalEl.textContent = money(rpPurchasesTotal());
+  try{ renderCardCalc(); }catch(e){} /* 🆕 تحديث حسبة البطاقة تلقائياً */
   const fullAmt = rpFullAmount(); const points = rpPoints(); const profit = rpProfit(); const finalAmt = rpFinalAmount();
   const profitStatus = r.profitToggle ? t('rp_profit_yes') : t('rp_profit_no');
   const resultsEl = document.getElementById("reportResults");
@@ -6024,7 +6045,7 @@ function exportDebtsMonthExcel(){
         const remBefore = debtRemainingBefore(d, y, mi); const thisMonth = dm(d, y, mi); const remAfter = Math.max(0, remBefore - thisMonth);
         if(d.type === 'debit') recv += thisMonth; else pay += thisMonth;
         const fill = d.type === 'debit' ? XL.greenBg : d.type === 'credit' ? XL.redBg : d.type === 'obligation' ? XL.purpleBg : XL.blueBg;
-        xlDataRow(ws, r, [idx+1, d.name, typeLabel[d.type]||d.type, +d.total||0, +remBefore||0, +thisMonth||0, bankLabel(d.bank||'—'), +remAfter||0, d.notes||'—'], cols, { fill, numFmt: '#,##0.00', align: {horizontal:'right',vertical:'center'} }); r++;
+        xlDataRow(ws, r, [idx+1, d.name, typeLabel[d.type]||d.type, +d.total||0, +remBefore||0, +thisMonth||0, bankLabel(getDebtBank(d, y, mi)||'—'), +remAfter||0, d.notes||'—'], cols, { fill, numFmt: '#,##0.00', align: {horizontal:'right',vertical:'center'} }); r++;
       });
       r++;
       xlSectionRow(ws, r, cols, '📊 المجاميع', XL.dark); r++;
@@ -6111,7 +6132,7 @@ function exportReportExcel(){
     const cc = rpt.cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
     xlDataRow(ws, row, [t('lblCardOriginal'), +cc.original||0, ''], cols, { fill: 'FEF3C7', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '78350F' }, name: 'Segoe UI' }, height: 26 }); row++;
     xlDataRow(ws, row, [t('lblCardMyRemaining'), +cc.myRemaining||0, ''], cols, { fill: 'DBEAFE', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '1E40AF' }, name: 'Segoe UI' }, height: 26 }); row++;
-    xlDataRow(ws, row, [t('lblCardTheirRemaining'), +cc.theirRemaining||0, ''], cols, { fill: 'DCFCE7', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '166534' }, name: 'Segoe UI' }, height: 26 }); row++;
+    xlDataRow(ws, row, [t('lblCardTheirRemaining'), cardCalcTheirRemaining(), ''], cols, { fill: 'DCFCE7', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '166534' }, name: 'Segoe UI' }, height: 26 }); row++;
     xlDataRow(ws, row, [t('lblCardMustPayMe'), cardCalcMustPayMe(), ''], cols, { fill: 'FEE2E2', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '991B1B' }, name: 'Segoe UI' }, height: 28 }); row++;
     xlDataRow(ws, row, [t('lblCardTotalPay'), cardCalcTotalPay(), ''], cols, { fill: 'DBEAFE', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '1E40AF' }, name: 'Segoe UI' }, height: 28 }); row++;
     xlDataRow(ws, row, [t('lblCardTheyMustPay'), cardCalcTheyMustPay(), ''], cols, { fill: 'DCFCE7', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 13, bold: true, color: { rgb: '166534' }, name: 'Segoe UI' }, height: 30 }); row++; row++;
@@ -6475,7 +6496,7 @@ async function shareDebtsMonthPDF(){
     if(!visibleDebts.length){ html += `<div class="empty">${t('dms_empty')}</div>`; }
     else {
       html += `<table><thead><tr><th style="width:28px">#</th><th style="width:15%">${t('th_debt_name')}</th><th style="width:8%">${t('th_debt_type')}</th><th style="width:9%">${t('th_debt_total')}</th><th style="width:10%">${t('th_debt_rem_before')}</th><th style="width:10%">${t('th_debt_this_month')}</th><th style="width:10%">${t('th_debt_bank')}</th><th style="width:10%">${t('th_debt_rem_after')}</th><th>${t('th_debt_note')}</th></tr></thead><tbody>`;
-      visibleDebts.forEach((d, idx) => { const remBefore = debtRemainingBefore(d, y, mi); const thisMonth = dm(d, y, mi); const remAfter = Math.max(0, remBefore - thisMonth); const rowCls = d.type === "debit" ? "row-debit" : d.type === "obligation" ? "row-obligation" : d.type === "installment" ? "row-installment" : "row-credit"; html += `<tr class="${rowCls}"><td class="num">${idx+1}</td><td class="name-cell">${typeIcon[d.type]||''} ${esc(d.name)}</td><td>${typeLabel[d.type]||d.type}</td><td class="num">${fmt(d.total)}</td><td class="num">${fmt(remBefore)}</td><td class="num" style="font-weight:800;color:${d.type==='debit'?'#16a34a':'#dc2626'}">${fmt(thisMonth)}</td><td>${esc(d.bank)||'—'}</td><td class="num">${fmt(remAfter)}</td><td style="font-size:10px;color:#666">${esc(d.notes)||'—'}</td></tr>`; });
+      visibleDebts.forEach((d, idx) => { const remBefore = debtRemainingBefore(d, y, mi); const thisMonth = dm(d, y, mi); const remAfter = Math.max(0, remBefore - thisMonth); const rowCls = d.type === "debit" ? "row-debit" : d.type === "obligation" ? "row-obligation" : d.type === "installment" ? "row-installment" : "row-credit"; html += `<tr class="${rowCls}"><td class="num">${idx+1}</td><td class="name-cell">${typeIcon[d.type]||''} ${esc(d.name)}</td><td>${typeLabel[d.type]||d.type}</td><td class="num">${fmt(d.total)}</td><td class="num">${fmt(remBefore)}</td><td class="num" style="font-weight:800;color:${d.type==='debit'?'#16a34a':'#dc2626'}">${fmt(thisMonth)}</td><td>${esc(getDebtBank(d, y, mi))||'—'}</td><td class="num">${fmt(remAfter)}</td><td style="font-size:10px;color:#666">${esc(d.notes)||'—'}</td></tr>`; });
       html += `</tbody><tfoot><tr><td colspan="5">${t('dms_total')}</td><td class="num" style="color:#16a34a">+ ${fmt(recv)}</td><td></td><td class="num" style="color:#dc2626">- ${fmt(pay)}</td><td></td></tr></tfoot></table>`;
     }
     html += `<div class="footer"><div><strong>Muharraqi</strong> — ${t('print_title')}</div><div>© 2025 Muharraqi. All Rights Reserved.</div></div></body></html>`;
@@ -6842,7 +6863,8 @@ async function fetchPop3Content(mode){
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 15000);
   try {
-    const res = await fetch(url, { signal: controller.signal, cache: 'no-store' });
+    const bustUrl = url + (url.indexOf('?') === -1 ? '?' : '&') + '_cb=' + Date.now(); /* 🆕 تجاوز كاش GitHub Pages */
+    const res = await fetch(bustUrl, { signal: controller.signal, cache: 'no-store' });
     if(!res.ok) throw new Error('فشل جلب الملف من الرابط (HTTP ' + res.status + ')');
     return await res.text();
   } catch(e){
@@ -6927,6 +6949,7 @@ async function processDecryption(){
     if(!state.pyramidWithdrawals) ensurePyramidWithdrawals();
 
     // 6. حفظ فوري
+    if(SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; } /* 🆕 إلغاء أي حفظ معلّق قديم */
     if(typeof saveNow === 'function') saveNow();
 
     // 7. إعادة رسم الواجهة بالكامل
@@ -6976,10 +6999,42 @@ function exportData(){
   toast(t('exported'), 'success');
 }
 function importData(e){
-  const file = e.target.files[0]; if(!file) return;
+  const input = e.target; const file = input.files && input.files[0]; if(!file) return;
+  const L = LANG === 'ar';
   const r = new FileReader();
-  r.onload = ev => { try{ const d = JSON.parse(ev.target.result); if(d.years || d.months){ state = {...state, ...d}; saveNow(); location.reload(); } } catch(err){ alert(t('invalid_file')); } };
-  r.readAsText(file);
+  r.onerror = () => { alert(L ? 'فشل قراءة الملف' : 'Failed to read file'); input.value = ''; };
+  r.onload = ev => {
+    try{
+      /* 🆕 إزالة BOM + تنظيف النص قبل التحليل */
+      let txt = String(ev.target.result || '').replace(/^\uFEFF/, '').trim();
+      let d;
+      try{ d = JSON.parse(txt); }
+      catch(pe){
+        alert(L ? '⚠️ الملف ليس JSON عادياً. إذا كان ملف pop3.json المشفّر فاستخدم زر 🔓 فك التشفير.' : '⚠️ Not a plain JSON file. If it is the encrypted pop3.json use the 🔓 Decrypt button.');
+        input.value = ''; return;
+      }
+      /* 🆕 دعم الملف إذا كانت البيانات داخل غلاف state */
+      if(d && !d.years && !d.months && d.state && (d.state.years || d.state.months)) d = d.state;
+      if(!d || typeof d !== 'object' || !(d.years || d.months)){
+        alert(t('invalid_file')); input.value = ''; return;
+      }
+      /* 🆕 إيقاف أي حفظ معلّق قديم حتى لا يكتب فوق البيانات المستوردة */
+      if(SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; }
+      SAVE_PENDING = false;
+      state = {...state, ...d};
+      /* 🆕 كتابة الملف المستورد مباشرة في التخزين (المفتاح + النسخة الاحتياطية) */
+      const data = JSON.stringify(state);
+      localStorage.setItem(KEY, data);
+      try{ localStorage.setItem(BACKUP_KEY, data); }catch(be){}
+      LAST_SAVE = new Date();
+      const yrs = Object.keys(state.years || {}).length;
+      const dbts = (state.debts || []).length;
+      toast((L ? '✅ تم الاستيراد — السنوات: ' : '✅ Imported — years: ') + yrs + (L ? ' | الديون: ' : ' | debts: ') + dbts, 'success');
+      input.value = '';
+      setTimeout(() => location.reload(), 700);
+    } catch(err){ console.error(err); alert((L ? 'فشل الاستيراد: ' : 'Import failed: ') + (err.message || t('invalid_file'))); input.value = ''; }
+  };
+  r.readAsText(file, 'utf-8');
 }
 window.addEventListener('beforeunload', function(){ if(SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; } if(SAVE_PENDING || LAST_SAVE === null){ saveNow(); } });
 document.addEventListener('visibilitychange', function(){ if(document.hidden && SAVE_PENDING){ if(SAVE_TIMER){ clearTimeout(SAVE_TIMER); SAVE_TIMER = null; } saveNow(); } });
