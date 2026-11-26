@@ -164,6 +164,11 @@ html[dir="ltr"] .expense-table tr.extra-row td:first-child{padding-right:8px;pad
 .add-btn-inline{margin-inline-start:6px}
 .bank-excluded{background:rgba(239,68,68,.15) !important;border-color:var(--danger) !important;color:#ffdcdc !important}
 .expense-table tr.group-header{background:linear-gradient(90deg,rgba(59,130,246,.15),transparent)}
+#expenseFields.grp-kids-collapsed tr[data-grp="kids"]{display:none}
+.grp-toggle-btn{cursor:pointer;border:1px solid var(--accent2);background:transparent;color:var(--accent2);border-radius:6px;width:26px;height:26px;font-weight:800;margin-inline-end:8px;font-size:14px;line-height:1}
+.grp-total{margin-inline-start:10px;color:var(--muted);font-weight:600;font-size:11px}
+.tab-date-card{padding:10px 14px;margin-bottom:12px}
+.tab-date-card .field{margin:0;max-width:280px}
 .expense-table tr.group-header td{color:var(--accent2);font-weight:700;font-size:12px;padding:8px 14px;border-bottom:1px dashed var(--line)}
 .birthday-cell{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .birthday-cell select{max-width:110px;padding:4px 8px !important;font-size:11px !important;background:rgba(234,179,8,.1) !important;border-color:var(--gold) !important;color:#facc15 !important;width:auto !important}
@@ -2354,6 +2359,7 @@ html[dir="ltr"] .confirm-reset-details li::before{
 </section>
 
 <section id="cash" class="view">
+  <div class="card tab-date-card"><div class="field"><label id="tabDateLbl_cash">📌 التاريخ اليدوي</label><input type="date" id="tabDate_cash" oninput="setTabDate('cash', this.value)"></div></div>
   <div class="card" style="border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.06),transparent)">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
       <h2 id="lblCashTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none;color:var(--gold)">💰 كم لدي كاش في التجوري</h2>
@@ -2384,6 +2390,7 @@ html[dir="ltr"] .confirm-reset-details li::before{
 </section>
 
 <section id="banks" class="view">
+  <div class="card tab-date-card"><div class="field"><label id="tabDateLbl_banks">📌 التاريخ اليدوي</label><input type="date" id="tabDate_banks" oninput="setTabDate('banks', this.value)"></div></div>
   <div class="card" style="border:2px solid var(--accent2);background:linear-gradient(180deg,rgba(59,130,246,.06),transparent)">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
       <h2 id="lblBanksTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none;color:var(--accent2)">🏦 احتياطي مبالغ جميع البنوك</h2>
@@ -2417,6 +2424,7 @@ html[dir="ltr"] .confirm-reset-details li::before{
 </section>
 
 <section id="eidi" class="view">
+  <div class="card tab-date-card"><div class="field"><label id="tabDateLbl_eidi">📌 التاريخ اليدوي</label><input type="date" id="tabDate_eidi" oninput="setTabDate('eidi', this.value)"></div></div>
   <div class="card" style="border:2px solid var(--gold);background:linear-gradient(180deg,rgba(234,179,8,.06),transparent)">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
       <h2 id="lblEidiTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none;color:var(--gold)">🎁 توزيع العيادي</h2>
@@ -2559,6 +2567,7 @@ html[dir="ltr"] .confirm-reset-details li::before{
      ⭐ تمت إضافة حاوية "حسبة البطاقة" الجديدة تحت حاوية النتائج
      ═══════════════════════════════════════════════════════════════ -->
 <section id="report" class="view">
+  <div class="card tab-date-card"><div class="field"><label id="tabDateLbl_report">📌 التاريخ اليدوي</label><input type="date" id="tabDate_report" oninput="setTabDate('report', this.value)"></div></div>
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px">
       <h2 id="lblReportTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none">⚙️ المدخلات الأساسية</h2>
@@ -2608,15 +2617,18 @@ html[dir="ltr"] .confirm-reset-details li::before{
     <div class="expense-table-wrap">
       <table class="expense-table">
         <thead><tr>
-          <th style="width:60px" id="thRpIndex">#</th>
+          <th style="width:60px" id="thRpIndex">م</th>
+          <th style="width:170px" id="thRpDate">📌 التاريخ اليدوي</th>
           <th id="thRpName">الاسم</th>
-          <th style="width:180px" id="thRpAmount">المبلغ (د.ب)</th>
+          <th style="width:150px" id="thRpAmount">المبلغ (د.ب)</th>
+          <th style="min-width:160px" id="thRpNote">ملاحظات</th>
           <th class="noprint" style="width:80px">⚙️</th>
         </tr></thead>
         <tbody id="reportPurchasesBody"></tbody>
         <tfoot><tr>
-          <td colspan="2" style="text-align:end;font-weight:700;color:var(--accent2)">📦 إجمالي المشتريات</td>
+          <td colspan="3" style="text-align:end;font-weight:700;color:var(--accent2)">📦 إجمالي المشتريات</td>
           <td class="num" id="rpPurchasesTotal" style="font-weight:800;color:var(--accent);font-size:15px"></td>
+          <td></td>
           <td class="noprint"></td>
         </tr></tfoot>
       </table>
@@ -3040,11 +3052,11 @@ const I18N = {
     print_title:"نظام إدارة رأس المال",print_subtitle:"تقرير مالي",print_meta:"تم الإنشاء في",
     f_salary:"الراتب الشهري",f_costOfLiving:"غلاء المعيشة",f_housing:"علاوة إسكان",f_charity:"مساعدات خيرية",
     f_freelance:"أعمال حرة",f_meat_support:"دعم اللحوم",f_meat_no:"لا",f_meat_yes:"نعم",f_meat_amount:"قيمة الدعم",
-    e_wifeSalary:"راتب الزوجة",e_familyExpenses:"مصروف العائلة",e_rent:"إيجار",e_houseMaintenance:"ماجلة البيت",
-    e_internet:"إنترنت وهاتف",e_electricity:"كهرباء وماء",e_misc:"مصاريف أخرى",e_treatment:"العلاج",e_visaCard1:"فيزا",
-    e_fuel:"بترول",e_carCleaning:"تنظيف",e_carRepair1:"تصليح سيارة",e_homeRepair1:"تصليح منزل",e_birthday:"عيد ميلاد",e_kids_group:"🎒 احتياجات الأطفال",
-    e_kidsSchool:"↳ المدرسة",e_kidsClothes:"↳ الملابس",e_kidsEid:"↳ العيد",e_privateSchool:"مدرسة خاصة",e_kindergarten:"روضة",e_university:"جامعة",
-    e_transport:"مواصلات",e_tutoring:"دروس",e_humanitarianAid:"🤲 مساعدات",e_eidEidi:"عيادي العيد",
+    e_wifeSalary:"راتب الزوجة",e_familyExpenses:"مصروف العائلة",e_rent:"الإيجار",e_houseMaintenance:"ماجلة البيت",
+    e_internet:"إنترنت وهاتف",e_electricity:"كهرباء وماء",e_misc:"مصاريف أخرى",e_treatment:"العلاج",e_visaCard1:"بطاقة الائتمانية",
+    e_fuel:"البترول",e_carCleaning:"تنظيفات عامة",e_carRepair1:"تصليحات السيارة",e_homeRepair1:"تصليحات المنزل",e_birthday:"عيد ميلاد",e_kids_group:"🎒 احتياجات الأطفال",
+    e_kidsSchool:"↳ المدرسة",e_kidsClothes:"↳ الملابس",e_kidsEid:"↳ العيد",e_privateSchool:"↳ مدرسة خاصة",e_kindergarten:"↳ روضة",e_university:"↳ جامعة",
+    e_transport:"↳ مواصلات",e_tutoring:"↳ دروس",e_humanitarianAid:"🤲 مساعدات إنسانية",e_eidEidi:"عيادي العيد",e_restaurants:"مطاعم",e_coffeeShop:"كوفي شوب",e_electronics:"الكترونيات",e_clothesEid:"ملابس + ملابس العيد",e_publicTransport:"مواصلات عامة",e_jewelry:"مجوهرات",rp_idx:"م",
     bd_none:"— لا أحد —",bd_wife:"زوجة",bd_husband:"الزوج",bd_kids:"العيال",
     s_assembly:"👥 جمعية",s_investment:"📈 استثمار",s_eidMoneySaving:"🎉 عيادي العيد",s_eidClothes:"👕 ثياب العيد",
     s_insuranceSaving:"🛡️ تأمين سيارات",s_travelSaving:"✈️ سفر",s_emergencyFund:"🚨 طوارئ",s_hajj:"🕋 حج",s_loans:"💳 قروض",
@@ -3270,8 +3282,8 @@ const I18N = {
     e_wifeSalary:"Wife Salary",e_familyExpenses:"Family",e_rent:"Rent",e_houseMaintenance:"House Maint",
     e_internet:"Internet",e_electricity:"Electricity",e_misc:"Misc",e_treatment:"Treatment",e_visaCard1:"Visa",
     e_fuel:"Fuel",e_carCleaning:"Car Cleaning",e_carRepair1:"Car Repair",e_homeRepair1:"Home Repair",e_birthday:"Birthday",e_kids_group:"🎒 Kids",
-    e_kidsSchool:"↳ School",e_kidsClothes:"↳ Clothes",e_kidsEid:"↳ Eid",e_privateSchool:"Private",e_kindergarten:"KG",e_university:"University",
-    e_transport:"Transport",e_tutoring:"Tutoring",e_humanitarianAid:"🤲 Aid",e_eidEidi:"Eid Eidi",
+    e_kidsSchool:"↳ School",e_kidsClothes:"↳ Clothes",e_kidsEid:"↳ Eid",e_privateSchool:"↳ Private",e_kindergarten:"↳ KG",e_university:"↳ University",
+    e_transport:"↳ Transport",e_tutoring:"↳ Tutoring",e_humanitarianAid:"🤲 Humanitarian Aid",e_eidEidi:"Eid Eidi",e_restaurants:"Restaurants",e_coffeeShop:"Coffee Shop",e_electronics:"Electronics",e_clothesEid:"Clothes + Eid Clothes",e_publicTransport:"Public Transport",e_jewelry:"Jewelry",rp_idx:"#",
     bd_none:"— None —",bd_wife:"Wife",bd_husband:"Husband",bd_kids:"Kids",
     s_assembly:"👥 Assembly",s_investment:"📈 Investment",s_eidMoneySaving:"🎉 Eid Money",s_eidClothes:"👕 Eid Clothes",
     s_insuranceSaving:"🛡️ Insurance",s_travelSaving:"✈️ Travel",s_emergencyFund:"🚨 Emergency",s_hajj:"🕋 Hajj",s_loans:"💳 Loans",
@@ -3428,17 +3440,20 @@ const EXPENSE_BASE_ROWS = [
   {key:"wifeSalary",label:"e_wifeSalary"},{key:"familyExpenses",label:"e_familyExpenses"},{key:"rent",label:"e_rent"},
   {key:"houseMaintenance",label:"e_houseMaintenance"},{key:"internet",label:"e_internet"},{key:"electricity",label:"e_electricity"},
   {key:"misc",label:"e_misc"},{key:"treatment",label:"e_treatment"},{key:"visaCard1",label:"e_visaCard1"},
-  {key:"fuel",label:"e_fuel"},{key:"carCleaning",label:"e_carCleaning"},{key:"carRepair1",label:"e_carRepair1"},
+  {key:"fuel",label:"e_fuel"},{key:"carCleaning",label:"e_carCleaning"},
+  {key:"restaurants",label:"e_restaurants"},{key:"coffeeShop",label:"e_coffeeShop"},{key:"electronics",label:"e_electronics"},
+  {key:"clothesEid",label:"e_clothesEid"},{key:"publicTransport",label:"e_publicTransport"},{key:"jewelry",label:"e_jewelry"},
+  {key:"carRepair1",label:"e_carRepair1"},
   {key:"homeRepair1",label:"e_homeRepair1"},{key:"birthday",label:"e_birthday",birthday:true},{key:"eidEidi",label:"e_eidEidi"},
-  {type:"group",label:"e_kids_group"},{key:"kidsSchool",label:"e_kidsSchool"},{key:"kidsClothes",label:"e_kidsClothes"},
-  {key:"kidsEid",label:"e_kidsEid"},{key:"privateSchool",label:"e_privateSchool"},{key:"kindergarten",label:"e_kindergarten"},
-  {key:"university",label:"e_university"},{key:"transport",label:"e_transport"},{key:"tutoring",label:"e_tutoring"},
+  {type:"group",label:"e_kids_group",collapsible:true,grp:"kids"},{key:"kidsSchool",label:"e_kidsSchool",grp:"kids"},{key:"kidsClothes",label:"e_kidsClothes",grp:"kids"},
+  {key:"kidsEid",label:"e_kidsEid",grp:"kids"},{key:"privateSchool",label:"e_privateSchool",grp:"kids"},{key:"kindergarten",label:"e_kindergarten",grp:"kids"},
+  {key:"university",label:"e_university",grp:"kids"},{key:"transport",label:"e_transport",grp:"kids"},{key:"tutoring",label:"e_tutoring",grp:"kids"},
   {key:"humanitarianAid",label:"e_humanitarianAid"},
 ];
 
 const getExpenseRows = () => EXPENSE_BASE_ROWS.map(r => {
-  if(r.type === "group") return { type:"group", label: t(r.label) };
-  return { type:"repeatable", key:r.key, extraKey: r.key+"Extra", label: t(r.label), birthday: !!r.birthday };
+  if(r.type === "group") return { type:"group", label: t(r.label), collapsible: !!r.collapsible, grp: r.grp || "" };
+  return { type:"repeatable", key:r.key, extraKey: r.key+"Extra", label: t(r.label), birthday: !!r.birthday, grp: r.grp || "" };
 });
 
 const EXPENSE_EXTRA_KEYS = EXPENSE_BASE_ROWS.filter(r => r.key).map(r => r.key + "Extra");
@@ -3728,6 +3743,27 @@ function ensureStolen(){
   return s;
 }
 
+/* 🆕 📌 التاريخ اليدوي لتبويبات: كاش التجوري / احتياطي البنوك / توزيع العيادي / تقرير الشراكة */
+function getTabDateObj(key){
+  if(key === 'cash') return ensureCash();
+  if(key === 'banks') return ensureBanks();
+  if(key === 'eidi') return ensureEidi();
+  if(key === 'report') return ensureReport();
+  return null;
+}
+function setTabDate(key, value){
+  const o = getTabDateObj(key); if(!o) return;
+  o.customDate = value || "";
+  save();
+  toast(t('saved_date') + (value || '—'));
+}
+function renderTabDates(){
+  ['cash','banks','eidi','report'].forEach(key => {
+    const inp = document.getElementById('tabDate_' + key); const lbl = document.getElementById('tabDateLbl_' + key);
+    if(lbl) lbl.textContent = t('lbl_date');
+    if(inp){ const o = getTabDateObj(key); const v = (o && o.customDate) || ""; if(inp.value !== v) inp.value = v; }
+  });
+}
 function ensureCash(){
   if(!state.cash) state.cash = { counts: {} };
   if(!state.cash.counts) state.cash.counts = {};
@@ -4468,6 +4504,7 @@ function renderIncomeFields(){
 
 /* ════════ ⭐ renderCash — الترجمة الكاملة ════════ */
 function renderCash(){
+  renderTabDates();
   ensureCash(); const L = LANG === 'ar';
   const tbody = document.getElementById("cashBody"); const tfoot = document.getElementById("cashFoot"); const kpis = document.getElementById("cashKpis");
   if(!tbody) return; let total = 0;
@@ -4660,11 +4697,27 @@ function renderSalaryFields(){
   document.getElementById("salaryFields").innerHTML = `<tr><td>${t('f_salary')}</td><td><input type="number" value="${inVal(m.salary)}" oninput="upd('salary',this.value)" step="0.001"></td><td><input type="text" value="${esc(incN.salary||'')}" oninput="updIncomeNote('salary', this.value)" placeholder="ملاحظة..."></td></tr>`;
 }
 
+/* 🆕 طي/فتح مجموعة احتياجات الأطفال (+ / −) — الافتراضي مطوي */
+function isKidsGroupCollapsed(){ return state.kidsGroupCollapsed === undefined ? true : !!state.kidsGroupCollapsed; }
+function toggleKidsGroup(){ state.kidsGroupCollapsed = !isKidsGroupCollapsed(); save(); renderExpenseFields(); }
 function renderExpenseFields(){
   const m = M()[state.activeMonth]; const rows = getExpenseRows();
   const refOptsFor = val => REF_OPTIONS.map(o => `<option value="${esc(o.v)}" ${val===o.v?'selected':''}>${o.l}</option>`).join('');
-  const html = rows.map(row => { if(row.type === "group") return `<tr class="group-header"><td colspan="5">${row.label}</td></tr>`; return renderRepeatableRow(m, row, refOptsFor); }).join("");
-  document.getElementById("expenseFields").innerHTML = html;
+  const kidsCollapsed = isKidsGroupCollapsed();
+  const html = rows.map(row => {
+    if(row.type === "group"){
+      if(row.collapsible){
+        const gTotal = rows.filter(x => x.grp === row.grp && x.type !== "group").reduce((sum, x) => sum + getExpenseRowValue(m, x), 0);
+        return `<tr class="group-header"><td colspan="5"><button type="button" class="grp-toggle-btn" onclick="toggleKidsGroup()" title="${kidsCollapsed ? '+' : '−'}">${kidsCollapsed ? '+' : '−'}</button>${row.label}<span class="grp-total">${money(gTotal)}</span></td></tr>`;
+      }
+      return `<tr class="group-header"><td colspan="5">${row.label}</td></tr>`;
+    }
+    const rowHtml = renderRepeatableRow(m, row, refOptsFor);
+    return row.grp ? rowHtml.replace(/<tr(\s|>)/g, `<tr data-grp="${row.grp}"$1`) : rowHtml;
+  }).join("");
+  const efEl = document.getElementById("expenseFields");
+  efEl.classList.toggle("grp-kids-collapsed", kidsCollapsed);
+  efEl.innerHTML = html;
   renderExpenseSummary();
 }
 function renderRepeatableRow(m, row, refOptsFor){
@@ -5191,9 +5244,9 @@ function updReport(field, value){
   save(); refreshReportTotals();
 }
 function onShePaysToggle(value){ const r = ensureReport(); r.shePaysToggle = (value === 'yes'); save(); const amountInput = document.getElementById("rpShePaysAmount"); if(amountInput){ amountInput.disabled = !r.shePaysToggle; amountInput.style.opacity = r.shePaysToggle ? '1' : '0.5'; } refreshReportTotals(); }
-function addReportPurchase(){ const r = ensureReport(); r.purchases.push({ id: Date.now() + Math.floor(Math.random()*10000), name: "", amount: 0 }); save(); renderReport(); }
+function addReportPurchase(){ const r = ensureReport(); r.purchases.push({ id: Date.now() + Math.floor(Math.random()*10000), date: "", name: "", amount: 0, note: "" }); save(); renderReport(); }
 function removeReportPurchase(id){ const r = ensureReport(); r.purchases = r.purchases.filter(p => p.id !== id); save(); renderReport(); }
-function updReportPurchase(id, field, val){ const r = ensureReport(); const p = r.purchases.find(x => x.id === id); if(!p) return; if(field === "amount") p.amount = Math.max(0, parseFloat(val) || 0); else p.name = val; save(); refreshReportTotals(); }
+function updReportPurchase(id, field, val){ const r = ensureReport(); const p = r.purchases.find(x => x.id === id); if(!p) return; if(field === "amount") p.amount = Math.max(0, parseFloat(val) || 0); else if(field === "date") p.date = val || ""; else if(field === "note") p.note = val || ""; else p.name = val; save(); refreshReportTotals(); }
 function onPurchaseNameSelect(purchaseId, value){ const r = ensureReport(); const p = r.purchases.find(x => x.id === purchaseId); if(!p) return; p.name = value || ""; save(); refreshReportTotals(); }
 function addCustomPurchaseName(purchaseId){
   const r = ensureReport(); const newName = prompt(LANG==='ar' ? 'أدخل اسم البند الجديد:' : 'Enter new item name:', '');
@@ -5220,9 +5273,11 @@ function refreshReportTotals(){
   if(resultsEl){ resultsEl.innerHTML = `${kpi(t('rp_kpi_full'), money(fullAmt), "acc")}${kpi(t('rp_kpi_points'), fmt(points), "gold")}${kpi(t('rp_kpi_profit_status'), profitStatus, r.profitToggle ? "pos" : "neg")}${kpi(t('rp_kpi_profit'), money(profit), r.profitToggle ? "pos" : "neg")}${kpi(t('rp_kpi_final'), money(finalAmt), "neg")}`; }
 }
 function renderReport(){
+  renderTabDates();
   ensureReport(); const r = state.report; if(!document.getElementById("rpFather")) return;
   const labelEl = document.getElementById("rpFatherLabel");
   if(labelEl) labelEl.value = r.fatherDebtLabel || "";
+  [['thRpIndex','rp_idx'],['thRpDate','lbl_date'],['thRpNote','rp_notes']].forEach(([id,k]) => { const el = document.getElementById(id); if(el) el.textContent = t(k); });
   document.getElementById("rpFather").value = inVal(r.fatherDebt);
   const notesEl = document.getElementById("rpNotes"); if(notesEl) notesEl.value = r.notes || "";
   const elecEl = document.getElementById("rpElecBill");
@@ -5233,12 +5288,12 @@ function renderReport(){
   const amountEl = document.getElementById("rpShePaysAmount");
   if(amountEl){ amountEl.value = inVal(r.shePaysMe); amountEl.disabled = !r.shePaysToggle; amountEl.style.opacity = r.shePaysToggle ? '1' : '0.5'; }
   const body = document.getElementById("reportPurchasesBody");
-  if(r.purchases.length === 0){ body.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:14px;color:var(--muted);font-style:italic">${LANG==='ar'?'لا توجد بنود':'No items'}</td></tr>`; }
+  if(r.purchases.length === 0){ body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:14px;color:var(--muted);font-style:italic">${LANG==='ar'?'لا توجد بنود':'No items'}</td></tr>`; }
   else {
     body.innerHTML = r.purchases.map((p, idx) => {
       const isCustom = p.name && !DEFAULT_PURCHASE_NAMES.includes(p.name);
       const nameOpts = r.purchaseNames.map(n => `<option value="${esc(n)}" ${p.name===n?'selected':''}>${esc(n)}</option>`).join("");
-      return `<tr><td class="num" style="text-align:center;font-family:monospace;font-weight:700;color:var(--muted)">${idx+1}</td><td><div style="display:flex;gap:6px;align-items:center"><select onchange="onPurchaseNameSelect(${p.id}, this.value)" style="flex:1;min-width:120px"><option value="">${LANG==='ar'?'— اختر —':'— Choose —'}</option>${nameOpts}</select><button type="button" class="icon-btn add-btn" onclick="addCustomPurchaseName(${p.id})" title="➕">➕</button>${isCustom ? `<button type="button" class="icon-btn remove-btn" onclick="removeCustomPurchaseName('${esc(p.name)}')" title="🗑">🗑</button>` : ''}</div></td><td><input type="number" value="${inVal(p.amount)}" step="0.001" min="0" oninput="updReportPurchase(${p.id}, 'amount', this.value)"></td><td class="noprint" style="text-align:center"><button class="icon-btn remove-btn" onclick="removeReportPurchase(${p.id})" title="✕">✕</button></td></tr>`;
+      return `<tr><td class="num" style="text-align:center;font-family:monospace;font-weight:700;color:var(--muted)">${idx+1}</td><td><input type="date" value="${esc(p.date||'')}" oninput="updReportPurchase(${p.id}, 'date', this.value)"></td><td><div style="display:flex;gap:6px;align-items:center"><select onchange="onPurchaseNameSelect(${p.id}, this.value)" style="flex:1;min-width:120px"><option value="">${LANG==='ar'?'— اختر —':'— Choose —'}</option>${nameOpts}</select><button type="button" class="icon-btn add-btn" onclick="addCustomPurchaseName(${p.id})" title="➕">➕</button>${isCustom ? `<button type="button" class="icon-btn remove-btn" onclick="removeCustomPurchaseName('${esc(p.name)}')" title="🗑">🗑</button>` : ''}</div></td><td><input type="number" value="${inVal(p.amount)}" step="0.001" min="0" oninput="updReportPurchase(${p.id}, 'amount', this.value)"></td><td><input type="text" value="${esc(p.note||'')}" oninput="updReportPurchase(${p.id}, 'note', this.value)" placeholder="${LANG==='ar'?'ملاحظة...':'Note...'}"></td><td class="noprint" style="text-align:center"><button class="icon-btn remove-btn" onclick="removeReportPurchase(${p.id})" title="✕">✕</button></td></tr>`;
     }).join("");
   }
   refreshReportTotals();
@@ -5527,6 +5582,7 @@ function renderAnnual(){
 
 /* ════════ Banks ════════ */
 function renderBanks(){
+  renderTabDates();
   ensureBanks(); const L = LANG === 'ar';
   const tbody = document.getElementById("banksBody"); const tfoot = document.getElementById("banksFoot"); const kpis = document.getElementById("banksKpis");
   if(!tbody) return;
@@ -5546,6 +5602,7 @@ function renderBanks(){
 
 /* ════════ Eidi ════════ */
 function renderEidi(){
+  renderTabDates();
   ensureEidi(); const L = LANG === 'ar';
   const tbody = document.getElementById("eidiBody"); const tfoot = document.getElementById("eidiFoot"); const kpis = document.getElementById("eidiKpis");
   if(!tbody) return;
@@ -6105,7 +6162,7 @@ function exportReportExcel(){
     if(typeof XLSX === 'undefined'){ toast(LANG==='ar'?'⚠️ مكتبة Excel غير محمّلة':'⚠️ Excel not loaded','error'); return; }
     syncFromDOM();
     const wb = XLSX.utils.book_new(); wb.Workbook = { Views: [{ RTL: true }] };
-    const ws = {}; const L = LANG === 'ar'; const cur = L ? 'د.ب' : 'BHD'; const rpt = ensureReport(); const cols = 3;
+    const ws = {}; const L = LANG === 'ar'; const cur = L ? 'د.ب' : 'BHD'; const rpt = ensureReport(); const cols = 5;
     let row = 0;
     xlTitleRow(ws, row, cols, '📊 تقرير الشراكة', { sz: 18, h: 42, fill: '0F172A', color: 'FFFFFF' }); row++;
     xlTitleRow(ws, row, cols, 'Muharraqi — Capital Manager', { sz: 12, h: 26, fill: '1E3A5F', color: 'FFFFFF' }); row++;
@@ -6117,9 +6174,9 @@ function exportReportExcel(){
     xlDataRow(ws, row, ['⚡ الكهرباء', +rpt.electricityBill||0, ''], cols, { fill: 'E2E8F0', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '334155' }, name: 'Segoe UI' }, height: 26 }); row++;
     xlDataRow(ws, row, ['💸 تدفع لي', getShePaysAmount(), ''], cols, { fill: rpt.shePaysToggle ? 'DCFCE7' : 'FEE2E2', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: rpt.shePaysToggle ? '166534' : '991B1B' }, name: 'Segoe UI' }, height: 26 }); row++; row++;
     xlSectionRow(ws, row, cols, '🛒 تفاصيل الشراء', '8B5CF6'); row++;
-    xlHeaderRow(ws, row, ['#', 'الاسم', 'المبلغ ('+cur+')'], '1E3A5F'); row++;
-    rpt.purchases.forEach((p, idx) => { xlDataRow(ws, row, [idx+1, p.name || '—', +p.amount||0], cols, { fill: idx % 2 === 0 ? 'F0F4F8' : 'FFFFFF', numFmt: '#,##0.000', align: { horizontal: 'center', vertical: 'center' }, font: { sz: 11, color: { rgb: '0F172A' }, name: 'Segoe UI' }, height: 22 }); row++; });
-    xlTotalRow(ws, row, ['', '📦 إجمالي المشتريات', rpPurchasesTotal()], cols); row++; row++;
+    xlHeaderRow(ws, row, [L ? 'م' : '#', L ? '📌 التاريخ اليدوي' : '📌 Manual Date', L ? 'الاسم' : 'Name', 'المبلغ ('+cur+')', L ? 'ملاحظات' : 'Notes'], '1E3A5F'); row++;
+    rpt.purchases.forEach((p, idx) => { xlDataRow(ws, row, [idx+1, p.date || '—', p.name || '—', +p.amount||0, p.note || ''], cols, { fill: idx % 2 === 0 ? 'F0F4F8' : 'FFFFFF', numFmt: '#,##0.000', align: { horizontal: 'center', vertical: 'center' }, font: { sz: 11, color: { rgb: '0F172A' }, name: 'Segoe UI' }, height: 22 }); row++; });
+    xlTotalRow(ws, row, ['', '', '📦 إجمالي المشتريات', rpPurchasesTotal()], cols); row++; row++;
     xlSectionRow(ws, row, cols, '📊 النتائج', '22C1A4'); row++;
     xlHeaderRow(ws, row, ['البند', 'القيمة', ''], '1E3A5F'); row++;
     xlDataRow(ws, row, ['💰 المبلغ كامل', rpFullAmount(), ''], cols, { fill: 'E0F2FE', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '0E7490' }, name: 'Segoe UI' }, height: 28 }); row++;
@@ -6137,7 +6194,7 @@ function exportReportExcel(){
     xlDataRow(ws, row, [t('lblCardTotalPay'), cardCalcTotalPay(), ''], cols, { fill: 'DBEAFE', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '1E40AF' }, name: 'Segoe UI' }, height: 28 }); row++;
     xlDataRow(ws, row, [t('lblCardTheyMustPay'), cardCalcTheyMustPay(), ''], cols, { fill: 'DCFCE7', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 13, bold: true, color: { rgb: '166534' }, name: 'Segoe UI' }, height: 30 }); row++; row++;
     if(rpt.notes){ xlSectionRow(ws, row, cols, '📝 ملاحظات', 'EAB308'); row++; ws[XLSX.utils.encode_cell({ r: row, c: 0 })] = { v: rpt.notes, t: 's' }; xlMerge(ws, row, 0, row, cols - 1); xlStyleRow(ws, row, cols, { fill: 'FEF3C7', font: { sz: 11, name: 'Segoe UI', color: { rgb: '78350F' } }, align: { horizontal: 'right', vertical: 'center', wrapText: true }, border: xlBorders('94A3B8') }); if(!ws['!rows']) ws['!rows'] = []; ws['!rows'][row] = { hpt: 44 }; row++; }
-    ws['!cols'] = [{ wch: 32 }, { wch: 14 }, { wch: 6 }];
+    ws['!cols'] = [{ wch: 32 }, { wch: 16 }, { wch: 22 }, { wch: 14 }, { wch: 28 }];
     ws['!ref'] = XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: row, c: cols - 1 } });
     applySheetRTL(ws, wb);
     XLSX.utils.book_append_sheet(wb, ws, L ? 'تقرير الشراكة' : 'Report');
@@ -6733,7 +6790,7 @@ function applyLang(){
     lblReportTitle:'rp_title',lblReportFather:'rp_father',lblReportFatherName:'rp_father_label',lblReportElecBill:'rp_elec_bill',
     lblReportElecBox:'lblReportElecBox',lblReportProfitToggle:'rp_profit_toggle',
     lblReportShePays:'rp_she_pays',lblReportPurchases:'rp_purchases',
-    btnAddReportPurchase:'rp_add_purchase',thRpIndex:'print_index',thRpName:'rp_name',thRpAmount:'rp_amount',
+    btnAddReportPurchase:'rp_add_purchase',thRpIndex:'rp_idx',thRpDate:'lbl_date',thRpName:'rp_name',thRpAmount:'rp_amount',thRpNote:'rp_notes',
     lblReportResults:'rp_results',thRpItem:'rp_item',thRpValue:'rp_value',lblReportNotes:'rp_notes',
     remindersTitle:'reminders_title',remDateLabel:'reminders_date',remTimeLabel:'reminders_time',remNoteLabel:'reminders_note',remAddBtn:'reminders_add_btn',
     lblBanksTitle:'bank_title',lblBanksHint:'bank_hint',thBankName:'bank_th_name',thBankAmount:'bank_th_amount',
