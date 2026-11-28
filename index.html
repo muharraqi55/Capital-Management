@@ -2652,7 +2652,7 @@ html[dir="ltr"] .confirm-reset-details li::before{
       <h2 id="lblCardCalcTitle" style="margin-bottom:0;padding-bottom:0;border-bottom:none;color:var(--accent2)">💳 حسبة البطاقة</h2>
       <button class="btn danger" onclick="resetCardCalc()" style="font-size:12px;padding:6px 12px" data-i18n="card_calc_reset">🗑 تصفير الحسبة</button>
     </div>
-    <p class="muted" style="margin-bottom:14px" id="lblCardCalcHint">أدخل أصل موجود البطاقة والمتبقي فيها — سيتم حساب المطلوب من الطرفين تلقائياً حسب إجمالي المشتريات.</p>
+    <p class="muted" style="margin-bottom:14px" id="lblCardCalcHint">أدخل أصل موجود البطاقة والمتبقي فيها والمبلغ الذي دفعته — سيتم حساب المطلوب من الطرفين تلقائياً حسب إجمالي المشتريات.</p>
 
     <div class="grid g3">
       <div class="field">
@@ -2664,12 +2664,16 @@ html[dir="ltr"] .confirm-reset-details li::before{
         <input type="number" id="cardMyRemaining" step="0.001" min="0" oninput="updCardCalc('myRemaining', this.value)" placeholder="0.000">
       </div>
       <div class="field">
-        <label id="lblCardMustPayMe">🏦 يجب انا ان ادفع</label>
-        <input type="text" id="cardMustPayMe" class="card-calc-readonly card-calc-red" readonly>
+        <label id="lblCardMyPaid">لقد دفعت من قبلي</label>
+        <input type="number" id="cardMyPaid" step="0.001" min="0" oninput="updCardCalc('myPaid', this.value)" placeholder="0.000">
       </div>
     </div>
 
     <div class="grid g3" style="margin-top:14px">
+      <div class="field">
+        <label id="lblCardMustPayMe">🏦 يجب انا ان ادفع</label>
+        <input type="text" id="cardMustPayMe" class="card-calc-readonly card-calc-red" readonly>
+      </div>
       <div class="field">
         <label id="lblCardTheyMustPay">💸 يجب ان يدفع الطرف الثاني</label>
         <input type="text" id="cardTheyMustPay" class="card-calc-readonly card-calc-green" readonly>
@@ -3128,9 +3132,10 @@ const I18N = {
     cash_total_row:"📊 المجموع الكلي للتجوري",
     card_calc_title:"💳 حسبة البطاقة",
     card_calc_reset:"🗑 تصفير الحسبة",
-    card_calc_hint:"أدخل أصل موجود البطاقة والمتبقي فيها — سيتم حساب المطلوب من الطرفين تلقائياً حسب إجمالي المشتريات.",
+    card_calc_hint:"أدخل أصل موجود البطاقة والمتبقي فيها والمبلغ الذي دفعته — سيتم حساب المطلوب من الطرفين تلقائياً حسب إجمالي المشتريات.",
     lblCardOriginal:"💰 اصل موجود البطاقة",
     lblCardMyRemaining:"💸 المتبقي في البطاقة",
+    lblCardMyPaid:"لقد دفعت من قبلي",
     lblCardMustPayMe:"🏦 يجب انا ان ادفع",
     lblCardTotalPay:"📊 مجموع الكلي للدفع للطرفين",
     lblCardTheyMustPay:"💸 يجب ان يدفع الطرف الثاني",
@@ -3350,9 +3355,10 @@ const I18N = {
     cash_total_row:"📊 Grand Total of Safe",
     card_calc_title:"💳 Card Calculation",
     card_calc_reset:"🗑 Reset Calculation",
-    card_calc_hint:"Enter the original and remaining card balances — payments are calculated automatically using total purchases.",
+    card_calc_hint:"Enter the original and remaining card balances and the amount already paid — payments are calculated automatically using total purchases.",
     lblCardOriginal:"💰 Original Card Balance",
     lblCardMyRemaining:"💸 Remaining Card Balance",
+    lblCardMyPaid:"Already Paid by Me",
     lblCardMustPayMe:"🏦 I Must Pay",
     lblCardTotalPay:"📊 Total Payable by Both Parties",
     lblCardTheyMustPay:"💸 Other Party Must Pay",
@@ -3529,7 +3535,7 @@ let state = {
     purchaseNames: [...DEFAULT_PURCHASE_NAMES],
     fatherDebtLabel: "",
     notes: "",
-    cardCalc: { original: 0, myRemaining: 0, theirRemaining: 0 }
+    cardCalc: { original: 0, myRemaining: 0, theirRemaining: 0, myPaid: 0 }
   }
 };
 
@@ -3611,7 +3617,7 @@ function resetReport(){
         purchaseNames: [...DEFAULT_PURCHASE_NAMES, ...customNames],
         fatherDebtLabel: "",
         notes: "",
-        cardCalc: { original: 0, myRemaining: 0, theirRemaining: 0 }
+        cardCalc: { original: 0, myRemaining: 0, theirRemaining: 0, myPaid: 0 }
       };
       ensureReport(); save(); renderReport();
       toast(L ? '✅ تم تصفير تقرير الشراكة' : '✅ Partnership Report reset', 'success');
@@ -3627,15 +3633,17 @@ function resetCardCalc(){
     details: L ? [
       t('card_calc_reset_details_1'),
       t('card_calc_reset_details_2'),
+      t('lblCardMyPaid'),
       t('card_calc_reset_details_4')
     ] : [
       t('card_calc_reset_details_1'),
       t('card_calc_reset_details_2'),
+      t('lblCardMyPaid'),
       t('card_calc_reset_details_4')
     ],
     onConfirm: function(){
       ensureReport();
-      state.report.cardCalc = { original: 0, myRemaining: 0, theirRemaining: 0 };
+      state.report.cardCalc = { original: 0, myRemaining: 0, theirRemaining: 0, myPaid: 0 };
       save(); renderCardCalc();
       toast(t('card_calc_reset_ok'), 'success');
     }
@@ -3794,7 +3802,7 @@ function ensureReport(){
     purchaseNames: [...DEFAULT_PURCHASE_NAMES],
     fatherDebtLabel: "",
     notes: "",
-    cardCalc: { original: 0, myRemaining: 0, theirRemaining: 0 }
+    cardCalc: { original: 0, myRemaining: 0, theirRemaining: 0, myPaid: 0 }
   };
   if(!Array.isArray(state.report.purchases)) state.report.purchases = [];
   if(typeof state.report.fatherDebt !== 'number') state.report.fatherDebt = 0;
@@ -3808,9 +3816,10 @@ function ensureReport(){
   DEFAULT_PURCHASE_NAMES.forEach(n => { if(!state.report.purchaseNames.includes(n)) state.report.purchaseNames.unshift(n); });
   state.report.purchases.forEach(p => { if(p.name && !state.report.purchaseNames.includes(p.name)) state.report.purchaseNames.push(p.name); });
   delete state.report.pointsMultiplier;
-  if(!state.report.cardCalc) state.report.cardCalc = { original: 0, myRemaining: 0, theirRemaining: 0 };
+  if(!state.report.cardCalc) state.report.cardCalc = { original: 0, myRemaining: 0, theirRemaining: 0, myPaid: 0 };
   if(typeof state.report.cardCalc.original !== 'number') state.report.cardCalc.original = 0;
   if(typeof state.report.cardCalc.myRemaining !== 'number') state.report.cardCalc.myRemaining = 0;
+  if(typeof state.report.cardCalc.myPaid !== 'number') state.report.cardCalc.myPaid = 0;
   if(typeof state.report.cardCalc.theirRemaining !== 'number') state.report.cardCalc.theirRemaining = 0;
   return state.report;
 }
@@ -4171,11 +4180,12 @@ function getShePaysAmount(){ const r = ensureReport(); if(!r.shePaysToggle) retu
 function rpFinalAmount(){ return rpFullAmount() - rpProfit(); }
 
 function cardCalcMustPayMe(){
-  const cc = ensureReport().cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
+  const cc = ensureReport().cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0, myPaid: 0 };
   const original = Math.round((Number(cc.original) || 0) * 1000);
   const remaining = Math.round((Number(cc.myRemaining) || 0) * 1000);
   const purchases = Math.round(rpPurchasesTotal() * 1000);
-  return (original - remaining - purchases) / 1000;
+  const paid = Math.round((Number(cc.myPaid) || 0) * 1000);
+  return (original - remaining - purchases - paid) / 1000;
 }
 function cardCalcTotalPay(){
   return cardCalcMustPayMe() + cardCalcTheyMustPay();
@@ -4383,6 +4393,7 @@ function updCardCalc(field, value){
   const v = Math.max(0, parseFloat(value) || 0);
   if(field === "original") state.report.cardCalc.original = v;
   else if(field === "myRemaining") state.report.cardCalc.myRemaining = v;
+  else if(field === "myPaid") state.report.cardCalc.myPaid = v;
   else if(field === "theirRemaining") state.report.cardCalc.theirRemaining = v;
   save();
   renderCardCalc();
@@ -4522,7 +4533,7 @@ function renderCash(){
 function renderCardCalc(){
   ensureReport();
   const L = LANG === 'ar';
-  const cc = state.report.cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
+  const cc = state.report.cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0, myPaid: 0 };
 
   const titleEl = document.getElementById("lblCardCalcTitle");
   if(titleEl) titleEl.textContent = t('card_calc_title');
@@ -4532,6 +4543,7 @@ function renderCardCalc(){
 
   const lblOriginal = document.getElementById("lblCardOriginal"); if(lblOriginal) lblOriginal.textContent = t('lblCardOriginal');
   const lblMyRem = document.getElementById("lblCardMyRemaining"); if(lblMyRem) lblMyRem.textContent = t('lblCardMyRemaining');
+  const lblMyPaid = document.getElementById("lblCardMyPaid"); if(lblMyPaid) lblMyPaid.textContent = t('lblCardMyPaid');
   const lblMustPayMe = document.getElementById("lblCardMustPayMe"); if(lblMustPayMe) lblMustPayMe.textContent = t('lblCardMustPayMe');
   const lblTotalPay = document.getElementById("lblCardTotalPay"); if(lblTotalPay) lblTotalPay.textContent = t('lblCardTotalPay');
   const lblTheyMustPay = document.getElementById("lblCardTheyMustPay"); if(lblTheyMustPay) lblTheyMustPay.textContent = t('lblCardTheyMustPay');
@@ -4541,6 +4553,9 @@ function renderCardCalc(){
   const myRemEl = document.getElementById("cardMyRemaining");
   if(myRemEl && document.activeElement !== myRemEl) myRemEl.value = inVal(cc.myRemaining);
 
+  const myPaidEl = document.getElementById("cardMyPaid");
+  if(myPaidEl && document.activeElement !== myPaidEl) myPaidEl.value = inVal(cc.myPaid);
+
   const mustPayMe = cardCalcMustPayMe();
   const totalPay = cardCalcTotalPay();
   const theyMustPay = cardCalcTheyMustPay();
@@ -4548,7 +4563,7 @@ function renderCardCalc(){
   const mustPayMeEl = document.getElementById("cardMustPayMe");
   if(mustPayMeEl) mustPayMeEl.value = fmt(mustPayMe) + " " + (L ? 'د.ب' : 'BHD');
   const formulaEl = document.getElementById("cardCalcFormula");
-  if(formulaEl) formulaEl.textContent = `${fmt(cc.original)} − ${fmt(cc.myRemaining)} − ${fmt(rpPurchasesTotal())} = ${fmt(mustPayMe)}`;
+  if(formulaEl) formulaEl.textContent = `${fmt(cc.original)} − ${fmt(cc.myRemaining)} − ${fmt(rpPurchasesTotal())} − ${fmt(cc.myPaid)} = ${fmt(mustPayMe)}`;
   const totalPayEl = document.getElementById("cardTotalPay");
   if(totalPayEl) totalPayEl.value = fmt(totalPay) + " " + (L ? 'د.ب' : 'BHD');
   const theyMustPayEl = document.getElementById("cardTheyMustPay");
@@ -4565,6 +4580,10 @@ function renderCardCalc(){
       <div class="calc-kpi kpi-blue">
         <div class="lbl">${t('card_calc_kpi_my_rem')}</div>
         <div class="val">${fmt(cc.myRemaining)} ${cur}</div>
+      </div>
+      <div class="calc-kpi kpi-gold">
+        <div class="lbl">${t('lblCardMyPaid')}</div>
+        <div class="val">${fmt(cc.myPaid)} ${cur}</div>
       </div>
       <div class="calc-kpi kpi-red">
         <div class="lbl">${t('card_calc_kpi_must_pay_me')}</div>
@@ -6166,9 +6185,10 @@ function exportReportExcel(){
     xlDataRow(ws, row, ['📌 المبلغ النهائي', rpFinalAmount(), ''], cols, { fill: '22C55E', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 14, bold: true, color: { rgb: 'FFFFFF' }, name: 'Segoe UI' }, height: 34 }); row++; row++;
     xlSectionRow(ws, row, cols, '💳 حسبة البطاقة', '3B82F6'); row++;
     xlHeaderRow(ws, row, ['البند', 'القيمة ('+cur+')', ''], '1E3A5F'); row++;
-    const cc = rpt.cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0 };
+    const cc = rpt.cardCalc || { original: 0, myRemaining: 0, theirRemaining: 0, myPaid: 0 };
     xlDataRow(ws, row, [t('lblCardOriginal'), +cc.original||0, ''], cols, { fill: 'FEF3C7', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '78350F' }, name: 'Segoe UI' }, height: 26 }); row++;
     xlDataRow(ws, row, [t('lblCardMyRemaining'), +cc.myRemaining||0, ''], cols, { fill: 'DBEAFE', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '1E40AF' }, name: 'Segoe UI' }, height: 26 }); row++;
+    xlDataRow(ws, row, [t('lblCardMyPaid'), +cc.myPaid||0, ''], cols, { fill: 'DBEAFE', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '1E40AF' }, name: 'Segoe UI' }, height: 26 }); row++;
     xlDataRow(ws, row, [t('lblCardMustPayMe'), cardCalcMustPayMe(), ''], cols, { fill: 'FEE2E2', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 12, bold: true, color: { rgb: '991B1B' }, name: 'Segoe UI' }, height: 28 }); row++;
 
     xlDataRow(ws, row, [t('lblCardTheyMustPay'), cardCalcTheyMustPay(), ''], cols, { fill: 'DCFCE7', numFmt: '#,##0.000', align: { horizontal: 'right', vertical: 'center' }, font: { sz: 13, bold: true, color: { rgb: '166534' }, name: 'Segoe UI' }, height: 30 }); row++;
@@ -6789,7 +6809,7 @@ function applyLang(){
     thEidiIndex:'thEidiIndex',thEidiName:'thEidiName',thEidiAmount:'thEidiAmount',
     btnAddEidi:'eidi_add_btn',btnResetEidi:'eidi_reset_btn',
     lblCashTitle:'cash_title',lblCashSummary:'cash_summary',thCashItem:'cash_th_item',thCashValue:'cash_th_value',thCashCount:'cash_th_count',thCashAmount:'cash_th_amount',
-    lblCardCalcTitle:'card_calc_title',lblCardCalcHint:'card_calc_hint',lblCardOriginal:'lblCardOriginal',lblCardMyRemaining:'lblCardMyRemaining',
+    lblCardCalcTitle:'card_calc_title',lblCardCalcHint:'card_calc_hint',lblCardOriginal:'lblCardOriginal',lblCardMyRemaining:'lblCardMyRemaining',lblCardMyPaid:'lblCardMyPaid',
     lblCardMustPayMe:'lblCardMustPayMe',lblCardTotalPay:'lblCardTotalPay',lblCardTheyMustPay:'lblCardTheyMustPay',
   };
   Object.keys(ids).forEach(id => { const el = document.getElementById(id); if(el) el.textContent = t(ids[id]); });
